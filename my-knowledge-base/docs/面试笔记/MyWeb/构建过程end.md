@@ -99,6 +99,8 @@ RUN mkdir -p my-knowledge-base/docs/public && \
     cp -r my-knowledge-base/images my-knowledge-base/docs/public/
 ```
 这就是赛博时代的“偷梁换柱”！让机器人在流水线中自动把图片拷贝过去。本地笔记零修改，依旧享受 Obsidian 的丝滑；云端流水线自动兼容，完美解析！
+
+---
 ## 💥 终极武器库：完美的 Dockerfile 配置
 
 历经四大 BOSS 的洗礼，终于铸造出了这把“终极圣剑”。这份 `Dockerfile` 的每一行，都凝聚着踩坑流血换来的经验值！
@@ -141,6 +143,8 @@ EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
 ```
 
+
+---
 ## 💫 结语：自动化的浪漫 💫
 呼~ 终于大功告成了！看着绿色的对勾在 GitHub Actions 里亮起，所有的辛苦都值了。
 

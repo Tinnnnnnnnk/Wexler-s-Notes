@@ -3,10 +3,10 @@ layout: home
 
 hero:
   name: "Wexler's Notes"
-  text: "构建你的数字第二大脑"
+  text: "全自动云端服务器同步笔记"
   tagline: "Backend / Linux / Docker / Algorithm"
   image:
-    src: /images/logo.jpg
+    src: /public/images/logo.jpg
     alt: Logo
   actions:
     - theme: brand

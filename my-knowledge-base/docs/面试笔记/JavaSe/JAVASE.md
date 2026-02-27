@@ -30,4 +30,3 @@
 - 接口 (interface)
 - 类 (class)
 - 数组
-test

@@ -1,0 +1,10 @@
+{
+  "showLineNumber": true,
+  "spellcheck": false,
+  "autoPairBrackets": false,
+  "userIgnoreFilters": [
+    "node_modules/",
+    ".vitepress",
+    "public"
+  ]
+}

@@ -16,18 +16,12 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
+          # 🌟 增加超时限制到 30 分钟，给网络波动留够缓冲
+          command_timeout: 30m
           script: |
-            # 1. 进入你在服务器上的项目目录
             cd /root/Wexler-s-Notes
-            
-            # 2. 拉取你刚才推送到 GitHub 的最新笔记
             git pull origin main
-            
-            # 3. 重新构建 Docker 镜像 
+            # 构建并运行
             docker build -t wexler-notes-image .
-            
-            # 4. 停止并拆除旧舞台 (精准狙击你的 my-nginx)
             docker rm -f my-nginx || true
-            
-            # 5. 闪亮登场！用新图纸建起你的新 my-nginx 舞台！
             docker run -d -p 80:80 --name my-nginx wexler-notes-image

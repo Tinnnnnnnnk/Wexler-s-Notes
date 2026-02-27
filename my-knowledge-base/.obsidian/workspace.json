@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "docs/index.md",
-                "mode": "source",
+                "file": "docs/面试笔记/MyWeb/构建过程.md",
+                "mode": "preview",
                 "source": true
               },
               "icon": "lucide-file",
-              "title": "index"
+              "title": "构建过程"
             }
           }
         ]
@@ -184,11 +184,13 @@
   },
   "active": "609a5171692aab84",
   "lastOpenFiles": [
+    "docs/index.md",
+    "docs/面试笔记/MyWeb/构建过程.md",
+    "docs/面试笔记/MyWeb",
     "docs/public/images/logo.jpg",
     "docs/public/images",
     "docs/public",
     "docs/面试笔记/JavaSe/JAVASE.md",
-    "docs/index.md",
     "docs/test1.md",
     "docs/Code/Hot100/Two-Pointers/11-盛最多水的容器.md",
     "images/Pasted image 20260209190033.png",

@@ -115,7 +115,19 @@ function getRootSidebarGroups() {
 export default defineConfig({
   // 🚫 开启这个，不再检查死链 (针对你之前的报错)
   ignoreDeadLinks: true,
+  vite: {
+    build: {
+      rollupOptions: {
+        // 把所有图片格式都标记为“外部依赖”，强行阻止 Rollup 报错
+        external: [/\.png$/i, /\.jpe?g$/i, /\.gif$/i, /\.svg$/i, /\.webp$/i]
+      }
+    }
+  },
 
+  title: "Wexler's Notes",
+  description: "全栈开发与运维知识库",
+  lastUpdated: true,
+  cleanUrls: true,
   title: "Wexler's Notes",
   description: "全栈开发与运维知识库",
   lastUpdated: true,

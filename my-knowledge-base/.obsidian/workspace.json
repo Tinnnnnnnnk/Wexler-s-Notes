@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "docs/面试笔记/MyWeb/构建过程.md",
-                "mode": "preview",
+                "file": "docs/面试笔记/MyWeb/构建过程end.md",
+                "mode": "source",
                 "source": true
               },
               "icon": "lucide-file",
-              "title": "构建过程"
+              "title": "构建过程end"
             }
           }
         ]
@@ -184,8 +184,11 @@
   },
   "active": "609a5171692aab84",
   "lastOpenFiles": [
-    "docs/index.md",
+    "docs/面试笔记/MyWeb/构建过程3.md",
+    "docs/面试笔记/MyWeb/构建过程end.md",
+    "docs/面试笔记/MyWeb/构建过程2.md",
     "docs/面试笔记/MyWeb/构建过程.md",
+    "docs/index.md",
     "docs/面试笔记/MyWeb",
     "docs/public/images/logo.jpg",
     "docs/public/images",

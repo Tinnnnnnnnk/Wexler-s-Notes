@@ -1,5 +1,5 @@
 {
-  "commitMessage": "vault backup: {{date}}",
+  "commitMessage": "✨一次新的推送于：vault backup: {{date}}",
   "autoCommitMessage": "📝 vault backup: {{date}} ✨",
   "commitMessageScript": "",
   "commitDateFormat": "YYYY-MM-DD HH:mm:ss",

@@ -1,0 +1,231 @@
+{
+  "main": {
+    "id": "11cc7aad6b4ca4b5",
+    "type": "split",
+    "children": [
+      {
+        "id": "fd175903dc208900",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "fce1d9f76644f498",
+            "type": "leaf",
+            "state": {
+              "type": "empty",
+              "state": {},
+              "icon": "lucide-file",
+              "title": "新标签页"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "31d3962d36fed7c5",
+    "type": "split",
+    "children": [
+      {
+        "id": "668fc0057c84bbb9",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "a46bc3f1d2968356",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": true,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "搜索"
+            }
+          },
+          {
+            "id": "abc2c8d29a3fd097",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "书签"
+            }
+          },
+          {
+            "id": "93671bfadabb1ea3",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "文件列表"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 200
+  },
+  "right": {
+    "id": "43fda9947fbd1f62",
+    "type": "split",
+    "children": [
+      {
+        "id": "1ce03d7e1ad46ba0",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "af4240b7a0e1d55a",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "PromptLearning/MyWeb.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "MyWeb 的反向链接列表"
+            }
+          },
+          {
+            "id": "9d8204307cba7661",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "Code/Hot100/Two Pointers/11.盛最多水的容器.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "11.盛最多水的容器 的出链列表"
+            }
+          },
+          {
+            "id": "47e77385372036d2",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "标签"
+            }
+          },
+          {
+            "id": "125624078938e5b2",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "添加笔记属性"
+            }
+          },
+          {
+            "id": "58adb75b5eb3490e",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "Code/Hot100/Two Pointers/11.盛最多水的容器.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "11.盛最多水的容器 的大纲"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:打开快速切换": false,
+      "graph:查看关系图谱": false,
+      "canvas:新建白板": false,
+      "daily-notes:打开/创建今天的日记": false,
+      "templates:插入模板": false,
+      "command-palette:打开命令面板": false,
+      "bases:新建数据库": false,
+      "obsidian-importer:Open Importer": false
+    }
+  },
+  "active": "a46bc3f1d2968356",
+  "lastOpenFiles": [
+    "Code/DS/树形DP.md",
+    "未命名.base",
+    "Code/Hot100/Binary-Tree/236-二叉树的最近公共祖先.md",
+    "面试笔记/JavaSe/JAVASE.md",
+    "Code/DS/DFS.md",
+    "Code/DS/细节部分.md",
+    "Code/DS/分治算法.md",
+    "PaiSmart/面试/各类杂项问题.md",
+    "面试笔记/JavaSe",
+    "面试笔记",
+    "Code/Hot100/Binary-Tree/437-路径总和III.md",
+    "2026-02-26.md",
+    "Code/Hot100/Sliding-Window/同类总结.md",
+    "Info/Software.md",
+    "Info/HowToUseObsidian.md",
+    "Code/Hot100/Binary-Tree/114-二叉树展开为链表.md",
+    "Code/Hot100/Sliding-Window/3-无重复字符的最长子串.md",
+    "Code/通用模板new.md",
+    "Code/Hot100/Binary-Tree",
+    "Code/通用模板.md",
+    "PaiSmart/V2.0 Everyday/day1 文件上传与合并.md",
+    "PaiSmart/面试/day2.md",
+    "public/images/logo.jpg",
+    "Code/jpg/Pasted image 20251225221616.png",
+    "Code/jpg/Pasted image 20251225223849.png",
+    "PromptLearning/day1.md",
+    "PaiSmart/StudyEveryday/v1.0 day2.md",
+    "PaiSmart/StudyEveryday/v1.0 day1 配置环境.md",
+    "PaiSmart/StudyEveryday/TRACE TABLE.md",
+    "Sky-Take-Out/00-后端开发知识大本营.md",
+    "Resume/简历V3.0.md",
+    "Sky-Take-Out/04-服务器运维与容器化部署手册.md",
+    "PaiSmart/V2.0 Everyday",
+    "PaiSmart/面试",
+    "PaiSmart/StudyEveryday",
+    "PromptLearning",
+    "Resume",
+    "Info",
+    "images/Pasted image 20260209190033.png",
+    "images/Pasted image 20260209171805.png",
+    "images/Pasted image 20260209171641.png",
+    "images/Pasted image 20260209171644.png",
+    "images/Pasted image 20260209171637.png",
+    "images/Pasted image 20260209171633.png",
+    "images/Pasted image 20260209171630.png"
+  ]
+}

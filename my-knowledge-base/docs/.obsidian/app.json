@@ -1,0 +1,11 @@
+{
+  "attachmentFolderPath": "public/images",
+  "useMarkdownLinks": true,
+  "newLinkFormat": "absolute",
+  "userIgnoreFilters": [
+    ".vitepress"
+  ],
+  "alwaysUpdateLinks": true,
+  "spellcheck": false,
+  "showLineNumber": true
+}

@@ -6,7 +6,7 @@ hero:
   text: "全自动云端服务器同步笔记"
   tagline: "Backend / Linux / Docker / Algorithm"
   image:
-    src: /public/images/logo.jpg
+    src: images/logo.jpg
     alt: Logo
   actions:
     - theme: brand

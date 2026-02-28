@@ -20,8 +20,21 @@
               "icon": "lucide-file",
               "title": "207-课程表"
             }
+          },
+          {
+            "id": "c952ef85bf617510",
+            "type": "leaf",
+            "state": {
+              "type": "release-notes",
+              "state": {
+                "currentVersion": "1.12.4"
+              },
+              "icon": "lucide-book-up",
+              "title": "版本说明 1.12.4"
+            }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -182,7 +195,7 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "609a5171692aab84",
+  "active": "c952ef85bf617510",
   "lastOpenFiles": [
     "docs/Code/DS/细节部分.md",
     "docs/Code/Hot100/Graph-Theory/207-课程表.md",

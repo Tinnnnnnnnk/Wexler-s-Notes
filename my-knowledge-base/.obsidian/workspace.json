@@ -176,8 +176,21 @@
               "icon": "lucide-list",
               "title": "大纲"
             }
+          },
+          {
+            "id": "4a3a247b2a0c512a",
+            "type": "leaf",
+            "state": {
+              "type": "file-properties",
+              "state": {
+                "file": "docs/index.md"
+              },
+              "icon": "lucide-info",
+              "title": "index的笔记属性"
+            }
           }
-        ]
+        ],
+        "currentTab": 5
       }
     ],
     "direction": "horizontal",

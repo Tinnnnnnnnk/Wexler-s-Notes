@@ -14,7 +14,7 @@ hero:
       link: /Sky-Take-Out/00-后端开发知识大本营
     - theme: alt
       text: View on GitHub
-      link: [https://github.com/你的GitHub用户名/你的仓库名](https://github.com/Tinnnnnnnnk/Wexler-s-Notes)
+      link: https://github.com/Tinnnnnnnnk/Wexler-s-Notes
 ---
 
 <style>

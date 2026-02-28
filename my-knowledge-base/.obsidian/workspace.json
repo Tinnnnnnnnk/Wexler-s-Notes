@@ -27,12 +27,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "docs/面试笔记/JavaSe/JAVASE.md",
+                "file": "docs/index.md",
                 "mode": "source",
-                "source": false
+                "source": true
               },
               "icon": "lucide-file",
-              "title": "JAVASE"
+              "title": "index"
             }
           }
         ],
@@ -199,12 +199,12 @@
   },
   "active": "c952ef85bf617510",
   "lastOpenFiles": [
+    "docs/面试笔记/JavaSe/JAVASE.md",
     "未命名.base",
     "docs/未命名.base",
     "docs/index.md",
     "docs/public/images/hero-abstract.jpg",
     "docs/public/images/logo - 副本.jpg",
-    "docs/面试笔记/JavaSe/JAVASE.md",
     "docs/PaiSmart/面试/day2.md",
     "docs/PaiSmart/面试/各类杂项问题.md",
     "docs/Code/Hot100/Backtracking/46-全排列.md",

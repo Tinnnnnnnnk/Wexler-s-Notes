@@ -1,92 +1,92 @@
-/** * 赛博极客 × 高级感微光风格 (Cyber-Premium)
- * 核心：深邃背景 + 细腻玻璃拟态 + 品牌色克制微光
- */
+/* ==========================================
+ * 顶级设计师方案：极致纯白极简风 (Vercel / Apple 混合哲学)
+ * 核心：零渐变、零发光、克制的黑白灰、重排版与间距
+ * ========================================== */
 
 :root {
-  /* 品牌色回归：柔和的电竞紫/科技蓝 */
-  --vp-c-brand-1: #8a2be2; /* 深邃紫 */
-  --vp-c-brand-2: #4169e1; /* 皇家蓝 */
-  --vp-c-brand-3: #9370db;
+  /* 🗡️ 斩杀蓝紫色！采用顶级 SaaS 网站的克制黑白灰 */
+  --vp-c-brand-1: #111111; /* 极深的黑灰色作为品牌主色 */
+  --vp-c-brand-2: #333333;
+  --vp-c-brand-3: #666666;
+  
+  /* 🔘 按钮变成高级的纯黑底白字 */
+  --vp-button-brand-bg: #111111;
+  --vp-button-brand-hover-bg: #444444;
+  --vp-button-brand-text: #ffffff;
+  
+  /* 📄 全局背景设为极其干净的纯白，卡片底色为极其微妙的灰 */
+  --vp-c-bg: #ffffff;
+  --vp-c-bg-soft: #fafafa;
+  --vp-c-border: #eaeaea;
 }
 
-/* 🌑 暗黑模式：不要纯黑，要极深极深的蓝灰色，更有质感 */
+/* 🌑 兼顾暗黑模式的优雅反转 */
 .dark {
-  --vp-c-bg: #09090b;
-  --vp-c-bg-alt: #121214;
-  --vp-c-border: rgba(255, 255, 255, 0.08);
+  --vp-c-brand-1: #ffffff; 
+  --vp-c-brand-2: #cccccc;
+  --vp-button-brand-bg: #ffffff;
+  --vp-button-brand-hover-bg: #cccccc;
+  --vp-button-brand-text: #000000;
+  --vp-c-bg: #000000;
+  --vp-c-bg-soft: #0a0a0a;
+  --vp-c-border: #222222;
 }
 
-/* 🌈 标题恢复一点点高级的渐变，打破沉闷 */
+/* 🧹 1. 物理超度“AI味”渐变大标题 */
 .VPHero .name {
-  background: -webkit-linear-gradient(120deg, #b483fe 30%, #41d1ff);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0px 2px 10px rgba(180, 131, 254, 0.2)); /* 文字微发光 */
+  background: none !important; /* 彻底去掉渐变 */
+  -webkit-text-fill-color: initial !important; /* 恢复纯色填充 */
+  color: var(--vp-c-text-1) !important; /* 亮色下是极深的黑，暗色下是白 */
+  font-weight: 800;
+  letter-spacing: -0.04em; /* 📐 顶级排版细节：大标题收紧字间距，显得极其紧凑有力 */
+  filter: none !important; /* 去掉任何多余的发光阴影 */
 }
 
-/* 🖼️ 二次元極客立繪專屬特效：懸浮呼吸 + 邊緣羽化融合 */
-.VPHero .image-src {
-  max-height: 400px !important; /* 可以稍微放大一點，更有氣勢 */
-  object-fit: contain;
-  
-  /* 🌟 核心黑魔法：讓圖片邊緣呈現橢圓形漸變透明，完美融入任何深色背景！ */
-  -webkit-mask-image: radial-gradient(ellipse at center, black 50%, transparent 80%);
-  mask-image: radial-gradient(ellipse at center, black 50%, transparent 80%);
-  
-  /* 保留溫柔的懸浮動畫 */
-  animation: float-anime 6s ease-in-out infinite;
-}
-
-@keyframes float-anime {
-  0% { transform: translateY(0px); }
-  50% { transform: translateY(-12px); }
-  100% { transform: translateY(0px); }
-}
-
-/* 隐藏 VitePress 默认的丑陋背景光晕 */
-.VPHero .image-bg {
-  display: none !important;
-}
-
-/* ==========================================
- * 专属定制：Apple Section 高级玻璃拟态卡片
- * ========================================== */
+/* 🗂️ 2. Apple-Section 卡片重塑：告别厚重投影，拥抱极致扁平 */
 .apple-section {
   text-align: center;
   padding: 60px 40px;
   margin: 40px auto;
-  border-radius: 24px;
-  
-  /* 深邃的毛玻璃质感 */
-  background: linear-gradient(145deg, rgba(30, 30, 35, 0.6), rgba(15, 15, 18, 0.8));
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-  
-  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+  border-radius: 16px; /* 稍微收敛一点圆角，显得更专业 */
+  background: var(--vp-c-bg-soft); /* 非常非常浅的灰，与纯白背景区分 */
+  border: 1px solid var(--vp-c-border);
+  box-shadow: none !important; /* 彻底移除默认的厚重阴影 */
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
-/* 卡片悬停时的微光响应 */
 .apple-section:hover {
-  transform: translateY(-5px);
-  border-color: rgba(138, 43, 226, 0.3); /* 边框亮起品牌色 */
-  box-shadow: 0 15px 50px rgba(138, 43, 226, 0.1); /* 底部漏出微弱紫光 */
+  transform: translateY(-2px); /* 极其克制的微浮动 */
+  border-color: #cccccc; /* 边框微微加深 */
+  /* 只在 hover 时给一个若有若无的弥散阴影 */
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.04) !important; 
 }
 
-/* 标签样式重塑：像代码块一样的精致感 */
+/* 🏷️ 3. 标签（Tags）的高级感：线框风 */
 .tech-tag {
-  padding: 6px 14px;
-  border-radius: 8px; /* 改为微圆角，比药丸型更 Geek */
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; /* 程序员专属字体 */
+  padding: 6px 16px;
+  border-radius: 6px; /* 抛弃圆润的药丸，采用更锐利的微圆角 */
+  background: transparent;
+  border: 1px solid var(--vp-c-border);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   font-size: 0.85rem;
-  color: #a1a1aa;
-  transition: all 0.3s ease;
+  color: var(--vp-c-text-2);
+  transition: all 0.2s ease;
 }
 
 .tech-tag:hover {
-  color: #ffffff;
-  background: rgba(255, 255, 255, 0.08);
-  border-color: var(--vp-c-brand-1);
+  color: var(--vp-c-text-1);
+  border-color: var(--vp-c-text-1); /* 悬停时边框变黑/变白，极简犀利 */
+  background: transparent;
+}
+
+/* 🖼️ 4. 图片归于宁静：为纯白背景的二次元角色预留 */
+.VPHero .image-src {
+  max-height: 400px !important;
+  object-fit: contain;
+  filter: none !important; /* 绝对不要任何发光特效！ */
+  animation: none !important; /* 专业的网页不需要上下乱浮动的巨大图片 */
+}
+
+.VPHero .image-bg {
+  display: none !important;
 }

@@ -6,7 +6,7 @@ hero:
   text: "化繁为简，重塑全栈。"
   tagline: "在这里，见证一行代码到云端部署的极客之旅。"
   image:
-    src: /images/hero-abstract.png # ⚠️ 见下方说明！
+    src: /images/hero-abstract.jpg # ⚠️ 见下方说明！
     alt: Wexler
   actions:
     - theme: brand

@@ -117,7 +117,7 @@ export default defineConfig({
     sidebar: getRootSidebarGroups(),
 
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/你的GitHub用户名' }
+      { icon: 'github', link: 'https://github.com/Tinnnnnnnnk' }
     ],
 
     footer: {
@@ -126,7 +126,7 @@ export default defineConfig({
     },
     
     editLink: {
-      pattern: 'https://github.com/你的GitHub用户名/你的仓库名/edit/main/docs/:path',
+      pattern: 'https://github.com/Tinnnnnnnnk/Wexler-s-Notes/edit/main/docs/:path',
       text: '在 GitHub 上编辑此页'
     }
   }

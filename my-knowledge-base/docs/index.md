@@ -2,72 +2,95 @@
 layout: home
 
 hero:
-  name: "Wexler's Notes"
-  text: "Code. Build. Deploy."
-  tagline: 沉淀全栈架构与 DevOps 工程化实践
+  name: "Wexler."
+  text: "化繁为简，重塑全栈。"
+  tagline: "在这里，见证一行代码到云端部署的极客之旅。"
+  image:
+    src: /images/hero-abstract.png # ⚠️ 见下方说明！
+    alt: Wexler
   actions:
     - theme: brand
-      text: 🚀 开始探索
+      text: 🚀 开启探索
       link: /Sky-Take-Out/00-后端开发知识大本营
     - theme: alt
       text: View on GitHub
       link: https://github.com/你的GitHub用户名/你的仓库名
-
-features:
-  - title: ☕ Java 全栈体系
-    details: 深入解析 Spring Boot 核心机制、微服务架构演进与企业级高并发实战沉淀。
-  - title: 🐋 DevOps 运维之道
-    details: 构建基于 Docker 与 GitHub Actions 的 CI/CD 全自动化流水线与 Linux 性能调优。
-  - title: ⚡ 算法与数据结构
-    details: LeetCode Hot100 题解，双指针、动态规划等核心算法模板抽丝剥茧。
 ---
-<div class="tech-stack">
-  <h2>🛠️ Tech Stack & Tools</h2>
-  <div class="logos">
-    <div class="logo-item">☕ Java</div>
-    <div class="logo-item">🍃 SpringBoot</div>
-    <div class="logo-item">🐳 Docker</div>
-    <div class="logo-item">🐧 Linux</div>
-    <div class="logo-item">🐬 MySQL</div>
-    <div class="logo-item">⚡ VitePress</div>
-    <div class="logo-item">🐈 GitHub</div>
-    <div class="logo-item">🚀 Nginx</div>
-  </div>
-</div>
 
 <style>
-.tech-stack {
+/* 注入一点 Apple 级的 CSS 魔法 */
+.vp-doc.container {
+  max-width: 900px !important; /* 收窄内容区，增加两侧呼吸感 */
   margin-top: 60px;
+}
+
+.apple-section {
   text-align: center;
-  padding: 0 20px;
+  padding: 80px 20px;
+  margin: 40px 0;
+  border-radius: 24px;
+  background: var(--vp-c-bg-soft);
+  transition: transform 0.4s ease;
 }
-.tech-stack h2 {
-  font-weight: 600;
-  margin-bottom: 30px;
-  border: none; /* 去掉默认下划线 */
+
+.apple-section:hover {
+  transform: scale(1.02);
 }
-.logos {
+
+.apple-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  margin-bottom: 16px;
+  color: var(--vp-c-text-1);
+}
+
+.apple-desc {
+  font-size: 1.25rem;
+  color: var(--vp-c-text-2);
+  max-width: 600px;
+  margin: 0 auto 30px;
+  line-height: 1.6;
+}
+
+.tech-tags {
   display: flex;
-  flex-wrap: wrap;
   justify-content: center;
-  gap: 20px;
-  max-width: 800px;
-  margin: 0 auto;
+  gap: 12px;
+  flex-wrap: wrap;
 }
-.logo-item {
+
+.tech-tag {
+  padding: 8px 16px;
+  border-radius: 40px; /* Apple 经典的药丸形状 */
   background: var(--vp-c-bg-alt);
-  padding: 12px 24px;
-  border-radius: 8px;
-  border: 1px solid var(--vp-c-divider);
-  font-weight: 600;
-  transition: all 0.3s;
-  cursor: default;
-}
-/* 鼠标放上去发光 */
-.logo-item:hover {
-  transform: translateY(-5px);
-  border-color: var(--vp-c-brand-1);
-  box-shadow: 0 0 15px rgba(100, 108, 255, 0.2);
-  color: var(--vp-c-brand-1);
+  border: 1px solid var(--vp-c-border);
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--vp-c-text-1);
 }
 </style>
+
+<div class="vp-doc container">
+  
+  <div class="apple-section">
+    <div class="apple-title">硬核业务，丝滑架构。</div>
+    <div class="apple-desc">从底层的数据结构与算法，到基于 Spring Boot 的企业级微服务架构。拒绝纸上谈兵，沉淀每一行真实的业务代码。</div>
+    <div class="tech-tags">
+      <span class="tech-tag">Java / SpringBoot</span>
+      <span class="tech-tag">MySQL / Redis</span>
+      <span class="tech-tag">LeetCode Hot100</span>
+    </div>
+  </div>
+
+  <div class="apple-section">
+    <div class="apple-title">全自动化，释放创造力。</div>
+    <div class="apple-desc">构建基于 Docker 与 GitHub Actions 的 CI/CD 自动化流水线。把繁琐的运维交给机器，把时间留给灵感。</div>
+    <div class="tech-tags">
+      <span class="tech-tag">Docker Container</span>
+      <span class="tech-tag">CI/CD Pipeline</span>
+      <span class="tech-tag">Linux / Nginx</span>
+    </div>
+  </div>
+
+</div>

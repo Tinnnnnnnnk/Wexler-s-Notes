@@ -25,12 +25,14 @@
             "id": "c952ef85bf617510",
             "type": "leaf",
             "state": {
-              "type": "release-notes",
+              "type": "markdown",
               "state": {
-                "currentVersion": "1.12.4"
+                "file": "docs/Code/Hot100/Backtracking/46-全排列.md",
+                "mode": "source",
+                "source": false
               },
-              "icon": "lucide-book-up",
-              "title": "版本说明 1.12.4"
+              "icon": "lucide-file",
+              "title": "46-全排列"
             }
           }
         ],
@@ -195,8 +197,11 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "c952ef85bf617510",
+  "active": "c3bd19e0f5bc1138",
   "lastOpenFiles": [
+    "docs/Code/Hot100/Prefix-Sum",
+    "docs/Code/Hot100/Backtracking/46-全排列.md",
+    "docs/Code/Hot100/Backtracking",
     "docs/Code/DS/细节部分.md",
     "docs/Code/Hot100/Graph-Theory/207-课程表.md",
     "docs/Code/Hot100/Graph-Theory",
@@ -232,8 +237,6 @@
     "images/Pasted image 20260209163445.png",
     "docs/Code/Hot100/Two-Pointers/15-三数之和.md",
     "docs/Code/Hot100/Sliding-Window/3-无重复字符的最长子串.md",
-    "docs/Code/Hot100/Sliding-Window/438-找到字符串中所有字母异位词.md",
-    "docs/Code/Hot100/Binary-Tree/437-路径总和III.md",
-    "docs/Code/Hot100/Binary-Tree/114-二叉树展开为链表.md"
+    "docs/Code/Hot100/Sliding-Window/438-找到字符串中所有字母异位词.md"
   ]
 }

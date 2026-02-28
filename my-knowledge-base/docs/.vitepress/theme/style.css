@@ -1,148 +1,97 @@
-/** * 极客风格配色方案 
- * 主色调：蓝紫色渐变，体现科技感
+/** * 极致简约风 (Vercel / Apple 风格)
+ * 核心理念：去繁就简，高对比度，弱化无意义动画
  */
+
 :root {
-  --vp-c-brand-1: #646cff; /* 亮紫色 */
-  --vp-c-brand-2: #42b883; /* 青色 (保留一点 Vue 的感觉作为点缀) */
-  --vp-c-brand-3: #747bff;
+  /* 品牌主色调改为沉稳的深空灰/黑白体系 */
+  --vp-c-brand-1: #666666; 
+  --vp-c-brand-2: #888888;
+  --vp-c-brand-3: #aaaaaa;
+
+  /* 首页 Hero 标题回归纯粹，去掉花哨渐变 */
+  --vp-home-hero-name-color: var(--vp-c-text-1);
+  --vp-home-hero-name-background: none;
   
-  /* 首页 Hero 标题的渐变色 */
-  --vp-home-hero-name-color: transparent;
-  --vp-home-hero-name-background: -webkit-linear-gradient(120deg, #bd34fe 30%, #41d1ff);
-  
-  /* 按钮渐变 */
-  --vp-button-brand-bg: linear-gradient(to right, #bd34fe, #41d1ff);
-  --vp-button-brand-hover-bg: linear-gradient(to right, #41d1ff, #bd34fe);
+  /* 按钮的极简黑白反差 */
+  --vp-button-brand-bg: #111111;
+  --vp-button-brand-hover-bg: #333333;
+  --vp-button-brand-text: #ffffff;
 }
 
-/* 🌑 暗黑模式下的微调 (让黑色背景不那么死板) */
+/* 🌑 极致的暗黑模式：纯黑背景，体现深邃感 */
 .dark {
-  --vp-c-bg: #0f0f11;
-  --vp-c-bg-alt: #161618;
+  --vp-c-bg: #000000;
+  --vp-c-bg-alt: #0a0a0a;
+  --vp-c-border: #222222; /* 非常细腻的微弱边框 */
+  
+  /* 按钮反转：暗黑模式下使用白色按钮，视觉冲击力极强 */
+  --vp-button-brand-bg: #ffffff;
+  --vp-button-brand-hover-bg: #e5e5e5;
+  --vp-button-brand-text: #000000;
 }
 
-/* 🕸️ 背景网格特效 - 营造工程图纸的感觉 */
+/* 🧹 1. 清除“AI味”背景：干掉网格，回归纯粹的底色 */
 html {
-    background-image: 
-        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px), 
-        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-    background-size: 30px 30px; /* 网格大小 */
-    background-position: center top;
+  background-image: none !important;
 }
 
-/* 首页特性卡片的悬停特效 - 浮起并发光 */
-.VPFeature {
-    transition: all 0.3s ease;
-    border: 1px solid transparent;
-}
-.VPFeature:hover {
-    transform: translateY(-5px);
-    border-color: var(--vp-c-brand-1);
-    box-shadow: 0 4px 20px rgba(100, 108, 255, 0.15); 
-}
-
-/* 代码块样式优化 */
-.vp-doc pre {
-    border-radius: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-}
-/* 给 Logo 图片加个呼吸灯光环 */
+/* 🧹 2. 清除花哨动画：彻底去掉图片的呼吸灯、紫光阴影和背景光晕 */
 .VPHero .image-src {
-  filter: drop-shadow(0 0 20px rgba(100, 108, 255, 0.5));
-  animation: breathe 4s infinite ease-in-out;
+  filter: none !important;
+  animation: none !important;
+  max-height: 280px !important; /* 适当缩小图片，增加页面的“呼吸感（留白）” */
+  opacity: 0.85; /* 稍微降低一点透明度，让图片融入深色背景 */
+  transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
-@keyframes breathe {
-  0% { filter: drop-shadow(0 0 15px rgba(100, 108, 255, 0.4)); transform: scale(1); }
-  50% { filter: drop-shadow(0 0 30px rgba(189, 52, 254, 0.6)); transform: scale(1.02); }
-  100% { filter: drop-shadow(0 0 15px rgba(100, 108, 255, 0.4)); transform: scale(1); }
+.VPHero .image-src:hover {
+  opacity: 1;
+  transform: scale(1.02); /* 悬停时只有极克制的微缩放 */
 }
 
-/* 首页大标题增加打字机光标效果 (伪元素) */
-.VPHero .name span {
-    position: relative;
-}
-.VPHero .name span::after {
-    content: '';
-    position: absolute;
-    right: -10px;
-    top: 5px;
-    height: 90%;
-    width: 4px;
-    background-color: var(--vp-c-brand-1);
-    animation: blink 1s infinite;
-}
-@keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0; }
-}
-/* 特性卡片 - 玻璃拟态 */
-.VPFeature {
-  background: rgba(255, 255, 255, 0.05) !important; /* 半透明背景 */
-  backdrop-filter: blur(10px); /* 磨砂效果 */
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  border-radius: 16px !important;
-}
-
-/* 里面的图标变大一点 */
-.VPFeature .icon {
-  font-size: 2rem;
-  background-color: transparent !important; /* 去掉默认的灰色方块背景 */
-}
-
-/* 标题加粗 */
-.VPFeature h2 {
-  font-weight: 700 !important;
-  background: -webkit-linear-gradient(120deg, #fff, #888);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent; /* 文字渐变 */
-}
-
-/* 只有在暗色模式下，文字渐变才生效，亮色模式保持黑色 */
-html:not(.dark) .VPFeature h2 {
-  background: none;
-  -webkit-text-fill-color: initial;
-  color: #333;
-}
-/* --- 修复布局重叠问题 --- */
-
-/* 1. 把特性列表(那三个框)整体往下推 */
-.VPFeatures {
-  /* 默认为 0，我们改成 64px 或更大 */
-  margin-top: 80px !important; 
-  
-  /* 保持层级，防止被背景遮挡 */
-  position: relative; 
-  z-index: 10;
-}
-
-/* 如果觉得手机端推得太远，可以单独设置手机端 (可选) */
-@media (max-width: 768px) {
-  .VPFeatures {
-    margin-top: 40px !important;
-  }
-}
-/* 修改 .VPHero .image-src 这一段 */
-.VPHero .image-src {
-  /* ... 这里是你之前的呼吸灯动画和限制高度代码 ... */
-  max-height: 320px !important; 
-  filter: drop-shadow(0 0 20px rgba(100, 108, 255, 0.5));
-  animation: breathe 4s infinite ease-in-out;
-  
-  /* 👇 新增这两行！把 Logo 举高！ */
-  position: relative; 
-  z-index: 20; /* 只要比 VPFeatures 的 10 大就行 */
-}
-/* 确保 Logo 的容器不会切掉发光效果 */
+/* 隐藏图片底部的光晕特效 */
 .VPHero .image-bg {
-  overflow: visible !important;
-  z-index: 19; /* 也是为了保证在上面 */
+  display: none !important; 
 }
 
-/* 再次确认 Features 在下面 */
+/* 🧹 3. 清除打字机光标：极简不需要多余的点缀 */
+.VPHero .name span::after {
+  display: none !important;
+}
+
+/* 🗂️ 4. 特性卡片重塑：Apple 式冷淡风 */
+.VPFeature {
+  background: var(--vp-c-bg-alt) !important;
+  backdrop-filter: none !important; /* 去掉俗气的毛玻璃 */
+  border: 1px solid var(--vp-c-border) !important;
+  border-radius: 12px !important; /* 稍微收敛圆角，显得更专业 */
+  transition: border-color 0.2s ease, transform 0.2s ease;
+  box-shadow: none !important; /* 彻底去掉卡片阴影 */
+}
+
+.VPFeature:hover {
+  transform: translateY(-2px) !important; /* 非常克制的上浮 */
+  border-color: #555555 !important; /* 悬停时边框稍微变亮，低调的高级感 */
+}
+
+/* 卡片图标：去掉背景，保持纯净 */
+.VPFeature .icon {
+  font-size: 1.8rem;
+  background-color: transparent !important;
+  color: var(--vp-c-text-1);
+}
+
+/* 卡片标题：去掉文字渐变，使用纯色高对比度 */
+.VPFeature h2 {
+  font-weight: 600 !important;
+  background: none !important;
+  -webkit-text-fill-color: initial !important;
+  color: var(--vp-c-text-1) !important;
+  letter-spacing: -0.02em; /* 稍微收紧字距，显得排版更精致 */
+}
+
+/* 🧹 5. 还原布局结构：去掉之前为了掩盖问题写的 hack 代码 */
 .VPFeatures {
-  /* 之前让你加的代码保持不变 */
-  margin-top: 80px !important; 
-  position: relative;
-  z-index: 5; /* 我们可以稍微把这个改小一点，比如改到 5，让 Logo 的 20 稳稳压住它 */
+  margin-top: 0 !important;
+  z-index: auto !important;
 }

@@ -3,29 +3,23 @@ layout: home
 
 hero:
   name: "Wexler's Notes"
-  text: "全自动云端服务器同步笔记"
-  tagline: "Backend / Linux / Docker / Algorithm"
-  image:
-    src: images/logo.jpg
-    alt: Logo
+  text: "Code. Build. Deploy."
+  tagline: 沉淀全栈架构与 DevOps 工程化实践
   actions:
     - theme: brand
-      text: "🚀 开始探索"
+      text: 🚀 开始探索
       link: /Sky-Take-Out/00-后端开发知识大本营
     - theme: alt
-      text: "⭐ GitHub 源码"
-      link: https://github.com/
+      text: View on GitHub
+      link: https://github.com/你的GitHub用户名/你的仓库名
 
 features:
-  - icon: ☕
-    title: "Java 全栈体系"
-    details: "从 SSM 到 SpringBoot，再到微服务架构的深度解析与实战沉淀。"
-  - icon: 🐳
-    title: "DevOps 运维之道"
-    details: "Linux 内核调优、Docker 容器化部署、Nginx 反向代理配置手册。"
-  - icon: ⚡
-    title: "算法与数据结构"
-    details: "LeetCode Hot100 题解，滑动窗口、双指针等核心算法模板总结。"
+  - title: ☕ Java 全栈体系
+    details: 深入解析 Spring Boot 核心机制、微服务架构演进与企业级高并发实战沉淀。
+  - title: 🐋 DevOps 运维之道
+    details: 构建基于 Docker 与 GitHub Actions 的 CI/CD 全自动化流水线与 Linux 性能调优。
+  - title: ⚡ 算法与数据结构
+    details: LeetCode Hot100 题解，双指针、动态规划等核心算法模板抽丝剥茧。
 ---
 <div class="tech-stack">
   <h2>🛠️ Tech Stack & Tools</h2>

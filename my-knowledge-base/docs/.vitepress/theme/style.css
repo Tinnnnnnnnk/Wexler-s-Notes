@@ -24,12 +24,16 @@
   filter: drop-shadow(0px 2px 10px rgba(180, 131, 254, 0.2)); /* 文字微发光 */
 }
 
-/* 🖼️ 二次元透明立绘专属特效：悬浮呼吸 + 背后微光 */
+/* 🖼️ 二次元極客立繪專屬特效：懸浮呼吸 + 邊緣羽化融合 */
 .VPHero .image-src {
-  max-height: 320px !important;
+  max-height: 400px !important; /* 可以稍微放大一點，更有氣勢 */
   object-fit: contain;
-  /* 关键：给透明图片加上符合人物轮廓的柔和发光，而不是方形发光 */
-  filter: drop-shadow(0 10px 25px rgba(138, 43, 226, 0.3));
+  
+  /* 🌟 核心黑魔法：讓圖片邊緣呈現橢圓形漸變透明，完美融入任何深色背景！ */
+  -webkit-mask-image: radial-gradient(ellipse at center, black 50%, transparent 80%);
+  mask-image: radial-gradient(ellipse at center, black 50%, transparent 80%);
+  
+  /* 保留溫柔的懸浮動畫 */
   animation: float-anime 6s ease-in-out infinite;
 }
 

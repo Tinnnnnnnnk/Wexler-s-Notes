@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "docs/面试笔记/MyWeb/构建过程end.md",
-                "mode": "source",
+                "file": "docs/Code/DS/BFS.md",
+                "mode": "preview",
                 "source": true
               },
               "icon": "lucide-file",
-              "title": "构建过程end"
+              "title": "BFS"
             }
           }
         ]
@@ -184,8 +184,11 @@
   },
   "active": "609a5171692aab84",
   "lastOpenFiles": [
-    "docs/面试笔记/MyWeb/构建过程3.md",
+    "docs/Code/通用模板new.md",
+    "docs/Code/DS/BFS.md",
+    "docs/面试笔记/JavaSe/JAVASE.md",
     "docs/面试笔记/MyWeb/构建过程end.md",
+    "docs/面试笔记/MyWeb/构建过程3.md",
     "docs/面试笔记/MyWeb/构建过程2.md",
     "docs/面试笔记/MyWeb/构建过程.md",
     "docs/index.md",
@@ -193,7 +196,6 @@
     "docs/public/images/logo.jpg",
     "docs/public/images",
     "docs/public",
-    "docs/面试笔记/JavaSe/JAVASE.md",
     "docs/test1.md",
     "docs/Code/Hot100/Two-Pointers/11-盛最多水的容器.md",
     "images/Pasted image 20260209190033.png",

@@ -1,97 +1,88 @@
-/** * 极致简约风 (Vercel / Apple 风格)
- * 核心理念：去繁就简，高对比度，弱化无意义动画
+/** * 赛博极客 × 高级感微光风格 (Cyber-Premium)
+ * 核心：深邃背景 + 细腻玻璃拟态 + 品牌色克制微光
  */
 
 :root {
-  /* 品牌主色调改为沉稳的深空灰/黑白体系 */
-  --vp-c-brand-1: #666666; 
-  --vp-c-brand-2: #888888;
-  --vp-c-brand-3: #aaaaaa;
-
-  /* 首页 Hero 标题回归纯粹，去掉花哨渐变 */
-  --vp-home-hero-name-color: var(--vp-c-text-1);
-  --vp-home-hero-name-background: none;
-  
-  /* 按钮的极简黑白反差 */
-  --vp-button-brand-bg: #111111;
-  --vp-button-brand-hover-bg: #333333;
-  --vp-button-brand-text: #ffffff;
+  /* 品牌色回归：柔和的电竞紫/科技蓝 */
+  --vp-c-brand-1: #8a2be2; /* 深邃紫 */
+  --vp-c-brand-2: #4169e1; /* 皇家蓝 */
+  --vp-c-brand-3: #9370db;
 }
 
-/* 🌑 极致的暗黑模式：纯黑背景，体现深邃感 */
+/* 🌑 暗黑模式：不要纯黑，要极深极深的蓝灰色，更有质感 */
 .dark {
-  --vp-c-bg: #000000;
-  --vp-c-bg-alt: #0a0a0a;
-  --vp-c-border: #222222; /* 非常细腻的微弱边框 */
-  
-  /* 按钮反转：暗黑模式下使用白色按钮，视觉冲击力极强 */
-  --vp-button-brand-bg: #ffffff;
-  --vp-button-brand-hover-bg: #e5e5e5;
-  --vp-button-brand-text: #000000;
+  --vp-c-bg: #09090b;
+  --vp-c-bg-alt: #121214;
+  --vp-c-border: rgba(255, 255, 255, 0.08);
 }
 
-/* 🧹 1. 清除“AI味”背景：干掉网格，回归纯粹的底色 */
-html {
-  background-image: none !important;
+/* 🌈 标题恢复一点点高级的渐变，打破沉闷 */
+.VPHero .name {
+  background: -webkit-linear-gradient(120deg, #b483fe 30%, #41d1ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0px 2px 10px rgba(180, 131, 254, 0.2)); /* 文字微发光 */
 }
 
-/* 🧹 2. 清除花哨动画：彻底去掉图片的呼吸灯、紫光阴影和背景光晕 */
+/* 🖼️ 二次元透明立绘专属特效：悬浮呼吸 + 背后微光 */
 .VPHero .image-src {
-  filter: none !important;
-  animation: none !important;
-  max-height: 280px !important; /* 适当缩小图片，增加页面的“呼吸感（留白）” */
-  opacity: 0.85; /* 稍微降低一点透明度，让图片融入深色背景 */
-  transition: opacity 0.3s ease, transform 0.3s ease;
+  max-height: 320px !important;
+  object-fit: contain;
+  /* 关键：给透明图片加上符合人物轮廓的柔和发光，而不是方形发光 */
+  filter: drop-shadow(0 10px 25px rgba(138, 43, 226, 0.3));
+  animation: float-anime 6s ease-in-out infinite;
 }
 
-.VPHero .image-src:hover {
-  opacity: 1;
-  transform: scale(1.02); /* 悬停时只有极克制的微缩放 */
+@keyframes float-anime {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-12px); }
+  100% { transform: translateY(0px); }
 }
 
-/* 隐藏图片底部的光晕特效 */
+/* 隐藏 VitePress 默认的丑陋背景光晕 */
 .VPHero .image-bg {
-  display: none !important; 
-}
-
-/* 🧹 3. 清除打字机光标：极简不需要多余的点缀 */
-.VPHero .name span::after {
   display: none !important;
 }
 
-/* 🗂️ 4. 特性卡片重塑：Apple 式冷淡风 */
-.VPFeature {
-  background: var(--vp-c-bg-alt) !important;
-  backdrop-filter: none !important; /* 去掉俗气的毛玻璃 */
-  border: 1px solid var(--vp-c-border) !important;
-  border-radius: 12px !important; /* 稍微收敛圆角，显得更专业 */
-  transition: border-color 0.2s ease, transform 0.2s ease;
-  box-shadow: none !important; /* 彻底去掉卡片阴影 */
+/* ==========================================
+ * 专属定制：Apple Section 高级玻璃拟态卡片
+ * ========================================== */
+.apple-section {
+  text-align: center;
+  padding: 60px 40px;
+  margin: 40px auto;
+  border-radius: 24px;
+  
+  /* 深邃的毛玻璃质感 */
+  background: linear-gradient(145deg, rgba(30, 30, 35, 0.6), rgba(15, 15, 18, 0.8));
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  
+  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
-.VPFeature:hover {
-  transform: translateY(-2px) !important; /* 非常克制的上浮 */
-  border-color: #555555 !important; /* 悬停时边框稍微变亮，低调的高级感 */
+/* 卡片悬停时的微光响应 */
+.apple-section:hover {
+  transform: translateY(-5px);
+  border-color: rgba(138, 43, 226, 0.3); /* 边框亮起品牌色 */
+  box-shadow: 0 15px 50px rgba(138, 43, 226, 0.1); /* 底部漏出微弱紫光 */
 }
 
-/* 卡片图标：去掉背景，保持纯净 */
-.VPFeature .icon {
-  font-size: 1.8rem;
-  background-color: transparent !important;
-  color: var(--vp-c-text-1);
+/* 标签样式重塑：像代码块一样的精致感 */
+.tech-tag {
+  padding: 6px 14px;
+  border-radius: 8px; /* 改为微圆角，比药丸型更 Geek */
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; /* 程序员专属字体 */
+  font-size: 0.85rem;
+  color: #a1a1aa;
+  transition: all 0.3s ease;
 }
 
-/* 卡片标题：去掉文字渐变，使用纯色高对比度 */
-.VPFeature h2 {
-  font-weight: 600 !important;
-  background: none !important;
-  -webkit-text-fill-color: initial !important;
-  color: var(--vp-c-text-1) !important;
-  letter-spacing: -0.02em; /* 稍微收紧字距，显得排版更精致 */
-}
-
-/* 🧹 5. 还原布局结构：去掉之前为了掩盖问题写的 hack 代码 */
-.VPFeatures {
-  margin-top: 0 !important;
-  z-index: auto !important;
+.tech-tag:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--vp-c-brand-1);
 }

@@ -27,12 +27,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "docs/Code/Hot100/Backtracking/46-全排列.md",
+                "file": "docs/index.md",
                 "mode": "source",
-                "source": false
+                "source": true
               },
               "icon": "lucide-file",
-              "title": "46-全排列"
+              "title": "index"
             }
           }
         ],
@@ -197,17 +197,19 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "c3bd19e0f5bc1138",
+  "active": "c952ef85bf617510",
   "lastOpenFiles": [
-    "docs/Code/Hot100/Prefix-Sum",
+    "docs/面试笔记/JavaSe/JAVASE.md",
+    "docs/PaiSmart/面试/day2.md",
+    "docs/PaiSmart/面试/各类杂项问题.md",
     "docs/Code/Hot100/Backtracking/46-全排列.md",
+    "docs/Code/Hot100/Prefix-Sum",
     "docs/Code/Hot100/Backtracking",
     "docs/Code/DS/细节部分.md",
     "docs/Code/Hot100/Graph-Theory/207-课程表.md",
     "docs/Code/Hot100/Graph-Theory",
     "docs/Code/DS/BFS.md",
     "docs/Code/通用模板new.md",
-    "docs/面试笔记/JavaSe/JAVASE.md",
     "docs/面试笔记/MyWeb/构建过程end.md",
     "docs/面试笔记/MyWeb/构建过程3.md",
     "docs/面试笔记/MyWeb/构建过程2.md",
@@ -236,7 +238,6 @@
     "images/Pasted image 20260209163518.png",
     "images/Pasted image 20260209163445.png",
     "docs/Code/Hot100/Two-Pointers/15-三数之和.md",
-    "docs/Code/Hot100/Sliding-Window/3-无重复字符的最长子串.md",
-    "docs/Code/Hot100/Sliding-Window/438-找到字符串中所有字母异位词.md"
+    "docs/Code/Hot100/Sliding-Window/3-无重复字符的最长子串.md"
   ]
 }

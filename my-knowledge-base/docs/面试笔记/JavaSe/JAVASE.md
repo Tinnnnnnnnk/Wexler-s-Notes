@@ -30,3 +30,23 @@
 - 接口 (interface)
 - 类 (class)
 - 数组
+
+### 自动装箱/拆箱
+
+- 装箱和拆箱是数据在基本数据类型和其包装类之间的转换的过程
+- 由于自动装箱会严重影响性能，因此在我们编程时，需要注意到这一点，正确地声明变量类型，避免因为自动装箱引起的性能问题。
+$$
+\begin{array}{ccc}
+\text{基本数据类型} & & \text{引用数据类型} \\
+\hline
+\text{byte} & \longleftrightarrow & \text{Byte} \\
+\text{char} & \longleftrightarrow & \text{Character} \\
+\text{short} & \longleftrightarrow & \text{Short} \\
+\text{long} & \longleftrightarrow & \text{Long} \\
+\text{int} & \longleftrightarrow & \text{Integer} \\
+\text{float} & \longleftrightarrow & \text{Float} \\
+\text{double} & \longleftrightarrow & \text{Double} \\
+\text{boolean} & \longleftrightarrow & \text{Boolean} \\
+\end{array}
+$$
+

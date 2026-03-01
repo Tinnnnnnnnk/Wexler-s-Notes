@@ -27,12 +27,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "docs/index.md",
+                "file": "docs/Code/DS/StringBuilder.md",
                 "mode": "source",
-                "source": true
+                "source": false
               },
               "icon": "lucide-file",
-              "title": "index"
+              "title": "StringBuilder"
             }
           }
         ],
@@ -212,10 +212,11 @@
   },
   "active": "c952ef85bf617510",
   "lastOpenFiles": [
+    "docs/index.md",
+    "docs/Code/DS/StringBuilder.md",
     "docs/面试笔记/JavaSe/JAVASE.md",
     "未命名.base",
     "docs/未命名.base",
-    "docs/index.md",
     "docs/public/images/hero-abstract.jpg",
     "docs/public/images/logo - 副本.jpg",
     "docs/PaiSmart/面试/day2.md",

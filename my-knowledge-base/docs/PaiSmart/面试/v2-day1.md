@@ -1,7 +1,7 @@
 ## 你在这个项目中是如何实现大文件分片上传与可靠合并的？
-我独立设计并实现了大文件的分片上传与存储链路。整个过程我把它分为两个核心阶段：**极速分片入库**与**安全物理合并**。
-**第一阶段是分片上传。** 当文件分片请求到达 Controller 层时，为了压榨性能，我只在 `chunkIndex == 0` 时校验文件类型，失败直接返回 400 。 进入 Service 层后，核心痛点是断点续传的极速校验。我使用了 Redis 的 Bitmap 结构，以 `upload:{userId}:{fileMd5}` 为 key 来标记分片状态 。为了防止缓存不一致导致的资损或脏数据，我设计了**『Redis + MySQL + MinIO』的三位一体兜底验证**：即使 Redis 标记为已上传，如果查不到 MySQL 的 `chunk_info` 记录，系统也会去 MinIO 真实探活 。没问题后，通过 `putObject` 写入临时目录，并先更新 Redis 再写 MySQL 。同时，查询进度时通过一次性拉取 Bitmap bytes 解析，杜绝了循环查 Redis 的网络 I/O 消耗 。
-**第二阶段是分片合并。** 前端发起 Merge 请求后，Controller 首先校验越权（不是本人触发则返回 403）。接着进入最严格的完整性校验：系统坚决不信任前端传递的 `totalChunks`，而是根据库里的 `totalSize` 结合写死的 5MB 块大小，通过 `ceil(totalSize / 5MB)` 重新计算预期分片数 。 校验无误后，调用 MinIO 的 `composeObject` 完成物理合并，并清理 Redis 标记和 MinIO 里的临时分片 。 最后，系统会生成一个 1 小时有效期的 MinIO `presignedUrl`，封装进文件处理任务中，通过事务投递给 Kafka 。这彻底解耦了高并发的上传链路与后台耗时的文档向量化解析流程。”
+- 我独立设计并实现了大文件的分片上传与存储链路。整个过程我把它分为两个核心阶段：**极速分片入库**与**安全物理合并**。
+- **第一阶段是分片上传。** 当文件分片请求到达 Controller 层时，为了压榨性能，我只在 `chunkIndex == 0` 时校验文件类型，失败直接返回 400 。 进入 Service 层后，核心痛点是断点续传的极速校验。我使用了 Redis 的 Bitmap 结构，以 `upload:{userId}:{fileMd5}` 为 key 来标记分片状态 。为了防止缓存不一致导致的资损或脏数据，我设计了**『Redis + MySQL + MinIO』的三位一体兜底验证**：即使 Redis 标记为已上传，如果查不到 MySQL 的 `chunk_info` 记录，系统也会去 MinIO 真实探活 。没问题后，通过 `putObject` 写入临时目录，并先更新 Redis 再写 MySQL 。同时，查询进度时通过一次性拉取 Bitmap bytes 解析，杜绝了循环查 Redis 的网络 I/O 消耗 。
+- **第二阶段是分片合并。** 前端发起 Merge 请求后，Controller 首先校验越权（不是本人触发则返回 403）。接着进入最严格的完整性校验：系统坚决不信任前端传递的 `totalChunks`，而是根据库里的 `totalSize` 结合写死的 5MB 块大小，通过 `ceil(totalSize / 5MB)` 重新计算预期分片数 。 校验无误后，调用 MinIO 的 `composeObject` 完成物理合并，并清理 Redis 标记和 MinIO 里的临时分片 。 最后，系统会生成一个 1 小时有效期的 MinIO `presignedUrl`，封装进文件处理任务中，通过事务投递给 Kafka 。这彻底解耦了高并发的上传链路与后台耗时的文档向量化解析流程。”
 
 --- 
 #### 🛡️追问：“你提到发给 Kafka 的包含一个 1 小时过期的 URL，这在生产环境有没有风险？”

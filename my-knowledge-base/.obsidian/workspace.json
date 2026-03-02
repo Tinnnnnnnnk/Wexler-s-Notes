@@ -29,7 +29,7 @@
               "state": {
                 "file": "docs/PaiSmart/面试/v2-day2.md",
                 "mode": "source",
-                "source": false
+                "source": true
               },
               "icon": "lucide-file",
               "title": "v2-day2"

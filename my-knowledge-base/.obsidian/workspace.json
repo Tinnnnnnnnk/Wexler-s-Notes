@@ -27,12 +27,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "docs/PaiSmart/面试/v2-day2.md",
+                "file": "docs/PaiSmart/面试/v2-day2.1.md",
                 "mode": "source",
                 "source": true
               },
               "icon": "lucide-file",
-              "title": "v2-day2"
+              "title": "v2-day2.1"
             }
           }
         ],
@@ -109,7 +109,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "docs/PaiSmart/面试/v2-day2.md",
+                "file": "docs/PaiSmart/面试/v2-day2.1.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -119,7 +119,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "v2-day2 的反向链接列表"
+              "title": "v2-day2.1 的反向链接列表"
             }
           },
           {
@@ -210,10 +210,11 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "c3bd19e0f5bc1138",
+  "active": "c952ef85bf617510",
   "lastOpenFiles": [
-    "docs/Info/Software.md",
     "docs/PaiSmart/面试/v2-day2.md",
+    "docs/PaiSmart/面试/v2-day2.1.md",
+    "docs/Info/Software.md",
     "docs/PaiSmart/面试/v2-day1.md",
     "docs/Code/Hot100/Backtracking/131-分割回文串.md",
     "docs/PaiSmart/面试/day2.md",
@@ -251,7 +252,6 @@
     "docs/Resume/简历V3.0.md",
     "docs/Resume/2.14.2.md",
     "docs/Resume/前7天目标.md",
-    "docs/Resume/2.13.1.md",
     "images/Pasted image 20260209164305.png",
     "images/Pasted image 20260209163518.png",
     "images/Pasted image 20260209163445.png"

@@ -8,6 +8,20 @@
         "type": "tabs",
         "children": [
           {
+            "id": "c952ef85bf617510",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "docs/Code/DS/Deque.md",
+                "mode": "source",
+                "source": true
+              },
+              "icon": "lucide-file",
+              "title": "Deque"
+            }
+          },
+          {
             "id": "609a5171692aab84",
             "type": "leaf",
             "state": {
@@ -20,23 +34,8 @@
               "icon": "lucide-file",
               "title": "207-课程表"
             }
-          },
-          {
-            "id": "c952ef85bf617510",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "docs/PaiSmart/面试/v2-day2.1.md",
-                "mode": "source",
-                "source": true
-              },
-              "icon": "lucide-file",
-              "title": "v2-day2.1"
-            }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "vertical"
@@ -212,8 +211,10 @@
   },
   "active": "c952ef85bf617510",
   "lastOpenFiles": [
-    "docs/PaiSmart/面试/v2-day2.md",
+    "docs/Code/Hot100/Graph-Theory/207-课程表.md",
+    "docs/Code/DS/Deque.md",
     "docs/PaiSmart/面试/v2-day2.1.md",
+    "docs/PaiSmart/面试/v2-day2.md",
     "docs/Info/Software.md",
     "docs/PaiSmart/面试/v2-day1.md",
     "docs/Code/Hot100/Backtracking/131-分割回文串.md",
@@ -230,7 +231,6 @@
     "docs/Code/Hot100/Prefix-Sum",
     "docs/Code/Hot100/Backtracking",
     "docs/Code/DS/细节部分.md",
-    "docs/Code/Hot100/Graph-Theory/207-课程表.md",
     "docs/Code/Hot100/Graph-Theory",
     "docs/Code/DS/BFS.md",
     "docs/Code/通用模板new.md",
@@ -251,7 +251,6 @@
     "public/images/logo.jpg",
     "docs/Resume/简历V3.0.md",
     "docs/Resume/2.14.2.md",
-    "docs/Resume/前7天目标.md",
     "images/Pasted image 20260209164305.png",
     "images/Pasted image 20260209163518.png",
     "images/Pasted image 20260209163445.png"

@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "docs/Code/DS/Deque.md",
+                "file": "docs/Code/Hot100/Stack/394-字符串解码.md",
                 "mode": "source",
                 "source": true
               },
               "icon": "lucide-file",
-              "title": "Deque"
+              "title": "394-字符串解码"
             }
           },
           {
@@ -211,8 +211,11 @@
   },
   "active": "c952ef85bf617510",
   "lastOpenFiles": [
-    "docs/Code/Hot100/Graph-Theory/207-课程表.md",
+    "docs/Code/通用模板new.md",
+    "docs/Code/Hot100/Stack/394-字符串解码.md",
+    "docs/Code/Hot100/Stack",
     "docs/Code/DS/Deque.md",
+    "docs/Code/Hot100/Graph-Theory/207-课程表.md",
     "docs/PaiSmart/面试/v2-day2.1.md",
     "docs/PaiSmart/面试/v2-day2.md",
     "docs/Info/Software.md",
@@ -233,7 +236,6 @@
     "docs/Code/DS/细节部分.md",
     "docs/Code/Hot100/Graph-Theory",
     "docs/Code/DS/BFS.md",
-    "docs/Code/通用模板new.md",
     "docs/面试笔记/MyWeb/构建过程end.md",
     "docs/面试笔记/MyWeb/构建过程3.md",
     "docs/面试笔记/MyWeb/构建过程2.md",
@@ -250,7 +252,6 @@
     "docs/PromptLearning/day1.md",
     "public/images/logo.jpg",
     "docs/Resume/简历V3.0.md",
-    "docs/Resume/2.14.2.md",
     "images/Pasted image 20260209164305.png",
     "images/Pasted image 20260209163518.png",
     "images/Pasted image 20260209163445.png"

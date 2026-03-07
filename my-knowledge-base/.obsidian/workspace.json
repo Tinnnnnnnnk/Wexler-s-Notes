@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "docs/Code/Hot100/Stack/394-字符串解码.md",
+                "file": "docs/Code/Hot100/Stack/739-每日温度.md",
                 "mode": "source",
                 "source": true
               },
               "icon": "lucide-file",
-              "title": "394-字符串解码"
+              "title": "739-每日温度"
             }
           },
           {
@@ -212,6 +212,8 @@
   "active": "c952ef85bf617510",
   "lastOpenFiles": [
     "docs/Code/通用模板new.md",
+    "docs/Code/Hot100/Stack/739-每日温度.md",
+    "docs/PaiSmart/总览规划.md",
     "docs/Code/Hot100/Stack/394-字符串解码.md",
     "docs/Code/Hot100/Stack",
     "docs/Code/DS/Deque.md",
@@ -249,9 +251,7 @@
     "images/Pasted image 20260209190033.png",
     "images/Pasted image 20260209164233.png",
     "markdown-examples.md",
-    "docs/PromptLearning/day1.md",
     "public/images/logo.jpg",
-    "docs/Resume/简历V3.0.md",
     "images/Pasted image 20260209164305.png",
     "images/Pasted image 20260209163518.png",
     "images/Pasted image 20260209163445.png"

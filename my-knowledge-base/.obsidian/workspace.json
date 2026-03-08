@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "docs/PaiSmart/面试/v2-day2.2.md",
-                "mode": "preview",
+                "file": "docs/PaiSmart/面试/v2-day2.3.md",
+                "mode": "source",
                 "source": true
               },
               "icon": "lucide-file",
-              "title": "v2-day2.2"
+              "title": "v2-day2.3"
             }
           },
           {
@@ -211,8 +211,9 @@
   },
   "active": "c952ef85bf617510",
   "lastOpenFiles": [
-    "docs/PaiSmart/面试/v2-day2.md",
     "docs/PaiSmart/面试/v2-day2.2.md",
+    "docs/PaiSmart/面试/v2-day2.3.md",
+    "docs/PaiSmart/面试/v2-day2.md",
     "docs/PaiSmart/面试/v2-day2.1.md",
     "docs/Code/Hot100/Stack/739-每日温度.md",
     "docs/Code/通用模板new.md",
@@ -248,7 +249,6 @@
     "docs/public/images",
     "docs/public",
     "docs/test1.md",
-    "docs/Code/Hot100/Two-Pointers/11-盛最多水的容器.md",
     "images/Pasted image 20260209190033.png",
     "images/Pasted image 20260209164233.png",
     "public/images/logo.jpg",

@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "docs/PaiSmart/面试/v2-day2.3.md",
-                "mode": "preview",
+                "file": "docs/PaiSmart/面试/v2-day3.md",
+                "mode": "source",
                 "source": true
               },
               "icon": "lucide-file",
-              "title": "v2-day2.3"
+              "title": "v2-day3"
             }
           },
           {
@@ -211,6 +211,8 @@
   },
   "active": "c952ef85bf617510",
   "lastOpenFiles": [
+    "docs/Resume/简历V3.0.md",
+    "docs/PaiSmart/面试/v2-day3.md",
     "docs/PaiSmart/面试/v2-day2.2.md",
     "docs/PaiSmart/面试/v2-day2.3.md",
     "docs/PaiSmart/面试/v2-day2.md",
@@ -243,12 +245,10 @@
     "docs/面试笔记/MyWeb/构建过程end.md",
     "docs/面试笔记/MyWeb/构建过程3.md",
     "docs/面试笔记/MyWeb/构建过程2.md",
-    "docs/面试笔记/MyWeb/构建过程.md",
     "docs/面试笔记/MyWeb",
     "docs/public/images/logo.jpg",
     "docs/public/images",
     "docs/public",
-    "docs/test1.md",
     "images/Pasted image 20260209190033.png",
     "images/Pasted image 20260209164233.png",
     "public/images/logo.jpg",

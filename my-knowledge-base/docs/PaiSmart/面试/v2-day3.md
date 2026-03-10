@@ -32,3 +32,5 @@ Role-Based Access Control，中文意思是：基于角色（Role）的访问控
 - 内容字段：叫做textContent，类型是text。底层配的是ik中文分词器，BM25可以作用在这个字段上。通过中文分词器，可以把一段话拆的更细，从而提高匹配的召回率和准确率
 - 向量字段：叫做vector，定义为dense_vector，2048维度。使用的是阿里云的2048维embedding模型。当用户发起查询时，会把查询的内容先转成向量然后再去用KNN算法去比较相似度
 - 权限字段：有多个，userId、orgTag、isPublic，userId和orgTag属于keyboard类型，分别用来表明文档片段属于哪一个用户和属于哪些组织标签，isPublic是boolean类型，用来表明文档片段是否是公开的。
+### 联调大模型时出现超时情况
+- 在超时处理方面，引入了分阶段超时控制机制：先设置一个3秒的

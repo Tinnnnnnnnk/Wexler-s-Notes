@@ -41,12 +41,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "docs/Code/DS/Dynamic Programming.md",
+                "file": "docs/PaiSmart/面试/v2-day4.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Dynamic Programming"
+              "title": "v2-day4"
             }
           }
         ],
@@ -227,6 +227,7 @@
   "active": "322612c9e2428adf",
   "lastOpenFiles": [
     "docs/Code/DS/Dynamic Programming.md",
+    "docs/PaiSmart/面试/v2-day4.md",
     "docs/PaiSmart/面试/v2-day3.md",
     "docs/PaiSmart/面试/v2-day2.3.md",
     "docs/Code/Hot100/Graph-Theory/207-课程表.md",
@@ -259,7 +260,6 @@
     "docs/Code/Hot100/Backtracking",
     "docs/Code/DS/细节部分.md",
     "docs/Code/Hot100/Graph-Theory",
-    "docs/Code/DS/BFS.md",
     "docs/面试笔记/MyWeb",
     "docs/public/images/logo.jpg",
     "docs/public/images",

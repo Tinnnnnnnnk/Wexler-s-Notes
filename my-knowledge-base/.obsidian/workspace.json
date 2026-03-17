@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "docs/Resume/简历V3.0.md",
+                "file": "docs/PaiSmart/面试/面向题目.md",
                 "mode": "source",
                 "source": true
               },
               "icon": "lucide-file",
-              "title": "简历V3.0"
+              "title": "面向题目"
             }
           },
           {
@@ -49,8 +49,7 @@
               "title": "prompt7.0"
             }
           }
-        ],
-        "currentTab": 2
+        ]
       }
     ],
     "direction": "vertical"
@@ -224,16 +223,16 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "322612c9e2428adf",
+  "active": "c952ef85bf617510",
   "lastOpenFiles": [
-    "docs/PaiSmart/面试/面向题目.md",
     "docs/PaiSmart/面试/prompt7.0.md",
+    "docs/Resume/简历V3.0.md",
+    "docs/PaiSmart/面试/v2-day3.md",
+    "docs/PaiSmart/面试/面向题目.md",
     "docs/PaiSmart/面试/v2-day4.md",
     "docs/PaiSmart/面试/v2-day2.3.md",
     "docs/Code/DS/Dynamic Programming.md",
-    "docs/PaiSmart/面试/v2-day3.md",
     "docs/Code/Hot100/Graph-Theory/207-课程表.md",
-    "docs/Resume/简历V3.0.md",
     "docs/Resume/前7天目标.md",
     "docs/Resume/2.14.2.md",
     "docs/PaiSmart/面试/v2-day2.2.md",

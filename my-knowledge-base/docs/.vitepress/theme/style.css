@@ -1,92 +1,546 @@
-/* ==========================================
- * 顶级设计师方案：极致纯白极简风 (Vercel / Apple 混合哲学)
- * 核心：零渐变、零发光、克制的黑白灰、重排版与间距
- * ========================================== */
+/* Wexler oil paint cool theme */
 
 :root {
-  /* 🗡️ 斩杀蓝紫色！采用顶级 SaaS 网站的克制黑白灰 */
-  --vp-c-brand-1: #111111; /* 极深的黑灰色作为品牌主色 */
-  --vp-c-brand-2: #333333;
-  --vp-c-brand-3: #666666;
-  
-  /* 🔘 按钮变成高级的纯黑底白字 */
-  --vp-button-brand-bg: #111111;
-  --vp-button-brand-hover-bg: #444444;
-  --vp-button-brand-text: #ffffff;
-  
-  /* 📄 全局背景设为极其干净的纯白，卡片底色为极其微妙的灰 */
-  --vp-c-bg: #ffffff;
-  --vp-c-bg-soft: #fafafa;
-  --vp-c-border: #eaeaea;
+  --oil-bg: #d8dee6;
+  --oil-bg-deep: #ccd4de;
+  --oil-surface: #edf1f6;
+  --oil-surface-2: #e5ebf1;
+  --oil-ink: #1f2a38;
+  --oil-muted: #556272;
+  --oil-accent: #4a6d86;
+  --oil-accent-2: #6a8aa0;
+  --oil-line: rgba(31, 42, 56, 0.17);
+  --oil-shadow: 0 16px 34px rgba(16, 24, 35, 0.15);
+
+  --vp-c-brand-1: var(--oil-accent);
+  --vp-c-brand-2: #3f5d74;
+  --vp-c-brand-3: #334e64;
+  --vp-c-text-1: var(--oil-ink);
+  --vp-c-text-2: var(--oil-muted);
+  --vp-c-bg: var(--oil-bg);
+  --vp-c-bg-soft: var(--oil-surface);
+  --vp-c-bg-elv: var(--oil-surface);
+  --vp-c-divider: var(--oil-line);
+
+  --vp-button-brand-bg: var(--oil-accent);
+  --vp-button-brand-hover-bg: #3f5d74;
+  --vp-button-brand-text: #edf4f9;
+  --vp-button-brand-border: transparent;
+
+  --vp-font-family-base: "Avenir Next", "Segoe UI", "PingFang SC",
+    "Hiragino Sans GB", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+  --vp-font-family-mono: "JetBrains Mono", "Cascadia Code", "Fira Code",
+    "Consolas", monospace;
 }
 
-/* 🌑 兼顾暗黑模式的优雅反转 */
 .dark {
-  --vp-c-brand-1: #ffffff; 
-  --vp-c-brand-2: #cccccc;
-  --vp-button-brand-bg: #ffffff;
-  --vp-button-brand-hover-bg: #cccccc;
-  --vp-button-brand-text: #000000;
-  --vp-c-bg: #000000;
-  --vp-c-bg-soft: #0a0a0a;
-  --vp-c-border: #222222;
+  --oil-bg: #0f1620;
+  --oil-bg-deep: #0a1119;
+  --oil-surface: #172332;
+  --oil-surface-2: #1c2b3d;
+  --oil-ink: #e6edf5;
+  --oil-muted: #b2c0cf;
+  --oil-accent: #88a8c0;
+  --oil-accent-2: #9cb9cd;
+  --oil-line: rgba(229, 237, 247, 0.18);
+  --oil-shadow: 0 20px 44px rgba(1, 7, 12, 0.46);
+
+  --vp-c-brand-1: var(--oil-accent);
+  --vp-c-brand-2: #7f9eb6;
+  --vp-c-brand-3: #7392aa;
+  --vp-button-brand-bg: var(--oil-accent);
+  --vp-button-brand-hover-bg: #7a99b1;
+  --vp-button-brand-text: #12202d;
 }
 
-/* 🧹 1. 物理超度“AI味”渐变大标题 */
+body {
+  text-rendering: optimizeLegibility;
+  font-feature-settings: "liga" 1, "calt" 1;
+}
+
+.Layout {
+  position: relative;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 10% -8%, rgba(106, 138, 160, 0.28), transparent 32%),
+    radial-gradient(circle at 88% 16%, rgba(74, 109, 134, 0.22), transparent 30%),
+    radial-gradient(circle at 72% 86%, rgba(126, 151, 173, 0.2), transparent 30%),
+    linear-gradient(180deg, var(--oil-bg) 0%, var(--oil-bg-deep) 100%);
+}
+
+.dark .Layout {
+  background:
+    radial-gradient(circle at 10% -8%, rgba(156, 185, 205, 0.22), transparent 36%),
+    radial-gradient(circle at 88% 16%, rgba(136, 168, 192, 0.18), transparent 34%),
+    radial-gradient(circle at 72% 86%, rgba(106, 138, 160, 0.17), transparent 34%),
+    linear-gradient(180deg, var(--oil-bg) 0%, var(--oil-bg-deep) 100%);
+}
+
+.Layout::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(
+      25deg,
+      rgba(25, 36, 50, 0.035) 0 6px,
+      transparent 6px 24px
+    ),
+    repeating-linear-gradient(
+      -18deg,
+      rgba(25, 36, 50, 0.03) 0 4px,
+      transparent 4px 22px
+    );
+  opacity: 0.35;
+  z-index: 0;
+}
+
+.dark .Layout::before {
+  background:
+    repeating-linear-gradient(
+      25deg,
+      rgba(224, 235, 246, 0.035) 0 6px,
+      transparent 6px 24px
+    ),
+    repeating-linear-gradient(
+      -18deg,
+      rgba(224, 235, 246, 0.03) 0 4px,
+      transparent 4px 22px
+    );
+  opacity: 0.25;
+}
+
+.VPContent,
+.VPLocalNav,
+.VPFooter {
+  position: relative;
+  z-index: 1;
+}
+
+.VPNav {
+  z-index: 38;
+  background: rgba(238, 244, 248, 0.78);
+  border-bottom: 1px solid var(--oil-line);
+  backdrop-filter: blur(12px);
+}
+
+.dark .VPNav {
+  background: rgba(14, 22, 31, 0.82);
+}
+
+.VPNavBarTitle .title {
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.VPHome .VPHero {
+  padding-top: 72px !important;
+  padding-bottom: 36px !important;
+}
+
+.VPHome .VPHero .container {
+  gap: clamp(1.6rem, 4vw, 4.1rem);
+}
+
 .VPHero .name {
-  background: none !important; /* 彻底去掉渐变 */
-  -webkit-text-fill-color: initial !important; /* 恢复纯色填充 */
-  color: var(--vp-c-text-1) !important; /* 亮色下是极深的黑，暗色下是白 */
-  font-weight: 800;
-  letter-spacing: -0.04em; /* 📐 顶级排版细节：大标题收紧字间距，显得极其紧凑有力 */
-  filter: none !important; /* 去掉任何多余的发光阴影 */
+  font-family: "Palatino Linotype", "Source Han Serif SC", "Songti SC", serif;
+  font-size: clamp(2.5rem, 8vw, 5.35rem);
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+  color: transparent;
+  background: linear-gradient(120deg, #1d2836 0%, #3c556d 56%, #607f96 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-/* 🗂️ 2. Apple-Section 卡片重塑：告别厚重投影，拥抱极致扁平 */
-.apple-section {
-  text-align: center;
-  padding: 60px 40px;
-  margin: 40px auto;
-  border-radius: 16px; /* 稍微收敛一点圆角，显得更专业 */
-  background: var(--vp-c-bg-soft); /* 非常非常浅的灰，与纯白背景区分 */
-  border: 1px solid var(--vp-c-border);
-  box-shadow: none !important; /* 彻底移除默认的厚重阴影 */
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+.dark .VPHero .name {
+  background: linear-gradient(120deg, #eaf0f6 0%, #c0d1de 52%, #a3bfd2 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-.apple-section:hover {
-  transform: translateY(-2px); /* 极其克制的微浮动 */
-  border-color: #cccccc; /* 边框微微加深 */
-  /* 只在 hover 时给一个若有若无的弥散阴影 */
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.04) !important; 
+.VPHero .text {
+  font-size: clamp(1.3rem, 2.7vw, 2.04rem);
+  font-weight: 700;
+  line-height: 1.28;
 }
 
-/* 🏷️ 3. 标签（Tags）的高级感：线框风 */
-.tech-tag {
-  padding: 6px 16px;
-  border-radius: 6px; /* 抛弃圆润的药丸，采用更锐利的微圆角 */
-  background: transparent;
-  border: 1px solid var(--vp-c-border);
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: 0.85rem;
-  color: var(--vp-c-text-2);
-  transition: all 0.2s ease;
+.VPHero .tagline {
+  max-width: 620px;
+  line-height: 1.82;
+  font-size: 1.03rem;
 }
 
-.tech-tag:hover {
-  color: var(--vp-c-text-1);
-  border-color: var(--vp-c-text-1); /* 悬停时边框变黑/变白，极简犀利 */
-  background: transparent;
+.VPHero .actions {
+  gap: 12px;
 }
 
-/* 🖼️ 4. 图片归于宁静：为纯白背景的二次元角色预留 */
+.VPButton {
+  border-radius: 999px !important;
+  font-weight: 650;
+  letter-spacing: 0.01em;
+  transition: transform 0.24s ease, box-shadow 0.24s ease;
+}
+
+.VPButton.brand {
+  box-shadow: 0 9px 18px rgba(74, 109, 134, 0.24);
+}
+
+.VPButton.brand:hover {
+  transform: translateY(-2px);
+}
+
+.VPButton.alt {
+  border-color: var(--oil-line);
+  background: rgba(255, 255, 255, 0.44);
+}
+
+.dark .VPButton.alt {
+  background: rgba(22, 35, 50, 0.54);
+}
+
+.VPHero .image-container {
+  position: relative;
+  border-radius: 30px;
+  padding: 12px;
+  background:
+    linear-gradient(135deg, rgba(106, 138, 160, 0.28) 0%, rgba(74, 109, 134, 0.26) 100%);
+  box-shadow: var(--oil-shadow);
+  transform: rotate(-1.4deg);
+  animation: oilFloat 6.5s ease-in-out infinite;
+}
+
+.dark .VPHero .image-container {
+  background:
+    linear-gradient(135deg, rgba(156, 185, 205, 0.28) 0%, rgba(136, 168, 192, 0.24) 100%);
+}
+
+.VPHero .image-container::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  pointer-events: none;
+}
+
+.dark .VPHero .image-container::after {
+  border-color: rgba(231, 241, 251, 0.2);
+}
+
 .VPHero .image-src {
-  max-height: 400px !important;
-  object-fit: contain;
-  filter: none !important; /* 绝对不要任何发光特效！ */
-  animation: none !important; /* 专业的网页不需要上下乱浮动的巨大图片 */
+  max-height: 430px !important;
+  border-radius: 22px;
+  object-fit: cover;
+  box-shadow: 0 16px 28px rgba(12, 21, 30, 0.22);
 }
 
 .VPHero .image-bg {
   display: none !important;
+}
+
+.VPDoc .content-container {
+  max-width: 920px;
+}
+
+.VPDoc .content {
+  border-radius: 22px;
+  border: 1px solid var(--oil-line);
+  background: var(--oil-surface);
+  padding: clamp(20px, 3vw, 34px);
+  box-shadow: 0 12px 24px rgba(16, 24, 35, 0.12);
+}
+
+.dark .VPDoc .content {
+  box-shadow: 0 14px 30px rgba(1, 7, 12, 0.35);
+}
+
+.vp-doc h2,
+.vp-doc h3 {
+  border-top: 1px solid var(--oil-line);
+  padding-top: 0.92rem;
+}
+
+.vp-doc div[class*="language-"] {
+  border: 1px solid var(--oil-line);
+  border-radius: 14px;
+  box-shadow: 0 8px 20px rgba(16, 24, 35, 0.12);
+}
+
+.vp-doc blockquote {
+  border-left: 4px solid var(--oil-accent);
+  border-radius: 0 10px 10px 0;
+  background: rgba(74, 109, 134, 0.1);
+}
+
+.dark .vp-doc blockquote {
+  background: rgba(136, 168, 192, 0.16);
+}
+
+.oilhome-shell {
+  max-width: 1100px;
+  margin: 36px auto 98px;
+  padding: 0 18px 24px;
+}
+
+.oilhome-intro {
+  position: relative;
+  border: 1px solid var(--oil-line);
+  border-radius: 24px;
+  padding: clamp(24px, 4vw, 44px);
+  background:
+    radial-gradient(circle at 8% 14%, rgba(142, 173, 196, 0.2), transparent 34%),
+    radial-gradient(circle at 84% 16%, rgba(106, 139, 165, 0.18), transparent 34%),
+    linear-gradient(140deg, rgba(240, 245, 249, 0.96) 0%, rgba(230, 237, 243, 0.97) 100%);
+  box-shadow: var(--oil-shadow);
+}
+
+.dark .oilhome-intro {
+  background:
+    radial-gradient(circle at 8% 14%, rgba(156, 185, 205, 0.2), transparent 36%),
+    radial-gradient(circle at 84% 16%, rgba(136, 168, 192, 0.17), transparent 36%),
+    linear-gradient(140deg, rgba(24, 37, 50, 0.96) 0%, rgba(19, 31, 42, 0.97) 100%);
+}
+
+.oilhome-kicker {
+  margin: 0;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-weight: 700;
+  color: var(--oil-accent);
+}
+
+.oilhome-intro h2 {
+  margin: 10px 0 0;
+  max-width: 760px;
+  font-family: "Palatino Linotype", "Source Han Serif SC", "Songti SC", serif;
+  font-size: clamp(1.5rem, 2.9vw, 2.3rem);
+  line-height: 1.31;
+}
+
+.oilhome-lead {
+  margin: 14px 0 0;
+  max-width: 760px;
+  line-height: 1.82;
+  color: var(--vp-c-text-2);
+}
+
+.oilhome-grid {
+  margin-top: 20px;
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+}
+
+.oilhome-card {
+  grid-column: span 5;
+  text-decoration: none;
+  color: inherit;
+  border: 1px solid var(--oil-line);
+  border-radius: 18px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.62) 0%, rgba(228, 236, 244, 0.72) 100%);
+  padding: 20px 18px 18px;
+  box-shadow: 0 8px 18px rgba(16, 24, 35, 0.11);
+  transition: transform 0.24s ease, border-color 0.24s ease,
+    box-shadow 0.24s ease;
+}
+
+.dark .oilhome-card {
+  background:
+    linear-gradient(135deg, rgba(31, 46, 62, 0.78) 0%, rgba(25, 39, 53, 0.84) 100%);
+}
+
+.oilhome-card--feature {
+  grid-column: span 7;
+}
+
+.oilhome-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(74, 109, 134, 0.46);
+  box-shadow: 0 14px 24px rgba(16, 24, 35, 0.16);
+}
+
+.oilhome-card p.oilhome-card__tag {
+  margin: 0;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  font-weight: 700;
+  color: var(--oil-accent);
+}
+
+.oilhome-card h3 {
+  margin: 7px 0 10px;
+  font-size: clamp(1.12rem, 2vw, 1.38rem);
+  line-height: 1.34;
+}
+
+.oilhome-card > p {
+  margin: 0;
+  line-height: 1.72;
+  color: var(--vp-c-text-2);
+}
+
+.oilhome-card__meta {
+  display: inline-flex;
+  margin-top: 14px;
+  padding: 6px 11px;
+  border-radius: 999px;
+  background: rgba(74, 109, 134, 0.14);
+  color: #2f4f65;
+  font-size: 0.81rem;
+  font-weight: 650;
+}
+
+.dark .oilhome-card__meta {
+  background: rgba(136, 168, 192, 0.2);
+  color: #d4e3ee;
+}
+
+.oilhome-footer {
+  margin-top: 16px;
+  border: 1px solid var(--oil-line);
+  border-radius: 18px;
+  background: var(--oil-surface-2);
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.oilhome-footer h3 {
+  margin: 5px 0 0;
+  font-size: clamp(1.03rem, 1.8vw, 1.3rem);
+  line-height: 1.45;
+}
+
+.oilhome-footer__cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  text-decoration: none;
+  border-radius: 999px;
+  padding: 10px 18px;
+  font-weight: 700;
+  color: #edf4f9;
+  background: var(--oil-accent);
+  transition: transform 0.24s ease, box-shadow 0.24s ease;
+}
+
+.oilhome-footer__cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(74, 109, 134, 0.28);
+}
+
+.reveal-oil {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: revealOil 0.72s cubic-bezier(0.2, 0.8, 0.24, 1) forwards;
+}
+
+.oilhome-grid .oilhome-card:nth-child(1) {
+  animation-delay: 0.08s;
+}
+
+.oilhome-grid .oilhome-card:nth-child(2) {
+  animation-delay: 0.14s;
+}
+
+.oilhome-grid .oilhome-card:nth-child(3) {
+  animation-delay: 0.2s;
+}
+
+.oilhome-grid .oilhome-card:nth-child(4) {
+  animation-delay: 0.26s;
+}
+
+@keyframes revealOil {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes oilFloat {
+  0%,
+  100% {
+    transform: rotate(-1.4deg) translateY(0);
+  }
+
+  50% {
+    transform: rotate(-0.7deg) translateY(-8px);
+  }
+}
+
+@media (max-width: 960px) {
+  .VPHome .VPHero {
+    padding-top: 54px !important;
+  }
+
+  .VPHero .image-container {
+    transform: none;
+    max-width: 330px;
+    margin: 0 auto;
+  }
+
+  .oilhome-shell {
+    margin-top: 16px;
+    padding: 0 14px 34px;
+  }
+
+  .oilhome-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .oilhome-card,
+  .oilhome-card--feature {
+    grid-column: auto;
+  }
+
+  .oilhome-footer {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 640px) {
+  .VPHero .actions {
+    width: 100%;
+    display: grid;
+    gap: 10px;
+  }
+
+  .VPButton {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .oilhome-intro {
+    padding: 18px 14px;
+  }
+
+  .oilhome-card {
+    padding: 16px 14px;
+  }
+
+  .oilhome-footer {
+    padding: 15px 14px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
 }

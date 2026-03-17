@@ -1,0 +1,2 @@
+### WebSocket
+- 用户建立 WebSocket 连接后，系统会通过 JWT 解析出 userId，识别当前聊天用户。收到消息后，后端会先根据 userId 获取或创建当前会话的 conversationId，然后从 Redis 读取该会话的历史消息，形成多轮上下文。同时系统会结合 userMessage 和 userId 做带权限的检索，把检索结果整理成 context，再交给 DeepSeekClient 做流式生成。生成过程中，后端会把每个 chunk 通过 WebSocket 推给前端；生成完成后，再把这一轮的用户消息和模型回复写回 Redis，这样下一轮对话就能继续继承上下文。

@@ -41,12 +41,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "docs/PaiSmart/面试/面向题目.md",
+                "file": "docs/PaiSmart/面试/prompt7.0.md",
                 "mode": "source",
                 "source": true
               },
               "icon": "lucide-file",
-              "title": "面向题目"
+              "title": "prompt7.0"
             }
           }
         ],
@@ -226,8 +226,9 @@
   },
   "active": "322612c9e2428adf",
   "lastOpenFiles": [
-    "docs/PaiSmart/面试/v2-day4.md",
     "docs/PaiSmart/面试/面向题目.md",
+    "docs/PaiSmart/面试/prompt7.0.md",
+    "docs/PaiSmart/面试/v2-day4.md",
     "docs/PaiSmart/面试/v2-day2.3.md",
     "docs/Code/DS/Dynamic Programming.md",
     "docs/PaiSmart/面试/v2-day3.md",
@@ -256,7 +257,6 @@
     "docs/未命名.base",
     "docs/public/images/hero-abstract.jpg",
     "docs/public/images/logo - 副本.jpg",
-    "docs/Code/Hot100/Backtracking/46-全排列.md",
     "docs/Code/Hot100/Prefix-Sum",
     "docs/Code/Hot100/Backtracking",
     "docs/Code/Hot100/Graph-Theory",

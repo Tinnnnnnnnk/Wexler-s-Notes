@@ -14,8 +14,8 @@
               "type": "markdown",
               "state": {
                 "file": "docs/面试笔记/JavaSe/面向对象.md",
-                "mode": "preview",
-                "source": false
+                "mode": "source",
+                "source": true
               },
               "icon": "lucide-file",
               "title": "面向对象"

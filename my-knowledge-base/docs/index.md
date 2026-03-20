@@ -24,6 +24,27 @@ hero:
 <p class="oilhome-lead">内容按真实开发顺序组织，强调过程、决策与可复用模式。你看到的是知识，也是一套工作方法的持续迭代。</p>
 </section>
 
+<section class="oilhome-signal reveal-oil">
+<article class="oilhome-signal__item">
+<p class="oilhome-kicker">BUILD LOOP</p>
+<h3>Push To Deploy</h3>
+<p>从写作到发布，一次提交串联文档、构建与部署。</p>
+<span>CI/CD · Docker · Nginx</span>
+</article>
+<article class="oilhome-signal__item">
+<p class="oilhome-kicker">LEARNING SYSTEM</p>
+<h3>Problem To Pattern</h3>
+<p>把题解和实战经验沉淀为可迁移、可复用的方法论。</p>
+<span>Hot100 · Backend · Refactor</span>
+</article>
+<article class="oilhome-signal__item">
+<p class="oilhome-kicker">DELIVERY STYLE</p>
+<h3>Notes As Product</h3>
+<p>每篇笔记都按照“真实交付”标准打磨，能直接上项目。</p>
+<span>Docs · Workflow · Review</span>
+</article>
+</section>
+
 <section class="oilhome-grid">
 <a class="oilhome-card oilhome-card--feature reveal-oil" href="/Code/DS/DFS">
 <p class="oilhome-card__tag">基础训练</p>

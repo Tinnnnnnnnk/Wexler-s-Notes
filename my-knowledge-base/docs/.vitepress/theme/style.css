@@ -556,6 +556,188 @@ body {
   background: rgba(136, 168, 192, 0.2);
 }
 
+.oilhome-lab {
+  margin-top: 16px;
+  border: 1px solid var(--oil-line);
+  border-radius: 18px;
+  padding: 16px;
+  background:
+    radial-gradient(circle at 9% 8%, rgba(106, 138, 160, 0.17), transparent 34%),
+    linear-gradient(138deg, rgba(244, 249, 252, 0.9) 0%, rgba(230, 239, 246, 0.92) 100%);
+  box-shadow: 0 10px 20px rgba(16, 24, 35, 0.1);
+}
+
+.dark .oilhome-lab {
+  background:
+    radial-gradient(circle at 9% 8%, rgba(136, 168, 192, 0.16), transparent 36%),
+    linear-gradient(138deg, rgba(23, 36, 49, 0.92) 0%, rgba(18, 31, 43, 0.94) 100%);
+}
+
+.oilhome-lab__head h3 {
+  margin: 8px 0 2px;
+  font-size: clamp(1.16rem, 2.2vw, 1.5rem);
+  line-height: 1.35;
+}
+
+.oilhome-lab__list {
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.oilhome-lab__item {
+  border: 1px solid var(--oil-line);
+  border-radius: 14px;
+  padding: 12px 12px 11px;
+  background: rgba(255, 255, 255, 0.46);
+  transition: transform 0.22s ease, border-color 0.22s ease;
+}
+
+.dark .oilhome-lab__item {
+  background: rgba(28, 43, 58, 0.62);
+}
+
+.oilhome-lab__item:hover {
+  transform: translateY(-2px);
+  border-color: rgba(74, 109, 134, 0.46);
+}
+
+.oilhome-lab__title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.oilhome-lab__title strong {
+  font-size: 0.9rem;
+  letter-spacing: 0.01em;
+}
+
+.oilhome-lab__title span {
+  display: inline-flex;
+  border-radius: 999px;
+  padding: 3px 8px;
+  font-size: 0.68rem;
+  font-weight: 650;
+  white-space: nowrap;
+  color: #315067;
+  background: rgba(74, 109, 134, 0.14);
+}
+
+.dark .oilhome-lab__title span {
+  color: #d2e4f1;
+  background: rgba(136, 168, 192, 0.2);
+}
+
+.oilhome-lab__item p {
+  margin: 7px 0 0;
+  color: var(--vp-c-text-2);
+  line-height: 1.63;
+  font-size: 0.88rem;
+}
+
+.oilhome-lab__meter {
+  margin-top: 10px;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(74, 109, 134, 0.12);
+  overflow: hidden;
+}
+
+.oilhome-lab__meter span {
+  display: block;
+  width: var(--meter, 70%);
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #4a6d86 0%, #6f8fa6 100%);
+}
+
+.oilhome-route {
+  margin-top: 16px;
+  border: 1px solid var(--oil-line);
+  border-radius: 18px;
+  padding: 16px;
+  background: rgba(239, 246, 251, 0.74);
+}
+
+.dark .oilhome-route {
+  background: rgba(18, 31, 42, 0.76);
+}
+
+.oilhome-route__head h3 {
+  margin: 8px 0 1px;
+  font-size: clamp(1.08rem, 2vw, 1.34rem);
+}
+
+.oilhome-route__line {
+  margin-top: 12px;
+  display: grid;
+  gap: 10px;
+  position: relative;
+}
+
+.oilhome-route__line::before {
+  content: "";
+  position: absolute;
+  top: 12px;
+  bottom: 12px;
+  left: 14px;
+  width: 2px;
+  background: linear-gradient(180deg, rgba(74, 109, 134, 0.5) 0%, rgba(74, 109, 134, 0.08) 100%);
+}
+
+.oilhome-route__node {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  align-items: start;
+  gap: 10px;
+  text-decoration: none;
+  color: inherit;
+  border: 1px solid var(--oil-line);
+  border-radius: 12px;
+  padding: 10px 11px 10px 10px;
+  background: rgba(255, 255, 255, 0.46);
+  transition: transform 0.22s ease, border-color 0.22s ease,
+    box-shadow 0.22s ease;
+}
+
+.dark .oilhome-route__node {
+  background: rgba(29, 44, 60, 0.62);
+}
+
+.oilhome-route__node:hover {
+  transform: translateX(2px);
+  border-color: rgba(74, 109, 134, 0.46);
+  box-shadow: 0 9px 16px rgba(16, 24, 35, 0.14);
+}
+
+.oilhome-route__node > span {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #edf4f9;
+  background: linear-gradient(140deg, #4a6d86 0%, #2f4f65 100%);
+}
+
+.oilhome-route__node h4 {
+  margin: 2px 0 4px;
+  font-size: 0.98rem;
+}
+
+.oilhome-route__node p {
+  margin: 0;
+  line-height: 1.6;
+  color: var(--vp-c-text-2);
+}
+
 .oilhome-grid {
   margin-top: 20px;
   display: grid;
@@ -1520,6 +1702,14 @@ body {
     grid-column: auto;
   }
 
+  .oilhome-lab__list {
+    grid-template-columns: 1fr;
+  }
+
+  .oilhome-route {
+    padding: 14px;
+  }
+
   .oilhome-card,
   .oilhome-card--feature {
     grid-column: auto;
@@ -1598,6 +1788,26 @@ body {
 
   .oilhome-signal__item {
     padding: 12px;
+  }
+
+  .oilhome-lab {
+    padding: 12px;
+  }
+
+  .oilhome-route {
+    padding: 12px;
+  }
+
+  .oilhome-route__node {
+    grid-template-columns: 24px 1fr;
+    gap: 8px;
+    padding: 9px 9px 9px 8px;
+  }
+
+  .oilhome-route__node > span {
+    width: 24px;
+    height: 24px;
+    font-size: 0.66rem;
   }
 
   .oilhome-footer {

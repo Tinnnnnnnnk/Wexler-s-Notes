@@ -45,6 +45,67 @@ hero:
 </article>
 </section>
 
+<section class="oilhome-lab reveal-oil">
+<div class="oilhome-lab__head">
+<p class="oilhome-kicker">SYSTEM STATUS</p>
+<h3>把学习、实战与交付连接成同一条工程流水线</h3>
+</div>
+<div class="oilhome-lab__list">
+<article class="oilhome-lab__item">
+<div class="oilhome-lab__title"><strong>Deploy Pipeline</strong><span>CI Ready</span></div>
+<p>文档变更可快速进入自动构建与部署链路，降低手工成本。</p>
+<div class="oilhome-lab__meter"><span style="--meter: 86%"></span></div>
+</article>
+<article class="oilhome-lab__item">
+<div class="oilhome-lab__title"><strong>Algorithm System</strong><span>Pattern Driven</span></div>
+<p>从题目拆解到模板沉淀，形成可迁移的解题与复盘机制。</p>
+<div class="oilhome-lab__meter"><span style="--meter: 78%"></span></div>
+</article>
+<article class="oilhome-lab__item">
+<div class="oilhome-lab__title"><strong>Interview Assets</strong><span>Continuously Polished</span></div>
+<p>围绕项目经历持续打磨叙事逻辑、技术深度与表达结构。</p>
+<div class="oilhome-lab__meter"><span style="--meter: 72%"></span></div>
+</article>
+</div>
+</section>
+
+<section class="oilhome-route reveal-oil">
+<div class="oilhome-route__head">
+<p class="oilhome-kicker">ROADMAP SNAPSHOT</p>
+<h3>从输入到交付的一条主路径</h3>
+</div>
+<div class="oilhome-route__line">
+<a class="oilhome-route__node" href="/PromptLearning/day1">
+<span>01</span>
+<div>
+<h4>输入层</h4>
+<p>把问题转成可执行 Prompt 与任务切片。</p>
+</div>
+</a>
+<a class="oilhome-route__node" href="/Code/DS/DFS">
+<span>02</span>
+<div>
+<h4>训练层</h4>
+<p>在算法与实现中打磨稳定的思维流程。</p>
+</div>
+</a>
+<a class="oilhome-route__node" href="/Sky-Take-Out/00-后端开发知识大本营">
+<span>03</span>
+<div>
+<h4>实战层</h4>
+<p>将方法落到真实工程：后端、数据、部署闭环。</p>
+</div>
+</a>
+<a class="oilhome-route__node" href="/Resume/简历V3.0">
+<span>04</span>
+<div>
+<h4>交付层</h4>
+<p>沉淀成可展示、可复用、可迭代的个人资产。</p>
+</div>
+</a>
+</div>
+</section>
+
 <section class="oilhome-grid">
 <a class="oilhome-card oilhome-card--feature reveal-oil" href="/Code/DS/DFS">
 <p class="oilhome-card__tag">基础训练</p>

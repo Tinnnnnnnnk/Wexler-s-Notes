@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "docs/Resume/简历V3.0.md",
+                "file": "docs/面试笔记/JavaSe/String.md",
                 "mode": "source",
                 "source": true
               },
               "icon": "lucide-file",
-              "title": "简历V3.0"
+              "title": "String"
             }
           }
         ]
@@ -195,13 +195,14 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "c3bd19e0f5bc1138",
+  "active": "dca74a61d38130bd",
   "lastOpenFiles": [
+    "docs/Resume/简历V3.0.md",
+    "docs/面试笔记/JavaSe/String.md",
     "docs/面试笔记/JavaSe/面向对象.md",
     "docs/面试笔记/MyWeb/构建过程.md",
     "docs/面试笔记/JavaSe/JAVASE.md",
     "docs/Code/Hot100/Sliding-Window/3-无重复字符的最长子串.md",
-    "docs/Resume/简历V3.0.md",
     "docs/Resume/2.13.1.md",
     "docs/Resume/2.14.2.md",
     "docs/Resume/前7天目标.md",
@@ -223,7 +224,6 @@
     "docs/PaiSmart/总览规划.md",
     "docs/Code/Hot100/Stack/394-字符串解码.md",
     "docs/Code/Hot100/Stack",
-    "docs/Code/DS/Deque.md",
     "未命名.base",
     "docs/未命名.base",
     "docs/public/images/hero-abstract.jpg",

@@ -1,5 +1,21 @@
 # 🚀 个人项目架构大重构：从“手动拖拽”到 CI/CD “自动化魔法”的极客进化史 ✨
 
+<div class="tech-impact-cover">
+<p class="tech-impact-cover__kicker">CI/CD ARCHITECTURE REBUILD</p>
+<h2>把部署从体力活，重构成一条可持续进化的工程流水线</h2>
+<p class="tech-impact-cover__lead">这不是一次普通的“部署优化”，而是一场完整的工程体系升级。目标是让每次提交都能稳定落地，让创作与交付之间不再有摩擦。</p>
+<div class="tech-impact-cover__grid">
+<div class="tech-impact-cover__stat"><strong>4</strong><span>核心故障 BOSS</span></div>
+<div class="tech-impact-cover__stat"><strong>3</strong><span>关键系统组件</span></div>
+<div class="tech-impact-cover__stat"><strong>1</strong><span>推送即部署链路</span></div>
+<div class="tech-impact-cover__stat"><strong>∞</strong><span>可复用工程资产</span></div>
+</div>
+<div class="tech-impact-cover__actions">
+<a href="#battle-log">进入打怪日志</a>
+<a href="#final-arsenal">查看终极配置</a>
+</div>
+</div>
+
 ## 🎸 引言：告别刀耕火种，迎接赛博黎明 🔥
 
 每一个在键盘上挥洒汗水的开发者，绝对都曾经历过那段被称为**“手动拖拽”的黑暗时期**。
@@ -31,8 +47,7 @@
 
 一切都在后台默默发生，流畅如水，这就是工程师独有的浪漫！🔥
 
----
-
+<a id="battle-log"></a>
 ## ⚔️ 炼狱踩坑录：连斩四大技术 BOSS
 
 当然，通往终极浪漫的路上绝对不会一帆风顺。在这场重构中，我遭遇了几个足以让人抓狂的技术难题。但正是这些痛苦的踩坑经历，锻造了强大的工程师思维！
@@ -100,7 +115,7 @@ RUN mkdir -p my-knowledge-base/docs/public && \
 ```
 这就是赛博时代的“偷梁换柱”！让机器人在流水线中自动把图片拷贝过去。本地笔记零修改，依旧享受 Obsidian 的丝滑；云端流水线自动兼容，完美解析！
 
----
+<a id="final-arsenal"></a>
 ## 💥 终极武器库：完美的 Dockerfile 配置
 
 历经四大 BOSS 的洗礼，终于铸造出了这把“终极圣剑”。这份 `Dockerfile` 的每一行，都凝聚着踩坑流血换来的经验值！

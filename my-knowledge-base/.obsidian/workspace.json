@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "docs/面试笔记/JavaSe/面向对象.md",
+                "file": "docs/Resume/简历V3.0.md",
                 "mode": "source",
                 "source": true
               },
               "icon": "lucide-file",
-              "title": "面向对象"
+              "title": "简历V3.0"
             }
           }
         ]
@@ -195,10 +195,10 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "dca74a61d38130bd",
+  "active": "c3bd19e0f5bc1138",
   "lastOpenFiles": [
-    "docs/面试笔记/MyWeb/构建过程.md",
     "docs/面试笔记/JavaSe/面向对象.md",
+    "docs/面试笔记/MyWeb/构建过程.md",
     "docs/面试笔记/JavaSe/JAVASE.md",
     "docs/Code/Hot100/Sliding-Window/3-无重复字符的最长子串.md",
     "docs/Resume/简历V3.0.md",

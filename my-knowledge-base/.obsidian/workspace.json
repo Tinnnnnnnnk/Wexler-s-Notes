@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "docs/面试笔记/JavaSe/String.md",
+                "file": "docs/面试笔记/JavaSe/集合框架.md",
                 "mode": "source",
                 "source": true
               },
               "icon": "lucide-file",
-              "title": "String"
+              "title": "集合框架"
             }
           }
         ]
@@ -197,8 +197,9 @@
   },
   "active": "dca74a61d38130bd",
   "lastOpenFiles": [
-    "docs/Resume/简历V3.0.md",
     "docs/面试笔记/JavaSe/String.md",
+    "docs/面试笔记/JavaSe/集合框架.md",
+    "docs/Resume/简历V3.0.md",
     "docs/面试笔记/JavaSe/面向对象.md",
     "docs/面试笔记/MyWeb/构建过程.md",
     "docs/面试笔记/JavaSe/JAVASE.md",
@@ -222,7 +223,6 @@
     "docs/Code/Hot100/Stack/739-每日温度.md",
     "docs/Code/通用模板new.md",
     "docs/PaiSmart/总览规划.md",
-    "docs/Code/Hot100/Stack/394-字符串解码.md",
     "docs/Code/Hot100/Stack",
     "未命名.base",
     "docs/未命名.base",

@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "docs/面试笔记/JavaSe/集合框架.md",
+                "file": "docs/Code/DS/细节部分.md",
                 "mode": "source",
-                "source": true
+                "source": false
               },
               "icon": "lucide-file",
-              "title": "集合框架"
+              "title": "细节部分"
             }
           }
         ]
@@ -197,8 +197,8 @@
   },
   "active": "dca74a61d38130bd",
   "lastOpenFiles": [
-    "docs/面试笔记/JavaSe/String.md",
     "docs/面试笔记/JavaSe/集合框架.md",
+    "docs/面试笔记/JavaSe/String.md",
     "docs/Resume/简历V3.0.md",
     "docs/面试笔记/JavaSe/面向对象.md",
     "docs/面试笔记/MyWeb/构建过程.md",

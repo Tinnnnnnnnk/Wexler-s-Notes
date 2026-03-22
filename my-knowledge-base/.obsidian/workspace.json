@@ -174,8 +174,19 @@
               "icon": "lucide-info",
               "title": "index的笔记属性"
             }
+          },
+          {
+            "id": "1af73ec1e0dd4a8e",
+            "type": "leaf",
+            "state": {
+              "type": "git-view",
+              "state": {},
+              "icon": "git-pull-request",
+              "title": "Source Control"
+            }
           }
-        ]
+        ],
+        "currentTab": 6
       }
     ],
     "direction": "horizontal",
@@ -197,9 +208,10 @@
   },
   "active": "dca74a61d38130bd",
   "lastOpenFiles": [
+    "docs/Sky-Take-Out/00-后端开发知识大本营.md",
+    "docs/面试笔记/JavaSe/集合框架.md",
     "Pasted image 20260321164828.png",
     "docs/Code/DS/细节部分.md",
-    "docs/面试笔记/JavaSe/集合框架.md",
     "docs/面试笔记/JavaSe/String.md",
     "docs/Resume/简历V3.0.md",
     "docs/面试笔记/JavaSe/面向对象.md",

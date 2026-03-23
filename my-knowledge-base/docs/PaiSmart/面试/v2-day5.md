@@ -1,5 +1,5 @@
 ### WebSocket
-- 用户建立 WebSocket 连接后，系统会根据路径中的 JWT 提取当前用户的 userId，从而识别当前是哪位用户在发起对话。收到消息后，后端会根据 userId 获取或创建当前会话的 conversationId，这个 conversationId 用来标识当前这段连续会话，而不是每条消息都新建一个。然后系统会从 Redis 中读取该 conversationId 对应的历史消息，作为多轮对话的上下文基础。接着，系统会基于用户当前输入的消息和 userId 做带权限的检索，拿到检索结果后，通过 `buildContext` 组装成 context。最后再把 userMessage、history 和 context 一起交给 DeepSeek。DeepSeek 会以流式方式返回 chunk，后端再通过 WebSocket 将这些 chunk 持续推送给前端，所以前端会呈现出流式输出的效果。等本轮回答完成后，后端会发送 completion 通知，并将这次用户消息和模型回复写回 Redis。为了避免历史过长，系统只保留最近 20 条消息。
+- 用户建立 WebSocket 连接后，系统会根据路径中的 JWT 提取当前用户的 username，从而识别当前是哪位用户在发起对话。收到消息后，后端会根据 userId 获取或创建当前会话的 conversationId，这个 conversationId 用来标识当前这段连续会话，而不是每条消息都新建一个。然后系统会从 Redis 中读取该 conversationId 对应的历史消息，作为多轮对话的上下文基础。接着，系统会基于用户当前输入的消息和 userId 做带权限的检索，拿到检索结果后，通过 `buildContext` 组装成 context。最后再把 userMessage、history 和 context 一起交给 DeepSeek。DeepSeek 会以流式方式返回 chunk，后端再通过 WebSocket 将这些 chunk 持续推送给前端，所以前端会呈现出流式输出的效果。等本轮回答完成后，后端会发送 completion 通知，并将这次用户消息和模型回复写回 Redis。为了避免历史过长，系统只保留最近 20 条消息。
 
 ### WebSocket 对比于 HTTP 的优势
 - WebSocket具备全双工的协议，不像HTTP一样只可以一方发送消息一方被动接受消息。也正是因为WebSocket可以实时支持服务端主动给用户端推送数据发送消息，因此选择WebSocket来实现这个流式打印。

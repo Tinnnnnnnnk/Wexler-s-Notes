@@ -12,6 +12,9 @@ const VIDEO_SRC = ''
 const LIQUID_BGM_SRC = '/media/home-bgm/liquid-bgm.flac'
 const LIQUID_BGM_TITLE = '60% Reverie'
 const LIQUID_BGM_ARTIST = 'ZZ-STUDIO x HOYO-MiX'
+const LIQUID_HERO_LABEL = 'Digital Garden'
+const LIQUID_HERO_TITLE = "Wexler's Notes"
+const LIQUID_HERO_SUBTITLE = '全栈开发与运维知识库'
 
 const bgmRef = ref(null)
 const isPlaying = ref(false)
@@ -20,6 +23,7 @@ const duration = ref(0)
 const isSeeking = ref(false)
 const volume = ref(0.45)
 const isMiniPlayer = ref(false)
+const isVolumePanelVisible = ref(false)
 
 const isHome = computed(() => route.path === '/')
 const isGlassActive = computed(() => isHome.value && homeFxMode.value === 'glass')
@@ -131,6 +135,23 @@ function handleVolumeInput(event) {
 
 function toggleMiniPlayer() {
   isMiniPlayer.value = !isMiniPlayer.value
+  if (isMiniPlayer.value) {
+    isVolumePanelVisible.value = false
+  }
+}
+
+function toggleVolumePanel() {
+  if (isMiniPlayer.value) return
+  isVolumePanelVisible.value = !isVolumePanelVisible.value
+}
+
+function seekBy(deltaSeconds) {
+  const audio = bgmRef.value
+  if (!audio) return
+  const maxDuration = Number.isFinite(audio.duration) ? audio.duration : 0
+  const target = clamp((Number.isFinite(audio.currentTime) ? audio.currentTime : 0) + deltaSeconds, 0, maxDuration)
+  audio.currentTime = target
+  currentTime.value = target
 }
 
 onMounted(async () => {
@@ -153,6 +174,7 @@ onBeforeUnmount(() => {
     audio.pause()
     audio.currentTime = 0
   }
+  isVolumePanelVisible.value = false
 
   if (typeof document !== 'undefined') {
     document.documentElement.classList.remove('home-glass-mode')
@@ -184,23 +206,22 @@ onBeforeUnmount(() => {
     <span v-if="isLiquidActive" class="home-fx-blob home-fx-blob--one" />
     <span v-if="isLiquidActive" class="home-fx-blob home-fx-blob--two" />
     <span v-if="isLiquidActive" class="home-fx-blob home-fx-blob--three" />
+  </div>
 
-  <div
-    v-if="isLiquidActive"
-    class="home-liquid-player"
-    :class="{ 'is-mini': isMiniPlayer }"
-    role="group"
-    aria-label="Background music controls"
-  >
-    <div class="home-liquid-player__head">
-      <div class="home-liquid-player__meta">
-        <span class="home-liquid-player__orb" aria-hidden="true" />
-        <div>
-          <p class="home-liquid-player__title">{{ LIQUID_BGM_TITLE }}</p>
-          <p class="home-liquid-player__artist">{{ LIQUID_BGM_ARTIST }}</p>
-        </div>
-      </div>
-      <div class="home-liquid-player__actions">
+  <div v-if="isLiquidActive" class="home-liquid-stage">
+    <section class="home-liquid-intro-card" aria-label="Site introduction">
+      <p class="home-liquid-intro-card__kicker">{{ LIQUID_HERO_LABEL }}</p>
+      <h1 class="home-liquid-intro-card__title">{{ LIQUID_HERO_TITLE }}</h1>
+      <p class="home-liquid-intro-card__lead">{{ LIQUID_HERO_SUBTITLE }}</p>
+    </section>
+
+    <div
+      class="home-liquid-player"
+      :class="{ 'is-mini': isMiniPlayer }"
+      role="group"
+      aria-label="Background music controls"
+    >
+      <div class="home-liquid-player__top">
         <button
           type="button"
           class="home-liquid-player__mini-toggle"
@@ -209,47 +230,80 @@ onBeforeUnmount(() => {
         >
           <span class="home-liquid-player__mini-icon" :class="{ 'is-mini': isMiniPlayer }" />
         </button>
+
+        <div class="home-liquid-player__transport">
+          <button
+            type="button"
+            class="home-liquid-player__ctrl"
+            aria-label="Back 10 seconds"
+            @click="seekBy(-10)"
+          >
+            <span class="home-liquid-player__ctrl-icon home-liquid-player__ctrl-icon--back" />
+          </button>
+          <button
+            type="button"
+            class="home-liquid-player__ctrl home-liquid-player__ctrl--main"
+            :aria-label="isPlaying ? 'Pause background music' : 'Play background music'"
+            @click="togglePlay"
+          >
+            <span v-if="isPlaying" class="home-liquid-player__pause-icon" />
+            <span v-else class="home-liquid-player__play-icon" />
+          </button>
+          <button
+            type="button"
+            class="home-liquid-player__ctrl"
+            aria-label="Forward 10 seconds"
+            @click="seekBy(10)"
+          >
+            <span class="home-liquid-player__ctrl-icon home-liquid-player__ctrl-icon--forward" />
+          </button>
+        </div>
+
         <button
           type="button"
-          class="home-liquid-player__play"
-          :aria-label="isPlaying ? 'Pause background music' : 'Play background music'"
-          @click="togglePlay"
+          class="home-liquid-player__volume-toggle"
+          :class="{ 'is-active': isVolumePanelVisible }"
+          aria-label="Toggle volume controls"
+          @click="toggleVolumePanel"
         >
-          <span v-if="isPlaying" class="home-liquid-player__pause-icon" />
-          <span v-else class="home-liquid-player__play-icon" />
+          <span class="home-liquid-player__volume-icon" :class="{ 'is-muted': isMuted }" aria-hidden="true" />
         </button>
       </div>
-    </div>
 
-    <div v-show="!isMiniPlayer" class="home-liquid-player__timeline">
-      <span class="home-liquid-player__time">{{ formatDuration(currentTime) }}</span>
-      <input
-        class="home-liquid-player__slider"
-        type="range"
-        min="0"
-        :max="Math.max(duration, 0.1)"
-        :value="currentTime"
-        step="0.1"
-        aria-label="Seek background music"
-        @input="handleSeekInput"
-        @change="handleSeekCommit"
-      />
-      <span class="home-liquid-player__time">{{ formatDuration(duration) }}</span>
-    </div>
+      <p v-show="!isMiniPlayer" class="home-liquid-player__track">
+        {{ LIQUID_BGM_TITLE }} · {{ LIQUID_BGM_ARTIST }}
+      </p>
 
-    <div v-show="!isMiniPlayer" class="home-liquid-player__volume">
-      <span class="home-liquid-player__volume-icon" :class="{ 'is-muted': isMuted }" aria-hidden="true" />
-      <input
-        class="home-liquid-player__volume-slider"
-        type="range"
-        min="0"
-        max="100"
-        :value="volumePercent"
-        step="1"
-        aria-label="Background music volume"
-        @input="handleVolumeInput"
-      />
-      <span class="home-liquid-player__volume-value">{{ volumePercent }}</span>
+      <div class="home-liquid-player__timeline">
+        <span class="home-liquid-player__time">{{ formatDuration(currentTime) }}</span>
+        <input
+          class="home-liquid-player__slider"
+          type="range"
+          min="0"
+          :max="Math.max(duration, 0.1)"
+          :value="currentTime"
+          step="0.1"
+          aria-label="Seek background music"
+          @input="handleSeekInput"
+          @change="handleSeekCommit"
+        />
+        <span class="home-liquid-player__time">{{ formatDuration(duration) }}</span>
+      </div>
+
+      <div v-show="isVolumePanelVisible && !isMiniPlayer" class="home-liquid-player__volume">
+        <span class="home-liquid-player__volume-icon" :class="{ 'is-muted': isMuted }" aria-hidden="true" />
+        <input
+          class="home-liquid-player__volume-slider"
+          type="range"
+          min="0"
+          max="100"
+          :value="volumePercent"
+          step="1"
+          aria-label="Background music volume"
+          @input="handleVolumeInput"
+        />
+        <span class="home-liquid-player__volume-value">{{ volumePercent }}</span>
+      </div>
     </div>
   </div>
 
@@ -265,5 +319,4 @@ onBeforeUnmount(() => {
     @loadedmetadata="syncPlaybackState"
     @ended="syncPlaybackState"
   />
-  </div>
 </template>

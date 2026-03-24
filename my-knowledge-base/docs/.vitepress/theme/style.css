@@ -134,6 +134,65 @@ body {
   letter-spacing: 0.02em;
 }
 
+.home-fx-toggle {
+  margin-left: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid rgba(74, 109, 134, 0.35);
+  border-radius: 999px;
+  padding: 6px 10px;
+  background: rgba(255, 255, 255, 0.5);
+  color: var(--vp-c-text-1);
+  cursor: pointer;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  transition: transform 0.2s ease, box-shadow 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.home-fx-toggle:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 14px rgba(16, 24, 35, 0.13);
+}
+
+.home-fx-toggle__icon {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  display: inline-block;
+  background: linear-gradient(135deg, #6a8aa0 0%, #3f5d74 100%);
+  position: relative;
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.46);
+}
+
+.home-fx-toggle__icon::after {
+  content: "";
+  position: absolute;
+  right: 1px;
+  top: 1px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.78);
+}
+
+.home-fx-toggle.is-active {
+  border-color: rgba(74, 109, 134, 0.58);
+  background: rgba(74, 109, 134, 0.18);
+}
+
+.dark .home-fx-toggle {
+  border-color: rgba(136, 168, 192, 0.45);
+  background: rgba(26, 40, 54, 0.66);
+}
+
+.dark .home-fx-toggle.is-active {
+  border-color: rgba(156, 188, 210, 0.6);
+  background: rgba(136, 168, 192, 0.24);
+}
+
 .VPHome .VPHero {
   padding-top: 72px !important;
   padding-bottom: 36px !important;
@@ -240,6 +299,95 @@ body {
 
 .VPHero .image-bg {
   display: none !important;
+}
+
+.home-fx-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.home-fx-layer__image,
+.home-fx-layer__video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.home-fx-layer__image {
+  background-image: var(--home-fx-image);
+  background-size: cover;
+  background-position: center;
+  transform: scale(1.05);
+  animation: homeFxDrift 18s ease-in-out infinite alternate;
+}
+
+.home-fx-layer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(22, 31, 42, 0.42) 0%, rgba(22, 31, 42, 0.3) 50%, rgba(22, 31, 42, 0.46) 100%),
+    radial-gradient(circle at 20% 18%, rgba(164, 190, 210, 0.2), transparent 40%);
+}
+
+html.home-glass-mode .Layout {
+  background: transparent;
+}
+
+html.home-glass-mode .Layout::before {
+  opacity: 0.14;
+}
+
+html.home-glass-mode .VPNav {
+  background: rgba(214, 228, 239, 0.45);
+  border-bottom-color: rgba(228, 239, 248, 0.52);
+  backdrop-filter: blur(14px) saturate(130%);
+}
+
+html.home-glass-mode.dark .VPNav {
+  background: rgba(13, 22, 31, 0.52);
+  border-bottom-color: rgba(184, 205, 220, 0.35);
+}
+
+html.home-glass-mode .VPContent.is-home .oilhome-intro,
+html.home-glass-mode .VPContent.is-home .oilhome-signal__item,
+html.home-glass-mode .VPContent.is-home .oilhome-lab,
+html.home-glass-mode .VPContent.is-home .oilhome-lab__item,
+html.home-glass-mode .VPContent.is-home .oilhome-route,
+html.home-glass-mode .VPContent.is-home .oilhome-route__node,
+html.home-glass-mode .VPContent.is-home .oilhome-card,
+html.home-glass-mode .VPContent.is-home .oilhome-footer {
+  background: rgba(238, 247, 255, 0.25) !important;
+  border-color: rgba(242, 249, 255, 0.46) !important;
+  box-shadow: 0 14px 24px rgba(8, 16, 23, 0.2) !important;
+  backdrop-filter: blur(14px) saturate(130%);
+}
+
+html.home-glass-mode .VPContent.is-home .oilhome-kicker,
+html.home-glass-mode .VPContent.is-home .oilhome-card__meta,
+html.home-glass-mode .VPContent.is-home .oilhome-lead,
+html.home-glass-mode .VPContent.is-home .oilhome-route__node p,
+html.home-glass-mode .VPContent.is-home .oilhome-lab__item p {
+  color: #e8f3fa;
+}
+
+html.home-glass-mode .VPContent.is-home .oilhome-card__meta {
+  background: rgba(218, 237, 250, 0.22);
+}
+
+html.home-glass-mode .VPContent.is-home .VPHero .text,
+html.home-glass-mode .VPContent.is-home .VPHero .tagline {
+  color: #e8f3fa;
+}
+
+html.home-glass-mode .VPContent.is-home .VPHero .name {
+  background: linear-gradient(120deg, #ffffff 0%, #d9ebf8 55%, #bdd9ec 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .VPDoc .content-container {
@@ -885,6 +1033,20 @@ body {
 
   50% {
     transform: rotate(-0.7deg) translateY(-8px);
+  }
+}
+
+@keyframes homeFxDrift {
+  0% {
+    transform: scale(1.05) translate3d(0, 0, 0);
+  }
+
+  50% {
+    transform: scale(1.09) translate3d(-1.2%, -1.2%, 0);
+  }
+
+  100% {
+    transform: scale(1.07) translate3d(1.2%, 0.9%, 0);
   }
 }
 
@@ -1685,6 +1847,15 @@ body {
     margin: 0 auto;
   }
 
+  .home-fx-toggle {
+    margin-left: 8px;
+    padding: 6px 8px;
+  }
+
+  .home-fx-toggle__text {
+    display: none;
+  }
+
   .oilhome-shell {
     margin-top: 16px;
     padding: 0 14px 34px;
@@ -1772,6 +1943,10 @@ body {
   .VPButton {
     width: 100%;
     justify-content: center;
+  }
+
+  .home-fx-toggle {
+    display: none;
   }
 
   .oilhome-intro {

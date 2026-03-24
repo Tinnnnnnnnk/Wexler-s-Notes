@@ -1,7 +1,7 @@
 import { ref } from 'vue'
 
-const STORAGE_KEY = 'wexler.homeFx.glassMode'
-const homeFxEnabled = ref(false)
+const STORAGE_KEY = 'wexler.homeFx.mode'
+const homeFxMode = ref('default')
 let initialized = false
 
 function safeReadStorage() {
@@ -16,7 +16,7 @@ function safeReadStorage() {
 function safeWriteStorage(value) {
   if (typeof window === 'undefined') return
   try {
-    localStorage.setItem(STORAGE_KEY, value ? '1' : '0')
+    localStorage.setItem(STORAGE_KEY, value)
   } catch (error) {
     // Ignore storage errors.
   }
@@ -24,17 +24,22 @@ function safeWriteStorage(value) {
 
 function initHomeFxState() {
   if (initialized) return
-  homeFxEnabled.value = safeReadStorage() === '1'
+  const savedMode = safeReadStorage()
+  homeFxMode.value = savedMode === 'glass' || savedMode === 'liquid' ? savedMode : 'default'
   initialized = true
 }
 
-function setHomeFxEnabled(value) {
-  homeFxEnabled.value = Boolean(value)
-  safeWriteStorage(homeFxEnabled.value)
+function setHomeFxMode(mode) {
+  homeFxMode.value = mode === 'glass' || mode === 'liquid' ? mode : 'default'
+  safeWriteStorage(homeFxMode.value)
 }
 
-function toggleHomeFxEnabled() {
-  setHomeFxEnabled(!homeFxEnabled.value)
+function toggleHomeFxMode(targetMode) {
+  if (targetMode !== 'glass' && targetMode !== 'liquid') {
+    setHomeFxMode('default')
+    return
+  }
+  setHomeFxMode(homeFxMode.value === targetMode ? 'default' : targetMode)
 }
 
-export { homeFxEnabled, initHomeFxState, setHomeFxEnabled, toggleHomeFxEnabled }
+export { homeFxMode, initHomeFxState, setHomeFxMode, toggleHomeFxMode }

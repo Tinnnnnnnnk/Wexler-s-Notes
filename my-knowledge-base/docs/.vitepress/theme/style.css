@@ -134,15 +134,25 @@ body {
   letter-spacing: 0.02em;
 }
 
-.home-fx-toggle {
+.home-fx-switch {
   margin-left: 10px;
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  border: 1px solid rgba(74, 109, 134, 0.35);
+}
+
+.home-fx-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid rgba(174, 203, 225, 0.5);
   border-radius: 999px;
   padding: 6px 10px;
-  background: rgba(255, 255, 255, 0.5);
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.56) 0%, rgba(222, 237, 249, 0.4) 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.64),
+    0 10px 16px rgba(16, 24, 35, 0.12);
   color: var(--vp-c-text-1);
   cursor: pointer;
   font-size: 0.78rem;
@@ -154,7 +164,9 @@ body {
 
 .home-fx-toggle:hover {
   transform: translateY(-1px);
-  box-shadow: 0 8px 14px rgba(16, 24, 35, 0.13);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.72),
+    0 12px 18px rgba(16, 24, 35, 0.16);
 }
 
 .home-fx-toggle__icon {
@@ -162,35 +174,56 @@ body {
   height: 14px;
   border-radius: 50%;
   display: inline-block;
-  background: linear-gradient(135deg, #6a8aa0 0%, #3f5d74 100%);
+  background: linear-gradient(135deg, #9fc4dd 0%, #5d88a7 100%);
   position: relative;
-  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.46);
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.52);
 }
 
 .home-fx-toggle__icon::after {
   content: "";
   position: absolute;
-  right: 1px;
-  top: 1px;
+  right: 2px;
+  top: 2px;
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.78);
+  background: rgba(255, 255, 255, 0.86);
+}
+
+.home-fx-toggle--liquid .home-fx-toggle__icon {
+  border-radius: 44% 56% 58% 42% / 45% 55% 45% 55%;
+  background: linear-gradient(135deg, #bbe3ff 0%, #6fa4ce 48%, #6f8ad1 100%);
+}
+
+.home-fx-toggle--liquid .home-fx-toggle__icon::after {
+  width: 4px;
+  height: 4px;
+  top: 3px;
+  right: 3px;
 }
 
 .home-fx-toggle.is-active {
-  border-color: rgba(74, 109, 134, 0.58);
-  background: rgba(74, 109, 134, 0.18);
+  border-color: rgba(166, 203, 226, 0.75);
+  background:
+    linear-gradient(145deg, rgba(219, 237, 250, 0.62) 0%, rgba(178, 213, 238, 0.45) 100%);
+}
+
+.home-fx-toggle--liquid.is-active {
+  border-color: rgba(191, 216, 255, 0.85);
+  background:
+    linear-gradient(145deg, rgba(204, 228, 255, 0.68) 0%, rgba(170, 198, 244, 0.46) 100%);
 }
 
 .dark .home-fx-toggle {
-  border-color: rgba(136, 168, 192, 0.45);
-  background: rgba(26, 40, 54, 0.66);
+  border-color: rgba(130, 170, 198, 0.52);
+  background:
+    linear-gradient(145deg, rgba(30, 47, 64, 0.74) 0%, rgba(24, 39, 54, 0.68) 100%);
 }
 
 .dark .home-fx-toggle.is-active {
-  border-color: rgba(156, 188, 210, 0.6);
-  background: rgba(136, 168, 192, 0.24);
+  border-color: rgba(156, 195, 225, 0.7);
+  background:
+    linear-gradient(145deg, rgba(51, 79, 101, 0.78) 0%, rgba(39, 63, 84, 0.72) 100%);
 }
 
 .VPHome .VPHero {
@@ -333,6 +366,61 @@ body {
     radial-gradient(circle at 20% 18%, rgba(164, 190, 210, 0.2), transparent 40%);
 }
 
+.home-fx-layer.is-liquid::after {
+  background:
+    linear-gradient(180deg, rgba(16, 22, 31, 0.2) 0%, rgba(16, 22, 31, 0.32) 100%),
+    radial-gradient(circle at 17% 14%, rgba(255, 232, 246, 0.25), transparent 38%),
+    radial-gradient(circle at 82% 18%, rgba(198, 232, 255, 0.2), transparent 36%);
+}
+
+.home-fx-layer__liquid-aura {
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(
+      -22deg,
+      rgba(255, 255, 255, 0.08) 0 6px,
+      transparent 6px 16px
+    );
+  opacity: 0.38;
+}
+
+.home-fx-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(2px);
+  pointer-events: none;
+  mix-blend-mode: screen;
+  opacity: 0.55;
+  animation: homeFxBlobFloat 14s ease-in-out infinite;
+}
+
+.home-fx-blob--one {
+  width: 280px;
+  height: 280px;
+  top: -56px;
+  left: -78px;
+  background: radial-gradient(circle, rgba(255, 205, 238, 0.46) 0%, rgba(255, 205, 238, 0) 70%);
+}
+
+.home-fx-blob--two {
+  width: 320px;
+  height: 320px;
+  right: -104px;
+  top: 18%;
+  animation-delay: -4s;
+  background: radial-gradient(circle, rgba(178, 222, 255, 0.42) 0%, rgba(178, 222, 255, 0) 72%);
+}
+
+.home-fx-blob--three {
+  width: 260px;
+  height: 260px;
+  left: 40%;
+  bottom: -96px;
+  animation-delay: -8s;
+  background: radial-gradient(circle, rgba(207, 223, 255, 0.4) 0%, rgba(207, 223, 255, 0) 72%);
+}
+
 html.home-glass-mode .Layout {
   background: transparent;
 }
@@ -388,6 +476,100 @@ html.home-glass-mode .VPContent.is-home .VPHero .name {
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+
+html.home-liquid-mode .Layout {
+  background: transparent;
+}
+
+html.home-liquid-mode .Layout::before {
+  opacity: 0.11;
+}
+
+html.home-liquid-mode .VPNav {
+  background: rgba(230, 243, 255, 0.34);
+  border-bottom-color: rgba(255, 255, 255, 0.56);
+  backdrop-filter: blur(18px) saturate(155%);
+}
+
+html.home-liquid-mode.dark .VPNav {
+  background: rgba(16, 25, 36, 0.42);
+  border-bottom-color: rgba(192, 218, 236, 0.42);
+}
+
+html.home-liquid-mode .VPContent.is-home .VPHero {
+  padding-top: 92px !important;
+  padding-bottom: 16px !important;
+}
+
+html.home-liquid-mode .VPContent.is-home .VPHero .main {
+  border: 1px solid rgba(244, 250, 255, 0.6);
+  border-radius: 28px;
+  padding: clamp(18px, 2.6vw, 30px);
+  background: rgba(235, 246, 255, 0.24);
+  backdrop-filter: blur(22px) saturate(150%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.72),
+    0 20px 34px rgba(4, 11, 19, 0.28);
+}
+
+html.home-liquid-mode .VPContent.is-home .VPHero .image-container {
+  transform: none;
+  border-radius: 34px;
+  background: rgba(236, 248, 255, 0.2);
+  backdrop-filter: blur(16px) saturate(145%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.64),
+    0 18px 30px rgba(4, 11, 19, 0.26);
+}
+
+html.home-liquid-mode .VPContent.is-home .VPHero .name {
+  font-size: clamp(2.7rem, 8.5vw, 6.1rem);
+  font-style: italic;
+  letter-spacing: -0.03em;
+  background: linear-gradient(120deg, #ffffff 0%, #ecf7ff 48%, #d2e8f8 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 10px 20px rgba(9, 18, 25, 0.18);
+}
+
+html.home-liquid-mode .VPContent.is-home .VPHero .text,
+html.home-liquid-mode .VPContent.is-home .VPHero .tagline {
+  color: #f0f8ff;
+}
+
+html.home-liquid-mode .VPContent.is-home .VPHero .actions .VPButton {
+  border: 1px solid rgba(245, 252, 255, 0.62);
+  background: rgba(227, 242, 255, 0.22);
+  backdrop-filter: blur(12px);
+}
+
+html.home-liquid-mode .VPContent.is-home .oilhome-signal,
+html.home-liquid-mode .VPContent.is-home .oilhome-lab,
+html.home-liquid-mode .VPContent.is-home .oilhome-route,
+html.home-liquid-mode .VPContent.is-home .oilhome-grid,
+html.home-liquid-mode .VPContent.is-home .oilhome-footer {
+  display: none !important;
+}
+
+html.home-liquid-mode .VPContent.is-home .oilhome-shell {
+  margin-top: 12px;
+}
+
+html.home-liquid-mode .VPContent.is-home .oilhome-intro {
+  border-color: rgba(245, 251, 255, 0.6);
+  background: rgba(232, 246, 255, 0.2);
+  backdrop-filter: blur(22px) saturate(140%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.72),
+    0 18px 30px rgba(5, 12, 18, 0.26);
+}
+
+html.home-liquid-mode .VPContent.is-home .oilhome-intro h2,
+html.home-liquid-mode .VPContent.is-home .oilhome-lead,
+html.home-liquid-mode .VPContent.is-home .oilhome-kicker {
+  color: #f2f9ff;
 }
 
 .VPDoc .content-container {
@@ -1047,6 +1229,17 @@ html.home-glass-mode .VPContent.is-home .VPHero .name {
 
   100% {
     transform: scale(1.07) translate3d(1.2%, 0.9%, 0);
+  }
+}
+
+@keyframes homeFxBlobFloat {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate3d(2.6%, -2.2%, 0) scale(1.06);
   }
 }
 
@@ -1847,8 +2040,12 @@ html.home-glass-mode .VPContent.is-home .VPHero .name {
     margin: 0 auto;
   }
 
-  .home-fx-toggle {
+  .home-fx-switch {
     margin-left: 8px;
+    gap: 6px;
+  }
+
+  .home-fx-toggle {
     padding: 6px 8px;
   }
 
@@ -1945,7 +2142,7 @@ html.home-glass-mode .VPContent.is-home .VPHero .name {
     justify-content: center;
   }
 
-  .home-fx-toggle {
+  .home-fx-switch {
     display: none;
   }
 

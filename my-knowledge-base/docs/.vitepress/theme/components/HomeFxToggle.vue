@@ -1,13 +1,17 @@
 <script setup>
 import { computed, onMounted } from 'vue'
 import { useRoute } from 'vitepress'
-import { homeFxEnabled, initHomeFxState, toggleHomeFxEnabled } from './homeFxState'
+import { homeFxMode, initHomeFxState, toggleHomeFxMode } from './homeFxState'
 
 const route = useRoute()
 const isHome = computed(() => route.path === '/')
 
-function handleToggle() {
-  toggleHomeFxEnabled()
+function toggleGlass() {
+  toggleHomeFxMode('glass')
+}
+
+function toggleLiquid() {
+  toggleHomeFxMode('liquid')
 }
 
 onMounted(() => {
@@ -16,15 +20,26 @@ onMounted(() => {
 </script>
 
 <template>
-  <button
-    v-if="isHome"
-    type="button"
-    class="home-fx-toggle"
-    :class="{ 'is-active': homeFxEnabled }"
-    :aria-label="homeFxEnabled ? '切换到默认主页样式' : '切换到玻璃动态主页样式'"
-    @click="handleToggle"
-  >
-    <span class="home-fx-toggle__icon" />
-    <span class="home-fx-toggle__text">形态</span>
-  </button>
+  <div v-if="isHome" class="home-fx-switch">
+    <button
+      type="button"
+      class="home-fx-toggle"
+      :class="{ 'is-active': homeFxMode === 'glass' }"
+      aria-label="切换晶透玻璃样式"
+      @click="toggleGlass"
+    >
+      <span class="home-fx-toggle__icon" />
+      <span class="home-fx-toggle__text">晶透</span>
+    </button>
+    <button
+      type="button"
+      class="home-fx-toggle home-fx-toggle--liquid"
+      :class="{ 'is-active': homeFxMode === 'liquid' }"
+      aria-label="切换液态玻璃样式"
+      @click="toggleLiquid"
+    >
+      <span class="home-fx-toggle__icon" />
+      <span class="home-fx-toggle__text">液态</span>
+    </button>
+  </div>
 </template>

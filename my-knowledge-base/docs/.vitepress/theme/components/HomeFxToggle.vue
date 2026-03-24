@@ -25,17 +25,20 @@ onMounted(() => {
       type="button"
       class="home-fx-toggle"
       :class="{ 'is-active': homeFxMode === 'glass' }"
-      aria-label="切换晶透玻璃样式"
+      aria-label="Toggle glass mode"
+      title="晶透风格"
       @click="toggleGlass"
     >
       <span class="home-fx-toggle__icon" />
       <span class="home-fx-toggle__text">晶透</span>
     </button>
+
     <button
       type="button"
       class="home-fx-toggle home-fx-toggle--liquid"
       :class="{ 'is-active': homeFxMode === 'liquid' }"
-      aria-label="切换液态玻璃样式"
+      aria-label="Toggle liquid mode"
+      title="液态风格"
       @click="toggleLiquid"
     >
       <span class="home-fx-toggle__icon" />

@@ -83,12 +83,6 @@ function syncBgm() {
 
   if (isLiquidActive.value) {
     setVolume(volume.value)
-    const playPromise = audio.play()
-    if (playPromise?.catch) {
-      playPromise.catch(() => {
-        // Browser blocked autoplay; user can press play.
-      })
-    }
     syncPlaybackState()
     return
   }

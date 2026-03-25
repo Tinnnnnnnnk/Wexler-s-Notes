@@ -20,33 +20,8 @@
               "icon": "lucide-file",
               "title": "集合框架"
             }
-          },
-          {
-            "id": "fc90c0a32a1643b0",
-            "type": "leaf",
-            "state": {
-              "type": "release-notes",
-              "state": {
-                "currentVersion": "1.12.7"
-              },
-              "icon": "lucide-book-up",
-              "title": "版本说明 1.12.7"
-            }
-          },
-          {
-            "id": "f687bfa8d03f7de1",
-            "type": "leaf",
-            "state": {
-              "type": "image",
-              "state": {
-                "file": "images/Pasted image 20260323212157.jpg"
-              },
-              "icon": "lucide-image",
-              "title": "Pasted image 20260323212157"
-            }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "vertical"
@@ -231,8 +206,9 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "fc90c0a32a1643b0",
+  "active": "dca74a61d38130bd",
   "lastOpenFiles": [
+    "images/Pasted image 20260323212157.jpg",
     "docs/index.md",
     "docs/test1.md",
     "docs/未命名.base",
@@ -243,7 +219,6 @@
     "docs/public/media/home-bg/test1.jpg",
     "docs/public/media/home-bg",
     "docs/public/media",
-    "images/Pasted image 20260323212157.jpg",
     "[/images/Pasted.md",
     "未命名.base",
     "docs/Sky-Take-Out/02-Java 后端核心与 SpringBoot 实战手册.md",

@@ -26,10 +26,18 @@ const isMiniPlayer = ref(false)
 const isVolumePanelVisible = ref(false)
 
 const isHome = computed(() => route.path === '/')
-const isDefaultActive = computed(() => isHome.value && homeFxMode.value === 'default')
-const isGlassActive = computed(() => isHome.value && homeFxMode.value === 'glass')
-const isLiquidActive = computed(() => isHome.value && homeFxMode.value === 'liquid')
+const isSkyTakeOut = computed(() => route.path.startsWith('/Sky-Take-Out/'))
+
+/** 首页 / 知识库 的晶透或液态背景层 */
+const isGlassActive = computed(() => (isHome.value || isSkyTakeOut.value) && homeFxMode.value === 'glass')
+const isLiquidActive = computed(() => (isHome.value || isSkyTakeOut.value) && homeFxMode.value === 'liquid')
 const isActive = computed(() => isGlassActive.value || isLiquidActive.value)
+
+/** 仅首页液态：介绍文案与音乐播放器 */
+const isLiquidHomeStage = computed(() => isHome.value && homeFxMode.value === 'liquid')
+
+/** 仅首页液态：背景音乐逻辑与 <audio> */
+const isLiquidHomeBgm = computed(() => isHome.value && homeFxMode.value === 'liquid')
 const isMuted = computed(() => volume.value <= 0.001)
 const volumePercent = computed(() => Math.round(volume.value * 100))
 
@@ -39,9 +47,15 @@ const layerStyle = computed(() => ({
 
 function syncHtmlClass() {
   if (typeof document === 'undefined') return
-  document.documentElement.classList.toggle('home-default-mode', isDefaultActive.value)
-  document.documentElement.classList.toggle('home-glass-mode', isGlassActive.value)
-  document.documentElement.classList.toggle('home-liquid-mode', isLiquidActive.value)
+
+  const mode = homeFxMode.value
+  document.documentElement.classList.toggle('home-default-mode', isHome.value && mode === 'default')
+  document.documentElement.classList.toggle('home-glass-mode', isHome.value && mode === 'glass')
+  document.documentElement.classList.toggle('home-liquid-mode', isHome.value && mode === 'liquid')
+
+  document.documentElement.classList.toggle('sky-default-mode', isSkyTakeOut.value && mode === 'default')
+  document.documentElement.classList.toggle('sky-glass-mode', isSkyTakeOut.value && mode === 'glass')
+  document.documentElement.classList.toggle('sky-liquid-mode', isSkyTakeOut.value && mode === 'liquid')
 }
 
 function formatDuration(seconds) {
@@ -81,7 +95,7 @@ function syncBgm() {
   const audio = bgmRef.value
   if (!audio) return
 
-  if (isLiquidActive.value) {
+  if (isLiquidHomeBgm.value) {
     setVolume(volume.value)
     syncPlaybackState()
     return
@@ -176,6 +190,9 @@ onBeforeUnmount(() => {
     document.documentElement.classList.remove('home-default-mode')
     document.documentElement.classList.remove('home-glass-mode')
     document.documentElement.classList.remove('home-liquid-mode')
+    document.documentElement.classList.remove('sky-default-mode')
+    document.documentElement.classList.remove('sky-glass-mode')
+    document.documentElement.classList.remove('sky-liquid-mode')
   }
 })
 </script>
@@ -205,7 +222,7 @@ onBeforeUnmount(() => {
     <span v-if="isLiquidActive" class="home-fx-blob home-fx-blob--three" />
   </div>
 
-  <div v-if="isLiquidActive" class="home-liquid-stage">
+  <div v-if="isLiquidHomeStage" class="home-liquid-stage">
     <section class="home-liquid-intro-card" aria-label="Site introduction">
       <p class="home-liquid-intro-card__kicker">{{ LIQUID_HERO_LABEL }}</p>
       <h1 class="home-liquid-intro-card__title">{{ LIQUID_HERO_TITLE }}</h1>
@@ -305,7 +322,7 @@ onBeforeUnmount(() => {
   </div>
 
   <audio
-    v-if="isActive"
+    v-if="isLiquidHomeBgm"
     ref="bgmRef"
     preload="metadata"
     loop

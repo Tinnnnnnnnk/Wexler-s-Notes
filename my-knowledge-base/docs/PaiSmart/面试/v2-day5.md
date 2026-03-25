@@ -14,3 +14,5 @@
 - 设置了两种key
 - 第一种 key 用于定位用户的会话，格式为 `user:{userId}:current_conversation`，value 是一个 UUID 的字符串。
 - 第二种 key 用于存储真正的聊天记录，它的格式是：`conversation:{conversationId}`，value 是一个 JSON 字符串，该字符串序列化了一个包含多条对话的列表。
+### 多轮对话如何管理和利用上下文？
+- 当前采用了基于Redis的对话历史管理机制，每个用户有一个唯一的ID，所有对话都按时间顺序存放在Redis中，设置了7天的过期时间

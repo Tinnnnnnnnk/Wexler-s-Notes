@@ -5,6 +5,8 @@ import { homeFxMode, initHomeFxState, setHomeFxMode, toggleHomeFxMode } from './
 
 const route = useRoute()
 const isHome = computed(() => route.path === '/')
+const isSkyTakeOut = computed(() => route.path.startsWith('/Sky-Take-Out/'))
+const showToggle = computed(() => isHome.value || isSkyTakeOut.value)
 
 function setDefault() {
   setHomeFxMode('default')
@@ -24,7 +26,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div v-if="isHome" class="home-fx-switch">
+  <div v-if="showToggle" class="home-fx-switch">
     <button
       type="button"
       class="home-fx-toggle home-fx-toggle--default"

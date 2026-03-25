@@ -28,9 +28,9 @@ const isVolumePanelVisible = ref(false)
 const isHome = computed(() => route.path === '/')
 const isSkyTakeOut = computed(() => route.path.startsWith('/Sky-Take-Out/'))
 
-/** 首页 / 知识库 的晶透或液态背景层 */
-const isGlassActive = computed(() => (isHome.value || isSkyTakeOut.value) && homeFxMode.value === 'glass')
-const isLiquidActive = computed(() => (isHome.value || isSkyTakeOut.value) && homeFxMode.value === 'liquid')
+/** 全站：晶透或液态背景层（由 localStorage 模式决定） */
+const isGlassActive = computed(() => homeFxMode.value === 'glass')
+const isLiquidActive = computed(() => homeFxMode.value === 'liquid')
 const isActive = computed(() => isGlassActive.value || isLiquidActive.value)
 
 /** 仅首页液态：介绍文案与音乐播放器 */
@@ -49,13 +49,16 @@ function syncHtmlClass() {
   if (typeof document === 'undefined') return
 
   const mode = homeFxMode.value
-  document.documentElement.classList.toggle('home-default-mode', isHome.value && mode === 'default')
-  document.documentElement.classList.toggle('home-glass-mode', isHome.value && mode === 'glass')
-  document.documentElement.classList.toggle('home-liquid-mode', isHome.value && mode === 'liquid')
+  const sky = isSkyTakeOut.value
 
-  document.documentElement.classList.toggle('sky-default-mode', isSkyTakeOut.value && mode === 'default')
-  document.documentElement.classList.toggle('sky-glass-mode', isSkyTakeOut.value && mode === 'glass')
-  document.documentElement.classList.toggle('sky-liquid-mode', isSkyTakeOut.value && mode === 'liquid')
+  document.documentElement.classList.toggle('home-default-mode', isHome.value && mode === 'default')
+
+  document.documentElement.classList.toggle('home-glass-mode', mode === 'glass')
+  document.documentElement.classList.toggle('home-liquid-mode', mode === 'liquid')
+
+  document.documentElement.classList.toggle('sky-default-mode', sky && mode === 'default')
+  document.documentElement.classList.toggle('sky-glass-mode', sky && mode === 'glass')
+  document.documentElement.classList.toggle('sky-liquid-mode', sky && mode === 'liquid')
 }
 
 function formatDuration(seconds) {

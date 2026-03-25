@@ -1,10 +1,14 @@
 <script setup>
 import { computed, onMounted } from 'vue'
 import { useRoute } from 'vitepress'
-import { homeFxMode, initHomeFxState, toggleHomeFxMode } from './homeFxState'
+import { homeFxMode, initHomeFxState, setHomeFxMode, toggleHomeFxMode } from './homeFxState'
 
 const route = useRoute()
 const isHome = computed(() => route.path === '/')
+
+function setDefault() {
+  setHomeFxMode('default')
+}
 
 function toggleGlass() {
   toggleHomeFxMode('glass')
@@ -23,26 +27,38 @@ onMounted(() => {
   <div v-if="isHome" class="home-fx-switch">
     <button
       type="button"
+      class="home-fx-toggle home-fx-toggle--default"
+      :class="{ 'is-active': homeFxMode === 'default' }"
+      aria-label="Switch to default mode"
+      title="Default mode"
+      @click="setDefault"
+    >
+      <span class="home-fx-toggle__icon" />
+      <span class="home-fx-toggle__text">&#24120;&#24577;</span>
+    </button>
+
+    <button
+      type="button"
       class="home-fx-toggle"
       :class="{ 'is-active': homeFxMode === 'glass' }"
-      aria-label="Toggle glass mode"
-      title="晶透风格"
+      aria-label="Switch to glass mode"
+      title="Glass mode"
       @click="toggleGlass"
     >
       <span class="home-fx-toggle__icon" />
-      <span class="home-fx-toggle__text">晶透</span>
+      <span class="home-fx-toggle__text">&#26230;&#36879;</span>
     </button>
 
     <button
       type="button"
       class="home-fx-toggle home-fx-toggle--liquid"
       :class="{ 'is-active': homeFxMode === 'liquid' }"
-      aria-label="Toggle liquid mode"
-      title="液态风格"
+      aria-label="Switch to liquid mode"
+      title="Liquid mode"
       @click="toggleLiquid"
     >
       <span class="home-fx-toggle__icon" />
-      <span class="home-fx-toggle__text">液态</span>
+      <span class="home-fx-toggle__text">&#28082;&#24577;</span>
     </button>
   </div>
 </template>

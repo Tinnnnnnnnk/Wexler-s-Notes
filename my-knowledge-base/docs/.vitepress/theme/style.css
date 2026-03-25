@@ -142,6 +142,7 @@ body {
 }
 
 .home-fx-toggle {
+  position: relative;
   display: inline-flex;
   align-items: center;
   gap: 7px;
@@ -202,10 +203,45 @@ body {
   right: 3px;
 }
 
+.home-fx-toggle--default .home-fx-toggle__icon {
+  border-radius: 4px;
+  background: linear-gradient(135deg, #bfd2df 0%, #7f9db4 100%);
+}
+
+.home-fx-toggle--default .home-fx-toggle__icon::after {
+  border-radius: 2px;
+  width: 4px;
+  height: 4px;
+  top: 3px;
+  right: 3px;
+}
+
 .home-fx-toggle.is-active {
   border-color: rgba(166, 203, 226, 0.75);
   background:
     linear-gradient(145deg, rgba(219, 237, 250, 0.62) 0%, rgba(178, 213, 238, 0.45) 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.76),
+    0 12px 18px rgba(16, 24, 35, 0.16);
+}
+
+.home-fx-toggle.is-active::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -5px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  transform: translateX(-50%);
+  background: currentColor;
+  opacity: 0.88;
+}
+
+.home-fx-toggle--default.is-active {
+  border-color: rgba(167, 194, 214, 0.8);
+  background:
+    linear-gradient(145deg, rgba(220, 233, 244, 0.64) 0%, rgba(186, 207, 225, 0.45) 100%);
 }
 
 .home-fx-toggle--liquid.is-active {
@@ -340,6 +376,7 @@ body {
   z-index: 0;
   pointer-events: none;
   overflow: hidden;
+  contain: paint;
 }
 
 .home-fx-layer__image,
@@ -511,6 +548,10 @@ html.home-liquid-mode .VPContent.is-home {
   z-index: 2;
 }
 
+html.home-liquid-mode .VPFooter {
+  display: none !important;
+}
+
 .home-liquid-stage {
   position: fixed;
   inset: 0;
@@ -520,7 +561,7 @@ html.home-liquid-mode .VPContent.is-home {
   align-items: center;
   justify-content: center;
   gap: clamp(14px, 2.2vw, 24px);
-  padding: calc(var(--vp-nav-height, 64px) + 14px) 14px 24px;
+  padding: calc(var(--vp-nav-height, 64px) + 14px) 14px 12px;
   pointer-events: none;
 }
 
@@ -582,15 +623,15 @@ html.home-liquid-mode .VPContent.is-home {
 
 .home-liquid-player {
   position: relative;
-  width: min(760px, calc(100vw - 28px));
+  width: min(860px, calc(100vw - 24px));
   border-radius: 18px;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  padding: 10px 12px 9px;
-  background: linear-gradient(160deg, rgba(30, 22, 16, 0.22) 0%, rgba(24, 18, 14, 0.12) 100%);
-  backdrop-filter: blur(20px) saturate(125%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 12px 15px 11px;
+  background: linear-gradient(160deg, rgba(30, 22, 16, 0.14) 0%, rgba(24, 18, 14, 0.07) 100%);
+  backdrop-filter: blur(22px) saturate(128%);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.16),
-    0 10px 20px rgba(7, 8, 13, 0.18);
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 8px 16px rgba(7, 8, 13, 0.12);
   pointer-events: auto;
   transition:
     width 0.24s ease,
@@ -599,9 +640,9 @@ html.home-liquid-mode .VPContent.is-home {
 }
 
 .home-liquid-player.is-mini {
-  width: min(430px, calc(100vw - 28px));
+  width: min(500px, calc(100vw - 24px));
   border-radius: 999px;
-  padding: 8px 10px 7px;
+  padding: 9px 11px 8px;
 }
 
 .home-liquid-player__top {
@@ -623,7 +664,7 @@ html.home-liquid-mode .VPContent.is-home {
   height: 34px;
   border: 0;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.045);
   color: #f9fcff;
   display: grid;
   place-items: center;
@@ -633,14 +674,14 @@ html.home-liquid-mode .VPContent.is-home {
 
 .home-liquid-player__ctrl:hover {
   transform: translateY(-1px);
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.09);
 }
 
 .home-liquid-player__ctrl--main {
   width: 40px;
   height: 40px;
-  background: rgba(255, 255, 255, 0.14);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28);
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
 .home-liquid-player__ctrl-icon {
@@ -687,9 +728,9 @@ html.home-liquid-mode .VPContent.is-home {
 .home-liquid-player__volume-toggle {
   width: 30px;
   height: 30px;
-  border: 1px solid rgba(255, 255, 255, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.16);
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.035);
   display: grid;
   place-items: center;
   color: #f4f9ff;
@@ -697,7 +738,7 @@ html.home-liquid-mode .VPContent.is-home {
 }
 
 .home-liquid-player__volume-toggle.is-active {
-  background: rgba(255, 255, 255, 0.13);
+  background: rgba(255, 255, 255, 0.09);
 }
 
 .home-liquid-player__mini-icon {
@@ -2370,7 +2411,7 @@ html.home-liquid-mode .VPContent.is-home {
 
   .home-liquid-intro-card,
   .home-liquid-player {
-    width: min(760px, calc(100vw - 20px));
+    width: min(820px, calc(100vw - 18px));
   }
 
   .home-liquid-intro-card {
@@ -2379,7 +2420,7 @@ html.home-liquid-mode .VPContent.is-home {
   }
 
   .home-liquid-player.is-mini {
-    width: min(320px, calc(100vw - 20px));
+    width: min(430px, calc(100vw - 18px));
   }
 
   .oilhome-shell {
@@ -2505,7 +2546,7 @@ html.home-liquid-mode .VPContent.is-home {
   }
 
   .home-liquid-player {
-    padding: 8px 8px 7px;
+    padding: 9px 10px 8px;
     border-radius: 14px;
   }
 
@@ -2552,8 +2593,8 @@ html.home-liquid-mode .VPContent.is-home {
   }
 
   .home-liquid-player.is-mini {
-    width: min(280px, calc(100vw - 14px));
-    padding: 6px 8px 6px;
+    width: min(330px, calc(100vw - 14px));
+    padding: 7px 9px 6px;
   }
 
   .oilhome-intro {

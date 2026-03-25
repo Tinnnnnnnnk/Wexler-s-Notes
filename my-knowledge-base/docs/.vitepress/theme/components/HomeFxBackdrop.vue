@@ -14,7 +14,7 @@ const LIQUID_BGM_TITLE = '60% Reverie'
 const LIQUID_BGM_ARTIST = 'ZZ-STUDIO x HOYO-MiX'
 const LIQUID_HERO_LABEL = 'Digital Garden'
 const LIQUID_HERO_TITLE = "Wexler's Notes"
-const LIQUID_HERO_SUBTITLE = '全栈开发与运维知识库'
+const LIQUID_HERO_SUBTITLE = '\u5168\u6808\u5f00\u53d1\u4e0e\u8fd0\u7ef4\u77e5\u8bc6\u5e93'
 
 const bgmRef = ref(null)
 const isPlaying = ref(false)
@@ -26,6 +26,7 @@ const isMiniPlayer = ref(false)
 const isVolumePanelVisible = ref(false)
 
 const isHome = computed(() => route.path === '/')
+const isDefaultActive = computed(() => isHome.value && homeFxMode.value === 'default')
 const isGlassActive = computed(() => isHome.value && homeFxMode.value === 'glass')
 const isLiquidActive = computed(() => isHome.value && homeFxMode.value === 'liquid')
 const isActive = computed(() => isGlassActive.value || isLiquidActive.value)
@@ -38,6 +39,7 @@ const layerStyle = computed(() => ({
 
 function syncHtmlClass() {
   if (typeof document === 'undefined') return
+  document.documentElement.classList.toggle('home-default-mode', isDefaultActive.value)
   document.documentElement.classList.toggle('home-glass-mode', isGlassActive.value)
   document.documentElement.classList.toggle('home-liquid-mode', isLiquidActive.value)
 }
@@ -162,7 +164,7 @@ onMounted(async () => {
   syncBgm()
 })
 
-watch([isActive, () => route.path], async () => {
+watch([() => homeFxMode.value, () => route.path], async () => {
   syncHtmlClass()
   await nextTick()
   syncBgm()
@@ -177,6 +179,7 @@ onBeforeUnmount(() => {
   isVolumePanelVisible.value = false
 
   if (typeof document !== 'undefined') {
+    document.documentElement.classList.remove('home-default-mode')
     document.documentElement.classList.remove('home-glass-mode')
     document.documentElement.classList.remove('home-liquid-mode')
   }

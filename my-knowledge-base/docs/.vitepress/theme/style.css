@@ -2440,6 +2440,49 @@ html.sky-liquid-mode.dark .VPNavBarMenuGroup .button:hover {
   border-radius: 999px;
 }
 
+/*
+ * 宽屏（≥1440px）VitePress 默认让侧栏内边距与「居中 max-width 正文」对齐，侧栏文字会远离视口左缘。
+ * 覆盖为贴左留白，仅保留安全区与少量呼吸边。
+ */
+@media (min-width: 1440px) {
+  .VPSidebar {
+    padding-left: max(12px, env(safe-area-inset-left, 0px)) !important;
+  }
+}
+
+/*
+ * 桌面端：侧栏默认可滚动且滚动条在右侧，会落在侧栏与正文之间。
+ * 对滚动容器使用 rtl 可把纵向滚动条移到左侧，紧贴视口左缘与侧栏左边界。
+ * 窄导航（见下）在 rtl 下用 margin-inline-start:auto 把 .nav 贴向物理左侧。
+ */
+@media (min-width: 960px) {
+  .VPSidebar {
+    direction: rtl;
+  }
+
+  .VPSidebar .curtain,
+  .VPSidebar .nav {
+    direction: ltr;
+  }
+
+  /* 宽屏侧栏容器往往远大于最长标题：导航与分组随内容变窄，右侧无字区域不再占一条「实心底」 */
+  .VPSidebar .nav {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: fit-content;
+    max-width: 100%;
+    box-sizing: border-box;
+    margin-inline-start: auto;
+  }
+
+  .VPSidebar .group {
+    width: fit-content !important;
+    max-width: min(calc(100vw - 80px), var(--vp-sidebar-width));
+    box-sizing: border-box;
+  }
+}
+
 /* Note page visual upgrades */
 .VPDoc .vp-doc {
   counter-reset: note-section;
@@ -3327,15 +3370,61 @@ html.sky-default-mode.dark .VPDoc .content:hover {
   box-shadow: 0 20px 36px rgba(1, 7, 12, 0.4);
 }
 
-:where(html.home-glass-mode, html.sky-glass-mode) .VPSidebar {
-  background: rgba(236, 243, 248, 0.5);
-  backdrop-filter: blur(12px);
-  border-right-color: rgba(200, 220, 235, 0.35);
+/*
+ * 晶透侧栏：勿在整列超宽 .VPSidebar 上铺底（宽屏下会出现一大块「空玻璃/灰带」）。
+ * 容器全透明并收窄；磨砂与半透明只包在 .nav 文字列周围。
+ */
+:where(html.home-glass-mode, html.sky-glass-mode) .VPSidebar,
+:where(html.home-glass-mode.dark, html.sky-glass-mode.dark) .VPSidebar {
+  background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border-right: none;
+  box-shadow: none !important;
 }
 
-:where(html.home-glass-mode.dark, html.sky-glass-mode.dark) .VPSidebar {
-  background: rgba(15, 25, 35, 0.55);
-  border-right-color: rgba(160, 190, 215, 0.25);
+:where(html.home-glass-mode, html.sky-glass-mode) .VPSidebar .curtain {
+  background: transparent !important;
+}
+
+@media (min-width: 960px) {
+  :where(html.home-glass-mode, html.sky-glass-mode) .VPSidebar .nav {
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    background: rgba(236, 243, 248, 0.5);
+    border: 1px solid rgba(200, 220, 235, 0.42);
+    border-radius: 14px;
+    padding: 6px 8px 12px;
+    box-sizing: border-box;
+  }
+
+  :where(html.home-glass-mode.dark, html.sky-glass-mode.dark) .VPSidebar .nav {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.28);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22);
+  }
+
+  /* 移动端晶透同样移除 backdrop-filter，防止快滚撕裂 */
+  @media (max-width: 959px) {
+    :where(html.home-glass-mode, html.sky-glass-mode) .VPSidebar .nav,
+    :where(html.home-glass-mode.dark, html.sky-glass-mode.dark) .VPSidebar .nav {
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+    }
+  }
+
+  /* 暗色 .reading-progress 若日后设了 blur，在此统一清掉，避免移动端叠层 */
+  :where(html.home-glass-mode.dark, html.sky-glass-mode.dark) .reading-progress {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+}
+
+:where(html.home-glass-mode, html.sky-glass-mode) .VPSidebar .group,
+:where(html.home-glass-mode.dark, html.sky-glass-mode.dark) .VPSidebar .group {
+  background: transparent !important;
+  border: none;
+  box-shadow: none;
 }
 
 :where(html.home-glass-mode, html.sky-glass-mode) .vp-doc h2,
@@ -3453,27 +3542,200 @@ html.sky-default-mode.dark .VPDoc .content:hover {
 
 /* 液态：侧栏仅保留文字与交互可读性，大块底与分组卡片透明化 */
 :where(html.home-liquid-mode, html.sky-liquid-mode) .VPSidebar {
-  background: transparent;
+  background: transparent !important;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
-  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  border-right: none;
+  box-shadow: none !important;
 }
 
 :where(html.home-liquid-mode.dark, html.sky-liquid-mode.dark) .VPSidebar {
-  background: transparent;
-  border-right-color: rgba(160, 190, 220, 0.12);
+  background: transparent !important;
+  border-right: none;
+  box-shadow: none !important;
+}
+
+/* 顶栏与侧栏衔接条：勿铺实色，否则会出现一条宽「灰带」盖住背景 */
+:where(html.home-liquid-mode, html.sky-liquid-mode) .VPSidebar .curtain {
+  background: transparent !important;
+}
+
+/* 液态：侧栏导航块与正文 .VPDoc .content 同系冷色玻璃（底色、blur、saturate、内高光一致） */
+:where(html.home-liquid-mode, html.sky-liquid-mode) .VPSidebar .nav {
+  padding: 8px 10px 14px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  box-shadow:
+    0 16px 32px rgba(16, 24, 35, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  box-sizing: border-box;
+  transition: background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+/*
+ * 暗色主题下侧栏也不用 slate 深底（易被 .dark .group 等衬得更重）。
+ * 与正文「浅色液态玻璃」同路：浅白罩层 + 强 blur，透过底图偏亮，而不是蓝紫实色块。
+ */
+:where(html.home-liquid-mode.dark, html.sky-liquid-mode.dark) .VPSidebar .nav {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.24);
+  box-shadow:
+    0 16px 32px rgba(16, 24, 35, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.32);
+  backdrop-filter: blur(22px) saturate(175%);
+  -webkit-backdrop-filter: blur(22px) saturate(175%);
+}
+
+/* 液态：侧栏滚动条与玻璃风格统一（细轨 + 冷色半透明滑块），弱化系统默认灰条 */
+:where(html.home-liquid-mode, html.sky-liquid-mode) .VPSidebar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(180, 210, 235, 0.55) rgba(255, 255, 255, 0.06);
+}
+
+:where(html.home-liquid-mode.dark, html.sky-liquid-mode.dark) .VPSidebar {
+  scrollbar-color: rgba(160, 200, 230, 0.5) rgba(255, 255, 255, 0.05);
+}
+
+:where(html.home-liquid-mode, html.sky-liquid-mode) .VPSidebar::-webkit-scrollbar {
+  width: 5px;
+}
+
+:where(html.home-liquid-mode, html.sky-liquid-mode) .VPSidebar::-webkit-scrollbar-track {
+  margin: 10px 0;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 999px;
+}
+
+:where(html.home-liquid-mode, html.sky-liquid-mode) .VPSidebar::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: linear-gradient(
+    180deg,
+    rgba(210, 230, 248, 0.55) 0%,
+    rgba(160, 190, 220, 0.45) 100%
+  );
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.22);
+}
+
+:where(html.home-liquid-mode, html.sky-liquid-mode) .VPSidebar::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(
+    180deg,
+    rgba(225, 240, 252, 0.7) 0%,
+    rgba(180, 210, 235, 0.55) 100%
+  );
+}
+
+:where(html.home-liquid-mode.dark, html.sky-liquid-mode.dark) .VPSidebar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+:where(html.home-liquid-mode.dark, html.sky-liquid-mode.dark) .VPSidebar::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    180deg,
+    rgba(170, 200, 228, 0.45) 0%,
+    rgba(120, 150, 185, 0.35) 100%
+  );
+  box-shadow: inset 0 0 0 1px rgba(200, 220, 240, 0.18);
+}
+
+:where(html.home-liquid-mode.dark, html.sky-liquid-mode.dark) .VPSidebar::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(
+    180deg,
+    rgba(190, 218, 242, 0.55) 0%,
+    rgba(140, 170, 205, 0.45) 100%
+  );
+}
+
+/* 液态：顶栏阅读进度条与正文玻璃同系（避免默认灰蓝条突兀） */
+:where(html.home-liquid-mode, html.sky-liquid-mode) .reading-progress {
+  height: 3px;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+}
+
+/* 移动端（≤959px）移除 backdrop-filter，避免快滚时 GPU 跟不上导致闪屏/撕裂 */
+@media (max-width: 959px) {
+  :where(html.home-liquid-mode, html.sky-liquid-mode) .VPDoc .content,
+  :where(html.home-liquid-mode, html.sky-liquid-mode) .VPSidebar .nav,
+  :where(html.home-liquid-mode, html.sky-liquid-mode) .reading-progress {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  :where(html.home-liquid-mode.dark, html.sky-liquid-mode.dark) .VPDoc .content,
+  :where(html.home-liquid-mode.dark, html.sky-liquid-mode.dark) .VPSidebar .nav,
+  :where(html.home-liquid-mode.dark, html.sky-liquid-mode.dark) .reading-progress {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+}
+
+:where(html.home-liquid-mode, html.sky-liquid-mode) .reading-progress__bar {
+  background: linear-gradient(
+    90deg,
+    rgba(160, 200, 230, 0.45) 0%,
+    rgba(200, 225, 248, 0.65) 48%,
+    rgba(180, 210, 235, 0.5) 100%
+  );
+  box-shadow: 0 0 12px rgba(180, 210, 235, 0.35);
+}
+
+:where(html.home-liquid-mode.dark, html.sky-liquid-mode.dark) .reading-progress {
+  background: rgba(15, 25, 38, 0.35);
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+:where(html.home-liquid-mode.dark, html.sky-liquid-mode.dark) .reading-progress__bar {
+  background: linear-gradient(
+    90deg,
+    rgba(120, 160, 200, 0.5) 0%,
+    rgba(170, 205, 235, 0.65) 50%,
+    rgba(140, 175, 210, 0.55) 100%
+  );
+  box-shadow: 0 0 14px rgba(140, 175, 210, 0.25);
+}
+
+@media (min-width: 960px) {
+  /*
+   * 晶透 + 液态：侧栏 aside 在宽屏被拉得很宽，即使 .nav 变窄，滚动条右侧仍会留下整片「侧栏底色」。
+   * 将 aside 宽度收束为 fit-content，删掉文字右侧那块无内容的着色区（主题默认背景 / 阴影一并清掉）。
+   */
+  :where(html.home-glass-mode, html.sky-glass-mode, html.home-liquid-mode, html.sky-liquid-mode) .VPSidebar {
+    width: fit-content !important;
+    max-width: min(calc(100vw - 28px), 520px);
+    min-width: 0;
+  }
+
+  /* 与侧栏 max-width 一致，避免长标题仍被 272px 分组宽度卡住 */
+  :where(html.home-glass-mode, html.sky-glass-mode, html.home-liquid-mode, html.sky-liquid-mode) .VPSidebar .group {
+    max-width: min(calc(100vw - 80px), 520px) !important;
+  }
+
+  /* 液态下侧栏改回 ltr，窄 .nav 才能贴左；滚动条在右侧（与窄导航二选一权衡） */
+  :where(html.home-liquid-mode, html.sky-liquid-mode) .VPSidebar {
+    direction: ltr;
+  }
+
+  :where(html.home-liquid-mode, html.sky-liquid-mode) .VPSidebar .nav {
+    margin-inline-start: 0;
+  }
 }
 
 :where(html.home-liquid-mode, html.sky-liquid-mode) .VPSidebar .group {
   margin: 6px 8px 12px;
   padding: 7px;
-  background: transparent;
+  /* :where() 特异性为 0，须压过 .dark .VPSidebar .group 的深色底 */
+  background: transparent !important;
   border: none;
   box-shadow: none;
 }
 
 :where(html.home-liquid-mode.dark, html.sky-liquid-mode.dark) .VPSidebar .group {
-  background: transparent;
+  background: transparent !important;
   border: none;
 }
 

@@ -25,3 +25,4 @@ jobs:
             docker build -t wexler-notes-image .
             docker rm -f my-nginx || true
             docker run -d -p 80:80 --name my-nginx wexler-notes-image
+            docker system prune -f

@@ -7,6 +7,8 @@ const STORAGE_KEY = 'wexler.chapterSpotlight.position'
 const COLLAPSE_KEY = 'wexler.chapterSpotlight.collapsed'
 
 const progress = ref(0)
+const showBackToTop = ref(false)
+const isBackToTopAnimating = ref(false)
 const navItems = ref([])
 const activeId = ref('')
 const isDocPage = ref(false)
@@ -37,6 +39,15 @@ const chapterStyle = computed(() => {
 
 function clamp(value, min, max) {
   return Math.min(max, Math.max(min, value))
+}
+
+function scrollToTop(smooth = true) {
+  if (isBackToTopAnimating.value) return
+  isBackToTopAnimating.value = true
+  window.scrollTo({ top: 0, behavior: smooth ? 'smooth' : 'instant' })
+  setTimeout(() => {
+    isBackToTopAnimating.value = false
+  }, 600)
 }
 
 function shortText(value) {
@@ -249,6 +260,7 @@ function handleScrollOrResize() {
     updateProgress()
     updateActiveHeading()
     paintActiveHeading()
+    showBackToTop.value = window.scrollY > 400
     rafId = 0
   })
 }
@@ -297,6 +309,19 @@ onBeforeUnmount(() => {
   <div v-if="showProgress" class="reading-progress" aria-hidden="true">
     <span class="reading-progress__bar" :style="{ transform: `scaleX(${progress})` }" />
   </div>
+
+  <Transition name="back-to-top">
+    <button
+      v-if="showBackToTop && isDocPage"
+      class="back-to-top-btn"
+      aria-label="返回顶部"
+      @click="scrollToTop()"
+    >
+      <svg class="back-to-top-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 19V5M5 12l7-7 7 7" />
+      </svg>
+    </button>
+  </Transition>
 
   <aside
     v-if="showChapterNav"

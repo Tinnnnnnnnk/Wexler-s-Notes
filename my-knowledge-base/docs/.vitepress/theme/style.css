@@ -12,6 +12,12 @@
   --oil-line: rgba(31, 42, 56, 0.17);
   --oil-shadow: 0 16px 34px rgba(16, 24, 35, 0.15);
 
+  /* 浅色模式背景渐变 - 冷色调油画风 */
+  --oil-bg-gradient-1: rgba(106, 138, 160, 0.28);
+  --oil-bg-gradient-2: rgba(74, 109, 134, 0.22);
+  --oil-bg-gradient-3: rgba(126, 151, 173, 0.2);
+  --oil-bg-pattern: rgba(25, 36, 50, 0.035);
+
   --vp-c-brand-1: var(--oil-accent);
   --vp-c-brand-2: #3f5d74;
   --vp-c-brand-3: #334e64;
@@ -45,12 +51,44 @@
   --oil-line: rgba(229, 237, 247, 0.18);
   --oil-shadow: 0 20px 44px rgba(1, 7, 12, 0.46);
 
+  /* 深色模式背景渐变 - 星空深邃风 */
+  --oil-bg-gradient-1: rgba(136, 168, 192, 0.22);
+  --oil-bg-gradient-2: rgba(106, 138, 160, 0.18);
+  --oil-bg-gradient-3: rgba(76, 108, 130, 0.17);
+  --oil-bg-pattern: rgba(224, 235, 246, 0.035);
+
   --vp-c-brand-1: var(--oil-accent);
   --vp-c-brand-2: #7f9eb6;
   --vp-c-brand-3: #7392aa;
   --vp-button-brand-bg: var(--oil-accent);
   --vp-button-brand-hover-bg: #7a99b1;
   --vp-button-brand-text: #12202d;
+}
+
+/* =============================================
+   主题切换动画 - Theme Transition Animation
+   从点击位置向右下角扩散的渐变效果
+   ============================================= */
+.theme-transition-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  pointer-events: none;
+  background: radial-gradient(
+    circle at var(--transition-origin-x, 100%) var(--transition-origin-y, 0%),
+    var(--oil-bg) 0%,
+    transparent 70%
+  );
+  animation: theme-reveal 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes theme-reveal {
+  0% {
+    clip-path: circle(0% at var(--transition-origin-x, 100%) var(--transition-origin-y, 0%));
+  }
+  100% {
+    clip-path: circle(150% at var(--transition-origin-x, 100%) var(--transition-origin-y, 0%));
+  }
 }
 
 body {
@@ -62,17 +100,18 @@ body {
   position: relative;
   min-height: 100vh;
   background:
-    radial-gradient(circle at 10% -8%, rgba(106, 138, 160, 0.28), transparent 32%),
-    radial-gradient(circle at 88% 16%, rgba(74, 109, 134, 0.22), transparent 30%),
-    radial-gradient(circle at 72% 86%, rgba(126, 151, 173, 0.2), transparent 30%),
+    radial-gradient(circle at 10% -8%, var(--oil-bg-gradient-1), transparent 32%),
+    radial-gradient(circle at 88% 16%, var(--oil-bg-gradient-2), transparent 30%),
+    radial-gradient(circle at 72% 86%, var(--oil-bg-gradient-3), transparent 30%),
     linear-gradient(180deg, var(--oil-bg) 0%, var(--oil-bg-deep) 100%);
+  transition: background 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .dark .Layout {
   background:
-    radial-gradient(circle at 10% -8%, rgba(156, 185, 205, 0.22), transparent 36%),
-    radial-gradient(circle at 88% 16%, rgba(136, 168, 192, 0.18), transparent 34%),
-    radial-gradient(circle at 72% 86%, rgba(106, 138, 160, 0.17), transparent 34%),
+    radial-gradient(circle at 10% -8%, var(--oil-bg-gradient-1), transparent 36%),
+    radial-gradient(circle at 88% 16%, var(--oil-bg-gradient-2), transparent 34%),
+    radial-gradient(circle at 72% 86%, var(--oil-bg-gradient-3), transparent 34%),
     linear-gradient(180deg, var(--oil-bg) 0%, var(--oil-bg-deep) 100%);
 }
 
@@ -84,30 +123,20 @@ body {
   background:
     repeating-linear-gradient(
       25deg,
-      rgba(25, 36, 50, 0.035) 0 6px,
+      var(--oil-bg-pattern) 0 6px,
       transparent 6px 24px
     ),
     repeating-linear-gradient(
       -18deg,
-      rgba(25, 36, 50, 0.03) 0 4px,
+      var(--oil-bg-pattern) 0 4px,
       transparent 4px 22px
     );
   opacity: 0.35;
   z-index: 0;
+  transition: background 0.4s ease, opacity 0.4s ease;
 }
 
 .dark .Layout::before {
-  background:
-    repeating-linear-gradient(
-      25deg,
-      rgba(224, 235, 246, 0.035) 0 6px,
-      transparent 6px 24px
-    ),
-    repeating-linear-gradient(
-      -18deg,
-      rgba(224, 235, 246, 0.03) 0 4px,
-      transparent 4px 22px
-    );
   opacity: 0.25;
 }
 
@@ -3971,6 +4000,92 @@ html.sky-default-mode.dark .VPDoc .content:hover {
 :where(html.home-liquid-mode.dark, html.sky-liquid-mode.dark) .vp-doc img {
   border-color: rgba(136, 168, 192, 0.15);
   box-shadow: 0 12px 24px rgba(1, 7, 12, 0.18);
+}
+
+/* =============================================
+   返回顶部按钮 - Back To Top
+   ============================================= */
+.back-to-top-btn {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 999;
+  width: 3rem;
+  height: 3rem;
+  border: none;
+  border-radius: 50%;
+  background: var(--oil-surface);
+  border: 1px solid var(--oil-line);
+  box-shadow: var(--oil-shadow);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--oil-accent);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 0.9;
+}
+
+.back-to-top-btn:hover {
+  background: var(--oil-accent);
+  color: white;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(74, 109, 134, 0.35);
+}
+
+.back-to-top-btn:active {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(74, 109, 134, 0.25);
+}
+
+.back-to-top-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+/* 深色模式适配 */
+.dark .back-to-top-btn {
+  background: var(--oil-surface);
+  color: var(--oil-accent-2);
+}
+
+.dark .back-to-top-btn:hover {
+  background: var(--oil-accent);
+  color: var(--oil-bg);
+}
+
+/* 动画过渡 */
+.back-to-top-enter-active,
+.back-to-top-leave-active {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.back-to-top-enter-from,
+.back-to-top-leave-to {
+  opacity: 0;
+  transform: translateY(1rem) scale(0.8);
+}
+
+/* 无障碍：减少动画时隐藏 */
+@media (prefers-reduced-motion: reduce) {
+  .back-to-top-btn {
+    transition: none;
+  }
+}
+
+/* 响应式：小屏幕缩小按钮 */
+@media (max-width: 640px) {
+  .back-to-top-btn {
+    bottom: 1.5rem;
+    right: 1.25rem;
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  .back-to-top-icon {
+    width: 1rem;
+    height: 1rem;
+  }
 }
 
 /* 无障碍兜底：用户开启「减少动画」时（操作系统设置 / 浏览器偏好），关闭所有装饰性动画。

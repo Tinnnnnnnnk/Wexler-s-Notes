@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "docs/PaiSmart/面试/v2-day6.md",
+                "file": "网站修改指南.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "v2-day6"
+              "title": "网站修改指南"
             }
           }
         ]
@@ -208,8 +208,9 @@
   },
   "active": "dca74a61d38130bd",
   "lastOpenFiles": [
-    "docs/PaiSmart/面试/v2-day5.md",
     "docs/PaiSmart/面试/v2-day6.md",
+    "网站修改指南.md",
+    "docs/PaiSmart/面试/v2-day5.md",
     "docs/替换入口总表.md",
     "docs/public/media/home-bg/Bg1.mp4",
     "未命名.base",

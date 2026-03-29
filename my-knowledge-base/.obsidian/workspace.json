@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "docs/PaiSmart/面试/v2-day3.md",
+                "file": "docs/替换入口总表.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "v2-day3"
+              "title": "替换入口总表"
             }
           }
         ]
@@ -208,6 +208,9 @@
   },
   "active": "dca74a61d38130bd",
   "lastOpenFiles": [
+    "docs/public/media/home-bg/Bg1.mp4",
+    "未命名.base",
+    "docs/PaiSmart/面试/v2-day3.md",
     "docs/PaiSmart/面试/v2-day4.md",
     "docs/PaiSmart/面试/v2-day5.md",
     "docs/PaiSmart/面试/v2-day6.md",
@@ -223,7 +226,6 @@
     "docs/public/media/home-bg",
     "docs/public/media",
     "[/images/Pasted.md",
-    "未命名.base",
     "docs/Sky-Take-Out/02-Java 后端核心与 SpringBoot 实战手册.md",
     "markdown-examples.md",
     "Pasted image 20260321164828.png",
@@ -243,8 +245,6 @@
     "docs/PaiSmart/面试/各类杂项问题.md",
     "docs/PaiSmart/面试/面向题目.md",
     "docs/PaiSmart/面试/v2-day2.3.md",
-    "docs/PaiSmart/面试/v2-day2.1.md",
-    "docs/PaiSmart/面试/v2-day1.md",
     "docs/Code/Hot100/Stack",
     "docs/public/images/hero-abstract.jpg",
     "docs/public/images/logo - 副本.jpg",

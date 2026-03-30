@@ -12,28 +12,29 @@ jobs:
       - name: Pack
         run: git archive --format=tar.gz -o release.tar.gz HEAD
 
-
       - name: Upload to server
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USER }}
+          username: ${{ secrets.SERVER_USER }}   # 这里填 ubuntu
           key: ${{ secrets.SERVER_SSH_KEY }}
-          port: ${{ secrets.SERVER_PORT }}
+          port: ${{ secrets.SERVER_PORT }}       # 通常 22
           source: "release.tar.gz"
-          target: "/root"
+          target: "/home/ubuntu"
 
       - name: Deploy on server
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USER }}
+          username: ${{ secrets.SERVER_USER }}   # 这里填 ubuntu
           key: ${{ secrets.SERVER_SSH_KEY }}
           port: ${{ secrets.SERVER_PORT }}
           script: |
-            mkdir -p /root/Wexler-s-Notes
-            tar -xzf /root/release.tar.gz -C /root/Wexler-s-Notes
-            cd /root/Wexler-s-Notes
-            docker build -t wexler-notes-image .
-            docker rm -f my-nginx || true
-            docker run -d --name my-nginx --restart unless-stopped -p 80:80 wexler-notes-image
+            set -e
+            mkdir -p /home/ubuntu/Wexler-s-Notes
+            tar -xzf /home/ubuntu/release.tar.gz -C /home/ubuntu/Wexler-s-Notes
+            cd /home/ubuntu/Wexler-s-Notes
+            sudo docker build -t wexler-notes-image .
+            sudo docker rm -f my-nginx || true
+            sudo docker run -d --name my-nginx --restart unless-stopped -p 80:80 wexler-notes-image
+            rm -f /home/ubuntu/release.tar.gz

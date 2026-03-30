@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "docs/Info/Software.md",
+                "file": "docs/面试笔记/JavaSe/并发编程.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Software"
+              "title": "并发编程"
             }
           }
         ]
@@ -208,6 +208,7 @@
   },
   "active": "dca74a61d38130bd",
   "lastOpenFiles": [
+    "docs/Info/Software.md",
     "docs/index.md",
     "docs/test1.md",
     "docs/面试笔记/JavaSe/并发编程.md",
@@ -244,7 +245,6 @@
     "docs/public/media/home-bg/test1.jpg",
     "docs/public/media/home-bg",
     "docs/public/media",
-    "[/images/Pasted.md",
     "Pasted image 20260321164828.png",
     "[/images",
     "docs/public/images/hero-abstract.jpg",

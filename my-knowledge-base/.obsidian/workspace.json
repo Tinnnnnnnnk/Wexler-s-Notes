@@ -11,14 +11,14 @@
             "id": "dca74a61d38130bd",
             "type": "leaf",
             "state": {
-              "type": "split-diff-view",
+              "type": "markdown",
               "state": {
-                "aFile": "my-knowledge-base/.obsidian/workspace.json",
-                "bFile": "my-knowledge-base/.obsidian/workspace.json",
-                "aRef": ""
+                "file": "docs/面试笔记/JavaSe/并发编程.md",
+                "mode": "source",
+                "source": false
               },
-              "icon": "diff",
-              "title": "Diff: workspace.json  (Working Tree)"
+              "icon": "lucide-file",
+              "title": "并发编程"
             }
           }
         ]
@@ -78,8 +78,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300,
-    "collapsed": true
+    "width": 300
   },
   "right": {
     "id": "3ed6f4f3218e326a",
@@ -209,8 +208,8 @@
   },
   "active": "dca74a61d38130bd",
   "lastOpenFiles": [
-    "docs/面试笔记/JavaSe/并发编程.md",
     "docs/面试笔记/JavaSe/集合框架.md",
+    "docs/面试笔记/JavaSe/并发编程.md",
     "docs/面试笔记/JavaSe/String.md",
     "docs/图像处理和信息安全/Week4.md",
     "docs/PaiSmart/面试/v2-day6.md",

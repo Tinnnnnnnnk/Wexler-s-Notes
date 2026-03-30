@@ -11,14 +11,14 @@
             "id": "dca74a61d38130bd",
             "type": "leaf",
             "state": {
-              "type": "markdown",
+              "type": "split-diff-view",
               "state": {
-                "file": "docs/面试笔记/JavaSe/并发编程.md",
-                "mode": "source",
-                "source": false
+                "aFile": "my-knowledge-base/.obsidian/workspace.json",
+                "bFile": "my-knowledge-base/.obsidian/workspace.json",
+                "aRef": ""
               },
-              "icon": "lucide-file",
-              "title": "并发编程"
+              "icon": "diff",
+              "title": "Diff: workspace.json  (Working Tree)"
             }
           }
         ]
@@ -187,12 +187,12 @@
               "title": "集合框架 的反向链接列表"
             }
           }
-        ]
+        ],
+        "currentTab": 5
       }
     ],
     "direction": "horizontal",
-    "width": 200,
-    "collapsed": true
+    "width": 257.5
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -209,8 +209,8 @@
   },
   "active": "dca74a61d38130bd",
   "lastOpenFiles": [
-    "docs/面试笔记/JavaSe/集合框架.md",
     "docs/面试笔记/JavaSe/并发编程.md",
+    "docs/面试笔记/JavaSe/集合框架.md",
     "docs/面试笔记/JavaSe/String.md",
     "docs/图像处理和信息安全/Week4.md",
     "docs/PaiSmart/面试/v2-day6.md",

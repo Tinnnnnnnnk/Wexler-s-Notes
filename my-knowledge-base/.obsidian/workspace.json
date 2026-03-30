@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "docs/index.md",
+                "file": "docs/Info/Software.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "index"
+              "title": "Software"
             }
           }
         ]
@@ -208,6 +208,7 @@
   },
   "active": "dca74a61d38130bd",
   "lastOpenFiles": [
+    "docs/index.md",
     "docs/test1.md",
     "docs/面试笔记/JavaSe/并发编程.md",
     "docs/面试笔记/JavaSe/集合框架.md",
@@ -237,7 +238,6 @@
     "docs/PaiSmart/面试/v2-day3.md",
     "docs/PaiSmart/面试/v2-day4.md",
     "images/Pasted image 20260323212157.jpg",
-    "docs/index.md",
     "docs/未命名.base",
     "docs/public/media/home-bgm/liquid-bgm.flac",
     "docs/public/media/home-bgm",

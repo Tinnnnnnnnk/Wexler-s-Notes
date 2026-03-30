@@ -7,34 +7,38 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Pack
-        run: git archive --format=tar.gz -o release.tar.gz HEAD
-
-      - name: Upload to server
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USER }}   # 这里填 ubuntu
-          key: ${{ secrets.SERVER_SSH_KEY }}
-          port: ${{ secrets.SERVER_PORT }}       # 通常 22
-          source: "release.tar.gz"
-          target: "/home/ubuntu"
-
-      - name: Deploy on server
+      - name: Deploy By SSH Pull
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USER }}   # 这里填 ubuntu
+          username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           port: ${{ secrets.SERVER_PORT }}
+          command_timeout: 30m
           script: |
             set -e
-            mkdir -p /home/ubuntu/Wexler-s-Notes
-            tar -xzf /home/ubuntu/release.tar.gz -C /home/ubuntu/Wexler-s-Notes
-            cd /home/ubuntu/Wexler-s-Notes
-            sudo docker build -t wexler-notes-image .
-            sudo docker rm -f my-nginx || true
-            sudo docker run -d --name my-nginx --restart unless-stopped -p 80:80 wexler-notes-image
-            rm -f /home/ubuntu/release.tar.gz
+
+            if [ -d "/root/Wexler-s-Notes" ]; then
+              APP_DIR="/root/Wexler-s-Notes"
+            elif [ -d "/home/ubuntu/Wexler-s-Notes" ]; then
+              APP_DIR="/home/ubuntu/Wexler-s-Notes"
+            elif [ -d "$HOME/Wexler-s-Notes" ]; then
+              APP_DIR="$HOME/Wexler-s-Notes"
+            else
+              echo "Repository directory not found. Clone repo on server first."
+              exit 1
+            fi
+
+            cd "$APP_DIR"
+            git pull origin main
+
+            if docker info >/dev/null 2>&1; then
+              DOCKER="docker"
+            else
+              DOCKER="sudo docker"
+            fi
+
+            $DOCKER build -t wexler-notes-image .
+            $DOCKER rm -f my-nginx || true
+            $DOCKER run -d -p 80:80 --name my-nginx --restart unless-stopped wexler-notes-image
+            $DOCKER system prune -f

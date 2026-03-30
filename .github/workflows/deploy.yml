@@ -10,7 +10,8 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Pack
-        run: tar -czf release.tar.gz --exclude=.git --exclude=node_modules .
+        run: git archive --format=tar.gz -o release.tar.gz HEAD
+
 
       - name: Upload to server
         uses: appleboy/scp-action@v0.1.7

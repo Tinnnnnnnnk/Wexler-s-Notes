@@ -78,7 +78,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 300,
+    "collapsed": true
   },
   "right": {
     "id": "3ed6f4f3218e326a",
@@ -94,12 +95,12 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "docs/面试笔记/JavaSe/集合框架.md",
+                "file": "docs/面试笔记/JavaSe/并发编程.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "集合框架 的出链列表"
+              "title": "并发编程 的出链列表"
             }
           },
           {

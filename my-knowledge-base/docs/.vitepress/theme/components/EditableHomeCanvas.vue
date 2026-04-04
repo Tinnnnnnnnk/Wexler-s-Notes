@@ -226,7 +226,7 @@ function handleUndo() {
   const routePath = ensureRouteLayout(currentRoute.value)
   const bucket = ensureRouteHistoryBucket(routePath)
   if (!bucket.undo.length) {
-    setMessage('error', '娌℃湁鍙挙閿€鐨勬搷浣溿€?)
+    setMessage('error', '操作失败。')
     return
   }
 
@@ -245,7 +245,7 @@ function handleRedo() {
   const routePath = ensureRouteLayout(currentRoute.value)
   const bucket = ensureRouteHistoryBucket(routePath)
   if (!bucket.redo.length) {
-    setMessage('error', '娌℃湁鍙噸鍋氱殑鎿嶄綔銆?)
+    setMessage('error', '操作失败。')
     return
   }
 
@@ -296,7 +296,7 @@ function refreshCanvasMetrics() {
 function createPageTemplateLayout() {
   const now = Date.now()
   const pageTitle = String(page.value?.title || '').trim()
-  const routeLabel = currentRoute.value === '/' ? '涓婚〉' : currentRoute.value
+  const routeLabel = currentRoute.value === '/' ? '首页' : currentRoute.value
   const docTitle =
     pageTitle ||
     document.querySelector('.VPDoc h1, .VPHero .name, .VPHero .text')?.textContent?.trim() ||
@@ -304,7 +304,7 @@ function createPageTemplateLayout() {
   const description =
     String(page.value?.description || '').trim() ||
     document.querySelector('.VPDoc p')?.textContent?.trim() ||
-    '浠庤繖閲屽紑濮嬬紪杈戝綋鍓嶉〉闈紝鏀寔鎷栨嫿銆佺缉鏀俱€佸彂甯冨拰鍥炴粴銆?
+    '从这里开始编辑当前页面，支持拖拽、缩放、发布和回滚。'
 
   const primaryBlock = {
     id: `route-hero-${now}`,
@@ -339,7 +339,7 @@ function createPageTemplateLayout() {
     color: '#e6eff8',
     kicker: 'Route',
     title: routeLabel,
-    body: '鍙湪鍥惧眰闈㈡澘涓鐞嗘ā鍧楅『搴忥紝鍙戝竷鍓嶅厛鍋氭牎楠屻€?
+    body: '可在图层面板中管理模块顺序，发布前先做校验。'
   }
 
   return {
@@ -552,27 +552,27 @@ function appendAudit(action, detail = {}) {
 }
 
 const AUDIT_ACTION_LABELS = {
-  add_block: '鏂板妯″潡',
-  remove_block: '鍒犻櫎妯″潡',
-  duplicate_block: '澶嶅埗妯″潡',
-  move_block: '鎷栨嫿妯″潡',
-  resize_block: '缂╂斁妯″潡',
-  nudge_block: '寰皟浣嶇疆',
-  layer_move: '璋冩暣鍥惧眰',
-  bring_front: '缃《妯″潡',
-  save_draft: '淇濆瓨鑽夌',
-  publish: '鍙戝竷椤甸潰',
-  validate: '鏍￠獙鑽夌',
-  revert_draft: '鍥為€€鑽夌',
-  rollback_published: '鍥炴粴鍙戝竷',
-  export_route: '瀵煎嚭褰撳墠椤?,
-  export_all: '瀵煎嚭鍏ㄧ珯甯冨眬',
-  export_audit: '瀵煎嚭鎿嶄綔璁板綍',
-  import_bundle: '瀵煎叆甯冨眬',
-  generate_template: '鐢熸垚椤甸潰妯℃澘',
-  reset_layout: '閲嶇疆甯冨眬',
-  undo: '鎾ら攢',
-  redo: '閲嶅仛'
+  add_block: '新增模块',
+  remove_block: '删除模块',
+  duplicate_block: '复制模块',
+  move_block: '拖拽模块',
+  resize_block: '缩放模块',
+  nudge_block: '微调位置',
+  layer_move: '调整图层',
+  bring_front: '置顶模块',
+  save_draft: '保存草稿',
+  publish: '发布页面',
+  validate: '校验草稿',
+  revert_draft: '回退草稿',
+  rollback_published: '回滚发布',
+  export_route: '导出当前页',
+  export_all: '导出全站布局',
+  export_audit: '导出操作记录',
+  import_bundle: '导入布局',
+  generate_template: '生成页面模板',
+  reset_layout: '重置布局',
+  undo: '撤销',
+  redo: '重做'
 }
 
 function getAuditActionLabel(entry) {
@@ -799,7 +799,7 @@ function handleGenerateRouteTemplate() {
     route: currentRoute.value,
     blockCount: nextLayout.blocks.length
   })
-  setMessage('success', '宸蹭负褰撳墠椤甸潰鐢熸垚鍩虹妯℃澘銆?)
+  setMessage('success', '操作成功。')
 }
 
 function handleDuplicateSelected() {
@@ -812,10 +812,10 @@ function handleDuplicateSelected() {
     })
   }
   if (!result.ok) {
-    setMessage('error', result.message || '澶嶅埗澶辫触銆?)
+    setMessage('error', result.message || '操作失败。')
     return
   }
-  setMessage('success', '宸插鍒跺綋鍓嶆ā鍧椼€?)
+  setMessage('success', '操作成功。')
 }
 
 function handleMoveLayer(direction) {
@@ -829,7 +829,7 @@ function handleMoveLayer(direction) {
     })
   }
   if (!result.ok) {
-    setMessage('error', result.message || '鍥惧眰璋冩暣澶辫触銆?)
+    setMessage('error', result.message || '操作失败。')
   }
 }
 
@@ -950,7 +950,7 @@ function handleSaveDraft() {
   const result = saveDraftRoute(currentRoute.value)
   if (result.ok) {
     appendAudit('save_draft', { route: currentRoute.value })
-    setMessage('success', '鑽夌宸蹭繚瀛樸€?)
+    setMessage('success', '操作成功。')
   }
 }
 
@@ -976,13 +976,14 @@ function handlePublish() {
   if (result.ok) {
     appendAudit('publish', {
       route: currentRoute.value,
-      warnings: result.validation?.warnings?.length || 0
+      warnings: result.validation?.warnings?.length || 0,
+      added: publishDiffPreview.value.added,
+      removed: publishDiffPreview.value.removed,
+      changed: publishDiffPreview.value.changed
     })
-    const warningCount = result.validation?.warnings?.length || 0
-    const warningHint = warningCount ? `锛屽惈 ${warningCount} 鏉℃彁閱抈 : ''
-    setMessage('success', `褰撳墠椤甸潰甯冨眬宸插彂甯?{warningHint}銆俙)
+    setMessage('success', '发布成功。')
   } else {
-    setMessage('error', result.message || '鍙戝竷澶辫触锛岃鍏堜慨澶嶆牎楠岄棶棰樸€?, 3800)
+    setMessage('error', result.message || '发布失败。', 3800)
   }
 }
 
@@ -997,44 +998,43 @@ function handleValidatePublish() {
   })
 
   if (!report.ok) {
-    setMessage('error', `鍙戝竷鏍￠獙澶辫触锛?{report.errors.length} 涓敊璇€俙, 4200)
+    setMessage('error', `校验失败：${report.errors.length} 个错误。`, 4200)
     return
   }
 
-  const warningCount = report.warnings.length
-  if (warningCount) {
-    setMessage('success', `鏍￠獙閫氳繃锛屽彟鏈?${warningCount} 鏉℃彁閱掋€俙, 3600)
+  if (report.warnings.length) {
+    setMessage('success', `校验通过，另有 ${report.warnings.length} 条提醒。`, 3600)
   } else {
-    setMessage('success', '鏍￠獙閫氳繃锛屽彲瀹夊叏鍙戝竷銆?)
+    setMessage('success', '校验通过，可安全发布。')
   }
 }
 
 function handleRevertDraft() {
   if (routeStatus.value.dirty) {
-    const confirmed = window.confirm('灏嗘斁寮冨綋鍓嶈崏绋挎敼鍔紝骞舵仮澶嶄负宸插彂甯冪増鏈紝鏄惁缁х画锛?)
+    const confirmed = window.confirm('将放弃当前草稿改动，并恢复为已发布版本，是否继续？')
     if (!confirmed) return
   }
   const result = revertRouteDraft(currentRoute.value)
   if (result.ok) {
     appendAudit('revert_draft', { route: currentRoute.value })
-    setMessage('success', '鑽夌宸叉仮澶嶅埌宸插彂甯冪増鏈€?)
+    setMessage('success', '草稿已恢复到已发布版本。')
   }
 }
 
 function handleRollbackPublished() {
   if (!routeHistory.value.length) {
-    setMessage('error', '鏆傛棤鍙洖婊氬揩鐓с€?)
+    setMessage('error', '暂无可回滚快照。')
     return
   }
 
   const latest = latestHistory.value
-  const targetHint = latest ? `锛堢洰鏍囷細${formatSnapshotTime(latest.at)}锛塦 : ''
-  const confirmed = window.confirm(`灏嗗洖婊氬凡鍙戝竷鐗堟湰骞跺悓姝ヨ鐩栬崏绋?{targetHint}锛屾槸鍚︾户缁紵`)
+  const targetHint = latest ? `（目标：${formatSnapshotTime(latest.at)}）` : ''
+  const confirmed = window.confirm(`将回滚已发布版本并同步覆盖草稿 ${targetHint}，是否继续？`)
   if (!confirmed) return
 
   const result = rollbackPublishedRoute(currentRoute.value)
   if (!result.ok) {
-    setMessage('error', result.message || '鍥炴粴澶辫触銆?, 3600)
+    setMessage('error', result.message || '回滚失败。', 3600)
     return
   }
 
@@ -1044,7 +1044,7 @@ function handleRollbackPublished() {
     snapshotId: result.snapshot?.id || ''
   })
   const snapshotTime = formatSnapshotTime(result.snapshot?.at)
-  setMessage('success', `宸插洖婊氬埌蹇収锛?{snapshotTime}銆俙)
+  setMessage('success', `已回滚到快照：${snapshotTime}。`)
 }
 
 function handleExportCurrent() {
@@ -1052,7 +1052,7 @@ function handleExportCurrent() {
   const filename = `editor-layout-${toRouteSlug(currentRoute.value)}-${Date.now()}.json`
   downloadJson(filename, bundle)
   appendAudit('export_route', { route: currentRoute.value })
-  setMessage('success', '褰撳墠椤甸潰甯冨眬宸插鍑恒€?)
+  setMessage('success', '操作成功。')
 }
 
 function handleExportAll() {
@@ -1062,7 +1062,7 @@ function handleExportAll() {
   appendAudit('export_all', {
     routeCount: Object.keys(bundle.routes || {}).length
   })
-  setMessage('success', '鍏ㄧ珯椤甸潰甯冨眬宸插鍑恒€?)
+  setMessage('success', '操作成功。')
 }
 
 function handleExportProject() {
@@ -1082,21 +1082,21 @@ function handleExportAudit() {
   appendAudit('export_audit', {
     routeCount: Object.keys(bundle.routes || {}).length
   })
-  setMessage('success', '鎿嶄綔璁板綍宸插鍑恒€?)
+  setMessage('success', '操作成功。')
 }
 
 function handleClearAudit() {
   if (!routeAuditLogs.value.length) {
-    setMessage('error', '褰撳墠椤甸潰鏆傛棤鎿嶄綔璁板綍銆?)
+    setMessage('error', '操作失败。')
     return
   }
 
   const confirmed = window.confirm(
-    `灏嗘竻绌哄綋鍓嶉〉闈?${routeAuditLogs.value.length} 鏉℃搷浣滆褰曪紝姝ゆ搷浣滀笉鍙仮澶嶏紝鏄惁缁х画锛焋
+    `将清空当前页面 ${routeAuditLogs.value.length} 条操作记录，此操作不可恢复，是否继续？`
   )
   if (!confirmed) return
   clearRouteAuditLog(currentRoute.value)
-  setMessage('success', '褰撳墠椤甸潰鎿嶄綔璁板綍宸叉竻绌恒€?)
+  setMessage('success', '操作成功。')
 }
 
 function togglePanelCollapsed() {
@@ -1628,5 +1628,10 @@ onBeforeUnmount(() => {
     </aside>
   </div>
 </template>
+
+
+
+
+
 
 

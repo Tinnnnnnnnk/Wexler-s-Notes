@@ -15,6 +15,8 @@ const UNSUPPORTED_BUNDLE_VERSION_CODE = 'UNSUPPORTED_BUNDLE_VERSION'
 const MAX_PUBLISHED_HISTORY = 12
 const AUDIT_SCHEMA = 'wexler.editor.audit.bundle'
 const AUDIT_VERSION = 1
+const PROJECT_SCHEMA = 'wexler.editor.project.bundle'
+const PROJECT_VERSION = 1
 const MAX_ROUTE_AUDIT_LOGS = 160
 const EDIT_ACCESS_KEY = 'wexler.editor.auth'
 
@@ -417,6 +419,12 @@ function normalizeBundleVersion(value) {
   return Math.max(1, Math.floor(parsed))
 }
 
+function normalizeProjectVersion(value) {
+  const parsed = Number(value)
+  if (!Number.isFinite(parsed)) return 1
+  return Math.max(1, Math.floor(parsed))
+}
+
 function coerceImportBundle(parsed, currentRouteInput = '/') {
   if (!parsed || typeof parsed !== 'object') {
     return {
@@ -525,6 +533,60 @@ function coerceImportBundle(parsed, currentRouteInput = '/') {
   return {
     ok: false,
     message: 'Unsupported import payload structure.'
+  }
+}
+
+function coerceAuditImportBundle(parsed) {
+  if (!parsed || typeof parsed !== 'object') {
+    return {
+      ok: false,
+      message: 'Invalid audit payload.'
+    }
+  }
+
+  if (parsed.schema === AUDIT_SCHEMA) {
+    const version = normalizeBundleVersion(parsed.version)
+    if (version > AUDIT_VERSION) {
+      return {
+        ok: false,
+        code: UNSUPPORTED_BUNDLE_VERSION_CODE,
+        message: `Unsupported audit bundle version v${version}. Current max is v${AUDIT_VERSION}.`
+      }
+    }
+
+    if (parsed.routes && typeof parsed.routes === 'object' && !Array.isArray(parsed.routes)) {
+      return {
+        ok: true,
+        bundle: {
+          schema: AUDIT_SCHEMA,
+          version,
+          routes: parsed.routes,
+          migratedFrom: version
+        }
+      }
+    }
+
+    return {
+      ok: false,
+      message: 'Audit bundle missing routes payload.'
+    }
+  }
+
+  if (parsed.routes && typeof parsed.routes === 'object' && !Array.isArray(parsed.routes)) {
+    return {
+      ok: true,
+      bundle: {
+        schema: AUDIT_SCHEMA,
+        version: 1,
+        routes: parsed.routes,
+        migratedFrom: 1
+      }
+    }
+  }
+
+  return {
+    ok: false,
+    message: 'Unsupported audit payload structure.'
   }
 }
 
@@ -1478,6 +1540,25 @@ function getAllRoutesAuditBundle() {
   }
 }
 
+function getEditorProjectBundle() {
+  const layoutBundle = getAllRoutesExportBundle()
+  const auditBundle = getAllRoutesAuditBundle()
+
+  return {
+    schema: PROJECT_SCHEMA,
+    version: PROJECT_VERSION,
+    exportedAt: new Date().toISOString(),
+    meta: {
+      layoutSchema: EXPORT_SCHEMA,
+      layoutVersion: EXPORT_VERSION,
+      auditSchema: AUDIT_SCHEMA,
+      auditVersion: AUDIT_VERSION
+    },
+    layoutBundle,
+    auditBundle
+  }
+}
+
 function detectRouteImportConflict(routeInput, incomingDraft, options = {}) {
   if (options.force === true) return null
   const route = ensureRouteLayout(routeInput)
@@ -1565,6 +1646,58 @@ function importAllRoutesPayload(routesMap, options = {}) {
   }
 }
 
+function importAllRoutesAuditPayload(routesMap, options = {}) {
+  if (!routesMap || typeof routesMap !== 'object' || Array.isArray(routesMap)) {
+    return {
+      ok: false,
+      message: 'Invalid audit routes payload.'
+    }
+  }
+
+  const persist = options.persist !== false
+  const clearMissing = options.clearMissing === true
+  const normalizedEntries = Object.entries(routesMap).map(([rawRoute, rawLogs]) => {
+    const route = ensureRouteLayout(rawRoute)
+    return [route, normalizeAuditLog(route, rawLogs)]
+  })
+
+  const nextLogsByRoute = {
+    ...auditLogsByRoute.value
+  }
+  const importedRoutes = []
+
+  normalizedEntries.forEach(([route, logs]) => {
+    nextLogsByRoute[route] = logs
+    importedRoutes.push(route)
+  })
+
+  if (clearMissing) {
+    const importedSet = new Set(importedRoutes)
+    collectStoredRoutes().forEach((rawRoute) => {
+      const route = normalizeRoute(rawRoute)
+      if (importedSet.has(route)) return
+      nextLogsByRoute[route] = []
+    })
+  }
+
+  auditLogsByRoute.value = nextLogsByRoute
+
+  if (persist) {
+    const routesToPersist = clearMissing ? collectStoredRoutes() : importedRoutes
+    routesToPersist.forEach((rawRoute) => {
+      const route = normalizeRoute(rawRoute)
+      ensureRouteLayout(route)
+      persistRouteAuditLog(route)
+    })
+  }
+
+  return {
+    ok: true,
+    message: `Imported audit logs for ${importedRoutes.length} route(s).`,
+    routes: importedRoutes
+  }
+}
+
 function importEditorBundle(rawText, currentRouteInput = '/', options = {}) {
   let parsed
   try {
@@ -1610,6 +1743,90 @@ function importEditorBundle(rawText, currentRouteInput = '/', options = {}) {
     ok: false,
     message: 'Unsupported bundle scope.'
   }
+}
+
+function importEditorProjectBundle(rawText, currentRouteInput = '/', options = {}) {
+  let parsed
+  try {
+    parsed = JSON.parse(rawText)
+  } catch (error) {
+    return {
+      ok: false,
+      message: 'Invalid JSON file.'
+    }
+  }
+
+  if (parsed && typeof parsed === 'object' && parsed.schema === PROJECT_SCHEMA) {
+    const projectVersion = normalizeProjectVersion(parsed.version)
+    if (projectVersion > PROJECT_VERSION) {
+      return {
+        ok: false,
+        code: UNSUPPORTED_BUNDLE_VERSION_CODE,
+        message: `Unsupported project bundle version v${projectVersion}. Current max is v${PROJECT_VERSION}.`
+      }
+    }
+
+    const layoutSource =
+      parsed.layoutBundle && typeof parsed.layoutBundle === 'object'
+        ? parsed.layoutBundle
+        : parsed.layout && typeof parsed.layout === 'object'
+          ? parsed.layout
+          : null
+    const auditSource =
+      parsed.auditBundle && typeof parsed.auditBundle === 'object'
+        ? parsed.auditBundle
+        : parsed.audit && typeof parsed.audit === 'object'
+          ? parsed.audit
+          : null
+
+    if (!layoutSource && !auditSource) {
+      return {
+        ok: false,
+        message: 'Project bundle contains no importable layout or audit payload.'
+      }
+    }
+
+    let layoutResult = null
+    if (layoutSource) {
+      layoutResult = importEditorBundle(JSON.stringify(layoutSource), currentRouteInput, options)
+      if (!layoutResult.ok) return layoutResult
+    }
+
+    let auditResult = null
+    if (auditSource) {
+      const coercedAudit = coerceAuditImportBundle(auditSource)
+      if (!coercedAudit.ok) return coercedAudit
+      auditResult = importAllRoutesAuditPayload(coercedAudit.bundle.routes, options)
+      if (!auditResult.ok) return auditResult
+    }
+
+    const layoutRoutes = Array.isArray(layoutResult?.routes) ? layoutResult.routes : []
+    const auditRoutes = Array.isArray(auditResult?.routes) ? auditResult.routes : []
+    const mergedRoutes = [...new Set([...layoutRoutes, ...auditRoutes])]
+    const detailText = []
+    if (layoutResult) {
+      detailText.push(`layout ${layoutRoutes.length} route(s)`)
+    }
+    if (auditResult) {
+      detailText.push(`audit ${auditRoutes.length} route(s)`)
+    }
+
+    return {
+      ok: true,
+      message: `Imported project bundle (${detailText.join(', ')}).`,
+      routes: mergedRoutes,
+      layoutResult,
+      auditResult
+    }
+  }
+
+  if (parsed && typeof parsed === 'object' && parsed.schema === AUDIT_SCHEMA) {
+    const coercedAudit = coerceAuditImportBundle(parsed)
+    if (!coercedAudit.ok) return coercedAudit
+    return importAllRoutesAuditPayload(coercedAudit.bundle.routes, options)
+  }
+
+  return importEditorBundle(rawText, currentRouteInput, options)
 }
 
 export {
@@ -1662,5 +1879,8 @@ export {
   getRouteExportBundle,
   getAllRoutesExportBundle,
   getAllRoutesAuditBundle,
-  importEditorBundle
+  getEditorProjectBundle,
+  importEditorBundle,
+  importAllRoutesAuditPayload,
+  importEditorProjectBundle
 }

@@ -109,22 +109,19 @@ function readEditorPolicy() {
   const isProd = Boolean(import.meta && import.meta.env && import.meta.env.PROD)
   const enableInProd = parseBooleanFlag(readRuntimeEnv('VITE_EDITOR_ENABLE'))
   const allowedHosts = parseAllowedHosts(readRuntimeEnv('VITE_EDITOR_ALLOWED_HOSTS'))
-  const adminKeyRaw = readRuntimeEnv('VITE_EDITOR_ADMIN_KEY')
-  const adminKey = typeof adminKeyRaw === 'string' ? adminKeyRaw.trim() : ''
 
   return {
     isProd,
     enableInProd,
-    allowedHosts,
-    adminKey
+    allowedHosts
   }
 }
 
 function evaluateEditorGuard() {
   const policy = readEditorPolicy()
   const host = getCurrentHost()
-  const requiresSecret = Boolean(policy.adminKey)
-  const unlocked = !requiresSecret || isEditorAccessUnlocked.value
+  const requiresSecret = false
+  const unlocked = true
 
   if (policy.isProd && policy.enableInProd !== true) {
     return {
@@ -149,21 +146,6 @@ function evaluateEditorGuard() {
       message: '当前域名不在编辑白名单中（VITE_EDITOR_ALLOWED_HOSTS）。',
       reason: 'host_not_allowed',
       mode: 'blocked',
-      host,
-      allowedHosts: policy.allowedHosts,
-      isProd: policy.isProd,
-      unlocked
-    }
-  }
-
-  if (requiresSecret && !unlocked) {
-    return {
-      allowEditor: false,
-      locked: true,
-      requiresSecret,
-      message: '编辑模式已加锁，请先输入管理员口令。',
-      reason: 'needs_unlock',
-      mode: 'locked',
       host,
       allowedHosts: policy.allowedHosts,
       isProd: policy.isProd,
@@ -208,50 +190,26 @@ function canUseEditor() {
   return refreshEditorGuardState().allowEditor
 }
 
-function unlockEditorAccess(secretInput = '') {
-  const { adminKey } = readEditorPolicy()
-  if (!adminKey) {
-    isEditorAccessUnlocked.value = true
-    safeWriteStorage(EDIT_ACCESS_KEY, '1')
-    const guard = refreshEditorGuardState()
-    return {
-      ok: true,
-      message: '当前未配置编辑口令。',
-      guard
-    }
-  }
-
-  const attempt = typeof secretInput === 'string' ? secretInput.trim() : ''
-  if (!attempt || attempt !== adminKey) {
-    isEditorAccessUnlocked.value = false
-    safeRemoveStorage(EDIT_ACCESS_KEY)
-    const guard = refreshEditorGuardState()
-    return {
-      ok: false,
-      message: '口令错误，请重试。',
-      guard
-    }
-  }
-
+function unlockEditorAccess() {
   isEditorAccessUnlocked.value = true
   safeWriteStorage(EDIT_ACCESS_KEY, '1')
   const guard = refreshEditorGuardState()
   return {
     ok: true,
-    message: '编辑模式已解锁。',
+    message: '编辑模式可用。',
     guard
   }
 }
 
 function lockEditorAccess() {
-  isEditorAccessUnlocked.value = false
-  safeRemoveStorage(EDIT_ACCESS_KEY)
+  isEditorAccessUnlocked.value = true
+  safeWriteStorage(EDIT_ACCESS_KEY, '1')
   isEditorMode.value = false
   persistEditorMode()
   const guard = refreshEditorGuardState()
   return {
     ok: true,
-    message: '编辑模式已锁定。',
+    message: '编辑模式已关闭。',
     guard
   }
 }
@@ -1016,8 +974,8 @@ function getAllEditorRoutes() {
 function initEditorState() {
   if (initialized) return
   const savedMode = safeReadStorage(EDIT_MODE_KEY)
-  const savedAuth = safeReadStorage(EDIT_ACCESS_KEY)
-  isEditorAccessUnlocked.value = savedAuth === '1'
+  isEditorAccessUnlocked.value = true
+  safeWriteStorage(EDIT_ACCESS_KEY, '1')
   const guard = refreshEditorGuardState()
   isEditorMode.value = savedMode === '1' && guard.allowEditor
   persistEditorMode()

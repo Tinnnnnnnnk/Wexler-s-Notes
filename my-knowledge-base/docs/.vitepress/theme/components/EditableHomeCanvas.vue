@@ -524,7 +524,7 @@ async function syncRoute(nextPath) {
 }
 
 function formatSnapshotTime(value) {
-  if (!value) return '鏈煡鏃堕棿'
+  if (!value) return '未知时间'
   const date = new Date(value)
   if (Number.isNaN(date.getTime())) return String(value)
 
@@ -567,6 +567,7 @@ const AUDIT_ACTION_LABELS = {
   rollback_published: '回滚发布',
   export_route: '导出当前页',
   export_all: '导出全站布局',
+  export_project: '导出工程包',
   export_audit: '导出操作记录',
   import_bundle: '导入布局',
   generate_template: '生成页面模板',
@@ -648,7 +649,7 @@ function flushInteractionFrame() {
 }
 
 function beginInteraction(mode, event, block, extra = {}) {
-  pushUndoSnapshot(currentRoute.value, mode === 'resize' ? '缂╂斁妯″潡' : '鎷栨嫿妯″潡')
+  pushUndoSnapshot(currentRoute.value, mode === 'resize' ? '缩放模块' : '拖拽模块')
   setSelectedRouteBlock(currentRoute.value, block.id)
 
   interactionState.value = {
@@ -745,7 +746,7 @@ function selectBlock(blockId) {
 }
 
 function bringToFront(blockId) {
-  pushUndoSnapshot(currentRoute.value, '缃《妯″潡')
+  pushUndoSnapshot(currentRoute.value, '置顶模块')
   const currentMax = Math.max(...getRouteBlocks(currentRoute.value).map((item) => item.z), 0)
   patchRouteBlock(currentRoute.value, blockId, { z: currentMax + 1 })
   appendAudit('bring_front', { blockId, z: currentMax + 1 })
@@ -754,7 +755,7 @@ function bringToFront(blockId) {
 function removeCurrentBlock() {
   if (!selectedBlock.value) return
   const targetId = selectedBlock.value.id
-  pushUndoSnapshot(currentRoute.value, '鍒犻櫎妯″潡')
+  pushUndoSnapshot(currentRoute.value, '删除模块')
   removeRouteBlock(currentRoute.value, targetId)
   appendAudit('remove_block', { blockId: targetId })
 }
@@ -776,7 +777,7 @@ function updateTextColor(event) {
 }
 
 function handleAddBlock() {
-  pushUndoSnapshot(currentRoute.value, '鏂板妯″潡')
+  pushUndoSnapshot(currentRoute.value, '新增模块')
   const beforeIds = getRouteBlocks(currentRoute.value).map((item) => item.id)
   addRouteTextBlock(currentRoute.value)
   const nextBlock = getRouteBlocks(currentRoute.value).find((item) => !beforeIds.includes(item.id))
@@ -804,7 +805,7 @@ function handleGenerateRouteTemplate() {
 
 function handleDuplicateSelected() {
   if (!selectedBlock.value) return
-  pushUndoSnapshot(currentRoute.value, '澶嶅埗妯″潡')
+  pushUndoSnapshot(currentRoute.value, '复制模块')
   const result = duplicateRouteBlock(currentRoute.value, selectedBlock.value.id)
   if (result.ok) {
     appendAudit('duplicate_block', {
@@ -820,7 +821,7 @@ function handleDuplicateSelected() {
 
 function handleMoveLayer(direction) {
   if (!selectedBlock.value) return
-  pushUndoSnapshot(currentRoute.value, direction > 0 ? '鍥惧眰涓婄Щ' : '鍥惧眰涓嬬Щ')
+  pushUndoSnapshot(currentRoute.value, direction > 0 ? '图层上移' : '图层下移')
   const result = moveRouteBlockLayer(currentRoute.value, selectedBlock.value.id, direction)
   if (result.ok) {
     appendAudit('layer_move', {
@@ -845,7 +846,7 @@ function nudgeSelectedBlock(dx, dy) {
   const nextY = clamp(Math.round(selectedBlock.value.y + dy), 0, CANVAS_LIMIT)
   const deltaX = nextX - selectedBlock.value.x
   const deltaY = nextY - selectedBlock.value.y
-  pushUndoSnapshot(currentRoute.value, '寰皟浣嶇疆')
+  pushUndoSnapshot(currentRoute.value, '微调位置')
   patchRouteBlock(currentRoute.value, selectedBlock.value.id, {
     x: nextX,
     y: nextY
@@ -971,15 +972,16 @@ function handlePublishWithDiffPreview() {
   handlePublish()
 }
 function handlePublish() {
+  const diffBeforePublish = { ...publishDiffPreview.value }
   const result = publishDraftRoute(currentRoute.value)
   validationReport.value = result.validation || null
   if (result.ok) {
     appendAudit('publish', {
       route: currentRoute.value,
       warnings: result.validation?.warnings?.length || 0,
-      added: publishDiffPreview.value.added,
-      removed: publishDiffPreview.value.removed,
-      changed: publishDiffPreview.value.changed
+      added: diffBeforePublish.added,
+      removed: diffBeforePublish.removed,
+      changed: diffBeforePublish.changed
     })
     setMessage('success', '发布成功。')
   } else {
@@ -1069,7 +1071,7 @@ function handleExportProject() {
   const bundle = getEditorProjectBundle()
   const filename = `editor-project-${Date.now()}.json`
   downloadJson(filename, bundle)
-  appendAudit('export_all', {
+  appendAudit('export_project', {
     routeCount: Object.keys(bundle.layoutBundle?.routes || {}).length,
     auditRouteCount: Object.keys(bundle.auditBundle?.routes || {}).length
   })

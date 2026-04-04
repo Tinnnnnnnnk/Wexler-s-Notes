@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/chunks/VPLocalSearchBox.CtB7k8nA.js","assets/chunks/framework.ul-4IeKD.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/chunks/VPLocalSearchBox.C7lHKkFF.js","assets/chunks/framework.ul-4IeKD.js"])))=>i.map(i=>d[i]);
 import { d as defineComponent, c as createElementBlock, r as renderSlot, n as normalizeClass, o as openBlock, a as createTextVNode, t as toDisplayString, b as createBlock, w as withCtx, T as Transition, e as createCommentVNode, _ as _export_sfc, u as useData$1, i as isExternal, f as treatAsHtml, g as withBase, h as computed, j as createBaseVNode, k as unref, l as isActive, m as useMediaQuery, p as ref, q as watch, s as watchEffect, v as onMounted, x as onUnmounted, y as watchPostEffect, z as onUpdated, A as getScrollOffset, F as Fragment, B as renderList, C as resolveComponent, D as onContentUpdated, E as createVNode, G as shallowRef, H as resolveDynamicComponent, I as EXTERNAL_URL_RE, J as useRoute, K as mergeProps, L as inject, M as useWindowSize, N as normalizeStyle, O as onKeyStroke, P as nextTick, Q as useWindowScroll, R as inBrowser, S as readonly, U as defineAsyncComponent, V as __vitePreload, W as useScrollLock, X as provide, Y as toHandlers, Z as withKeys, $ as onBeforeUnmount, a0 as withModifiers, a1 as useSlots, a2 as withDirectives, a3 as vShow, a4 as Teleport, a5 as h } from "./framework.ul-4IeKD.js";
 const _sfc_main$10 = /* @__PURE__ */ defineComponent({
   __name: "VPBadge",
@@ -2230,7 +2230,7 @@ const _hoisted_3$6 = {
 const _sfc_main$o = /* @__PURE__ */ defineComponent({
   __name: "VPNavBarSearch",
   setup(__props) {
-    const VPLocalSearchBox = defineAsyncComponent(() => __vitePreload(() => import("./VPLocalSearchBox.CtB7k8nA.js"), true ? __vite__mapDeps([0,1]) : void 0));
+    const VPLocalSearchBox = defineAsyncComponent(() => __vitePreload(() => import("./VPLocalSearchBox.C7lHKkFF.js"), true ? __vite__mapDeps([0,1]) : void 0));
     const VPAlgoliaSearchBox = () => null;
     const { theme: theme2 } = useData();
     const loaded = ref(false);
@@ -4181,20 +4181,17 @@ function readEditorPolicy() {
   const isProd = Boolean(import.meta && __vite_import_meta_env__ && true);
   const enableInProd = parseBooleanFlag(readRuntimeEnv("VITE_EDITOR_ENABLE"));
   const allowedHosts = parseAllowedHosts(readRuntimeEnv("VITE_EDITOR_ALLOWED_HOSTS"));
-  const adminKeyRaw = readRuntimeEnv("VITE_EDITOR_ADMIN_KEY");
-  const adminKey = typeof adminKeyRaw === "string" ? adminKeyRaw.trim() : "";
   return {
     isProd,
     enableInProd,
-    allowedHosts,
-    adminKey
+    allowedHosts
   };
 }
 function evaluateEditorGuard() {
   const policy = readEditorPolicy();
   const host = getCurrentHost();
-  const requiresSecret = Boolean(policy.adminKey);
-  const unlocked = !requiresSecret || isEditorAccessUnlocked.value;
+  const requiresSecret = false;
+  const unlocked = true;
   if (policy.isProd && policy.enableInProd !== true) {
     return {
       allowEditor: false,
@@ -4217,20 +4214,6 @@ function evaluateEditorGuard() {
       message: "当前域名不在编辑白名单中（VITE_EDITOR_ALLOWED_HOSTS）。",
       reason: "host_not_allowed",
       mode: "blocked",
-      host,
-      allowedHosts: policy.allowedHosts,
-      isProd: policy.isProd,
-      unlocked
-    };
-  }
-  if (requiresSecret && !unlocked) {
-    return {
-      allowEditor: false,
-      locked: true,
-      requiresSecret,
-      message: "编辑模式已加锁，请先输入管理员口令。",
-      reason: "needs_unlock",
-      mode: "locked",
       host,
       allowedHosts: policy.allowedHosts,
       isProd: policy.isProd,
@@ -4265,47 +4248,25 @@ function getEditorGuardStatus() {
     ...current
   };
 }
-function unlockEditorAccess(secretInput = "") {
-  const { adminKey } = readEditorPolicy();
-  if (!adminKey) {
-    isEditorAccessUnlocked.value = true;
-    safeWriteStorage(EDIT_ACCESS_KEY, "1");
-    const guard2 = refreshEditorGuardState();
-    return {
-      ok: true,
-      message: "当前未配置编辑口令。",
-      guard: guard2
-    };
-  }
-  const attempt = typeof secretInput === "string" ? secretInput.trim() : "";
-  if (!attempt || attempt !== adminKey) {
-    isEditorAccessUnlocked.value = false;
-    safeRemoveStorage(EDIT_ACCESS_KEY);
-    const guard2 = refreshEditorGuardState();
-    return {
-      ok: false,
-      message: "口令错误，请重试。",
-      guard: guard2
-    };
-  }
+function unlockEditorAccess() {
   isEditorAccessUnlocked.value = true;
   safeWriteStorage(EDIT_ACCESS_KEY, "1");
   const guard = refreshEditorGuardState();
   return {
     ok: true,
-    message: "编辑模式已解锁。",
+    message: "编辑模式可用。",
     guard
   };
 }
 function lockEditorAccess() {
-  isEditorAccessUnlocked.value = false;
-  safeRemoveStorage(EDIT_ACCESS_KEY);
+  isEditorAccessUnlocked.value = true;
+  safeWriteStorage(EDIT_ACCESS_KEY, "1");
   isEditorMode.value = false;
   persistEditorMode();
   const guard = refreshEditorGuardState();
   return {
     ok: true,
-    message: "编辑模式已锁定。",
+    message: "编辑模式已关闭。",
     guard
   };
 }
@@ -4889,8 +4850,8 @@ function getAllEditorRoutes() {
 function initEditorState() {
   if (initialized) return;
   const savedMode = safeReadStorage(EDIT_MODE_KEY);
-  const savedAuth = safeReadStorage(EDIT_ACCESS_KEY);
-  isEditorAccessUnlocked.value = savedAuth === "1";
+  isEditorAccessUnlocked.value = true;
+  safeWriteStorage(EDIT_ACCESS_KEY, "1");
   const guard = refreshEditorGuardState();
   isEditorMode.value = savedMode === "1" && guard.allowEditor;
   persistEditorMode();
@@ -6104,7 +6065,7 @@ const _sfc_main$1 = {
       refreshCanvasMetrics();
     }
     function formatSnapshotTime(value) {
-      if (!value) return "鏈煡鏃堕棿";
+      if (!value) return "未知时间";
       const date = new Date(value);
       if (Number.isNaN(date.getTime())) return String(value);
       return new Intl.DateTimeFormat("zh-CN", {
@@ -6143,6 +6104,7 @@ const _sfc_main$1 = {
       rollback_published: "回滚发布",
       export_route: "导出当前页",
       export_all: "导出全站布局",
+      export_project: "导出工程包",
       export_audit: "导出操作记录",
       import_bundle: "导入布局",
       generate_template: "生成页面模板",
@@ -6215,7 +6177,7 @@ const _sfc_main$1 = {
       pendingPointer = null;
     }
     function beginInteraction(mode, event, block, extra = {}) {
-      pushUndoSnapshot(currentRoute.value, mode === "resize" ? "缂╂斁妯″潡" : "鎷栨嫿妯″潡");
+      pushUndoSnapshot(currentRoute.value, mode === "resize" ? "缩放模块" : "拖拽模块");
       setSelectedRouteBlock(currentRoute.value, block.id);
       interactionState.value = {
         mode,
@@ -6301,7 +6263,7 @@ const _sfc_main$1 = {
       setSelectedRouteBlock(currentRoute.value, blockId);
     }
     function bringToFront(blockId) {
-      pushUndoSnapshot(currentRoute.value, "缃《妯″潡");
+      pushUndoSnapshot(currentRoute.value, "置顶模块");
       const currentMax = Math.max(...getRouteBlocks(currentRoute.value).map((item) => item.z), 0);
       patchRouteBlock(currentRoute.value, blockId, { z: currentMax + 1 });
       appendAudit("bring_front", { blockId, z: currentMax + 1 });
@@ -6309,7 +6271,7 @@ const _sfc_main$1 = {
     function removeCurrentBlock() {
       if (!selectedBlock.value) return;
       const targetId = selectedBlock.value.id;
-      pushUndoSnapshot(currentRoute.value, "鍒犻櫎妯″潡");
+      pushUndoSnapshot(currentRoute.value, "删除模块");
       removeRouteBlock(currentRoute.value, targetId);
       appendAudit("remove_block", { blockId: targetId });
     }
@@ -6327,7 +6289,7 @@ const _sfc_main$1 = {
       updateSelectedField("color", value);
     }
     function handleAddBlock() {
-      pushUndoSnapshot(currentRoute.value, "鏂板妯″潡");
+      pushUndoSnapshot(currentRoute.value, "新增模块");
       const beforeIds = getRouteBlocks(currentRoute.value).map((item) => item.id);
       addRouteTextBlock(currentRoute.value);
       const nextBlock = getRouteBlocks(currentRoute.value).find((item) => !beforeIds.includes(item.id));
@@ -6353,7 +6315,7 @@ const _sfc_main$1 = {
     }
     function handleDuplicateSelected() {
       if (!selectedBlock.value) return;
-      pushUndoSnapshot(currentRoute.value, "澶嶅埗妯″潡");
+      pushUndoSnapshot(currentRoute.value, "复制模块");
       const result = duplicateRouteBlock(currentRoute.value, selectedBlock.value.id);
       if (result.ok) {
         appendAudit("duplicate_block", {
@@ -6368,7 +6330,7 @@ const _sfc_main$1 = {
     }
     function handleMoveLayer(direction) {
       if (!selectedBlock.value) return;
-      pushUndoSnapshot(currentRoute.value, direction > 0 ? "鍥惧眰涓婄Щ" : "鍥惧眰涓嬬Щ");
+      pushUndoSnapshot(currentRoute.value, direction > 0 ? "图层上移" : "图层下移");
       const result = moveRouteBlockLayer(currentRoute.value, selectedBlock.value.id, direction);
       if (result.ok) {
         appendAudit("layer_move", {
@@ -6391,7 +6353,7 @@ const _sfc_main$1 = {
       const nextY = clamp2(Math.round(selectedBlock.value.y + dy), 0, CANVAS_LIMIT);
       const deltaX = nextX - selectedBlock.value.x;
       const deltaY = nextY - selectedBlock.value.y;
-      pushUndoSnapshot(currentRoute.value, "寰皟浣嶇疆");
+      pushUndoSnapshot(currentRoute.value, "微调位置");
       patchRouteBlock(currentRoute.value, selectedBlock.value.id, {
         x: nextX,
         y: nextY
@@ -6502,15 +6464,16 @@ const _sfc_main$1 = {
     }
     function handlePublish() {
       var _a, _b;
+      const diffBeforePublish = { ...publishDiffPreview.value };
       const result = publishDraftRoute(currentRoute.value);
       validationReport.value = result.validation || null;
       if (result.ok) {
         appendAudit("publish", {
           route: currentRoute.value,
           warnings: ((_b = (_a = result.validation) == null ? void 0 : _a.warnings) == null ? void 0 : _b.length) || 0,
-          added: publishDiffPreview.value.added,
-          removed: publishDiffPreview.value.removed,
-          changed: publishDiffPreview.value.changed
+          added: diffBeforePublish.added,
+          removed: diffBeforePublish.removed,
+          changed: diffBeforePublish.changed
         });
         setMessage("success", "发布成功。");
       } else {
@@ -6591,7 +6554,7 @@ const _sfc_main$1 = {
       const bundle = getEditorProjectBundle();
       const filename = `editor-project-${Date.now()}.json`;
       downloadJson(filename, bundle);
-      appendAudit("export_all", {
+      appendAudit("export_project", {
         routeCount: Object.keys(((_a = bundle.layoutBundle) == null ? void 0 : _a.routes) || {}).length,
         auditRouteCount: Object.keys(((_b = bundle.auditBundle) == null ? void 0 : _b.routes) || {}).length
       });
@@ -7181,11 +7144,7 @@ const _sfc_main = {
       if (!status.allowEditor && status.locked) {
         const secret = window.prompt("请输入编辑模式口令");
         if (secret === null) return;
-        const unlockResult = unlockEditorAccess(secret);
-        if (!unlockResult.ok) {
-          window.alert(unlockResult.message || "口令错误");
-          return;
-        }
+        unlockEditorAccess();
       }
       const result = toggleEditorMode();
       if (result && !result.ok) {

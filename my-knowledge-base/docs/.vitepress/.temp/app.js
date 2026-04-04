@@ -3102,7 +3102,7 @@ const _sfc_main$x = /* @__PURE__ */ defineComponent({
   __name: "VPNavBarSearch",
   __ssrInlineRender: true,
   setup(__props) {
-    const VPLocalSearchBox = defineAsyncComponent(() => import("./VPLocalSearchBox.B2PKrJVk.js"));
+    const VPLocalSearchBox = defineAsyncComponent(() => import("./VPLocalSearchBox.rXnGTITf.js"));
     const VPAlgoliaSearchBox = () => null;
     const { theme: theme2 } = useData();
     const loaded = ref(false);
@@ -5458,20 +5458,17 @@ function readEditorPolicy() {
   const isProd = Boolean(import.meta && __vite_import_meta_env__ && true);
   const enableInProd = parseBooleanFlag(readRuntimeEnv("VITE_EDITOR_ENABLE"));
   const allowedHosts = parseAllowedHosts(readRuntimeEnv("VITE_EDITOR_ALLOWED_HOSTS"));
-  const adminKeyRaw = readRuntimeEnv("VITE_EDITOR_ADMIN_KEY");
-  const adminKey = typeof adminKeyRaw === "string" ? adminKeyRaw.trim() : "";
   return {
     isProd,
     enableInProd,
-    allowedHosts,
-    adminKey
+    allowedHosts
   };
 }
 function evaluateEditorGuard() {
   const policy = readEditorPolicy();
   const host = getCurrentHost();
-  const requiresSecret = Boolean(policy.adminKey);
-  const unlocked = !requiresSecret || isEditorAccessUnlocked.value;
+  const requiresSecret = false;
+  const unlocked = true;
   if (policy.isProd && policy.enableInProd !== true) {
     return {
       allowEditor: false,
@@ -5494,20 +5491,6 @@ function evaluateEditorGuard() {
       message: "当前域名不在编辑白名单中（VITE_EDITOR_ALLOWED_HOSTS）。",
       reason: "host_not_allowed",
       mode: "blocked",
-      host,
-      allowedHosts: policy.allowedHosts,
-      isProd: policy.isProd,
-      unlocked
-    };
-  }
-  if (requiresSecret && !unlocked) {
-    return {
-      allowEditor: false,
-      locked: true,
-      requiresSecret,
-      message: "编辑模式已加锁，请先输入管理员口令。",
-      reason: "needs_unlock",
-      mode: "locked",
       host,
       allowedHosts: policy.allowedHosts,
       isProd: policy.isProd,
@@ -5914,8 +5897,8 @@ function getAllEditorRoutes() {
 function initEditorState() {
   if (initialized) return;
   const savedMode = safeReadStorage(EDIT_MODE_KEY);
-  const savedAuth = safeReadStorage(EDIT_ACCESS_KEY);
-  isEditorAccessUnlocked.value = savedAuth === "1";
+  isEditorAccessUnlocked.value = true;
+  safeWriteStorage(EDIT_ACCESS_KEY, "1");
   const guard = refreshEditorGuardState();
   isEditorMode.value = savedMode === "1" && guard.allowEditor;
   persistEditorMode();
@@ -6501,6 +6484,7 @@ const _sfc_main$1 = {
       rollback_published: "回滚发布",
       export_route: "导出当前页",
       export_all: "导出全站布局",
+      export_project: "导出工程包",
       export_audit: "导出操作记录",
       import_bundle: "导入布局",
       generate_template: "生成页面模板",
@@ -6627,13 +6611,13 @@ const _sfc_main$1 = {
     function removeCurrentBlock() {
       if (!selectedBlock.value) return;
       const targetId = selectedBlock.value.id;
-      pushUndoSnapshot(currentRoute.value, "鍒犻櫎妯″潡");
+      pushUndoSnapshot(currentRoute.value, "删除模块");
       removeRouteBlock(currentRoute.value, targetId);
       appendAudit("remove_block", { blockId: targetId });
     }
     function handleDuplicateSelected() {
       if (!selectedBlock.value) return;
-      pushUndoSnapshot(currentRoute.value, "澶嶅埗妯″潡");
+      pushUndoSnapshot(currentRoute.value, "复制模块");
       const result = duplicateRouteBlock(currentRoute.value, selectedBlock.value.id);
       if (result.ok) {
         appendAudit("duplicate_block", {
@@ -6648,7 +6632,7 @@ const _sfc_main$1 = {
     }
     function handleMoveLayer(direction) {
       if (!selectedBlock.value) return;
-      pushUndoSnapshot(currentRoute.value, direction > 0 ? "鍥惧眰涓婄Щ" : "鍥惧眰涓嬬Щ");
+      pushUndoSnapshot(currentRoute.value, direction > 0 ? "图层上移" : "图层下移");
       const result = moveRouteBlockLayer(currentRoute.value, selectedBlock.value.id, direction);
       if (result.ok) {
         appendAudit("layer_move", {
@@ -6666,7 +6650,7 @@ const _sfc_main$1 = {
       const nextY = clamp2(Math.round(selectedBlock.value.y + dy), 0, CANVAS_LIMIT);
       const deltaX = nextX - selectedBlock.value.x;
       const deltaY = nextY - selectedBlock.value.y;
-      pushUndoSnapshot(currentRoute.value, "寰皟浣嶇疆");
+      pushUndoSnapshot(currentRoute.value, "微调位置");
       patchRouteBlock(currentRoute.value, selectedBlock.value.id, {
         x: nextX,
         y: nextY

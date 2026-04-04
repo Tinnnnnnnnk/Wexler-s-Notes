@@ -577,7 +577,7 @@ const AUDIT_ACTION_LABELS = {
 
 function getAuditActionLabel(entry) {
   const action = String(entry?.action || '').trim()
-  return AUDIT_ACTION_LABELS[action] || action || '缂栬緫鎿嶄綔'
+  return AUDIT_ACTION_LABELS[action] || action || '编辑操作'
 }
 
 function getAuditDetailText(entry) {
@@ -588,12 +588,12 @@ function getAuditDetailText(entry) {
   if (Number.isFinite(detail.dx) || Number.isFinite(detail.dy)) {
     const dx = Number.isFinite(detail.dx) ? detail.dx : 0
     const dy = Number.isFinite(detail.dy) ? detail.dy : 0
-    return `浣嶇Щ ${dx}, ${dy}${blockId}`
+    return `位移 ${dx}, ${dy}${blockId}`
   }
   if (Number.isFinite(detail.dw) || Number.isFinite(detail.dh)) {
     const dw = Number.isFinite(detail.dw) ? detail.dw : 0
     const dh = Number.isFinite(detail.dh) ? detail.dh : 0
-    return `灏哄鍙樺寲 ${dw}, ${dh}${blockId}`
+    return `尺寸变化 ${dw}, ${dh}${blockId}`
   }
   if (typeof detail.message === 'string' && detail.message.trim()) {
     return detail.message.trim()
@@ -604,7 +604,7 @@ function getAuditDetailText(entry) {
   if (typeof detail.summary === 'string' && detail.summary.trim()) {
     return detail.summary.trim()
   }
-  return blockId ? `鐩爣${blockId}` : ''
+  return blockId ? `目标${blockId}` : ''
 }
 
 function blockStyle(block) {
@@ -784,13 +784,13 @@ function handleAddBlock() {
 }
 
 function handleResetLayout() {
-  pushUndoSnapshot(currentRoute.value, '閲嶇疆甯冨眬')
+  pushUndoSnapshot(currentRoute.value, '重置布局')
   resetRouteLayout(currentRoute.value)
   appendAudit('reset_layout', { route: currentRoute.value })
 }
 
 function handleGenerateRouteTemplate() {
-  pushUndoSnapshot(currentRoute.value, '鐢熸垚椤甸潰妯℃澘')
+  pushUndoSnapshot(currentRoute.value, '生成页面模板')
   const nextLayout = createPageTemplateLayout()
   replaceRouteDraftLayout(currentRoute.value, nextLayout, { persist: true })
   setSelectedRouteBlock(currentRoute.value, nextLayout.blocks[0]?.id || '')
@@ -1201,7 +1201,7 @@ onBeforeUnmount(() => {
     class="home-editor-canvas"
     :class="{ 'is-editing': isEditorMode, 'is-interacting': isInteracting, 'is-performance': performanceMode }"
     :style="canvasStyle"
-    aria-label="椤甸潰缂栬緫鐢诲竷"
+    aria-label="页面编辑画布"
   >
     <div class="home-editor-canvas__blocks">
       <div class="home-editor-guides" aria-hidden="true">
@@ -1232,25 +1232,25 @@ onBeforeUnmount(() => {
         <p class="home-editor-block__kicker">{{ block.kicker }}</p>
         <h2 class="home-editor-block__title">{{ block.title }}</h2>
         <p class="home-editor-block__body">{{ block.body }}</p>
-        <span v-if="isEditorMode" class="home-editor-block__hint">鎷栨嫿</span>
+        <span v-if="isEditorMode" class="home-editor-block__hint">拖拽</span>
 
         <template v-if="isEditorMode && selectedBlockId === block.id">
           <button
             type="button"
             class="home-editor-resize-handle home-editor-resize-handle--e"
-            aria-label="妯悜缂╂斁"
+            aria-label="横向缩放"
             @pointerdown.stop.prevent="onResizeHandlePointerDown($event, block, 'e')"
           />
           <button
             type="button"
             class="home-editor-resize-handle home-editor-resize-handle--s"
-            aria-label="绾靛悜缂╂斁"
+            aria-label="纵向缩放"
             @pointerdown.stop.prevent="onResizeHandlePointerDown($event, block, 's')"
           />
           <button
             type="button"
             class="home-editor-resize-handle home-editor-resize-handle--se"
-            aria-label="鑷敱缂╂斁"
+            aria-label="自由缩放"
             @pointerdown.stop.prevent="onResizeHandlePointerDown($event, block, 'se')"
           />
         </template>
@@ -1259,7 +1259,7 @@ onBeforeUnmount(() => {
 
     <div v-if="isEditorMode" class="home-editor-toolbar">
       <button type="button" class="home-editor-btn" @click="handleAddBlock">
-        鏂板
+        新增
       </button>
       <button
         type="button"
@@ -1267,7 +1267,7 @@ onBeforeUnmount(() => {
         :disabled="!selectedBlock"
         @click="handleDuplicateSelected"
       >
-        澶嶅埗
+        复制
       </button>
       <button
         type="button"
@@ -1275,21 +1275,21 @@ onBeforeUnmount(() => {
         :disabled="!selectedBlock"
         @click="removeCurrentBlock"
       >
-        鍒犻櫎
+        删除
       </button>
       <button type="button" class="home-editor-btn" :disabled="!historyStats.undo" @click="handleUndo">
-        鎾ら攢
+        撤销
       </button>
       <button type="button" class="home-editor-btn" :disabled="!historyStats.redo" @click="handleRedo">
-        閲嶅仛
+        重做
       </button>
       <button type="button" class="home-editor-btn" @click="handleResetLayout">
-        閲嶇疆
+        重置
       </button>
     </div>
 
     <aside v-if="isEditorMode" class="home-editor-panel" :class="{ 'is-collapsed': panelCollapsed, 'is-performance': performanceMode }">
-      <h3 class="home-editor-panel__title">椤甸潰缂栬緫鍣</h3>
+      <h3 class="home-editor-panel__title">页面编辑器</h3>
       <p class="home-editor-panel__route">{{ currentRoute }}</p>
       <div class="home-editor-panel__controls">
         <button type="button" class="home-editor-layer-btn" @click="togglePanelCollapsed">
@@ -1306,13 +1306,13 @@ onBeforeUnmount(() => {
       </div>
 
       <div class="home-editor-status">
-        <span class="home-editor-chip home-editor-chip--draft">鑽夌</span>
+        <span class="home-editor-chip home-editor-chip--draft">草稿</span>
         <span class="home-editor-chip" :class="routeStatus.dirty ? 'is-dirty' : 'is-clean'">
           {{ routeStatus.dirty ? '有未发布改动' : '已与发布版同步' }}
         </span>
-        <span class="home-editor-chip home-editor-chip--count">鑽夌/鍙戝竷 {{ blockCountSummary }}</span>
-        <span class="home-editor-chip home-editor-chip--history">鍥炴粴鐐?{{ routeStatus.historyCount }}</span>
-        <span class="home-editor-chip home-editor-chip--history">鎾ら攢 {{ historyStats.undo }}/閲嶅仛 {{ historyStats.redo }}</span>
+        <span class="home-editor-chip home-editor-chip--count">草稿/发布 {{ blockCountSummary }}</span>
+        <span class="home-editor-chip home-editor-chip--history">回滚点 {{ routeStatus.historyCount }}</span>
+        <span class="home-editor-chip home-editor-chip--history">撤销 {{ historyStats.undo }}/重做 {{ historyStats.redo }}</span>
         <span class="home-editor-chip home-editor-chip--count">Schema v3 / Layout v2 / Project v1</span>
       </div>
 
@@ -1326,32 +1326,34 @@ onBeforeUnmount(() => {
       </section>
       <section class="home-editor-route-tools">
         <button type="button" class="home-editor-btn home-editor-btn--full" @click="handleGenerateRouteTemplate">
-          鐢熸垚褰撳墠椤垫ā鏉?        </button>
+          生成当前页模板
+        </button>
         <p class="home-editor-route-tools__hint">
-          褰撻〉闈㈣繕娌℃湁妯″潡鏃讹紝鍙竴閿敓鎴愭爣棰樹笌璇存槑鍖哄潡锛屽揩閫熷紑濮嬬紪杈戙€?        </p>
+          当页面还没有模块时，可一键生成标题与说明区块，快速开始编辑。
+        </p>
       </section>
 
       <div class="home-editor-actions">
         <button type="button" class="home-editor-btn" @click="handleSaveDraft">
-          淇濆瓨鑽夌
+          保存草稿
         </button>
         <button type="button" class="home-editor-btn" @click="handlePublishWithDiffPreview">
-          绔嬪嵆鍙戝竷
+          立即发布
         </button>
         <button type="button" class="home-editor-btn" @click="handleRevertDraft">
-          鍥炴粴鑽夌
+          回滚草稿
         </button>
       </div>
 
       <section class="home-editor-layer-panel">
         <div class="home-editor-layer-panel__head">
-          <strong>鍥惧眰闈㈡澘</strong>
+          <strong>图层面板</strong>
           <div class="home-editor-layer-panel__actions">
             <button type="button" class="home-editor-layer-btn" :disabled="!selectedBlock" @click="handleMoveLayer(1)">
-              涓婄Щ
+              上移
             </button>
             <button type="button" class="home-editor-layer-btn" :disabled="!selectedBlock" @click="handleMoveLayer(-1)">
-              涓嬬Щ
+              下移
             </button>
           </div>
         </div>
@@ -1373,7 +1375,7 @@ onBeforeUnmount(() => {
 
       <section class="home-editor-route-list-panel">
         <div class="home-editor-layer-panel__head">
-          <strong>宸茬紪杈戦〉闈紙{{ allEditedRoutes.length }}锛</strong>
+          <strong>已编辑页面（{{ allEditedRoutes.length }}）</strong>
         </div>
         <ul class="home-editor-layer-list">
           <li v-for="path in allEditedRoutes" :key="`route-${path}`">
@@ -1384,7 +1386,7 @@ onBeforeUnmount(() => {
               @click="navigateToEditedRoute(path)"
             >
               <span class="home-editor-layer-item__title">{{ path }}</span>
-              <span class="home-editor-layer-item__meta">{{ path === currentRoute ? '褰撳墠' : '鎵撳紑' }}</span>
+              <span class="home-editor-layer-item__meta">{{ path === currentRoute ? '当前' : '打开' }}</span>
             </button>
           </li>
         </ul>
@@ -1392,7 +1394,7 @@ onBeforeUnmount(() => {
 
       <div class="home-editor-actions home-editor-actions--secondary">
         <button type="button" class="home-editor-btn" @click="handleValidatePublish">
-          鏍￠獙鍙戝竷
+          校验发布
         </button>
         <button
           type="button"
@@ -1400,17 +1402,18 @@ onBeforeUnmount(() => {
           :disabled="!routeStatus.historyCount"
           @click="handleRollbackPublished"
         >
-          涓€閿洖婊?        </button>
+          一键回滚
+        </button>
       </div>
 
       <div class="home-editor-actions">
         <button type="button" class="home-editor-btn home-editor-btn--export" @click="handleExportCurrent">
           <span class="home-editor-export-icon" aria-hidden="true" />
-          <span>瀵煎嚭褰撳墠椤</span>
+          <span>导出当前页</span>
         </button>
         <button type="button" class="home-editor-btn home-editor-btn--export" @click="handleExportAll">
           <span class="home-editor-export-icon" aria-hidden="true" />
-          <span>瀵煎嚭鍏ㄧ珯</span>
+          <span>导出全站</span>
         </button>
         <button type="button" class="home-editor-btn home-editor-btn--export" @click="handleExportProject">
           <span class="home-editor-export-icon" aria-hidden="true" />
@@ -1423,10 +1426,10 @@ onBeforeUnmount(() => {
 
       <section class="home-editor-audit-panel">
         <div class="home-editor-layer-panel__head">
-          <strong>鎿嶄綔璁板綍锛坽{ routeAuditLogs.length }}锛</strong>
+          <strong>操作记录（{{ routeAuditLogs.length }}）</strong>
           <div class="home-editor-layer-panel__actions">
             <button type="button" class="home-editor-layer-btn" @click="handleExportAudit">
-              瀵煎嚭
+              导出
             </button>
             <button
               type="button"
@@ -1434,7 +1437,7 @@ onBeforeUnmount(() => {
               :disabled="!routeAuditLogs.length"
               @click="handleClearAudit"
             >
-              娓呯┖
+              清空
             </button>
           </div>
         </div>
@@ -1446,7 +1449,7 @@ onBeforeUnmount(() => {
             <time class="home-editor-audit-item__time">{{ formatAuditTime(item.at) }}</time>
           </li>
         </ul>
-        <p v-else class="home-editor-route-tools__hint">褰撳墠椤甸潰鏆傛棤鎿嶄綔璁板綍銆</p>
+        <p v-else class="home-editor-route-tools__hint">当前页面暂无操作记录。</p>
       </section>
 
       <input
@@ -1467,10 +1470,10 @@ onBeforeUnmount(() => {
             class="home-editor-report__badge"
             :class="validationReport.ok ? 'is-pass' : 'is-block'"
           >
-            {{ validationReport.ok ? '鏍￠獙閫氳繃' : '鏍￠獙澶辫触' }}
+            {{ validationReport.ok ? '校验通过' : '校验失败' }}
           </span>
           <span class="home-editor-report__meta">
-            閿欒 {{ validationReport.errors.length }} / 鎻愰啋 {{ validationReport.warnings.length }}
+            错误 {{ validationReport.errors.length }} / 提醒 {{ validationReport.warnings.length }}
           </span>
         </div>
 
@@ -1499,12 +1502,13 @@ onBeforeUnmount(() => {
           v-if="validationReport.errors.length > 6 || validationReport.warnings.length > 6"
           class="home-editor-report__more"
         >
-          浠呭睍绀哄墠 6 鏉★紝璇峰厛浼樺厛澶勭悊鍏抽敭闂銆?        </p>
+          仅展示前 6 条，请优先处理关键问题。
+        </p>
       </section>
 
       <template v-if="selectedBlock">
         <label class="home-editor-field">
-          <span>鍓嶇紑鏂囨</span>
+          <span>前缀文案</span>
           <input
             class="home-editor-input"
             type="text"
@@ -1514,7 +1518,7 @@ onBeforeUnmount(() => {
         </label>
 
         <label class="home-editor-field">
-          <span>鏍囬</span>
+          <span>标题</span>
           <input
             class="home-editor-input"
             type="text"
@@ -1524,7 +1528,7 @@ onBeforeUnmount(() => {
         </label>
 
         <label class="home-editor-field">
-          <span>姝ｆ枃</span>
+          <span>正文</span>
           <textarea
             class="home-editor-input home-editor-input--textarea"
             :value="selectedBlock.body"
@@ -1534,7 +1538,7 @@ onBeforeUnmount(() => {
 
         <div class="home-editor-grid">
           <label class="home-editor-field">
-            <span>瀹藉害</span>
+            <span>宽度</span>
             <input
               class="home-editor-range"
               type="range"
@@ -1546,7 +1550,7 @@ onBeforeUnmount(() => {
             />
           </label>
           <label class="home-editor-field">
-            <span>楂樺害</span>
+            <span>高度</span>
             <input
               class="home-editor-range"
               type="range"
@@ -1561,7 +1565,7 @@ onBeforeUnmount(() => {
 
         <div class="home-editor-grid">
           <label class="home-editor-field">
-            <span>閫忔槑搴</span>
+            <span>透明度</span>
             <input
               class="home-editor-range"
               type="range"
@@ -1573,7 +1577,7 @@ onBeforeUnmount(() => {
             />
           </label>
           <label class="home-editor-field">
-            <span>鍦嗚</span>
+            <span>圆角</span>
             <input
               class="home-editor-range"
               type="range"
@@ -1588,7 +1592,7 @@ onBeforeUnmount(() => {
 
         <div class="home-editor-grid">
           <label class="home-editor-field">
-            <span>妯＄硦搴</span>
+            <span>模糊度</span>
             <input
               class="home-editor-range"
               type="range"
@@ -1600,7 +1604,7 @@ onBeforeUnmount(() => {
             />
           </label>
           <label class="home-editor-field">
-            <span>鏂囧瓧棰滆壊</span>
+            <span>文字颜色</span>
             <input
               class="home-editor-color"
               type="color"
@@ -1611,7 +1615,7 @@ onBeforeUnmount(() => {
         </div>
 
         <label class="home-editor-field">
-          <span>鑳屾櫙鏍峰紡</span>
+          <span>背景样式</span>
           <input
             class="home-editor-input"
             type="text"
@@ -1621,10 +1625,12 @@ onBeforeUnmount(() => {
         </label>
       </template>
       <p v-else class="home-editor-empty-hint">
-        褰撳墠鏈€変腑妯″潡銆傝鐐瑰嚮鐢诲竷涓殑妯″潡锛屾垨鍏堢偣鍑烩€滄柊澧炩€濆垱寤烘ā鍧椼€?      </p>
+        当前未选中模块。请点击画布中的模块，或先点击“新增”创建模块。
+      </p>
 
       <p class="home-editor-shortcut-hint">
-        蹇嵎閿細Ctrl/Cmd+Z 鎾ら攢锛孲hift+Ctrl/Cmd+Z 閲嶅仛锛孋trl/Cmd+D 澶嶅埗锛孌elete 鍒犻櫎锛屾柟鍚戦敭寰皟锛孉lt+鈫?鈫?璋冩暣鍥惧眰銆?      </p>
+        快捷键：Ctrl/Cmd+Z 撤销，Shift+Ctrl/Cmd+Z 重做，Ctrl/Cmd+D 复制，Delete 删除，方向键微调，Alt+↑/↓ 调整图层。
+      </p>
     </aside>
   </div>
 </template>

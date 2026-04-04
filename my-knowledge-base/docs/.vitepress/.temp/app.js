@@ -30,7 +30,7 @@ _sfc_main$19.setup = (props, ctx) => {
 function deserializeFunctions(r) {
   return Array.isArray(r) ? r.map(deserializeFunctions) : typeof r == "object" && r !== null ? Object.keys(r).reduce((t, n) => (t[n] = deserializeFunctions(r[n]), t), {}) : typeof r == "string" && r.startsWith("_vp-fn_") ? new Function(`return ${r.slice(7)}`)() : r;
 }
-const siteData = deserializeFunctions(JSON.parse(`{"lang":"en-US","dir":"ltr","title":"Wexler's Notes","description":"全栈开发与运维知识库","base":"/","head":[],"router":{"prefetchLinks":true},"appearance":true,"themeConfig":{"search":{"provider":"local"},"logo":"/images/logo.jpg","nav":[{"text":"🏠 首页","link":"/"},{"text":"📚 核心知识库","link":"/Sky-Take-Out/00-后端开发知识大本营"},{"text":"🎨 风格实验室","link":"/Style-Lab/00-风格入口"}],"sidebar":[{"text":"Code","collapsed":false,"items":[{"text":"DS","collapsed":false,"items":[{"text":"BFS","link":"/Code/DS/BFS"},{"text":"Deque","link":"/Code/DS/Deque"},{"text":"DFS","link":"/Code/DS/DFS"},{"text":"Dynamic Programming","link":"/Code/DS/Dynamic Programming"},{"text":"StringBuilder","link":"/Code/DS/StringBuilder"},{"text":"分治算法","link":"/Code/DS/分治算法"},{"text":"树形DP","link":"/Code/DS/树形DP"},{"text":"细节部分","link":"/Code/DS/细节部分"}]},{"text":"Hot100","collapsed":false,"items":[{"text":"Backtracking","collapsed":false,"items":[{"text":"46-全排列","link":"/Code/Hot100/Backtracking/46-全排列"},{"text":"131-分割回文串","link":"/Code/Hot100/Backtracking/131-分割回文串"}]},{"text":"Binary-Tree","collapsed":false,"items":[{"text":"114-二叉树展开为链表","link":"/Code/Hot100/Binary-Tree/114-二叉树展开为链表"},{"text":"236-二叉树的最近公共祖先","link":"/Code/Hot100/Binary-Tree/236-二叉树的最近公共祖先"},{"text":"437-路径总和III","link":"/Code/Hot100/Binary-Tree/437-路径总和III"}]},{"text":"Graph-Theory","collapsed":false,"items":[{"text":"207-课程表","link":"/Code/Hot100/Graph-Theory/207-课程表"}]},{"text":"Prefix-Sum","collapsed":false,"items":[{"text":"560-和为K的子数组","link":"/Code/Hot100/Prefix-Sum/560-和为K的子数组"}]},{"text":"Sliding-Window","collapsed":false,"items":[{"text":"3-无重复字符的最长子串","link":"/Code/Hot100/Sliding-Window/3-无重复字符的最长子串"},{"text":"438-找到字符串中所有字母异位词","link":"/Code/Hot100/Sliding-Window/438-找到字符串中所有字母异位词"},{"text":"同类总结","link":"/Code/Hot100/Sliding-Window/同类总结"}]},{"text":"Stack","collapsed":false,"items":[{"text":"394-字符串解码","link":"/Code/Hot100/Stack/394-字符串解码"},{"text":"739-每日温度","link":"/Code/Hot100/Stack/739-每日温度"}]},{"text":"Substring","collapsed":false,"items":[]},{"text":"Two-Pointers","collapsed":false,"items":[{"text":"11-盛最多水的容器","link":"/Code/Hot100/Two-Pointers/11-盛最多水的容器"},{"text":"15-三数之和","link":"/Code/Hot100/Two-Pointers/15-三数之和"}]}]},{"text":"通用模板","link":"/Code/通用模板"},{"text":"通用模板new","link":"/Code/通用模板new"}]},{"text":"MyWeb","collapsed":false,"items":[{"text":"01-index-首页文档详解","link":"/MyWeb/01-index-首页文档详解"},{"text":"02-config-配置文件详解","link":"/MyWeb/02-config-配置文件详解"},{"text":"03-theme-index-主题入口详解","link":"/MyWeb/03-theme-index-主题入口详解"},{"text":"04-HomeFxBackdrop-首页背景组件详解","link":"/MyWeb/04-HomeFxBackdrop-首页背景组件详解"},{"text":"05-HomeFxToggle-主题切换组件详解","link":"/MyWeb/05-HomeFxToggle-主题切换组件详解"},{"text":"06-ReadingEnhancer-阅读增强组件详解","link":"/MyWeb/06-ReadingEnhancer-阅读增强组件详解"},{"text":"07-homeFxState-主题状态管理详解","link":"/MyWeb/07-homeFxState-主题状态管理详解"},{"text":"08-style-css-全局样式详解","link":"/MyWeb/08-style-css-全局样式详解"},{"text":"00-文档目录","link":"/MyWeb/00-文档目录"},{"text":"Style-Lab","collapsed":false,"items":[{"text":"01-强烈撞色风","link":"/MyWeb/Style-Lab/01-强烈撞色风"},{"text":"02-油画质感风","link":"/MyWeb/Style-Lab/02-油画质感风"},{"text":"03-水彩轻雾风","link":"/MyWeb/Style-Lab/03-水彩轻雾风"},{"text":"00-风格入口","link":"/MyWeb/Style-Lab/00-风格入口"}]},{"text":"网站修改指南","link":"/MyWeb/网站修改指南"}]},{"text":"PaiSmart","collapsed":false,"items":[{"text":"StudyEveryday","collapsed":false,"items":[{"text":"TRACE TABLE","link":"/PaiSmart/StudyEveryday/TRACE TABLE"},{"text":"v1.0 day1 配置环境","link":"/PaiSmart/StudyEveryday/v1.0 day1 配置环境"},{"text":"v1.0 day2","link":"/PaiSmart/StudyEveryday/v1.0 day2"}]},{"text":"V2.0 Everyday","collapsed":false,"items":[{"text":"day1 文件上传与合并","link":"/PaiSmart/V2.0 Everyday/day1 文件上传与合并"}]},{"text":"内部细节","link":"/PaiSmart/内部细节"},{"text":"总览规划","link":"/PaiSmart/总览规划"},{"text":"面试","collapsed":false,"items":[{"text":"day2","link":"/PaiSmart/面试/day2"},{"text":"prompt7.0","link":"/PaiSmart/面试/prompt7.0"},{"text":"v2-day1","link":"/PaiSmart/面试/v2-day1"},{"text":"v2-day2.1","link":"/PaiSmart/面试/v2-day2.1"},{"text":"v2-day2.2","link":"/PaiSmart/面试/v2-day2.2"},{"text":"v2-day2.3","link":"/PaiSmart/面试/v2-day2.3"},{"text":"v2-day2","link":"/PaiSmart/面试/v2-day2"},{"text":"v2-day3","link":"/PaiSmart/面试/v2-day3"},{"text":"v2-day4","link":"/PaiSmart/面试/v2-day4"},{"text":"v2-day5","link":"/PaiSmart/面试/v2-day5"},{"text":"v2-day6","link":"/PaiSmart/面试/v2-day6"},{"text":"各类杂项问题","link":"/PaiSmart/面试/各类杂项问题"},{"text":"面向题目","link":"/PaiSmart/面试/面向题目"}]}]},{"text":"PromptLearning","collapsed":false,"items":[{"text":"day1","link":"/PromptLearning/day1"},{"text":"MyWeb","link":"/PromptLearning/MyWeb"}]},{"text":"Resume","collapsed":false,"items":[{"text":"2.13.1","link":"/Resume/2.13.1"},{"text":"2.14.1","link":"/Resume/2.14.1"},{"text":"2.14.2","link":"/Resume/2.14.2"},{"text":"前7天目标","link":"/Resume/前7天目标"},{"text":"简历V3.0","link":"/Resume/简历V3.0"}]},{"text":"Sky-Take-Out","collapsed":false,"items":[{"text":"01-Web 前端全栈开发手册","link":"/Sky-Take-Out/01-Web 前端全栈开发手册"},{"text":"02-Java 后端核心与 SpringBoot 实战手册","link":"/Sky-Take-Out/02-Java 后端核心与 SpringBoot 实战手册"},{"text":"03-数据持久化与 MyBatis 指南","link":"/Sky-Take-Out/03-数据持久化与 MyBatis 指南"},{"text":"04-服务器运维与容器化部署手册","link":"/Sky-Take-Out/04-服务器运维与容器化部署手册"},{"text":"00-后端开发知识大本营","link":"/Sky-Take-Out/00-后端开发知识大本营"}]},{"text":"图像处理和信息安全","collapsed":false,"items":[{"text":"Week4","link":"/图像处理和信息安全/Week4"}]},{"text":"面试笔记","collapsed":false,"items":[{"text":"JavaSe","collapsed":false,"items":[{"text":"JAVASE","link":"/面试笔记/JavaSe/JAVASE"},{"text":"String","link":"/面试笔记/JavaSe/String"},{"text":"并发编程","link":"/面试笔记/JavaSe/并发编程"},{"text":"集合框架","link":"/面试笔记/JavaSe/集合框架"},{"text":"面向对象","link":"/面试笔记/JavaSe/面向对象"}]},{"text":"MyWeb","collapsed":false,"items":[{"text":"构建过程","link":"/面试笔记/MyWeb/构建过程"},{"text":"构建过程2","link":"/面试笔记/MyWeb/构建过程2"},{"text":"构建过程3","link":"/面试笔记/MyWeb/构建过程3"},{"text":"构建过程end","link":"/面试笔记/MyWeb/构建过程end"}]}]}],"socialLinks":[{"icon":"github","link":"https://github.com/Tinnnnnnnnk"}],"footer":{"message":"Powered by VitePress & Kira-Kira Magic","copyright":"Copyright © 2024-present Wexler"},"editLink":{"pattern":"https://github.com/Tinnnnnnnnk/Wexler-s-Notes/edit/main/my-knowledge-base/docs/:path","text":"在 GitHub 上编辑此页"}},"locales":{},"scrollOffset":134,"cleanUrls":true}`));
+const siteData = deserializeFunctions(JSON.parse(`{"lang":"en-US","dir":"ltr","title":"Wexler's Notes","description":"全栈开发与运维知识库","base":"/","head":[],"router":{"prefetchLinks":true},"appearance":true,"themeConfig":{"search":{"provider":"local"},"logo":"/images/logo.jpg","nav":[{"text":"🏠 首页","link":"/"},{"text":"📚 核心知识库","link":"/Sky-Take-Out/00-后端开发知识大本营"},{"text":"🎨 风格实验室","link":"/Style-Lab/00-风格入口"}],"sidebar":[{"text":"Code","collapsed":false,"items":[{"text":"DS","collapsed":false,"items":[{"text":"BFS","link":"/Code/DS/BFS"},{"text":"Deque","link":"/Code/DS/Deque"},{"text":"DFS","link":"/Code/DS/DFS"},{"text":"Dynamic Programming","link":"/Code/DS/Dynamic Programming"},{"text":"StringBuilder","link":"/Code/DS/StringBuilder"},{"text":"分治算法","link":"/Code/DS/分治算法"},{"text":"树形DP","link":"/Code/DS/树形DP"},{"text":"细节部分","link":"/Code/DS/细节部分"}]},{"text":"Hot100","collapsed":false,"items":[{"text":"Backtracking","collapsed":false,"items":[{"text":"46-全排列","link":"/Code/Hot100/Backtracking/46-全排列"},{"text":"131-分割回文串","link":"/Code/Hot100/Backtracking/131-分割回文串"}]},{"text":"Binary-Tree","collapsed":false,"items":[{"text":"114-二叉树展开为链表","link":"/Code/Hot100/Binary-Tree/114-二叉树展开为链表"},{"text":"236-二叉树的最近公共祖先","link":"/Code/Hot100/Binary-Tree/236-二叉树的最近公共祖先"},{"text":"437-路径总和III","link":"/Code/Hot100/Binary-Tree/437-路径总和III"}]},{"text":"Graph-Theory","collapsed":false,"items":[{"text":"207-课程表","link":"/Code/Hot100/Graph-Theory/207-课程表"}]},{"text":"Prefix-Sum","collapsed":false,"items":[{"text":"560-和为K的子数组","link":"/Code/Hot100/Prefix-Sum/560-和为K的子数组"}]},{"text":"Sliding-Window","collapsed":false,"items":[{"text":"3-无重复字符的最长子串","link":"/Code/Hot100/Sliding-Window/3-无重复字符的最长子串"},{"text":"438-找到字符串中所有字母异位词","link":"/Code/Hot100/Sliding-Window/438-找到字符串中所有字母异位词"},{"text":"同类总结","link":"/Code/Hot100/Sliding-Window/同类总结"}]},{"text":"Stack","collapsed":false,"items":[{"text":"394-字符串解码","link":"/Code/Hot100/Stack/394-字符串解码"},{"text":"739-每日温度","link":"/Code/Hot100/Stack/739-每日温度"}]},{"text":"Substring","collapsed":false,"items":[]},{"text":"Two-Pointers","collapsed":false,"items":[{"text":"11-盛最多水的容器","link":"/Code/Hot100/Two-Pointers/11-盛最多水的容器"},{"text":"15-三数之和","link":"/Code/Hot100/Two-Pointers/15-三数之和"}]}]},{"text":"通用模板","link":"/Code/通用模板"},{"text":"通用模板new","link":"/Code/通用模板new"}]},{"text":"MyWeb","collapsed":false,"items":[{"text":"01-index-首页文档详解","link":"/MyWeb/01-index-首页文档详解"},{"text":"02-config-配置文件详解","link":"/MyWeb/02-config-配置文件详解"},{"text":"03-theme-index-主题入口详解","link":"/MyWeb/03-theme-index-主题入口详解"},{"text":"04-HomeFxBackdrop-首页背景组件详解","link":"/MyWeb/04-HomeFxBackdrop-首页背景组件详解"},{"text":"05-HomeFxToggle-主题切换组件详解","link":"/MyWeb/05-HomeFxToggle-主题切换组件详解"},{"text":"06-ReadingEnhancer-阅读增强组件详解","link":"/MyWeb/06-ReadingEnhancer-阅读增强组件详解"},{"text":"07-homeFxState-主题状态管理详解","link":"/MyWeb/07-homeFxState-主题状态管理详解"},{"text":"08-style-css-全局样式详解","link":"/MyWeb/08-style-css-全局样式详解"},{"text":"00-文档目录","link":"/MyWeb/00-文档目录"},{"text":"Style-Lab","collapsed":false,"items":[{"text":"01-强烈撞色风","link":"/MyWeb/Style-Lab/01-强烈撞色风"},{"text":"02-油画质感风","link":"/MyWeb/Style-Lab/02-油画质感风"},{"text":"03-水彩轻雾风","link":"/MyWeb/Style-Lab/03-水彩轻雾风"},{"text":"00-风格入口","link":"/MyWeb/Style-Lab/00-风格入口"}]},{"text":"网站修改指南","link":"/MyWeb/网站修改指南"}]},{"text":"PaiSmart","collapsed":false,"items":[{"text":"StudyEveryday","collapsed":false,"items":[{"text":"TRACE TABLE","link":"/PaiSmart/StudyEveryday/TRACE TABLE"},{"text":"v1.0 day1 配置环境","link":"/PaiSmart/StudyEveryday/v1.0 day1 配置环境"},{"text":"v1.0 day2","link":"/PaiSmart/StudyEveryday/v1.0 day2"}]},{"text":"V2.0 Everyday","collapsed":false,"items":[{"text":"day1 文件上传与合并","link":"/PaiSmart/V2.0 Everyday/day1 文件上传与合并"}]},{"text":"内部细节","link":"/PaiSmart/内部细节"},{"text":"总览规划","link":"/PaiSmart/总览规划"},{"text":"面试","collapsed":false,"items":[{"text":"day2","link":"/PaiSmart/面试/day2"},{"text":"prompt7.0","link":"/PaiSmart/面试/prompt7.0"},{"text":"v2-day1","link":"/PaiSmart/面试/v2-day1"},{"text":"v2-day2.1","link":"/PaiSmart/面试/v2-day2.1"},{"text":"v2-day2.2","link":"/PaiSmart/面试/v2-day2.2"},{"text":"v2-day2.3","link":"/PaiSmart/面试/v2-day2.3"},{"text":"v2-day2","link":"/PaiSmart/面试/v2-day2"},{"text":"v2-day3","link":"/PaiSmart/面试/v2-day3"},{"text":"v2-day4","link":"/PaiSmart/面试/v2-day4"},{"text":"v2-day5","link":"/PaiSmart/面试/v2-day5"},{"text":"v2-day6","link":"/PaiSmart/面试/v2-day6"},{"text":"各类杂项问题","link":"/PaiSmart/面试/各类杂项问题"},{"text":"面向题目","link":"/PaiSmart/面试/面向题目"}]}]},{"text":"PromptLearning","collapsed":false,"items":[{"text":"day1","link":"/PromptLearning/day1"},{"text":"MyWeb","link":"/PromptLearning/MyWeb"}]},{"text":"Resume","collapsed":false,"items":[{"text":"2.13.1","link":"/Resume/2.13.1"},{"text":"2.14.1","link":"/Resume/2.14.1"},{"text":"2.14.2","link":"/Resume/2.14.2"},{"text":"前7天目标","link":"/Resume/前7天目标"},{"text":"简历V3.0","link":"/Resume/简历V3.0"}]},{"text":"Sky-Take-Out","collapsed":false,"items":[{"text":"01-Web 前端全栈开发手册","link":"/Sky-Take-Out/01-Web 前端全栈开发手册"},{"text":"02-Java 后端核心与 SpringBoot 实战手册","link":"/Sky-Take-Out/02-Java 后端核心与 SpringBoot 实战手册"},{"text":"03-数据持久化与 MyBatis 指南","link":"/Sky-Take-Out/03-数据持久化与 MyBatis 指南"},{"text":"04-服务器运维与容器化部署手册","link":"/Sky-Take-Out/04-服务器运维与容器化部署手册"},{"text":"00-后端开发知识大本营","link":"/Sky-Take-Out/00-后端开发知识大本营"}]},{"text":"图像处理和信息安全","collapsed":false,"items":[{"text":"security-basics-compact-guide-zh","link":"/图像处理和信息安全/security-basics-compact-guide-zh"},{"text":"Week4","link":"/图像处理和信息安全/Week4"}]},{"text":"面试笔记","collapsed":false,"items":[{"text":"JavaSe","collapsed":false,"items":[{"text":"JAVASE","link":"/面试笔记/JavaSe/JAVASE"},{"text":"String","link":"/面试笔记/JavaSe/String"},{"text":"并发编程","link":"/面试笔记/JavaSe/并发编程"},{"text":"集合框架","link":"/面试笔记/JavaSe/集合框架"},{"text":"面向对象","link":"/面试笔记/JavaSe/面向对象"}]},{"text":"MyWeb","collapsed":false,"items":[{"text":"构建过程","link":"/面试笔记/MyWeb/构建过程"},{"text":"构建过程2","link":"/面试笔记/MyWeb/构建过程2"},{"text":"构建过程3","link":"/面试笔记/MyWeb/构建过程3"},{"text":"构建过程end","link":"/面试笔记/MyWeb/构建过程end"}]}]}],"socialLinks":[{"icon":"github","link":"https://github.com/Tinnnnnnnnk"}],"footer":{"message":"Powered by VitePress & Kira-Kira Magic","copyright":"Copyright © 2024-present Wexler"},"editLink":{"pattern":"https://github.com/Tinnnnnnnnk/Wexler-s-Notes/edit/main/my-knowledge-base/docs/:path","text":"在 GitHub 上编辑此页"}},"locales":{},"scrollOffset":134,"cleanUrls":true}`));
 const __vite_import_meta_env__$1 = {};
 const EXTERNAL_URL_RE = /^(?:[a-z]+:|\/\/)/i;
 const APPEARANCE_KEY = "vitepress-theme-appearance";
@@ -3102,7 +3102,7 @@ const _sfc_main$x = /* @__PURE__ */ defineComponent({
   __name: "VPNavBarSearch",
   __ssrInlineRender: true,
   setup(__props) {
-    const VPLocalSearchBox = defineAsyncComponent(() => import("./VPLocalSearchBox.nODRu4Uz.js"));
+    const VPLocalSearchBox = defineAsyncComponent(() => import("./VPLocalSearchBox.DJBe6cz2.js"));
     const VPAlgoliaSearchBox = () => null;
     const { theme: theme2 } = useData();
     const loaded = ref(false);
@@ -6117,6 +6117,8 @@ const _sfc_main$1 = {
     const ioMessageType = ref("info");
     const validationReport = ref(null);
     const routeEditHistory = ref({});
+    const panelCollapsed = ref(false);
+    const performanceMode = ref(false);
     const canvasMetrics = ref({
       width: 1200,
       height: 900
@@ -6149,6 +6151,7 @@ const _sfc_main$1 = {
     const allEditedRoutes = computed(() => getAllEditorRoutes());
     const routeAuditLogs = computed(() => getRouteAuditLog(currentRoute.value));
     const auditPreviewLogs = computed(() => routeAuditLogs.value.slice(0, 8));
+    const publishDiffPreview = computed(() => getPublishDiffPreview(currentRoute.value));
     function clamp2(value, min, max) {
       return Math.min(max, Math.max(min, value));
     }
@@ -6159,6 +6162,61 @@ const _sfc_main$1 = {
     }
     function cloneJson(value) {
       return JSON.parse(JSON.stringify(value));
+    }
+    function getComparableBlockSnapshot(block) {
+      if (!block || typeof block !== "object") return null;
+      return {
+        id: String(block.id || ""),
+        kind: String(block.kind || ""),
+        x: Number(block.x || 0),
+        y: Number(block.y || 0),
+        w: Number(block.w || 0),
+        h: Number(block.h || 0),
+        z: Number(block.z || 0),
+        opacity: Number(block.opacity || 0),
+        radius: Number(block.radius || 0),
+        blur: Number(block.blur || 0),
+        bg: String(block.bg || ""),
+        color: String(block.color || ""),
+        kicker: String(block.kicker || ""),
+        title: String(block.title || ""),
+        body: String(block.body || "")
+      };
+    }
+    function getPublishDiffPreview(routeInput) {
+      const routePath = ensureRouteLayout(routeInput);
+      const draftBlocks = getRouteBlocks(routePath);
+      const publishedBlocks = getPublishedRouteBlocks(routePath);
+      const draftMap = new Map(draftBlocks.map((item) => [item.id, getComparableBlockSnapshot(item)]));
+      const publishedMap = new Map(
+        publishedBlocks.map((item) => [item.id, getComparableBlockSnapshot(item)])
+      );
+      let added = 0;
+      let removed = 0;
+      let changed = 0;
+      draftMap.forEach((draftBlock, id) => {
+        if (!publishedMap.has(id)) {
+          added += 1;
+          return;
+        }
+        const publishedBlock = publishedMap.get(id);
+        if (JSON.stringify(draftBlock) !== JSON.stringify(publishedBlock)) {
+          changed += 1;
+        }
+      });
+      publishedMap.forEach((_, id) => {
+        if (!draftMap.has(id)) {
+          removed += 1;
+        }
+      });
+      return {
+        route: routePath,
+        added,
+        removed,
+        changed,
+        totalDraft: draftBlocks.length,
+        totalPublished: publishedBlocks.length
+      };
     }
     function ensureRouteHistoryBucket(routeInput) {
       const routePath = ensureRouteLayout(routeInput);
@@ -6210,7 +6268,7 @@ const _sfc_main$1 = {
       const routePath = ensureRouteLayout(currentRoute.value);
       const bucket = ensureRouteHistoryBucket(routePath);
       if (!bucket.undo.length) {
-        setMessage("error", "没有可撤销的操作。");
+        setMessage("error", "操作失败。");
         return;
       }
       const currentSnapshot = createLayoutSnapshot(routePath, "current");
@@ -6226,7 +6284,7 @@ const _sfc_main$1 = {
       const routePath = ensureRouteLayout(currentRoute.value);
       const bucket = ensureRouteHistoryBucket(routePath);
       if (!bucket.redo.length) {
-        setMessage("error", "没有可重做的操作。");
+        setMessage("error", "操作失败。");
         return;
       }
       const currentSnapshot = createLayoutSnapshot(routePath, "current");
@@ -6569,13 +6627,13 @@ const _sfc_main$1 = {
     function removeCurrentBlock() {
       if (!selectedBlock.value) return;
       const targetId = selectedBlock.value.id;
-      pushUndoSnapshot(currentRoute.value, "删除模块");
+      pushUndoSnapshot(currentRoute.value, "鍒犻櫎妯″潡");
       removeRouteBlock(currentRoute.value, targetId);
       appendAudit("remove_block", { blockId: targetId });
     }
     function handleDuplicateSelected() {
       if (!selectedBlock.value) return;
-      pushUndoSnapshot(currentRoute.value, "复制模块");
+      pushUndoSnapshot(currentRoute.value, "澶嶅埗妯″潡");
       const result = duplicateRouteBlock(currentRoute.value, selectedBlock.value.id);
       if (result.ok) {
         appendAudit("duplicate_block", {
@@ -6583,14 +6641,14 @@ const _sfc_main$1 = {
         });
       }
       if (!result.ok) {
-        setMessage("error", result.message || "复制失败。");
+        setMessage("error", result.message || "操作失败。");
         return;
       }
-      setMessage("success", "已复制当前模块。");
+      setMessage("success", "操作成功。");
     }
     function handleMoveLayer(direction) {
       if (!selectedBlock.value) return;
-      pushUndoSnapshot(currentRoute.value, direction > 0 ? "图层上移" : "图层下移");
+      pushUndoSnapshot(currentRoute.value, direction > 0 ? "鍥惧眰涓婄Щ" : "鍥惧眰涓嬬Щ");
       const result = moveRouteBlockLayer(currentRoute.value, selectedBlock.value.id, direction);
       if (result.ok) {
         appendAudit("layer_move", {
@@ -6599,7 +6657,7 @@ const _sfc_main$1 = {
         });
       }
       if (!result.ok) {
-        setMessage("error", result.message || "图层调整失败。");
+        setMessage("error", result.message || "操作失败。");
       }
     }
     function nudgeSelectedBlock(dx, dy) {
@@ -6608,7 +6666,7 @@ const _sfc_main$1 = {
       const nextY = clamp2(Math.round(selectedBlock.value.y + dy), 0, CANVAS_LIMIT);
       const deltaX = nextX - selectedBlock.value.x;
       const deltaY = nextY - selectedBlock.value.y;
-      pushUndoSnapshot(currentRoute.value, "微调位置");
+      pushUndoSnapshot(currentRoute.value, "寰皟浣嶇疆");
       patchRouteBlock(currentRoute.value, selectedBlock.value.id, {
         x: nextX,
         y: nextY
@@ -6683,7 +6741,9 @@ const _sfc_main$1 = {
       }
     }
     onMounted(() => {
+      var _a;
       initEditorState();
+      performanceMode.value = ((_a = window.matchMedia) == null ? void 0 : _a.call(window, "(prefers-reduced-motion: reduce)").matches) === true;
       syncRoute(route.path);
       window.addEventListener("keydown", handleEditorHotkeys);
       window.addEventListener("resize", refreshCanvasMetrics);
@@ -6714,7 +6774,7 @@ const _sfc_main$1 = {
     return (_ctx, _push, _parent, _attrs) => {
       if (showCanvas.value) {
         _push(`<div${ssrRenderAttrs(mergeProps({
-          class: ["home-editor-canvas", { "is-editing": unref(isEditorMode), "is-interacting": isInteracting.value }],
+          class: ["home-editor-canvas", { "is-editing": unref(isEditorMode), "is-interacting": isInteracting.value, "is-performance": performanceMode.value }],
           style: canvasStyle.value,
           "aria-label": "页面编辑画布"
         }, _attrs))}><div class="home-editor-canvas__blocks"><div class="home-editor-guides" aria-hidden="true"><!--[-->`);
@@ -6747,7 +6807,7 @@ const _sfc_main$1 = {
           _push(`<!---->`);
         }
         if (unref(isEditorMode)) {
-          _push(`<aside class="home-editor-panel"><h3 class="home-editor-panel__title">页面编辑器</h3><p class="home-editor-panel__route">${ssrInterpolate(currentRoute.value)}</p><div class="home-editor-status"><span class="home-editor-chip home-editor-chip--draft">草稿</span><span class="${ssrRenderClass([routeStatus.value.dirty ? "is-dirty" : "is-clean", "home-editor-chip"])}">${ssrInterpolate(routeStatus.value.dirty ? "有未发布改动" : "已与发布版同步")}</span><span class="home-editor-chip home-editor-chip--count">草稿/发布 ${ssrInterpolate(blockCountSummary.value)}</span><span class="home-editor-chip home-editor-chip--history">回滚点 ${ssrInterpolate(routeStatus.value.historyCount)}</span><span class="home-editor-chip home-editor-chip--history">撤销 ${ssrInterpolate(historyStats.value.undo)}/重做 ${ssrInterpolate(historyStats.value.redo)}</span><span class="home-editor-chip home-editor-chip--count">Schema v3 / Layout v2</span></div><section class="home-editor-route-tools"><button type="button" class="home-editor-btn home-editor-btn--full"> 生成当前页模板 </button><p class="home-editor-route-tools__hint"> 当页面还没有模块时，可一键生成标题与说明区块，快速开始编辑。 </p></section><div class="home-editor-actions"><button type="button" class="home-editor-btn"> 保存草稿 </button><button type="button" class="home-editor-btn"> 立即发布 </button><button type="button" class="home-editor-btn"> 回滚草稿 </button></div><section class="home-editor-layer-panel"><div class="home-editor-layer-panel__head"><strong>图层面板</strong><div class="home-editor-layer-panel__actions"><button type="button" class="home-editor-layer-btn"${ssrIncludeBooleanAttr(!selectedBlock.value) ? " disabled" : ""}> 上移 </button><button type="button" class="home-editor-layer-btn"${ssrIncludeBooleanAttr(!selectedBlock.value) ? " disabled" : ""}> 下移 </button></div></div><ul class="home-editor-layer-list"><!--[-->`);
+          _push(`<aside class="${ssrRenderClass([{ "is-collapsed": panelCollapsed.value, "is-performance": performanceMode.value }, "home-editor-panel"])}"><h3 class="home-editor-panel__title">页面编辑器</h3><p class="home-editor-panel__route">${ssrInterpolate(currentRoute.value)}</p><div class="home-editor-panel__controls"><button type="button" class="home-editor-layer-btn">${ssrInterpolate(panelCollapsed.value ? "展开面板" : "折叠面板")}</button><button type="button" class="${ssrRenderClass([{ "is-active": performanceMode.value }, "home-editor-layer-btn"])}">${ssrInterpolate(performanceMode.value ? "性能优先" : "视觉优先")}</button></div><div class="home-editor-status"><span class="home-editor-chip home-editor-chip--draft">草稿</span><span class="${ssrRenderClass([routeStatus.value.dirty ? "is-dirty" : "is-clean", "home-editor-chip"])}">${ssrInterpolate(routeStatus.value.dirty ? "有未发布改动" : "已与发布版同步")}</span><span class="home-editor-chip home-editor-chip--count">草稿/发布 ${ssrInterpolate(blockCountSummary.value)}</span><span class="home-editor-chip home-editor-chip--history">回滚点 ${ssrInterpolate(routeStatus.value.historyCount)}</span><span class="home-editor-chip home-editor-chip--history">撤销 ${ssrInterpolate(historyStats.value.undo)}/重做 ${ssrInterpolate(historyStats.value.redo)}</span><span class="home-editor-chip home-editor-chip--count">Schema v3 / Layout v2 / Project v1</span></div><section class="home-editor-route-tools home-editor-diff-preview"><div class="home-editor-layer-panel__head"><strong>发布预览</strong></div><p class="home-editor-route-tools__hint"> +${ssrInterpolate(publishDiffPreview.value.added)} / -${ssrInterpolate(publishDiffPreview.value.removed)} / Δ${ssrInterpolate(publishDiffPreview.value.changed)}</p></section><section class="home-editor-route-tools"><button type="button" class="home-editor-btn home-editor-btn--full"> 生成当前页模板 </button><p class="home-editor-route-tools__hint"> 当页面还没有模块时，可一键生成标题与说明区块，快速开始编辑。 </p></section><div class="home-editor-actions"><button type="button" class="home-editor-btn"> 保存草稿 </button><button type="button" class="home-editor-btn"> 立即发布 </button><button type="button" class="home-editor-btn"> 回滚草稿 </button></div><section class="home-editor-layer-panel"><div class="home-editor-layer-panel__head"><strong>图层面板</strong><div class="home-editor-layer-panel__actions"><button type="button" class="home-editor-layer-btn"${ssrIncludeBooleanAttr(!selectedBlock.value) ? " disabled" : ""}> 上移 </button><button type="button" class="home-editor-layer-btn"${ssrIncludeBooleanAttr(!selectedBlock.value) ? " disabled" : ""}> 下移 </button></div></div><ul class="home-editor-layer-list"><!--[-->`);
           ssrRenderList(layerBlocks.value, (block) => {
             _push(`<li><button type="button" class="${ssrRenderClass([{ "is-active": selectedBlockId.value === block.id }, "home-editor-layer-item"])}"><span class="home-editor-layer-item__title">${ssrInterpolate(block.title || block.kicker || block.id)}</span><span class="home-editor-layer-item__meta">z${ssrInterpolate(block.z)}</span></button></li>`);
           });
@@ -6755,7 +6815,7 @@ const _sfc_main$1 = {
           ssrRenderList(allEditedRoutes.value, (path) => {
             _push(`<li><button type="button" class="${ssrRenderClass([{ "is-active": currentRoute.value === path }, "home-editor-layer-item"])}"><span class="home-editor-layer-item__title">${ssrInterpolate(path)}</span><span class="home-editor-layer-item__meta">${ssrInterpolate(path === currentRoute.value ? "当前" : "打开")}</span></button></li>`);
           });
-          _push(`<!--]--></ul></section><div class="home-editor-actions home-editor-actions--secondary"><button type="button" class="home-editor-btn"> 校验发布 </button><button type="button" class="home-editor-btn"${ssrIncludeBooleanAttr(!routeStatus.value.historyCount) ? " disabled" : ""}> 一键回滚 </button></div><div class="home-editor-actions"><button type="button" class="home-editor-btn home-editor-btn--export"><span class="home-editor-export-icon" aria-hidden="true"></span><span>导出当前页</span></button><button type="button" class="home-editor-btn home-editor-btn--export"><span class="home-editor-export-icon" aria-hidden="true"></span><span>导出全站</span></button><button type="button" class="home-editor-btn"> 导入 JSON </button></div><section class="home-editor-audit-panel"><div class="home-editor-layer-panel__head"><strong>操作记录（${ssrInterpolate(routeAuditLogs.value.length)}）</strong><div class="home-editor-layer-panel__actions"><button type="button" class="home-editor-layer-btn"> 导出 </button><button type="button" class="home-editor-layer-btn"${ssrIncludeBooleanAttr(!routeAuditLogs.value.length) ? " disabled" : ""}> 清空 </button></div></div>`);
+          _push(`<!--]--></ul></section><div class="home-editor-actions home-editor-actions--secondary"><button type="button" class="home-editor-btn"> 校验发布 </button><button type="button" class="home-editor-btn"${ssrIncludeBooleanAttr(!routeStatus.value.historyCount) ? " disabled" : ""}> 一键回滚 </button></div><div class="home-editor-actions"><button type="button" class="home-editor-btn home-editor-btn--export"><span class="home-editor-export-icon" aria-hidden="true"></span><span>导出当前页</span></button><button type="button" class="home-editor-btn home-editor-btn--export"><span class="home-editor-export-icon" aria-hidden="true"></span><span>导出全站</span></button><button type="button" class="home-editor-btn home-editor-btn--export"><span class="home-editor-export-icon" aria-hidden="true"></span><span>导出工程</span></button><button type="button" class="home-editor-btn"> 导入工程/布局 </button></div><section class="home-editor-audit-panel"><div class="home-editor-layer-panel__head"><strong>操作记录（${ssrInterpolate(routeAuditLogs.value.length)}）</strong><div class="home-editor-layer-panel__actions"><button type="button" class="home-editor-layer-btn"> 导出 </button><button type="button" class="home-editor-layer-btn"${ssrIncludeBooleanAttr(!routeAuditLogs.value.length) ? " disabled" : ""}> 清空 </button></div></div>`);
           if (auditPreviewLogs.value.length) {
             _push(`<ul class="home-editor-audit-list"><!--[-->`);
             ssrRenderList(auditPreviewLogs.value, (item) => {
@@ -6792,7 +6852,7 @@ const _sfc_main$1 = {
               _push(`<!---->`);
             }
             if (validationReport.value.errors.length > 6 || validationReport.value.warnings.length > 6) {
-              _push(`<p class="home-editor-report__more"> 仅展示前 6 条，请先优先处理关键问题。 </p>`);
+              _push(`<p class="home-editor-report__more"> 仅展示前 6 条，请优先处理关键问题。 </p>`);
             } else {
               _push(`<!---->`);
             }

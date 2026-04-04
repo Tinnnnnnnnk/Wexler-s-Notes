@@ -8980,8 +8980,14 @@ html.sky-default-mode.dark .VPDoc .content:hover {
 /* =============================================
    Visual Editor (v4 alpha)
    ============================================= */
-.page-editor-toggle {
+.page-editor-toggle-group {
   margin-left: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.page-editor-toggle {
   position: relative;
   width: 36px;
   height: 36px;
@@ -9004,6 +9010,26 @@ html.sky-default-mode.dark .VPDoc .content:hover {
 .page-editor-toggle.is-active {
   background: rgba(72, 132, 180, 0.24);
   border-color: rgba(92, 162, 215, 0.9);
+}
+
+.page-editor-toggle.is-locked {
+  border-color: rgba(230, 184, 102, 0.9);
+  background: rgba(243, 195, 108, 0.16);
+}
+
+.page-editor-toggle.is-disabled {
+  opacity: 0.56;
+}
+
+.page-editor-toggle:disabled,
+.page-editor-toggle.is-disabled {
+  cursor: not-allowed;
+}
+
+.page-editor-toggle:disabled:hover,
+.page-editor-toggle.is-disabled:hover {
+  transform: none;
+  border-color: rgba(174, 203, 225, 0.55);
 }
 
 .page-editor-toggle__icon {
@@ -9041,6 +9067,53 @@ html.sky-default-mode.dark .VPDoc .content:hover {
   box-shadow: 0 0 0 6px rgba(84, 200, 137, 0.14);
 }
 
+.page-editor-toggle.is-locked .page-editor-toggle__state {
+  background: #f1c25a;
+  box-shadow: 0 0 0 6px rgba(241, 194, 90, 0.14);
+}
+
+.page-editor-lock {
+  position: relative;
+  width: 30px;
+  height: 30px;
+  border: 1px solid rgba(174, 203, 225, 0.5);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(10px) saturate(130%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: border-color 0.24s ease, transform 0.24s ease, background 0.24s ease;
+}
+
+.page-editor-lock:hover {
+  transform: translateY(-1px);
+  border-color: rgba(230, 184, 102, 0.85);
+  background: rgba(243, 195, 108, 0.2);
+}
+
+.page-editor-lock__icon {
+  position: relative;
+  width: 11px;
+  height: 8px;
+  border: 2px solid rgba(65, 92, 116, 0.86);
+  border-radius: 2px;
+}
+
+.page-editor-lock__icon::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 100%;
+  width: 7px;
+  height: 6px;
+  transform: translateX(-50%);
+  border: 2px solid rgba(65, 92, 116, 0.86);
+  border-bottom: none;
+  border-radius: 7px 7px 0 0;
+}
+
 .dark .page-editor-toggle {
   background: rgba(18, 30, 44, 0.56);
   border-color: rgba(133, 169, 196, 0.4);
@@ -9051,10 +9124,25 @@ html.sky-default-mode.dark .VPDoc .content:hover {
   border-color: rgba(130, 188, 235, 0.85);
 }
 
+.dark .page-editor-toggle.is-locked {
+  border-color: rgba(224, 183, 108, 0.82);
+  background: rgba(157, 113, 43, 0.3);
+}
+
 .dark .page-editor-toggle__icon,
 .dark .page-editor-toggle__icon::after {
   border-color: rgba(216, 229, 241, 0.9);
   background: rgba(216, 229, 241, 0.9);
+}
+
+.dark .page-editor-lock {
+  border-color: rgba(133, 169, 196, 0.38);
+  background: rgba(18, 30, 44, 0.52);
+}
+
+.dark .page-editor-lock__icon,
+.dark .page-editor-lock__icon::before {
+  border-color: rgba(216, 229, 241, 0.9);
 }
 
 .home-editor-canvas {

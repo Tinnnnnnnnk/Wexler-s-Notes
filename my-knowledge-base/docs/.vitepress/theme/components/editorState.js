@@ -12,8 +12,22 @@ const LAYOUT_SCHEMA_VERSION = 2
 const IMPORT_CONFLICT_CODE = 'IMPORT_CONFLICT'
 const UNSUPPORTED_BUNDLE_VERSION_CODE = 'UNSUPPORTED_BUNDLE_VERSION'
 const MAX_PUBLISHED_HISTORY = 12
+const EDIT_ACCESS_KEY = 'wexler.editor.auth'
 
 const isEditorMode = ref(false)
+const isEditorAccessUnlocked = ref(false)
+const editorGuardState = ref({
+  allowEditor: true,
+  locked: false,
+  requiresSecret: false,
+  message: '',
+  reason: '',
+  mode: 'allowed',
+  host: '',
+  allowedHosts: [],
+  isProd: false,
+  unlocked: true
+})
 const draftLayoutsByRoute = ref({})
 const publishedLayoutsByRoute = ref({})
 const publishedHistoryByRoute = ref({})
@@ -25,6 +39,214 @@ function normalizeRoute(routeInput) {
   const route = raw.split(/[?#]/)[0] || '/'
   if (route === '/') return '/'
   return route.startsWith('/') ? route : `/${route}`
+}
+
+function readRuntimeEnv(name) {
+  if (!name) return undefined
+
+  const viteEnv = import.meta && import.meta.env ? import.meta.env : null
+  if (viteEnv && Object.prototype.hasOwnProperty.call(viteEnv, name)) {
+    return viteEnv[name]
+  }
+
+  return undefined
+}
+
+function parseBooleanFlag(value) {
+  if (typeof value !== 'string') return null
+  const normalized = value.trim().toLowerCase()
+  if (!normalized) return null
+  if (['1', 'true', 'yes', 'on'].includes(normalized)) return true
+  if (['0', 'false', 'no', 'off'].includes(normalized)) return false
+  return null
+}
+
+function normalizeHostRule(hostRaw) {
+  if (typeof hostRaw !== 'string') return ''
+  const trimmed = hostRaw.trim().toLowerCase()
+  if (!trimmed) return ''
+  return trimmed.replace(/^https?:\/\//, '').replace(/\/.*$/, '')
+}
+
+function parseAllowedHosts(rawValue) {
+  if (typeof rawValue !== 'string') return []
+  return rawValue
+    .split(',')
+    .map((item) => normalizeHostRule(item))
+    .filter(Boolean)
+}
+
+function getCurrentHost() {
+  if (typeof window === 'undefined' || !window.location) return ''
+  const host = window.location.hostname
+  return typeof host === 'string' ? host.trim().toLowerCase() : ''
+}
+
+function hostMatchesRule(hostname, rule) {
+  if (!hostname || !rule) return false
+  if (rule === '*') return true
+  if (rule.startsWith('*.')) {
+    const root = rule.slice(2)
+    return hostname === root || hostname.endsWith(`.${root}`)
+  }
+  return hostname === rule
+}
+
+function isHostAllowed(hostname, rules) {
+  if (!rules.length) return true
+  if (!hostname) return false
+  return rules.some((rule) => hostMatchesRule(hostname, rule))
+}
+
+function readEditorPolicy() {
+  const isProd = Boolean(import.meta && import.meta.env && import.meta.env.PROD)
+  const enableInProd = parseBooleanFlag(readRuntimeEnv('VITE_EDITOR_ENABLE'))
+  const allowedHosts = parseAllowedHosts(readRuntimeEnv('VITE_EDITOR_ALLOWED_HOSTS'))
+  const adminKeyRaw = readRuntimeEnv('VITE_EDITOR_ADMIN_KEY')
+  const adminKey = typeof adminKeyRaw === 'string' ? adminKeyRaw.trim() : ''
+
+  return {
+    isProd,
+    enableInProd,
+    allowedHosts,
+    adminKey
+  }
+}
+
+function evaluateEditorGuard() {
+  const policy = readEditorPolicy()
+  const host = getCurrentHost()
+  const requiresSecret = Boolean(policy.adminKey)
+  const unlocked = !requiresSecret || isEditorAccessUnlocked.value
+
+  if (policy.isProd && policy.enableInProd !== true) {
+    return {
+      allowEditor: false,
+      locked: false,
+      requiresSecret,
+      message: '生产环境已关闭编辑模式（可配置 VITE_EDITOR_ENABLE=1 开启）。',
+      reason: 'prod_disabled',
+      mode: 'blocked',
+      host,
+      allowedHosts: policy.allowedHosts,
+      isProd: policy.isProd,
+      unlocked
+    }
+  }
+
+  if (policy.allowedHosts.length && !isHostAllowed(host, policy.allowedHosts)) {
+    return {
+      allowEditor: false,
+      locked: false,
+      requiresSecret,
+      message: '当前域名不在编辑白名单中（VITE_EDITOR_ALLOWED_HOSTS）。',
+      reason: 'host_not_allowed',
+      mode: 'blocked',
+      host,
+      allowedHosts: policy.allowedHosts,
+      isProd: policy.isProd,
+      unlocked
+    }
+  }
+
+  if (requiresSecret && !unlocked) {
+    return {
+      allowEditor: false,
+      locked: true,
+      requiresSecret,
+      message: '编辑模式已加锁，请先输入管理员口令。',
+      reason: 'needs_unlock',
+      mode: 'locked',
+      host,
+      allowedHosts: policy.allowedHosts,
+      isProd: policy.isProd,
+      unlocked
+    }
+  }
+
+  return {
+    allowEditor: true,
+    locked: false,
+    requiresSecret,
+    message: '编辑模式可用。',
+    reason: 'ok',
+    mode: 'allowed',
+    host,
+    allowedHosts: policy.allowedHosts,
+    isProd: policy.isProd,
+    unlocked
+  }
+}
+
+function refreshEditorGuardState() {
+  const next = evaluateEditorGuard()
+  editorGuardState.value = next
+
+  if (!next.allowEditor && isEditorMode.value) {
+    isEditorMode.value = false
+    persistEditorMode()
+  }
+
+  return next
+}
+
+function getEditorGuardStatus() {
+  const current = refreshEditorGuardState()
+  return {
+    ...current
+  }
+}
+
+function canUseEditor() {
+  return refreshEditorGuardState().allowEditor
+}
+
+function unlockEditorAccess(secretInput = '') {
+  const { adminKey } = readEditorPolicy()
+  if (!adminKey) {
+    isEditorAccessUnlocked.value = true
+    safeWriteStorage(EDIT_ACCESS_KEY, '1')
+    const guard = refreshEditorGuardState()
+    return {
+      ok: true,
+      message: '当前未配置编辑口令。',
+      guard
+    }
+  }
+
+  const attempt = typeof secretInput === 'string' ? secretInput.trim() : ''
+  if (!attempt || attempt !== adminKey) {
+    isEditorAccessUnlocked.value = false
+    safeRemoveStorage(EDIT_ACCESS_KEY)
+    const guard = refreshEditorGuardState()
+    return {
+      ok: false,
+      message: '口令错误，请重试。',
+      guard
+    }
+  }
+
+  isEditorAccessUnlocked.value = true
+  safeWriteStorage(EDIT_ACCESS_KEY, '1')
+  const guard = refreshEditorGuardState()
+  return {
+    ok: true,
+    message: '编辑模式已解锁。',
+    guard
+  }
+}
+
+function lockEditorAccess() {
+  isEditorAccessUnlocked.value = false
+  safeRemoveStorage(EDIT_ACCESS_KEY)
+  isEditorMode.value = false
+  persistEditorMode()
+  const guard = refreshEditorGuardState()
+  return {
+    ok: true,
+    message: '编辑模式已锁定。',
+    guard
+  }
 }
 
 function createDefaultBlockSeed() {
@@ -616,17 +838,39 @@ function getAllEditorRoutes() {
 function initEditorState() {
   if (initialized) return
   const savedMode = safeReadStorage(EDIT_MODE_KEY)
-  isEditorMode.value = savedMode === '1'
+  const savedAuth = safeReadStorage(EDIT_ACCESS_KEY)
+  isEditorAccessUnlocked.value = savedAuth === '1'
+  const guard = refreshEditorGuardState()
+  isEditorMode.value = savedMode === '1' && guard.allowEditor
+  persistEditorMode()
   initialized = true
 }
 
 function setEditorMode(nextValue) {
-  isEditorMode.value = Boolean(nextValue)
+  const target = Boolean(nextValue)
+  const guard = refreshEditorGuardState()
+
+  if (target && !guard.allowEditor) {
+    isEditorMode.value = false
+    persistEditorMode()
+    return {
+      ok: false,
+      message: guard.message || '当前环境不允许开启编辑模式。',
+      guard
+    }
+  }
+
+  isEditorMode.value = target
   persistEditorMode()
+  return {
+    ok: true,
+    message: target ? '编辑模式已开启。' : '编辑模式已关闭。',
+    guard: refreshEditorGuardState()
+  }
 }
 
 function toggleEditorMode() {
-  setEditorMode(!isEditorMode.value)
+  return setEditorMode(!isEditorMode.value)
 }
 
 function setSelectedRouteBlock(routeInput, blockId) {
@@ -1234,6 +1478,8 @@ function importEditorBundle(rawText, currentRouteInput = '/', options = {}) {
 
 export {
   isEditorMode,
+  isEditorAccessUnlocked,
+  editorGuardState,
   draftLayoutsByRoute,
   publishedLayoutsByRoute,
   publishedHistoryByRoute,
@@ -1242,6 +1488,10 @@ export {
   normalizeRoute,
   ensureRouteLayout,
   getAllEditorRoutes,
+  getEditorGuardStatus,
+  canUseEditor,
+  unlockEditorAccess,
+  lockEditorAccess,
   setEditorMode,
   toggleEditorMode,
   setSelectedRouteBlock,

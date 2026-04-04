@@ -31,7 +31,7 @@ function deserializeFunctions(r) {
   return Array.isArray(r) ? r.map(deserializeFunctions) : typeof r == "object" && r !== null ? Object.keys(r).reduce((t, n) => (t[n] = deserializeFunctions(r[n]), t), {}) : typeof r == "string" && r.startsWith("_vp-fn_") ? new Function(`return ${r.slice(7)}`)() : r;
 }
 const siteData = deserializeFunctions(JSON.parse(`{"lang":"en-US","dir":"ltr","title":"Wexler's Notes","description":"全栈开发与运维知识库","base":"/","head":[],"router":{"prefetchLinks":true},"appearance":true,"themeConfig":{"search":{"provider":"local"},"logo":"/images/logo.jpg","nav":[{"text":"🏠 首页","link":"/"},{"text":"📚 核心知识库","link":"/Sky-Take-Out/00-后端开发知识大本营"},{"text":"🎨 风格实验室","link":"/Style-Lab/00-风格入口"}],"sidebar":[{"text":"Code","collapsed":false,"items":[{"text":"DS","collapsed":false,"items":[{"text":"BFS","link":"/Code/DS/BFS"},{"text":"Deque","link":"/Code/DS/Deque"},{"text":"DFS","link":"/Code/DS/DFS"},{"text":"Dynamic Programming","link":"/Code/DS/Dynamic Programming"},{"text":"StringBuilder","link":"/Code/DS/StringBuilder"},{"text":"分治算法","link":"/Code/DS/分治算法"},{"text":"树形DP","link":"/Code/DS/树形DP"},{"text":"细节部分","link":"/Code/DS/细节部分"}]},{"text":"Hot100","collapsed":false,"items":[{"text":"Backtracking","collapsed":false,"items":[{"text":"46-全排列","link":"/Code/Hot100/Backtracking/46-全排列"},{"text":"131-分割回文串","link":"/Code/Hot100/Backtracking/131-分割回文串"}]},{"text":"Binary-Tree","collapsed":false,"items":[{"text":"114-二叉树展开为链表","link":"/Code/Hot100/Binary-Tree/114-二叉树展开为链表"},{"text":"236-二叉树的最近公共祖先","link":"/Code/Hot100/Binary-Tree/236-二叉树的最近公共祖先"},{"text":"437-路径总和III","link":"/Code/Hot100/Binary-Tree/437-路径总和III"}]},{"text":"Graph-Theory","collapsed":false,"items":[{"text":"207-课程表","link":"/Code/Hot100/Graph-Theory/207-课程表"}]},{"text":"Prefix-Sum","collapsed":false,"items":[{"text":"560-和为K的子数组","link":"/Code/Hot100/Prefix-Sum/560-和为K的子数组"}]},{"text":"Sliding-Window","collapsed":false,"items":[{"text":"3-无重复字符的最长子串","link":"/Code/Hot100/Sliding-Window/3-无重复字符的最长子串"},{"text":"438-找到字符串中所有字母异位词","link":"/Code/Hot100/Sliding-Window/438-找到字符串中所有字母异位词"},{"text":"同类总结","link":"/Code/Hot100/Sliding-Window/同类总结"}]},{"text":"Stack","collapsed":false,"items":[{"text":"394-字符串解码","link":"/Code/Hot100/Stack/394-字符串解码"},{"text":"739-每日温度","link":"/Code/Hot100/Stack/739-每日温度"}]},{"text":"Substring","collapsed":false,"items":[]},{"text":"Two-Pointers","collapsed":false,"items":[{"text":"11-盛最多水的容器","link":"/Code/Hot100/Two-Pointers/11-盛最多水的容器"},{"text":"15-三数之和","link":"/Code/Hot100/Two-Pointers/15-三数之和"}]}]},{"text":"通用模板","link":"/Code/通用模板"},{"text":"通用模板new","link":"/Code/通用模板new"}]},{"text":"MyWeb","collapsed":false,"items":[{"text":"01-index-首页文档详解","link":"/MyWeb/01-index-首页文档详解"},{"text":"02-config-配置文件详解","link":"/MyWeb/02-config-配置文件详解"},{"text":"03-theme-index-主题入口详解","link":"/MyWeb/03-theme-index-主题入口详解"},{"text":"04-HomeFxBackdrop-首页背景组件详解","link":"/MyWeb/04-HomeFxBackdrop-首页背景组件详解"},{"text":"05-HomeFxToggle-主题切换组件详解","link":"/MyWeb/05-HomeFxToggle-主题切换组件详解"},{"text":"06-ReadingEnhancer-阅读增强组件详解","link":"/MyWeb/06-ReadingEnhancer-阅读增强组件详解"},{"text":"07-homeFxState-主题状态管理详解","link":"/MyWeb/07-homeFxState-主题状态管理详解"},{"text":"08-style-css-全局样式详解","link":"/MyWeb/08-style-css-全局样式详解"},{"text":"00-文档目录","link":"/MyWeb/00-文档目录"},{"text":"Style-Lab","collapsed":false,"items":[{"text":"01-强烈撞色风","link":"/MyWeb/Style-Lab/01-强烈撞色风"},{"text":"02-油画质感风","link":"/MyWeb/Style-Lab/02-油画质感风"},{"text":"03-水彩轻雾风","link":"/MyWeb/Style-Lab/03-水彩轻雾风"},{"text":"00-风格入口","link":"/MyWeb/Style-Lab/00-风格入口"}]},{"text":"网站修改指南","link":"/MyWeb/网站修改指南"}]},{"text":"PaiSmart","collapsed":false,"items":[{"text":"StudyEveryday","collapsed":false,"items":[{"text":"TRACE TABLE","link":"/PaiSmart/StudyEveryday/TRACE TABLE"},{"text":"v1.0 day1 配置环境","link":"/PaiSmart/StudyEveryday/v1.0 day1 配置环境"},{"text":"v1.0 day2","link":"/PaiSmart/StudyEveryday/v1.0 day2"}]},{"text":"V2.0 Everyday","collapsed":false,"items":[{"text":"day1 文件上传与合并","link":"/PaiSmart/V2.0 Everyday/day1 文件上传与合并"}]},{"text":"内部细节","link":"/PaiSmart/内部细节"},{"text":"总览规划","link":"/PaiSmart/总览规划"},{"text":"面试","collapsed":false,"items":[{"text":"day2","link":"/PaiSmart/面试/day2"},{"text":"prompt7.0","link":"/PaiSmart/面试/prompt7.0"},{"text":"v2-day1","link":"/PaiSmart/面试/v2-day1"},{"text":"v2-day2.1","link":"/PaiSmart/面试/v2-day2.1"},{"text":"v2-day2.2","link":"/PaiSmart/面试/v2-day2.2"},{"text":"v2-day2.3","link":"/PaiSmart/面试/v2-day2.3"},{"text":"v2-day2","link":"/PaiSmart/面试/v2-day2"},{"text":"v2-day3","link":"/PaiSmart/面试/v2-day3"},{"text":"v2-day4","link":"/PaiSmart/面试/v2-day4"},{"text":"v2-day5","link":"/PaiSmart/面试/v2-day5"},{"text":"v2-day6","link":"/PaiSmart/面试/v2-day6"},{"text":"各类杂项问题","link":"/PaiSmart/面试/各类杂项问题"},{"text":"面向题目","link":"/PaiSmart/面试/面向题目"}]}]},{"text":"PromptLearning","collapsed":false,"items":[{"text":"day1","link":"/PromptLearning/day1"},{"text":"MyWeb","link":"/PromptLearning/MyWeb"}]},{"text":"Resume","collapsed":false,"items":[{"text":"2.13.1","link":"/Resume/2.13.1"},{"text":"2.14.1","link":"/Resume/2.14.1"},{"text":"2.14.2","link":"/Resume/2.14.2"},{"text":"前7天目标","link":"/Resume/前7天目标"},{"text":"简历V3.0","link":"/Resume/简历V3.0"}]},{"text":"Sky-Take-Out","collapsed":false,"items":[{"text":"01-Web 前端全栈开发手册","link":"/Sky-Take-Out/01-Web 前端全栈开发手册"},{"text":"02-Java 后端核心与 SpringBoot 实战手册","link":"/Sky-Take-Out/02-Java 后端核心与 SpringBoot 实战手册"},{"text":"03-数据持久化与 MyBatis 指南","link":"/Sky-Take-Out/03-数据持久化与 MyBatis 指南"},{"text":"04-服务器运维与容器化部署手册","link":"/Sky-Take-Out/04-服务器运维与容器化部署手册"},{"text":"00-后端开发知识大本营","link":"/Sky-Take-Out/00-后端开发知识大本营"}]},{"text":"图像处理和信息安全","collapsed":false,"items":[{"text":"Week4","link":"/图像处理和信息安全/Week4"}]},{"text":"面试笔记","collapsed":false,"items":[{"text":"JavaSe","collapsed":false,"items":[{"text":"JAVASE","link":"/面试笔记/JavaSe/JAVASE"},{"text":"String","link":"/面试笔记/JavaSe/String"},{"text":"并发编程","link":"/面试笔记/JavaSe/并发编程"},{"text":"集合框架","link":"/面试笔记/JavaSe/集合框架"},{"text":"面向对象","link":"/面试笔记/JavaSe/面向对象"}]},{"text":"MyWeb","collapsed":false,"items":[{"text":"构建过程","link":"/面试笔记/MyWeb/构建过程"},{"text":"构建过程2","link":"/面试笔记/MyWeb/构建过程2"},{"text":"构建过程3","link":"/面试笔记/MyWeb/构建过程3"},{"text":"构建过程end","link":"/面试笔记/MyWeb/构建过程end"}]}]}],"socialLinks":[{"icon":"github","link":"https://github.com/Tinnnnnnnnk"}],"footer":{"message":"Powered by VitePress & Kira-Kira Magic","copyright":"Copyright © 2024-present Wexler"},"editLink":{"pattern":"https://github.com/Tinnnnnnnnk/Wexler-s-Notes/edit/main/my-knowledge-base/docs/:path","text":"在 GitHub 上编辑此页"}},"locales":{},"scrollOffset":134,"cleanUrls":true}`));
-const __vite_import_meta_env__ = {};
+const __vite_import_meta_env__$1 = {};
 const EXTERNAL_URL_RE = /^(?:[a-z]+:|\/\/)/i;
 const APPEARANCE_KEY = "vitepress-theme-appearance";
 const HASH_RE = /#.*$/;
@@ -138,7 +138,7 @@ const KNOWN_EXTENSIONS = /* @__PURE__ */ new Set();
 function treatAsHtml(filename) {
   var _a;
   if (KNOWN_EXTENSIONS.size === 0) {
-    const extraExts = typeof process === "object" && ((_a = process.env) == null ? void 0 : _a.VITE_EXTRA_EXTENSIONS) || (__vite_import_meta_env__ == null ? void 0 : __vite_import_meta_env__.VITE_EXTRA_EXTENSIONS) || "";
+    const extraExts = typeof process === "object" && ((_a = process.env) == null ? void 0 : _a.VITE_EXTRA_EXTENSIONS) || (__vite_import_meta_env__$1 == null ? void 0 : __vite_import_meta_env__$1.VITE_EXTRA_EXTENSIONS) || "";
     ("3g2,3gp,aac,ai,apng,au,avif,bin,bmp,cer,class,conf,crl,css,csv,dll,doc,eps,epub,exe,gif,gz,ics,ief,jar,jpe,jpeg,jpg,js,json,jsonld,m4a,man,mid,midi,mjs,mov,mp2,mp3,mp4,mpe,mpeg,mpg,mpp,oga,ogg,ogv,ogx,opus,otf,p10,p7c,p7m,p7s,pdf,png,ps,qt,roff,rtf,rtx,ser,svg,t,tif,tiff,tr,ts,tsv,ttf,txt,vtt,wav,weba,webm,webp,woff,woff2,xhtml,xml,yaml,yml,zip" + (extraExts && typeof extraExts === "string" ? "," + extraExts : "")).split(",").forEach((ext2) => KNOWN_EXTENSIONS.add(ext2));
   }
   const ext = filename.split(".").pop();
@@ -3102,7 +3102,7 @@ const _sfc_main$x = /* @__PURE__ */ defineComponent({
   __name: "VPNavBarSearch",
   __ssrInlineRender: true,
   setup(__props) {
-    const VPLocalSearchBox = defineAsyncComponent(() => import("./VPLocalSearchBox.Cxx-eWBo.js"));
+    const VPLocalSearchBox = defineAsyncComponent(() => import("./VPLocalSearchBox.BDNfUs0p.js"));
     const VPAlgoliaSearchBox = () => null;
     const { theme: theme2 } = useData();
     const loaded = ref(false);
@@ -5372,6 +5372,7 @@ _sfc_main$2.setup = (props, ctx) => {
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add(".vitepress/theme/components/HomeFxToggle.vue");
   return _sfc_setup$2 ? _sfc_setup$2(props, ctx) : void 0;
 };
+const __vite_import_meta_env__ = { "BASE_URL": "/", "DEV": false, "MODE": "production", "PROD": true, "SSR": true };
 const EDIT_MODE_KEY = "wexler.editor.mode";
 const ROUTE_DRAFT_KEY_PREFIX = "wexler.editor.layout.route.draft.v2.";
 const ROUTE_PUBLISHED_KEY_PREFIX = "wexler.editor.layout.route.published.v2.";
@@ -5379,7 +5380,21 @@ const ROUTE_PUBLISHED_HISTORY_KEY_PREFIX = "wexler.editor.layout.route.published
 const LEGACY_ROUTE_LAYOUT_KEY_PREFIX = "wexler.editor.layout.route.v1.";
 const LAYOUT_SCHEMA_VERSION = 2;
 const MAX_PUBLISHED_HISTORY = 12;
+const EDIT_ACCESS_KEY = "wexler.editor.auth";
 const isEditorMode = ref(false);
+const isEditorAccessUnlocked = ref(false);
+const editorGuardState = ref({
+  allowEditor: true,
+  locked: false,
+  requiresSecret: false,
+  message: "",
+  reason: "",
+  mode: "allowed",
+  host: "",
+  allowedHosts: [],
+  isProd: false,
+  unlocked: true
+});
 const draftLayoutsByRoute = ref({});
 const publishedLayoutsByRoute = ref({});
 const publishedHistoryByRoute = ref({});
@@ -5390,6 +5405,133 @@ function normalizeRoute(routeInput) {
   const route = raw.split(/[?#]/)[0] || "/";
   if (route === "/") return "/";
   return route.startsWith("/") ? route : `/${route}`;
+}
+function readRuntimeEnv(name) {
+  if (!name) return void 0;
+  const viteEnv = import.meta && __vite_import_meta_env__ ? __vite_import_meta_env__ : null;
+  if (viteEnv && Object.prototype.hasOwnProperty.call(viteEnv, name)) {
+    return viteEnv[name];
+  }
+  return void 0;
+}
+function parseBooleanFlag(value) {
+  if (typeof value !== "string") return null;
+  const normalized = value.trim().toLowerCase();
+  if (!normalized) return null;
+  if (["1", "true", "yes", "on"].includes(normalized)) return true;
+  if (["0", "false", "no", "off"].includes(normalized)) return false;
+  return null;
+}
+function normalizeHostRule(hostRaw) {
+  if (typeof hostRaw !== "string") return "";
+  const trimmed = hostRaw.trim().toLowerCase();
+  if (!trimmed) return "";
+  return trimmed.replace(/^https?:\/\//, "").replace(/\/.*$/, "");
+}
+function parseAllowedHosts(rawValue) {
+  if (typeof rawValue !== "string") return [];
+  return rawValue.split(",").map((item) => normalizeHostRule(item)).filter(Boolean);
+}
+function getCurrentHost() {
+  if (typeof window === "undefined" || !window.location) return "";
+  const host = window.location.hostname;
+  return typeof host === "string" ? host.trim().toLowerCase() : "";
+}
+function hostMatchesRule(hostname, rule) {
+  if (!hostname || !rule) return false;
+  if (rule === "*") return true;
+  if (rule.startsWith("*.")) {
+    const root = rule.slice(2);
+    return hostname === root || hostname.endsWith(`.${root}`);
+  }
+  return hostname === rule;
+}
+function isHostAllowed(hostname, rules) {
+  if (!rules.length) return true;
+  if (!hostname) return false;
+  return rules.some((rule) => hostMatchesRule(hostname, rule));
+}
+function readEditorPolicy() {
+  const isProd = Boolean(import.meta && __vite_import_meta_env__ && true);
+  const enableInProd = parseBooleanFlag(readRuntimeEnv("VITE_EDITOR_ENABLE"));
+  const allowedHosts = parseAllowedHosts(readRuntimeEnv("VITE_EDITOR_ALLOWED_HOSTS"));
+  const adminKeyRaw = readRuntimeEnv("VITE_EDITOR_ADMIN_KEY");
+  const adminKey = typeof adminKeyRaw === "string" ? adminKeyRaw.trim() : "";
+  return {
+    isProd,
+    enableInProd,
+    allowedHosts,
+    adminKey
+  };
+}
+function evaluateEditorGuard() {
+  const policy = readEditorPolicy();
+  const host = getCurrentHost();
+  const requiresSecret = Boolean(policy.adminKey);
+  const unlocked = !requiresSecret || isEditorAccessUnlocked.value;
+  if (policy.isProd && policy.enableInProd !== true) {
+    return {
+      allowEditor: false,
+      locked: false,
+      requiresSecret,
+      message: "生产环境已关闭编辑模式（可配置 VITE_EDITOR_ENABLE=1 开启）。",
+      reason: "prod_disabled",
+      mode: "blocked",
+      host,
+      allowedHosts: policy.allowedHosts,
+      isProd: policy.isProd,
+      unlocked
+    };
+  }
+  if (policy.allowedHosts.length && !isHostAllowed(host, policy.allowedHosts)) {
+    return {
+      allowEditor: false,
+      locked: false,
+      requiresSecret,
+      message: "当前域名不在编辑白名单中（VITE_EDITOR_ALLOWED_HOSTS）。",
+      reason: "host_not_allowed",
+      mode: "blocked",
+      host,
+      allowedHosts: policy.allowedHosts,
+      isProd: policy.isProd,
+      unlocked
+    };
+  }
+  if (requiresSecret && !unlocked) {
+    return {
+      allowEditor: false,
+      locked: true,
+      requiresSecret,
+      message: "编辑模式已加锁，请先输入管理员口令。",
+      reason: "needs_unlock",
+      mode: "locked",
+      host,
+      allowedHosts: policy.allowedHosts,
+      isProd: policy.isProd,
+      unlocked
+    };
+  }
+  return {
+    allowEditor: true,
+    locked: false,
+    requiresSecret,
+    message: "编辑模式可用。",
+    reason: "ok",
+    mode: "allowed",
+    host,
+    allowedHosts: policy.allowedHosts,
+    isProd: policy.isProd,
+    unlocked
+  };
+}
+function refreshEditorGuardState() {
+  const next = evaluateEditorGuard();
+  editorGuardState.value = next;
+  if (!next.allowEditor && isEditorMode.value) {
+    isEditorMode.value = false;
+    persistEditorMode();
+  }
+  return next;
 }
 function createDefaultBlockSeed() {
   return {
@@ -5555,6 +5697,9 @@ function safeRemoveStorage(key) {
   } catch (error) {
   }
 }
+function persistEditorMode() {
+  safeWriteStorage(EDIT_MODE_KEY, isEditorMode.value ? "1" : "0");
+}
 function persistDraftRouteLayout(routeInput) {
   const route = ensureRouteLayout(routeInput);
   safeWriteStorage(routeDraftKey(route), JSON.stringify(draftLayoutsByRoute.value[route]));
@@ -5696,7 +5841,11 @@ function getAllEditorRoutes() {
 function initEditorState() {
   if (initialized) return;
   const savedMode = safeReadStorage(EDIT_MODE_KEY);
-  isEditorMode.value = savedMode === "1";
+  const savedAuth = safeReadStorage(EDIT_ACCESS_KEY);
+  isEditorAccessUnlocked.value = savedAuth === "1";
+  const guard = refreshEditorGuardState();
+  isEditorMode.value = savedMode === "1" && guard.allowEditor;
+  persistEditorMode();
   initialized = true;
 }
 function setSelectedRouteBlock(routeInput, blockId) {
@@ -6468,13 +6617,32 @@ const _sfc_main = {
     onMounted(() => {
       initEditorState();
     });
+    const guard = computed(() => editorGuardState.value);
+    const isLocked = computed(() => guard.value.locked === true);
+    const isBlocked = computed(() => !guard.value.allowEditor && !guard.value.locked);
+    const canShowLockButton = computed(() => guard.value.requiresSecret && guard.value.unlocked);
+    const toggleTitle = computed(() => {
+      if (isBlocked.value) return guard.value.message || "当前环境不可用";
+      if (isLocked.value) return "输入口令解锁编辑模式";
+      return isEditorMode.value ? "关闭编辑模式" : "开启编辑模式";
+    });
+    const toggleAriaLabel = computed(() => {
+      if (isBlocked.value) return "页面编辑模式不可用";
+      if (isLocked.value) return "输入口令解锁页面编辑模式";
+      return isEditorMode.value ? "关闭页面编辑模式" : "开启页面编辑模式";
+    });
     return (_ctx, _push, _parent, _attrs) => {
-      _push(`<button${ssrRenderAttrs(mergeProps({
-        type: "button",
-        class: ["page-editor-toggle", { "is-active": unref(isEditorMode) }],
-        "aria-label": unref(isEditorMode) ? "Disable page editor mode" : "Enable page editor mode",
-        title: "Page editor mode"
-      }, _attrs))}><span class="page-editor-toggle__icon" aria-hidden="true"></span><span class="page-editor-toggle__state"></span></button>`);
+      _push(`<div${ssrRenderAttrs(mergeProps({ class: "page-editor-toggle-group" }, _attrs))}><button type="button" class="${ssrRenderClass([{
+        "is-active": unref(isEditorMode),
+        "is-locked": isLocked.value,
+        "is-disabled": isBlocked.value
+      }, "page-editor-toggle"])}"${ssrIncludeBooleanAttr(isBlocked.value) ? " disabled" : ""}${ssrRenderAttr("aria-label", toggleAriaLabel.value)}${ssrRenderAttr("title", toggleTitle.value)}><span class="page-editor-toggle__icon" aria-hidden="true"></span><span class="page-editor-toggle__state"></span></button>`);
+      if (canShowLockButton.value) {
+        _push(`<button type="button" class="page-editor-lock" aria-label="锁定页面编辑模式" title="锁定编辑模式"><span class="page-editor-lock__icon" aria-hidden="true"></span></button>`);
+      } else {
+        _push(`<!---->`);
+      }
+      _push(`</div>`);
     };
   }
 };

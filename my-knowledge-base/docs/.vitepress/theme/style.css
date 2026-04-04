@@ -4366,6 +4366,85 @@ html.sky-default-mode.dark .VPDoc .content:hover {
   word-break: break-all;
 }
 
+.home-editor-status {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0 0 10px;
+}
+
+.home-editor-chip {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid rgba(152, 188, 214, 0.58);
+  border-radius: 999px;
+  padding: 3px 8px;
+  font-size: 11px;
+  color: rgba(44, 72, 95, 0.92);
+  background: rgba(247, 252, 255, 0.64);
+}
+
+.home-editor-chip--draft {
+  border-color: rgba(122, 176, 216, 0.64);
+}
+
+.home-editor-chip--count {
+  border-color: rgba(165, 194, 216, 0.5);
+  opacity: 0.9;
+}
+
+.home-editor-chip.is-dirty {
+  border-color: rgba(232, 132, 122, 0.76);
+  color: rgba(138, 45, 34, 0.95);
+  background: rgba(252, 228, 224, 0.68);
+}
+
+.home-editor-chip.is-clean {
+  border-color: rgba(117, 191, 151, 0.72);
+  color: rgba(25, 96, 62, 0.95);
+  background: rgba(226, 246, 236, 0.72);
+}
+
+.home-editor-actions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  margin: 0 0 10px;
+}
+
+.home-editor-actions .home-editor-btn {
+  width: 100%;
+  padding: 6px 8px;
+  font-size: 11px;
+  text-align: center;
+}
+
+.home-editor-import-input {
+  display: none;
+}
+
+.home-editor-message {
+  margin: 2px 0 10px;
+  font-size: 12px;
+  line-height: 1.45;
+  color: rgba(48, 76, 98, 0.92);
+}
+
+.home-editor-message.is-success {
+  color: rgba(20, 104, 66, 0.95);
+}
+
+.home-editor-message.is-error {
+  color: rgba(148, 46, 34, 0.96);
+}
+
+.home-editor-empty-hint {
+  margin: 8px 0 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: rgba(62, 91, 114, 0.88);
+}
+
 .home-editor-field {
   display: grid;
   gap: 6px;
@@ -4438,6 +4517,40 @@ html.sky-default-mode.dark .VPDoc .content:hover {
 
 .dark .home-editor-panel__route {
   color: rgba(179, 206, 228, 0.8);
+}
+
+.dark .home-editor-chip {
+  border-color: rgba(108, 151, 180, 0.52);
+  color: rgba(196, 221, 239, 0.94);
+  background: rgba(20, 34, 48, 0.7);
+}
+
+.dark .home-editor-chip.is-dirty {
+  border-color: rgba(230, 128, 116, 0.64);
+  color: rgba(255, 192, 183, 0.96);
+  background: rgba(78, 24, 18, 0.54);
+}
+
+.dark .home-editor-chip.is-clean {
+  border-color: rgba(109, 194, 146, 0.64);
+  color: rgba(171, 234, 201, 0.95);
+  background: rgba(17, 58, 40, 0.6);
+}
+
+.dark .home-editor-message {
+  color: rgba(186, 214, 234, 0.92);
+}
+
+.dark .home-editor-message.is-success {
+  color: rgba(165, 234, 196, 0.95);
+}
+
+.dark .home-editor-message.is-error {
+  color: rgba(255, 173, 162, 0.96);
+}
+
+.dark .home-editor-empty-hint {
+  color: rgba(176, 206, 228, 0.88);
 }
 
 .dark .home-editor-input,

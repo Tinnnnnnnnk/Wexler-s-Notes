@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/chunks/VPLocalSearchBox.DztrqYxT.js","assets/chunks/framework.ul-4IeKD.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/chunks/VPLocalSearchBox.BoaAsTTe.js","assets/chunks/framework.ul-4IeKD.js"])))=>i.map(i=>d[i]);
 import { d as defineComponent, c as createElementBlock, r as renderSlot, n as normalizeClass, o as openBlock, a as createTextVNode, t as toDisplayString, b as createBlock, w as withCtx, T as Transition, e as createCommentVNode, _ as _export_sfc, u as useData$1, i as isExternal, f as treatAsHtml, g as withBase, h as computed, j as createBaseVNode, k as unref, l as isActive, m as useMediaQuery, p as ref, q as watch, s as watchEffect, v as onMounted, x as onUnmounted, y as watchPostEffect, z as onUpdated, A as getScrollOffset, F as Fragment, B as renderList, C as resolveComponent, D as onContentUpdated, E as createVNode, G as shallowRef, H as resolveDynamicComponent, I as EXTERNAL_URL_RE, J as useRoute, K as mergeProps, L as inject, M as useWindowSize, N as normalizeStyle, O as onKeyStroke, P as nextTick, Q as useWindowScroll, R as inBrowser, S as readonly, U as defineAsyncComponent, V as __vitePreload, W as useScrollLock, X as provide, Y as toHandlers, Z as withKeys, $ as onBeforeUnmount, a0 as withModifiers, a1 as useSlots, a2 as withDirectives, a3 as vShow, a4 as Teleport, a5 as h } from "./framework.ul-4IeKD.js";
 const _sfc_main$10 = /* @__PURE__ */ defineComponent({
   __name: "VPBadge",
@@ -2230,7 +2230,7 @@ const _hoisted_3$6 = {
 const _sfc_main$o = /* @__PURE__ */ defineComponent({
   __name: "VPNavBarSearch",
   setup(__props) {
-    const VPLocalSearchBox = defineAsyncComponent(() => __vitePreload(() => import("./VPLocalSearchBox.DztrqYxT.js"), true ? __vite__mapDeps([0,1]) : void 0));
+    const VPLocalSearchBox = defineAsyncComponent(() => __vitePreload(() => import("./VPLocalSearchBox.BoaAsTTe.js"), true ? __vite__mapDeps([0,1]) : void 0));
     const VPAlgoliaSearchBox = () => null;
     const { theme: theme2 } = useData();
     const loaded = ref(false);
@@ -4088,9 +4088,14 @@ const _sfc_main$2 = {
   }
 };
 const EDIT_MODE_KEY = "wexler.editor.mode";
-const ROUTE_LAYOUT_KEY_PREFIX = "wexler.editor.layout.route.v1.";
+const ROUTE_DRAFT_KEY_PREFIX = "wexler.editor.layout.route.draft.v2.";
+const ROUTE_PUBLISHED_KEY_PREFIX = "wexler.editor.layout.route.published.v2.";
+const LEGACY_ROUTE_LAYOUT_KEY_PREFIX = "wexler.editor.layout.route.v1.";
+const EXPORT_SCHEMA = "wexler.editor.layout.bundle";
+const EXPORT_VERSION = 2;
 const isEditorMode = ref(false);
-const layoutsByRoute = ref({});
+const draftLayoutsByRoute = ref({});
+const publishedLayoutsByRoute = ref({});
 const selectedByRoute = ref({});
 let initialized = false;
 function normalizeRoute(routeInput) {
@@ -4206,6 +4211,29 @@ function normalizeLayout(routeInput, raw) {
     blocks
   };
 }
+function normalizeRoutePayload(routeInput, payload) {
+  const route = normalizeRoute(routeInput);
+  const source = payload && typeof payload === "object" ? payload : {};
+  const draftCandidate = source.draft && typeof source.draft === "object" ? source.draft : source.layout && typeof source.layout === "object" ? source.layout : source;
+  const publishedCandidate = source.published && typeof source.published === "object" ? source.published : source.layout && typeof source.layout === "object" ? source.layout : draftCandidate;
+  return {
+    route,
+    draft: normalizeLayout(route, draftCandidate),
+    published: normalizeLayout(route, publishedCandidate)
+  };
+}
+function stringifyLayout(routeInput, layout) {
+  return JSON.stringify(normalizeLayout(routeInput, layout));
+}
+function routeDraftKey(routeInput) {
+  return `${ROUTE_DRAFT_KEY_PREFIX}${encodeURIComponent(normalizeRoute(routeInput))}`;
+}
+function routePublishedKey(routeInput) {
+  return `${ROUTE_PUBLISHED_KEY_PREFIX}${encodeURIComponent(normalizeRoute(routeInput))}`;
+}
+function routeLegacyKey(routeInput) {
+  return `${LEGACY_ROUTE_LAYOUT_KEY_PREFIX}${encodeURIComponent(normalizeRoute(routeInput))}`;
+}
 function safeReadStorage(key) {
   if (typeof window === "undefined") return null;
   try {
@@ -4221,48 +4249,144 @@ function safeWriteStorage(key, value) {
   } catch (error) {
   }
 }
-function routeStorageKey(routeInput) {
-  const route = normalizeRoute(routeInput);
-  return `${ROUTE_LAYOUT_KEY_PREFIX}${encodeURIComponent(route)}`;
+function safeRemoveStorage(key) {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.removeItem(key);
+  } catch (error) {
+  }
 }
 function persistEditorMode() {
   safeWriteStorage(EDIT_MODE_KEY, isEditorMode.value ? "1" : "0");
 }
-function persistRouteLayout(routeInput) {
+function persistDraftRouteLayout(routeInput) {
   const route = ensureRouteLayout(routeInput);
-  safeWriteStorage(routeStorageKey(route), JSON.stringify(layoutsByRoute.value[route]));
+  safeWriteStorage(routeDraftKey(route), JSON.stringify(draftLayoutsByRoute.value[route]));
+}
+function persistPublishedRouteLayout(routeInput) {
+  const route = ensureRouteLayout(routeInput);
+  safeWriteStorage(routePublishedKey(route), JSON.stringify(publishedLayoutsByRoute.value[route]));
+}
+function ensureSelectedValid(routeInput) {
+  var _a, _b;
+  const route = normalizeRoute(routeInput);
+  const blocks = ((_a = draftLayoutsByRoute.value[route]) == null ? void 0 : _a.blocks) || [];
+  const selectedId = selectedByRoute.value[route] || "";
+  const stillExists = blocks.some((block) => block.id === selectedId);
+  if (stillExists) return;
+  selectedByRoute.value = {
+    ...selectedByRoute.value,
+    [route]: ((_b = blocks[0]) == null ? void 0 : _b.id) || ""
+  };
+}
+function setDraftLayout(routeInput, layout, options = {}) {
+  const route = normalizeRoute(routeInput);
+  const persist = options.persist !== false;
+  const normalized = normalizeLayout(route, layout);
+  draftLayoutsByRoute.value = {
+    ...draftLayoutsByRoute.value,
+    [route]: normalized
+  };
+  ensureSelectedValid(route);
+  if (persist) {
+    persistDraftRouteLayout(route);
+  }
+}
+function setPublishedLayout(routeInput, layout, options = {}) {
+  const route = normalizeRoute(routeInput);
+  const persist = options.persist !== false;
+  const normalized = normalizeLayout(route, layout);
+  publishedLayoutsByRoute.value = {
+    ...publishedLayoutsByRoute.value,
+    [route]: normalized
+  };
+  if (persist) {
+    persistPublishedRouteLayout(route);
+  }
 }
 function loadRouteLayout(routeInput) {
-  var _a;
   const route = normalizeRoute(routeInput);
-  const savedLayout = safeReadStorage(routeStorageKey(route));
-  let resolvedLayout;
-  if (savedLayout) {
+  const draftRaw = safeReadStorage(routeDraftKey(route));
+  const publishedRaw = safeReadStorage(routePublishedKey(route));
+  const legacyRaw = safeReadStorage(routeLegacyKey(route));
+  let draftLayout = null;
+  let publishedLayout = null;
+  if (draftRaw) {
     try {
-      resolvedLayout = normalizeLayout(route, JSON.parse(savedLayout));
+      draftLayout = normalizeLayout(route, JSON.parse(draftRaw));
     } catch (error) {
-      resolvedLayout = createDefaultLayout(route);
+      draftLayout = null;
     }
-  } else {
-    resolvedLayout = createDefaultLayout(route);
   }
-  layoutsByRoute.value = {
-    ...layoutsByRoute.value,
-    [route]: resolvedLayout
+  if (publishedRaw) {
+    try {
+      publishedLayout = normalizeLayout(route, JSON.parse(publishedRaw));
+    } catch (error) {
+      publishedLayout = null;
+    }
+  }
+  if (!draftLayout && !publishedLayout && legacyRaw) {
+    try {
+      const legacyLayout = normalizeLayout(route, JSON.parse(legacyRaw));
+      draftLayout = clone(legacyLayout);
+      publishedLayout = clone(legacyLayout);
+      safeWriteStorage(routeDraftKey(route), JSON.stringify(draftLayout));
+      safeWriteStorage(routePublishedKey(route), JSON.stringify(publishedLayout));
+      safeRemoveStorage(routeLegacyKey(route));
+    } catch (error) {
+    }
+  }
+  if (!draftLayout && publishedLayout) {
+    draftLayout = clone(publishedLayout);
+  }
+  if (draftLayout && !publishedLayout) {
+    publishedLayout = clone(draftLayout);
+  }
+  if (!draftLayout && !publishedLayout) {
+    const fallback = createDefaultLayout(route);
+    draftLayout = clone(fallback);
+    publishedLayout = clone(fallback);
+  }
+  draftLayoutsByRoute.value = {
+    ...draftLayoutsByRoute.value,
+    [route]: normalizeLayout(route, draftLayout)
   };
-  if (!selectedByRoute.value[route]) {
-    selectedByRoute.value = {
-      ...selectedByRoute.value,
-      [route]: ((_a = resolvedLayout.blocks[0]) == null ? void 0 : _a.id) || ""
-    };
-  }
+  publishedLayoutsByRoute.value = {
+    ...publishedLayoutsByRoute.value,
+    [route]: normalizeLayout(route, publishedLayout)
+  };
+  ensureSelectedValid(route);
 }
 function ensureRouteLayout(routeInput) {
   const route = normalizeRoute(routeInput);
-  if (!layoutsByRoute.value[route]) {
+  if (!draftLayoutsByRoute.value[route] || !publishedLayoutsByRoute.value[route]) {
     loadRouteLayout(route);
   }
   return route;
+}
+function collectStoredRoutes() {
+  const result = /* @__PURE__ */ new Set([
+    ...Object.keys(draftLayoutsByRoute.value),
+    ...Object.keys(publishedLayoutsByRoute.value)
+  ]);
+  if (typeof window === "undefined") {
+    return [...result];
+  }
+  try {
+    for (let i = 0; i < localStorage.length; i += 1) {
+      const key = localStorage.key(i);
+      if (!key) continue;
+      if (key.startsWith(ROUTE_DRAFT_KEY_PREFIX)) {
+        result.add(decodeURIComponent(key.slice(ROUTE_DRAFT_KEY_PREFIX.length)));
+      } else if (key.startsWith(ROUTE_PUBLISHED_KEY_PREFIX)) {
+        result.add(decodeURIComponent(key.slice(ROUTE_PUBLISHED_KEY_PREFIX.length)));
+      } else if (key.startsWith(LEGACY_ROUTE_LAYOUT_KEY_PREFIX)) {
+        result.add(decodeURIComponent(key.slice(LEGACY_ROUTE_LAYOUT_KEY_PREFIX.length)));
+      }
+    }
+  } catch (error) {
+  }
+  return [...result];
 }
 function initEditorState() {
   if (initialized) return;
@@ -4287,7 +4411,12 @@ function setSelectedRouteBlock(routeInput, blockId) {
 function getRouteBlocks(routeInput) {
   var _a;
   const route = ensureRouteLayout(routeInput);
-  return ((_a = layoutsByRoute.value[route]) == null ? void 0 : _a.blocks) || [];
+  return ((_a = draftLayoutsByRoute.value[route]) == null ? void 0 : _a.blocks) || [];
+}
+function getPublishedRouteBlocks(routeInput) {
+  var _a;
+  const route = ensureRouteLayout(routeInput);
+  return ((_a = publishedLayoutsByRoute.value[route]) == null ? void 0 : _a.blocks) || [];
 }
 function getOrderedRouteBlocks(routeInput) {
   return [...getRouteBlocks(routeInput)].sort((a, b) => a.z - b.z);
@@ -4302,28 +4431,35 @@ function getSelectedRouteBlock(routeInput) {
   const blocks = getRouteBlocks(route);
   return blocks.find((block) => block.id === selectedId) || null;
 }
+function routeHasUnpublishedChanges(routeInput) {
+  const route = ensureRouteLayout(routeInput);
+  return stringifyLayout(route, draftLayoutsByRoute.value[route]) !== stringifyLayout(route, publishedLayoutsByRoute.value[route]);
+}
+function getRouteEditStatus(routeInput) {
+  const route = ensureRouteLayout(routeInput);
+  return {
+    route,
+    blockCount: getRouteBlocks(route).length,
+    publishedBlockCount: getPublishedRouteBlocks(route).length,
+    dirty: routeHasUnpublishedChanges(route)
+  };
+}
 function patchRouteBlock(routeInput, blockId, patch, options = {}) {
   const route = ensureRouteLayout(routeInput);
   const persist = options.persist !== false;
   const blocks = getRouteBlocks(route);
   const targetIndex = blocks.findIndex((block) => block.id === blockId);
   if (targetIndex < 0) return;
-  const nextLayout = clone(layoutsByRoute.value[route]);
+  const nextLayout = clone(draftLayoutsByRoute.value[route]);
   nextLayout.blocks[targetIndex] = normalizeBlock(
     { ...nextLayout.blocks[targetIndex], ...patch },
     targetIndex
   );
-  layoutsByRoute.value = {
-    ...layoutsByRoute.value,
-    [route]: nextLayout
-  };
-  if (persist) {
-    persistRouteLayout(route);
-  }
+  setDraftLayout(route, nextLayout, { persist });
 }
 function addRouteTextBlock(routeInput) {
   const route = ensureRouteLayout(routeInput);
-  const nextLayout = clone(layoutsByRoute.value[route] || createDefaultLayout(route));
+  const nextLayout = clone(draftLayoutsByRoute.value[route] || createDefaultLayout(route));
   const nextId = `block-${Date.now()}-${Math.floor(Math.random() * 1e3)}`;
   const count = nextLayout.blocks.length;
   nextLayout.blocks.push(
@@ -4338,39 +4474,166 @@ function addRouteTextBlock(routeInput) {
       count
     )
   );
-  layoutsByRoute.value = {
-    ...layoutsByRoute.value,
-    [route]: nextLayout
-  };
+  setDraftLayout(route, nextLayout, { persist: true });
   setSelectedRouteBlock(route, nextId);
-  persistRouteLayout(route);
 }
 function removeRouteBlock(routeInput, blockId) {
   var _a;
   const route = ensureRouteLayout(routeInput);
-  const nextLayout = clone(layoutsByRoute.value[route]);
+  const nextLayout = clone(draftLayoutsByRoute.value[route]);
   const filtered = nextLayout.blocks.filter((block) => block.id !== blockId);
   if (filtered.length === nextLayout.blocks.length) return;
   nextLayout.blocks = filtered;
-  layoutsByRoute.value = {
-    ...layoutsByRoute.value,
-    [route]: nextLayout
-  };
+  setDraftLayout(route, nextLayout, { persist: true });
   if (selectedByRoute.value[route] === blockId) {
     setSelectedRouteBlock(route, ((_a = nextLayout.blocks[0]) == null ? void 0 : _a.id) || "");
   }
-  persistRouteLayout(route);
 }
 function resetRouteLayout(routeInput) {
   var _a;
   const route = ensureRouteLayout(routeInput);
   const nextLayout = createDefaultLayout(route);
-  layoutsByRoute.value = {
-    ...layoutsByRoute.value,
-    [route]: nextLayout
-  };
+  setDraftLayout(route, nextLayout, { persist: true });
   setSelectedRouteBlock(route, ((_a = nextLayout.blocks[0]) == null ? void 0 : _a.id) || "");
-  persistRouteLayout(route);
+}
+function saveDraftRoute(routeInput) {
+  const route = ensureRouteLayout(routeInput);
+  persistDraftRouteLayout(route);
+  return {
+    ok: true,
+    route
+  };
+}
+function publishDraftRoute(routeInput) {
+  const route = ensureRouteLayout(routeInput);
+  const draftLayout = clone(draftLayoutsByRoute.value[route]);
+  setPublishedLayout(route, draftLayout, { persist: true });
+  persistDraftRouteLayout(route);
+  return {
+    ok: true,
+    route
+  };
+}
+function revertRouteDraft(routeInput) {
+  const route = ensureRouteLayout(routeInput);
+  const publishedLayout = clone(publishedLayoutsByRoute.value[route] || createDefaultLayout(route));
+  setDraftLayout(route, publishedLayout, { persist: true });
+  ensureSelectedValid(route);
+  return {
+    ok: true,
+    route
+  };
+}
+function getRouteExportBundle(routeInput) {
+  const route = ensureRouteLayout(routeInput);
+  return {
+    schema: EXPORT_SCHEMA,
+    version: EXPORT_VERSION,
+    exportedAt: (/* @__PURE__ */ new Date()).toISOString(),
+    scope: "route",
+    route,
+    draft: clone(draftLayoutsByRoute.value[route]),
+    published: clone(publishedLayoutsByRoute.value[route])
+  };
+}
+function getAllRoutesExportBundle() {
+  const routes = collectStoredRoutes();
+  const payload = {};
+  routes.forEach((rawRoute) => {
+    const route = ensureRouteLayout(rawRoute);
+    payload[route] = {
+      draft: clone(draftLayoutsByRoute.value[route]),
+      published: clone(publishedLayoutsByRoute.value[route])
+    };
+  });
+  return {
+    schema: EXPORT_SCHEMA,
+    version: EXPORT_VERSION,
+    exportedAt: (/* @__PURE__ */ new Date()).toISOString(),
+    scope: "all",
+    routes: payload
+  };
+}
+function importRoutePayload(payload, fallbackRouteInput) {
+  const fallbackRoute = ensureRouteLayout(fallbackRouteInput);
+  const route = typeof (payload == null ? void 0 : payload.route) === "string" && payload.route.trim() ? normalizeRoute(payload.route) : fallbackRoute;
+  const normalized = normalizeRoutePayload(route, payload);
+  setDraftLayout(normalized.route, normalized.draft, { persist: true });
+  setPublishedLayout(normalized.route, normalized.published, { persist: true });
+  ensureSelectedValid(normalized.route);
+  return {
+    route: normalized.route
+  };
+}
+function importAllRoutesPayload(routesMap) {
+  if (!routesMap || typeof routesMap !== "object" || Array.isArray(routesMap)) {
+    return {
+      ok: false,
+      message: "Invalid routes payload."
+    };
+  }
+  const updatedRoutes = [];
+  Object.entries(routesMap).forEach(([rawRoute, payload]) => {
+    const normalized = normalizeRoutePayload(rawRoute, payload);
+    setDraftLayout(normalized.route, normalized.draft, { persist: true });
+    setPublishedLayout(normalized.route, normalized.published, { persist: true });
+    ensureSelectedValid(normalized.route);
+    updatedRoutes.push(normalized.route);
+  });
+  return {
+    ok: true,
+    message: `Imported ${updatedRoutes.length} route(s).`,
+    routes: updatedRoutes
+  };
+}
+function importEditorBundle(rawText, currentRouteInput = "/") {
+  let parsed;
+  try {
+    parsed = JSON.parse(rawText);
+  } catch (error) {
+    return {
+      ok: false,
+      message: "Invalid JSON file."
+    };
+  }
+  if (!parsed || typeof parsed !== "object") {
+    return {
+      ok: false,
+      message: "Import payload must be an object."
+    };
+  }
+  if (parsed.schema === EXPORT_SCHEMA) {
+    if (parsed.scope === "route") {
+      const result = importRoutePayload(parsed, currentRouteInput);
+      return {
+        ok: true,
+        message: `Imported route layout: ${result.route}`,
+        routes: [result.route]
+      };
+    }
+    if (parsed.scope === "all") {
+      return importAllRoutesPayload(parsed.routes);
+    }
+    return {
+      ok: false,
+      message: "Unsupported bundle scope."
+    };
+  }
+  if (Array.isArray(parsed.blocks)) {
+    const route = ensureRouteLayout(currentRouteInput);
+    const normalized = normalizeLayout(route, parsed);
+    setDraftLayout(route, normalized, { persist: true });
+    ensureSelectedValid(route);
+    return {
+      ok: true,
+      message: `Imported plain layout to draft: ${route}`,
+      routes: [route]
+    };
+  }
+  return {
+    ok: false,
+    message: "Unsupported import payload structure."
+  };
 }
 const _hoisted_1$1 = { class: "home-editor-canvas__blocks" };
 const _hoisted_2 = ["onPointerdown", "onClick", "onDblclick"];
@@ -4391,35 +4654,45 @@ const _hoisted_9 = {
   class: "home-editor-panel"
 };
 const _hoisted_10 = { class: "home-editor-panel__route" };
-const _hoisted_11 = { class: "home-editor-field" };
-const _hoisted_12 = ["value"];
+const _hoisted_11 = { class: "home-editor-status" };
+const _hoisted_12 = { class: "home-editor-chip home-editor-chip--count" };
 const _hoisted_13 = { class: "home-editor-field" };
 const _hoisted_14 = ["value"];
 const _hoisted_15 = { class: "home-editor-field" };
 const _hoisted_16 = ["value"];
-const _hoisted_17 = { class: "home-editor-grid" };
-const _hoisted_18 = { class: "home-editor-field" };
-const _hoisted_19 = ["value"];
+const _hoisted_17 = { class: "home-editor-field" };
+const _hoisted_18 = ["value"];
+const _hoisted_19 = { class: "home-editor-grid" };
 const _hoisted_20 = { class: "home-editor-field" };
 const _hoisted_21 = ["value"];
-const _hoisted_22 = { class: "home-editor-grid" };
-const _hoisted_23 = { class: "home-editor-field" };
-const _hoisted_24 = ["value"];
+const _hoisted_22 = { class: "home-editor-field" };
+const _hoisted_23 = ["value"];
+const _hoisted_24 = { class: "home-editor-grid" };
 const _hoisted_25 = { class: "home-editor-field" };
 const _hoisted_26 = ["value"];
-const _hoisted_27 = { class: "home-editor-grid" };
-const _hoisted_28 = { class: "home-editor-field" };
-const _hoisted_29 = ["value"];
+const _hoisted_27 = { class: "home-editor-field" };
+const _hoisted_28 = ["value"];
+const _hoisted_29 = { class: "home-editor-grid" };
 const _hoisted_30 = { class: "home-editor-field" };
 const _hoisted_31 = ["value"];
 const _hoisted_32 = { class: "home-editor-field" };
 const _hoisted_33 = ["value"];
+const _hoisted_34 = { class: "home-editor-field" };
+const _hoisted_35 = ["value"];
+const _hoisted_36 = {
+  key: 2,
+  class: "home-editor-empty-hint"
+};
 const _sfc_main$1 = {
   __name: "EditableHomeCanvas",
   setup(__props) {
     const route = useRoute();
     const currentRoute = ref("/");
     const dragState = ref(null);
+    const importInputRef = ref(null);
+    const ioMessage = ref("");
+    const ioMessageType = ref("info");
+    let ioTimer = null;
     let dragRafId = 0;
     let pendingPointer = null;
     const showCanvas = computed(() => isEditorMode.value);
@@ -4427,6 +4700,10 @@ const _sfc_main$1 = {
     const orderedBlocks = computed(() => getOrderedRouteBlocks(currentRoute.value));
     const selectedBlockId = computed(() => getSelectedRouteBlockId(currentRoute.value));
     const selectedBlock = computed(() => getSelectedRouteBlock(currentRoute.value));
+    const routeStatus = computed(() => getRouteEditStatus(currentRoute.value));
+    const blockCountSummary = computed(
+      () => `${routeStatus.value.blockCount}/${routeStatus.value.publishedBlockCount}`
+    );
     function clamp2(value, min, max) {
       return Math.min(max, Math.max(min, value));
     }
@@ -4435,8 +4712,27 @@ const _sfc_main$1 = {
       const text = value.trim();
       return /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(text) ? text : fallback;
     }
+    function setMessage(type, text, duration = 2800) {
+      ioMessageType.value = type;
+      ioMessage.value = text;
+      if (ioTimer) {
+        window.clearTimeout(ioTimer);
+      }
+      ioTimer = window.setTimeout(() => {
+        ioMessage.value = "";
+        ioTimer = null;
+      }, duration);
+    }
+    function clearMessage() {
+      if (ioTimer) {
+        window.clearTimeout(ioTimer);
+        ioTimer = null;
+      }
+      ioMessage.value = "";
+    }
     function syncRoute(nextPath) {
       currentRoute.value = ensureRouteLayout(nextPath);
+      clearMessage();
     }
     function blockStyle(block) {
       return {
@@ -4509,7 +4805,7 @@ const _sfc_main$1 = {
       window.removeEventListener("pointermove", onDragging);
       window.removeEventListener("pointerup", stopDragging);
       window.removeEventListener("pointercancel", stopDragging);
-      persistRouteLayout(currentRoute.value);
+      persistDraftRouteLayout(currentRoute.value);
     }
     function selectBlock(blockId) {
       setSelectedRouteBlock(currentRoute.value, blockId);
@@ -4535,6 +4831,76 @@ const _sfc_main$1 = {
       const value = normalizeColorHex(event.target.value, "#ffffff");
       updateSelectedField("color", value);
     }
+    function toRouteSlug(path) {
+      if (path === "/") return "root";
+      const slug = path.replace(/[^\p{L}\p{N}_-]+/gu, "_").replace(/^_+|_+$/g, "");
+      return slug || "route";
+    }
+    function downloadJson(filename, data) {
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      a.click();
+      window.setTimeout(() => URL.revokeObjectURL(url), 1e3);
+    }
+    function handleSaveDraft() {
+      saveDraftRoute(currentRoute.value);
+      {
+        setMessage("success", "Draft saved.");
+      }
+    }
+    function handlePublish() {
+      publishDraftRoute(currentRoute.value);
+      {
+        setMessage("success", "Published current route layout.");
+      }
+    }
+    function handleRevertDraft() {
+      if (routeStatus.value.dirty) {
+        const confirmed = window.confirm("Discard current draft changes and restore published layout?");
+        if (!confirmed) return;
+      }
+      revertRouteDraft(currentRoute.value);
+      {
+        setMessage("success", "Draft restored from published version.");
+      }
+    }
+    function handleExportCurrent() {
+      const bundle = getRouteExportBundle(currentRoute.value);
+      const filename = `editor-layout-${toRouteSlug(currentRoute.value)}-${Date.now()}.json`;
+      downloadJson(filename, bundle);
+      setMessage("success", "Current route layout exported.");
+    }
+    function handleExportAll() {
+      const bundle = getAllRoutesExportBundle();
+      const filename = `editor-layout-all-routes-${Date.now()}.json`;
+      downloadJson(filename, bundle);
+      setMessage("success", "All route layouts exported.");
+    }
+    function triggerImport() {
+      var _a;
+      (_a = importInputRef.value) == null ? void 0 : _a.click();
+    }
+    async function handleImportFile(event) {
+      var _a, _b;
+      const file = (_b = (_a = event.target) == null ? void 0 : _a.files) == null ? void 0 : _b[0];
+      if (!file) return;
+      try {
+        const text = await file.text();
+        const result = importEditorBundle(text, currentRoute.value);
+        if (result.ok) {
+          setMessage("success", result.message || "Import completed.");
+        } else {
+          setMessage("error", result.message || "Import failed.", 3600);
+        }
+      } catch (error) {
+        setMessage("error", "Failed to read import file.", 3600);
+      } finally {
+        event.target.value = "";
+      }
+    }
     onMounted(() => {
       initEditorState();
       syncRoute(route.path);
@@ -4548,6 +4914,7 @@ const _sfc_main$1 = {
     );
     onBeforeUnmount(() => {
       stopDragging();
+      clearMessage();
     });
     return (_ctx, _cache) => {
       return showCanvas.value ? (openBlock(), createElementBlock("div", {
@@ -4590,119 +4957,174 @@ const _sfc_main$1 = {
             onClick: _cache[1] || (_cache[1] = ($event) => unref(resetRouteLayout)(currentRoute.value))
           }, " Reset ")
         ])) : createCommentVNode("", true),
-        unref(isEditorMode) && selectedBlock.value ? (openBlock(), createElementBlock("aside", _hoisted_9, [
-          _cache[21] || (_cache[21] = createBaseVNode("h3", { class: "home-editor-panel__title" }, "Block Editor", -1)),
+        unref(isEditorMode) ? (openBlock(), createElementBlock("aside", _hoisted_9, [
+          _cache[22] || (_cache[22] = createBaseVNode("h3", { class: "home-editor-panel__title" }, "Block Editor", -1)),
           createBaseVNode("p", _hoisted_10, toDisplayString(currentRoute.value), 1),
-          createBaseVNode("label", _hoisted_11, [
-            _cache[11] || (_cache[11] = createBaseVNode("span", null, "Kicker", -1)),
-            createBaseVNode("input", {
-              class: "home-editor-input",
-              type: "text",
-              value: selectedBlock.value.kicker,
-              onInput: _cache[2] || (_cache[2] = ($event) => updateSelectedField("kicker", $event.target.value))
-            }, null, 40, _hoisted_12)
+          createBaseVNode("div", _hoisted_11, [
+            _cache[11] || (_cache[11] = createBaseVNode("span", { class: "home-editor-chip home-editor-chip--draft" }, "Draft", -1)),
+            createBaseVNode("span", {
+              class: normalizeClass(["home-editor-chip", routeStatus.value.dirty ? "is-dirty" : "is-clean"])
+            }, toDisplayString(routeStatus.value.dirty ? "Unpublished Changes" : "Synced With Published"), 3),
+            createBaseVNode("span", _hoisted_12, "D/P " + toDisplayString(blockCountSummary.value), 1)
           ]),
-          createBaseVNode("label", _hoisted_13, [
-            _cache[12] || (_cache[12] = createBaseVNode("span", null, "Title", -1)),
-            createBaseVNode("input", {
-              class: "home-editor-input",
-              type: "text",
-              value: selectedBlock.value.title,
-              onInput: _cache[3] || (_cache[3] = ($event) => updateSelectedField("title", $event.target.value))
-            }, null, 40, _hoisted_14)
+          createBaseVNode("div", { class: "home-editor-actions" }, [
+            createBaseVNode("button", {
+              type: "button",
+              class: "home-editor-btn",
+              onClick: handleSaveDraft
+            }, " Save Draft "),
+            createBaseVNode("button", {
+              type: "button",
+              class: "home-editor-btn",
+              onClick: handlePublish
+            }, " Publish "),
+            createBaseVNode("button", {
+              type: "button",
+              class: "home-editor-btn",
+              onClick: handleRevertDraft
+            }, " Revert ")
           ]),
-          createBaseVNode("label", _hoisted_15, [
-            _cache[13] || (_cache[13] = createBaseVNode("span", null, "Body", -1)),
-            createBaseVNode("textarea", {
-              class: "home-editor-input home-editor-input--textarea",
-              value: selectedBlock.value.body,
-              onInput: _cache[4] || (_cache[4] = ($event) => updateSelectedField("body", $event.target.value))
-            }, null, 40, _hoisted_16)
+          createBaseVNode("div", { class: "home-editor-actions" }, [
+            createBaseVNode("button", {
+              type: "button",
+              class: "home-editor-btn",
+              onClick: handleExportCurrent
+            }, " Export Route "),
+            createBaseVNode("button", {
+              type: "button",
+              class: "home-editor-btn",
+              onClick: handleExportAll
+            }, " Export All "),
+            createBaseVNode("button", {
+              type: "button",
+              class: "home-editor-btn",
+              onClick: triggerImport
+            }, " Import JSON ")
           ]),
-          createBaseVNode("div", _hoisted_17, [
-            createBaseVNode("label", _hoisted_18, [
-              _cache[14] || (_cache[14] = createBaseVNode("span", null, "Width", -1)),
+          createBaseVNode("input", {
+            ref_key: "importInputRef",
+            ref: importInputRef,
+            class: "home-editor-import-input",
+            type: "file",
+            accept: "application/json,.json",
+            onChange: handleImportFile
+          }, null, 544),
+          ioMessage.value ? (openBlock(), createElementBlock("p", {
+            key: 0,
+            class: normalizeClass(["home-editor-message", `is-${ioMessageType.value}`])
+          }, toDisplayString(ioMessage.value), 3)) : createCommentVNode("", true),
+          selectedBlock.value ? (openBlock(), createElementBlock(Fragment, { key: 1 }, [
+            createBaseVNode("label", _hoisted_13, [
+              _cache[12] || (_cache[12] = createBaseVNode("span", null, "Kicker", -1)),
               createBaseVNode("input", {
-                class: "home-editor-range",
-                type: "range",
-                min: "180",
-                max: "1200",
-                step: "1",
-                value: selectedBlock.value.w,
-                onInput: _cache[5] || (_cache[5] = ($event) => updateSelectedNumberField("w", $event.target.value, 180, 1200))
-              }, null, 40, _hoisted_19)
+                class: "home-editor-input",
+                type: "text",
+                value: selectedBlock.value.kicker,
+                onInput: _cache[2] || (_cache[2] = ($event) => updateSelectedField("kicker", $event.target.value))
+              }, null, 40, _hoisted_14)
             ]),
-            createBaseVNode("label", _hoisted_20, [
-              _cache[15] || (_cache[15] = createBaseVNode("span", null, "Height", -1)),
+            createBaseVNode("label", _hoisted_15, [
+              _cache[13] || (_cache[13] = createBaseVNode("span", null, "Title", -1)),
               createBaseVNode("input", {
-                class: "home-editor-range",
-                type: "range",
-                min: "90",
-                max: "900",
-                step: "1",
-                value: selectedBlock.value.h,
-                onInput: _cache[6] || (_cache[6] = ($event) => updateSelectedNumberField("h", $event.target.value, 90, 900))
-              }, null, 40, _hoisted_21)
-            ])
-          ]),
-          createBaseVNode("div", _hoisted_22, [
-            createBaseVNode("label", _hoisted_23, [
-              _cache[16] || (_cache[16] = createBaseVNode("span", null, "Opacity", -1)),
-              createBaseVNode("input", {
-                class: "home-editor-range",
-                type: "range",
-                min: "0.05",
-                max: "1",
-                step: "0.01",
-                value: selectedBlock.value.opacity,
-                onInput: _cache[7] || (_cache[7] = ($event) => updateSelectedNumberField("opacity", $event.target.value, 0.05, 1))
-              }, null, 40, _hoisted_24)
+                class: "home-editor-input",
+                type: "text",
+                value: selectedBlock.value.title,
+                onInput: _cache[3] || (_cache[3] = ($event) => updateSelectedField("title", $event.target.value))
+              }, null, 40, _hoisted_16)
             ]),
-            createBaseVNode("label", _hoisted_25, [
-              _cache[17] || (_cache[17] = createBaseVNode("span", null, "Radius", -1)),
-              createBaseVNode("input", {
-                class: "home-editor-range",
-                type: "range",
-                min: "0",
-                max: "60",
-                step: "1",
-                value: selectedBlock.value.radius,
-                onInput: _cache[8] || (_cache[8] = ($event) => updateSelectedNumberField("radius", $event.target.value, 0, 60))
-              }, null, 40, _hoisted_26)
-            ])
-          ]),
-          createBaseVNode("div", _hoisted_27, [
-            createBaseVNode("label", _hoisted_28, [
-              _cache[18] || (_cache[18] = createBaseVNode("span", null, "Blur", -1)),
-              createBaseVNode("input", {
-                class: "home-editor-range",
-                type: "range",
-                min: "0",
-                max: "24",
-                step: "1",
-                value: selectedBlock.value.blur,
-                onInput: _cache[9] || (_cache[9] = ($event) => updateSelectedNumberField("blur", $event.target.value, 0, 24))
-              }, null, 40, _hoisted_29)
+            createBaseVNode("label", _hoisted_17, [
+              _cache[14] || (_cache[14] = createBaseVNode("span", null, "Body", -1)),
+              createBaseVNode("textarea", {
+                class: "home-editor-input home-editor-input--textarea",
+                value: selectedBlock.value.body,
+                onInput: _cache[4] || (_cache[4] = ($event) => updateSelectedField("body", $event.target.value))
+              }, null, 40, _hoisted_18)
             ]),
-            createBaseVNode("label", _hoisted_30, [
-              _cache[19] || (_cache[19] = createBaseVNode("span", null, "Text Color", -1)),
+            createBaseVNode("div", _hoisted_19, [
+              createBaseVNode("label", _hoisted_20, [
+                _cache[15] || (_cache[15] = createBaseVNode("span", null, "Width", -1)),
+                createBaseVNode("input", {
+                  class: "home-editor-range",
+                  type: "range",
+                  min: "180",
+                  max: "1200",
+                  step: "1",
+                  value: selectedBlock.value.w,
+                  onInput: _cache[5] || (_cache[5] = ($event) => updateSelectedNumberField("w", $event.target.value, 180, 1200))
+                }, null, 40, _hoisted_21)
+              ]),
+              createBaseVNode("label", _hoisted_22, [
+                _cache[16] || (_cache[16] = createBaseVNode("span", null, "Height", -1)),
+                createBaseVNode("input", {
+                  class: "home-editor-range",
+                  type: "range",
+                  min: "90",
+                  max: "900",
+                  step: "1",
+                  value: selectedBlock.value.h,
+                  onInput: _cache[6] || (_cache[6] = ($event) => updateSelectedNumberField("h", $event.target.value, 90, 900))
+                }, null, 40, _hoisted_23)
+              ])
+            ]),
+            createBaseVNode("div", _hoisted_24, [
+              createBaseVNode("label", _hoisted_25, [
+                _cache[17] || (_cache[17] = createBaseVNode("span", null, "Opacity", -1)),
+                createBaseVNode("input", {
+                  class: "home-editor-range",
+                  type: "range",
+                  min: "0.05",
+                  max: "1",
+                  step: "0.01",
+                  value: selectedBlock.value.opacity,
+                  onInput: _cache[7] || (_cache[7] = ($event) => updateSelectedNumberField("opacity", $event.target.value, 0.05, 1))
+                }, null, 40, _hoisted_26)
+              ]),
+              createBaseVNode("label", _hoisted_27, [
+                _cache[18] || (_cache[18] = createBaseVNode("span", null, "Radius", -1)),
+                createBaseVNode("input", {
+                  class: "home-editor-range",
+                  type: "range",
+                  min: "0",
+                  max: "60",
+                  step: "1",
+                  value: selectedBlock.value.radius,
+                  onInput: _cache[8] || (_cache[8] = ($event) => updateSelectedNumberField("radius", $event.target.value, 0, 60))
+                }, null, 40, _hoisted_28)
+              ])
+            ]),
+            createBaseVNode("div", _hoisted_29, [
+              createBaseVNode("label", _hoisted_30, [
+                _cache[19] || (_cache[19] = createBaseVNode("span", null, "Blur", -1)),
+                createBaseVNode("input", {
+                  class: "home-editor-range",
+                  type: "range",
+                  min: "0",
+                  max: "24",
+                  step: "1",
+                  value: selectedBlock.value.blur,
+                  onInput: _cache[9] || (_cache[9] = ($event) => updateSelectedNumberField("blur", $event.target.value, 0, 24))
+                }, null, 40, _hoisted_31)
+              ]),
+              createBaseVNode("label", _hoisted_32, [
+                _cache[20] || (_cache[20] = createBaseVNode("span", null, "Text Color", -1)),
+                createBaseVNode("input", {
+                  class: "home-editor-color",
+                  type: "color",
+                  value: normalizeColorHex(selectedBlock.value.color),
+                  onInput: updateTextColor
+                }, null, 40, _hoisted_33)
+              ])
+            ]),
+            createBaseVNode("label", _hoisted_34, [
+              _cache[21] || (_cache[21] = createBaseVNode("span", null, "Background", -1)),
               createBaseVNode("input", {
-                class: "home-editor-color",
-                type: "color",
-                value: normalizeColorHex(selectedBlock.value.color),
-                onInput: updateTextColor
-              }, null, 40, _hoisted_31)
+                class: "home-editor-input",
+                type: "text",
+                value: selectedBlock.value.bg,
+                onInput: _cache[10] || (_cache[10] = ($event) => updateSelectedField("bg", $event.target.value))
+              }, null, 40, _hoisted_35)
             ])
-          ]),
-          createBaseVNode("label", _hoisted_32, [
-            _cache[20] || (_cache[20] = createBaseVNode("span", null, "Background", -1)),
-            createBaseVNode("input", {
-              class: "home-editor-input",
-              type: "text",
-              value: selectedBlock.value.bg,
-              onInput: _cache[10] || (_cache[10] = ($event) => updateSelectedField("bg", $event.target.value))
-            }, null, 40, _hoisted_33)
-          ])
+          ], 64)) : (openBlock(), createElementBlock("p", _hoisted_36, " No block selected. Click a block on canvas, or press Add to create one. "))
         ])) : createCommentVNode("", true)
       ], 2)) : createCommentVNode("", true);
     };

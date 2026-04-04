@@ -3102,7 +3102,7 @@ const _sfc_main$x = /* @__PURE__ */ defineComponent({
   __name: "VPNavBarSearch",
   __ssrInlineRender: true,
   setup(__props) {
-    const VPLocalSearchBox = defineAsyncComponent(() => import("./VPLocalSearchBox.C6Go5szN.js"));
+    const VPLocalSearchBox = defineAsyncComponent(() => import("./VPLocalSearchBox.DIFR9FUV.js"));
     const VPAlgoliaSearchBox = () => null;
     const { theme: theme2 } = useData();
     const loaded = ref(false);
@@ -5373,9 +5373,12 @@ _sfc_main$2.setup = (props, ctx) => {
   return _sfc_setup$2 ? _sfc_setup$2(props, ctx) : void 0;
 };
 const EDIT_MODE_KEY = "wexler.editor.mode";
-const ROUTE_LAYOUT_KEY_PREFIX = "wexler.editor.layout.route.v1.";
+const ROUTE_DRAFT_KEY_PREFIX = "wexler.editor.layout.route.draft.v2.";
+const ROUTE_PUBLISHED_KEY_PREFIX = "wexler.editor.layout.route.published.v2.";
+const LEGACY_ROUTE_LAYOUT_KEY_PREFIX = "wexler.editor.layout.route.v1.";
 const isEditorMode = ref(false);
-const layoutsByRoute = ref({});
+const draftLayoutsByRoute = ref({});
+const publishedLayoutsByRoute = ref({});
 const selectedByRoute = ref({});
 let initialized = false;
 function normalizeRoute(routeInput) {
@@ -5491,6 +5494,18 @@ function normalizeLayout(routeInput, raw) {
     blocks
   };
 }
+function stringifyLayout(routeInput, layout) {
+  return JSON.stringify(normalizeLayout(routeInput, layout));
+}
+function routeDraftKey(routeInput) {
+  return `${ROUTE_DRAFT_KEY_PREFIX}${encodeURIComponent(normalizeRoute(routeInput))}`;
+}
+function routePublishedKey(routeInput) {
+  return `${ROUTE_PUBLISHED_KEY_PREFIX}${encodeURIComponent(normalizeRoute(routeInput))}`;
+}
+function routeLegacyKey(routeInput) {
+  return `${LEGACY_ROUTE_LAYOUT_KEY_PREFIX}${encodeURIComponent(normalizeRoute(routeInput))}`;
+}
 function safeReadStorage(key) {
   if (typeof window === "undefined") return null;
   try {
@@ -5506,42 +5521,98 @@ function safeWriteStorage(key, value) {
   } catch (error) {
   }
 }
-function routeStorageKey(routeInput) {
-  const route = normalizeRoute(routeInput);
-  return `${ROUTE_LAYOUT_KEY_PREFIX}${encodeURIComponent(route)}`;
+function safeRemoveStorage(key) {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.removeItem(key);
+  } catch (error) {
+  }
 }
-function persistRouteLayout(routeInput) {
+function persistDraftRouteLayout(routeInput) {
   const route = ensureRouteLayout(routeInput);
-  safeWriteStorage(routeStorageKey(route), JSON.stringify(layoutsByRoute.value[route]));
+  safeWriteStorage(routeDraftKey(route), JSON.stringify(draftLayoutsByRoute.value[route]));
+}
+function ensureSelectedValid(routeInput) {
+  var _a, _b;
+  const route = normalizeRoute(routeInput);
+  const blocks = ((_a = draftLayoutsByRoute.value[route]) == null ? void 0 : _a.blocks) || [];
+  const selectedId = selectedByRoute.value[route] || "";
+  const stillExists = blocks.some((block) => block.id === selectedId);
+  if (stillExists) return;
+  selectedByRoute.value = {
+    ...selectedByRoute.value,
+    [route]: ((_b = blocks[0]) == null ? void 0 : _b.id) || ""
+  };
+}
+function setDraftLayout(routeInput, layout, options = {}) {
+  const route = normalizeRoute(routeInput);
+  const persist = options.persist !== false;
+  const normalized = normalizeLayout(route, layout);
+  draftLayoutsByRoute.value = {
+    ...draftLayoutsByRoute.value,
+    [route]: normalized
+  };
+  ensureSelectedValid(route);
+  if (persist) {
+    persistDraftRouteLayout(route);
+  }
 }
 function loadRouteLayout(routeInput) {
-  var _a;
   const route = normalizeRoute(routeInput);
-  const savedLayout = safeReadStorage(routeStorageKey(route));
-  let resolvedLayout;
-  if (savedLayout) {
+  const draftRaw = safeReadStorage(routeDraftKey(route));
+  const publishedRaw = safeReadStorage(routePublishedKey(route));
+  const legacyRaw = safeReadStorage(routeLegacyKey(route));
+  let draftLayout = null;
+  let publishedLayout = null;
+  if (draftRaw) {
     try {
-      resolvedLayout = normalizeLayout(route, JSON.parse(savedLayout));
+      draftLayout = normalizeLayout(route, JSON.parse(draftRaw));
     } catch (error) {
-      resolvedLayout = createDefaultLayout(route);
+      draftLayout = null;
     }
-  } else {
-    resolvedLayout = createDefaultLayout(route);
   }
-  layoutsByRoute.value = {
-    ...layoutsByRoute.value,
-    [route]: resolvedLayout
+  if (publishedRaw) {
+    try {
+      publishedLayout = normalizeLayout(route, JSON.parse(publishedRaw));
+    } catch (error) {
+      publishedLayout = null;
+    }
+  }
+  if (!draftLayout && !publishedLayout && legacyRaw) {
+    try {
+      const legacyLayout = normalizeLayout(route, JSON.parse(legacyRaw));
+      draftLayout = clone(legacyLayout);
+      publishedLayout = clone(legacyLayout);
+      safeWriteStorage(routeDraftKey(route), JSON.stringify(draftLayout));
+      safeWriteStorage(routePublishedKey(route), JSON.stringify(publishedLayout));
+      safeRemoveStorage(routeLegacyKey(route));
+    } catch (error) {
+    }
+  }
+  if (!draftLayout && publishedLayout) {
+    draftLayout = clone(publishedLayout);
+  }
+  if (draftLayout && !publishedLayout) {
+    publishedLayout = clone(draftLayout);
+  }
+  if (!draftLayout && !publishedLayout) {
+    const fallback = createDefaultLayout(route);
+    draftLayout = clone(fallback);
+    publishedLayout = clone(fallback);
+  }
+  draftLayoutsByRoute.value = {
+    ...draftLayoutsByRoute.value,
+    [route]: normalizeLayout(route, draftLayout)
   };
-  if (!selectedByRoute.value[route]) {
-    selectedByRoute.value = {
-      ...selectedByRoute.value,
-      [route]: ((_a = resolvedLayout.blocks[0]) == null ? void 0 : _a.id) || ""
-    };
-  }
+  publishedLayoutsByRoute.value = {
+    ...publishedLayoutsByRoute.value,
+    [route]: normalizeLayout(route, publishedLayout)
+  };
+  ensureSelectedValid(route);
 }
 function ensureRouteLayout(routeInput) {
   const route = normalizeRoute(routeInput);
-  if (!layoutsByRoute.value[route]) {
+  if (!draftLayoutsByRoute.value[route] || !publishedLayoutsByRoute.value[route]) {
     loadRouteLayout(route);
   }
   return route;
@@ -5555,7 +5626,12 @@ function initEditorState() {
 function getRouteBlocks(routeInput) {
   var _a;
   const route = ensureRouteLayout(routeInput);
-  return ((_a = layoutsByRoute.value[route]) == null ? void 0 : _a.blocks) || [];
+  return ((_a = draftLayoutsByRoute.value[route]) == null ? void 0 : _a.blocks) || [];
+}
+function getPublishedRouteBlocks(routeInput) {
+  var _a;
+  const route = ensureRouteLayout(routeInput);
+  return ((_a = publishedLayoutsByRoute.value[route]) == null ? void 0 : _a.blocks) || [];
 }
 function getOrderedRouteBlocks(routeInput) {
   return [...getRouteBlocks(routeInput)].sort((a, b) => a.z - b.z);
@@ -5570,24 +5646,31 @@ function getSelectedRouteBlock(routeInput) {
   const blocks = getRouteBlocks(route);
   return blocks.find((block) => block.id === selectedId) || null;
 }
+function routeHasUnpublishedChanges(routeInput) {
+  const route = ensureRouteLayout(routeInput);
+  return stringifyLayout(route, draftLayoutsByRoute.value[route]) !== stringifyLayout(route, publishedLayoutsByRoute.value[route]);
+}
+function getRouteEditStatus(routeInput) {
+  const route = ensureRouteLayout(routeInput);
+  return {
+    route,
+    blockCount: getRouteBlocks(route).length,
+    publishedBlockCount: getPublishedRouteBlocks(route).length,
+    dirty: routeHasUnpublishedChanges(route)
+  };
+}
 function patchRouteBlock(routeInput, blockId, patch, options = {}) {
   const route = ensureRouteLayout(routeInput);
   const persist = options.persist !== false;
   const blocks = getRouteBlocks(route);
   const targetIndex = blocks.findIndex((block) => block.id === blockId);
   if (targetIndex < 0) return;
-  const nextLayout = clone(layoutsByRoute.value[route]);
+  const nextLayout = clone(draftLayoutsByRoute.value[route]);
   nextLayout.blocks[targetIndex] = normalizeBlock(
     { ...nextLayout.blocks[targetIndex], ...patch },
     targetIndex
   );
-  layoutsByRoute.value = {
-    ...layoutsByRoute.value,
-    [route]: nextLayout
-  };
-  if (persist) {
-    persistRouteLayout(route);
-  }
+  setDraftLayout(route, nextLayout, { persist });
 }
 const _sfc_main$1 = {
   __name: "EditableHomeCanvas",
@@ -5596,6 +5679,9 @@ const _sfc_main$1 = {
     const route = useRoute();
     const currentRoute = ref("/");
     const dragState = ref(null);
+    ref(null);
+    const ioMessage = ref("");
+    const ioMessageType = ref("info");
     let dragRafId = 0;
     let pendingPointer = null;
     const showCanvas = computed(() => isEditorMode.value);
@@ -5603,6 +5689,10 @@ const _sfc_main$1 = {
     const orderedBlocks = computed(() => getOrderedRouteBlocks(currentRoute.value));
     const selectedBlockId = computed(() => getSelectedRouteBlockId(currentRoute.value));
     const selectedBlock = computed(() => getSelectedRouteBlock(currentRoute.value));
+    const routeStatus = computed(() => getRouteEditStatus(currentRoute.value));
+    const blockCountSummary = computed(
+      () => `${routeStatus.value.blockCount}/${routeStatus.value.publishedBlockCount}`
+    );
     function clamp2(value, min, max) {
       return Math.min(max, Math.max(min, value));
     }
@@ -5611,8 +5701,12 @@ const _sfc_main$1 = {
       const text = value.trim();
       return /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(text) ? text : fallback;
     }
+    function clearMessage() {
+      ioMessage.value = "";
+    }
     function syncRoute(nextPath) {
       currentRoute.value = ensureRouteLayout(nextPath);
+      clearMessage();
     }
     function blockStyle(block) {
       return {
@@ -5668,7 +5762,7 @@ const _sfc_main$1 = {
       window.removeEventListener("pointermove", onDragging);
       window.removeEventListener("pointerup", stopDragging);
       window.removeEventListener("pointercancel", stopDragging);
-      persistRouteLayout(currentRoute.value);
+      persistDraftRouteLayout(currentRoute.value);
     }
     onMounted(() => {
       initEditorState();
@@ -5683,6 +5777,7 @@ const _sfc_main$1 = {
     );
     onBeforeUnmount(() => {
       stopDragging();
+      clearMessage();
     });
     return (_ctx, _push, _parent, _attrs) => {
       if (showCanvas.value) {
@@ -5705,8 +5800,19 @@ const _sfc_main$1 = {
         } else {
           _push(`<!---->`);
         }
-        if (unref(isEditorMode) && selectedBlock.value) {
-          _push(`<aside class="home-editor-panel"><h3 class="home-editor-panel__title">Block Editor</h3><p class="home-editor-panel__route">${ssrInterpolate(currentRoute.value)}</p><label class="home-editor-field"><span>Kicker</span><input class="home-editor-input" type="text"${ssrRenderAttr("value", selectedBlock.value.kicker)}></label><label class="home-editor-field"><span>Title</span><input class="home-editor-input" type="text"${ssrRenderAttr("value", selectedBlock.value.title)}></label><label class="home-editor-field"><span>Body</span><textarea class="home-editor-input home-editor-input--textarea">${ssrInterpolate(selectedBlock.value.body)}</textarea></label><div class="home-editor-grid"><label class="home-editor-field"><span>Width</span><input class="home-editor-range" type="range" min="180" max="1200" step="1"${ssrRenderAttr("value", selectedBlock.value.w)}></label><label class="home-editor-field"><span>Height</span><input class="home-editor-range" type="range" min="90" max="900" step="1"${ssrRenderAttr("value", selectedBlock.value.h)}></label></div><div class="home-editor-grid"><label class="home-editor-field"><span>Opacity</span><input class="home-editor-range" type="range" min="0.05" max="1" step="0.01"${ssrRenderAttr("value", selectedBlock.value.opacity)}></label><label class="home-editor-field"><span>Radius</span><input class="home-editor-range" type="range" min="0" max="60" step="1"${ssrRenderAttr("value", selectedBlock.value.radius)}></label></div><div class="home-editor-grid"><label class="home-editor-field"><span>Blur</span><input class="home-editor-range" type="range" min="0" max="24" step="1"${ssrRenderAttr("value", selectedBlock.value.blur)}></label><label class="home-editor-field"><span>Text Color</span><input class="home-editor-color" type="color"${ssrRenderAttr("value", normalizeColorHex(selectedBlock.value.color))}></label></div><label class="home-editor-field"><span>Background</span><input class="home-editor-input" type="text"${ssrRenderAttr("value", selectedBlock.value.bg)}></label></aside>`);
+        if (unref(isEditorMode)) {
+          _push(`<aside class="home-editor-panel"><h3 class="home-editor-panel__title">Block Editor</h3><p class="home-editor-panel__route">${ssrInterpolate(currentRoute.value)}</p><div class="home-editor-status"><span class="home-editor-chip home-editor-chip--draft">Draft</span><span class="${ssrRenderClass([routeStatus.value.dirty ? "is-dirty" : "is-clean", "home-editor-chip"])}">${ssrInterpolate(routeStatus.value.dirty ? "Unpublished Changes" : "Synced With Published")}</span><span class="home-editor-chip home-editor-chip--count">D/P ${ssrInterpolate(blockCountSummary.value)}</span></div><div class="home-editor-actions"><button type="button" class="home-editor-btn"> Save Draft </button><button type="button" class="home-editor-btn"> Publish </button><button type="button" class="home-editor-btn"> Revert </button></div><div class="home-editor-actions"><button type="button" class="home-editor-btn"> Export Route </button><button type="button" class="home-editor-btn"> Export All </button><button type="button" class="home-editor-btn"> Import JSON </button></div><input class="home-editor-import-input" type="file" accept="application/json,.json">`);
+          if (ioMessage.value) {
+            _push(`<p class="${ssrRenderClass([`is-${ioMessageType.value}`, "home-editor-message"])}">${ssrInterpolate(ioMessage.value)}</p>`);
+          } else {
+            _push(`<!---->`);
+          }
+          if (selectedBlock.value) {
+            _push(`<!--[--><label class="home-editor-field"><span>Kicker</span><input class="home-editor-input" type="text"${ssrRenderAttr("value", selectedBlock.value.kicker)}></label><label class="home-editor-field"><span>Title</span><input class="home-editor-input" type="text"${ssrRenderAttr("value", selectedBlock.value.title)}></label><label class="home-editor-field"><span>Body</span><textarea class="home-editor-input home-editor-input--textarea">${ssrInterpolate(selectedBlock.value.body)}</textarea></label><div class="home-editor-grid"><label class="home-editor-field"><span>Width</span><input class="home-editor-range" type="range" min="180" max="1200" step="1"${ssrRenderAttr("value", selectedBlock.value.w)}></label><label class="home-editor-field"><span>Height</span><input class="home-editor-range" type="range" min="90" max="900" step="1"${ssrRenderAttr("value", selectedBlock.value.h)}></label></div><div class="home-editor-grid"><label class="home-editor-field"><span>Opacity</span><input class="home-editor-range" type="range" min="0.05" max="1" step="0.01"${ssrRenderAttr("value", selectedBlock.value.opacity)}></label><label class="home-editor-field"><span>Radius</span><input class="home-editor-range" type="range" min="0" max="60" step="1"${ssrRenderAttr("value", selectedBlock.value.radius)}></label></div><div class="home-editor-grid"><label class="home-editor-field"><span>Blur</span><input class="home-editor-range" type="range" min="0" max="24" step="1"${ssrRenderAttr("value", selectedBlock.value.blur)}></label><label class="home-editor-field"><span>Text Color</span><input class="home-editor-color" type="color"${ssrRenderAttr("value", normalizeColorHex(selectedBlock.value.color))}></label></div><label class="home-editor-field"><span>Background</span><input class="home-editor-input" type="text"${ssrRenderAttr("value", selectedBlock.value.bg)}></label><!--]-->`);
+          } else {
+            _push(`<p class="home-editor-empty-hint"> No block selected. Click a block on canvas, or press Add to create one. </p>`);
+          }
+          _push(`</aside>`);
         } else {
           _push(`<!---->`);
         }

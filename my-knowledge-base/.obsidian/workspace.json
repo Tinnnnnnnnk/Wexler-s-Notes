@@ -192,7 +192,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 242.5
+    "width": 242.5,
+    "collapsed": true
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -207,7 +208,7 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "1af73ec1e0dd4a8e",
+  "active": "dca74a61d38130bd",
   "lastOpenFiles": [
     "docs/Info/Software.md",
     "docs/Info/HowToUseObsidian.md",

@@ -4225,6 +4225,32 @@ html.sky-default-mode.dark .VPDoc .content:hover {
   inset: 0;
 }
 
+.home-editor-guides {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 40;
+}
+
+.home-editor-guide {
+  position: absolute;
+  display: block;
+  background: rgba(84, 164, 223, 0.85);
+  box-shadow: 0 0 0 1px rgba(196, 230, 255, 0.5);
+}
+
+.home-editor-guide--vertical {
+  top: 0;
+  bottom: 0;
+  width: 1px;
+}
+
+.home-editor-guide--horizontal {
+  left: 0;
+  right: 0;
+  height: 1px;
+}
+
 .home-editor-block {
   position: absolute;
   box-sizing: border-box;
@@ -4253,7 +4279,7 @@ html.sky-default-mode.dark .VPDoc .content:hover {
   cursor: move;
 }
 
-.home-editor-canvas.is-dragging .home-editor-block {
+.home-editor-canvas.is-interacting .home-editor-block {
   transition: none;
 }
 
@@ -4296,12 +4322,52 @@ html.sky-default-mode.dark .VPDoc .content:hover {
   opacity: 0.58;
 }
 
+.home-editor-resize-handle {
+  position: absolute;
+  border: 1px solid rgba(139, 197, 239, 0.96);
+  background: rgba(239, 248, 255, 0.92);
+  box-shadow: 0 5px 12px rgba(14, 26, 38, 0.18);
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.home-editor-resize-handle--e {
+  right: -6px;
+  top: 50%;
+  width: 12px;
+  height: 32px;
+  transform: translateY(-50%);
+  border-radius: 999px;
+  cursor: ew-resize;
+}
+
+.home-editor-resize-handle--s {
+  left: 50%;
+  bottom: -6px;
+  width: 32px;
+  height: 12px;
+  transform: translateX(-50%);
+  border-radius: 999px;
+  cursor: ns-resize;
+}
+
+.home-editor-resize-handle--se {
+  right: -8px;
+  bottom: -8px;
+  width: 16px;
+  height: 16px;
+  border-radius: 5px;
+  cursor: nwse-resize;
+}
+
 .home-editor-toolbar {
   position: fixed;
   left: 18px;
   bottom: 18px;
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
+  max-width: min(780px, calc(100vw - 40px));
   pointer-events: auto;
   z-index: 58;
 }
@@ -4426,6 +4492,89 @@ html.sky-default-mode.dark .VPDoc .content:hover {
   padding: 6px 8px;
   font-size: 11px;
   text-align: center;
+}
+
+.home-editor-layer-panel {
+  margin: 0 0 12px;
+  border: 1px solid rgba(168, 198, 220, 0.62);
+  border-radius: 12px;
+  background: rgba(248, 252, 255, 0.68);
+  padding: 10px;
+}
+
+.home-editor-layer-panel__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.home-editor-layer-panel__head strong {
+  font-size: 12px;
+  color: rgba(37, 62, 83, 0.92);
+}
+
+.home-editor-layer-panel__actions {
+  display: inline-flex;
+  gap: 6px;
+}
+
+.home-editor-layer-btn {
+  border: 1px solid rgba(159, 192, 216, 0.72);
+  border-radius: 999px;
+  padding: 3px 9px;
+  background: rgba(246, 251, 255, 0.9);
+  color: rgba(44, 72, 95, 0.95);
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.home-editor-layer-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.home-editor-layer-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+  max-height: 140px;
+  overflow: auto;
+}
+
+.home-editor-layer-item {
+  width: 100%;
+  border: 1px solid rgba(165, 195, 216, 0.64);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.74);
+  padding: 6px 8px;
+  text-align: left;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  color: rgba(34, 58, 79, 0.94);
+  cursor: pointer;
+}
+
+.home-editor-layer-item.is-active {
+  border-color: rgba(104, 170, 218, 0.85);
+  background: rgba(227, 241, 252, 0.9);
+}
+
+.home-editor-layer-item__title {
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.home-editor-layer-item__meta {
+  font-size: 10px;
+  opacity: 0.8;
 }
 
 .home-editor-btn--export {
@@ -4560,6 +4709,13 @@ html.sky-default-mode.dark .VPDoc .content:hover {
   color: rgba(62, 91, 114, 0.88);
 }
 
+.home-editor-shortcut-hint {
+  margin: 10px 0 0;
+  font-size: 11px;
+  line-height: 1.5;
+  color: rgba(67, 94, 117, 0.82);
+}
+
 .home-editor-field {
   display: grid;
   gap: 6px;
@@ -4620,6 +4776,17 @@ html.sky-default-mode.dark .VPDoc .content:hover {
   border-color: rgba(118, 160, 189, 0.58);
 }
 
+.dark .home-editor-guide {
+  background: rgba(126, 197, 241, 0.88);
+  box-shadow: 0 0 0 1px rgba(181, 224, 252, 0.35);
+}
+
+.dark .home-editor-resize-handle {
+  border-color: rgba(126, 188, 228, 0.9);
+  background: rgba(20, 33, 48, 0.9);
+  box-shadow: 0 6px 14px rgba(1, 7, 12, 0.28);
+}
+
 .dark .home-editor-panel {
   background: rgba(9, 20, 34, 0.84);
   border-color: rgba(118, 160, 188, 0.5);
@@ -4643,6 +4810,32 @@ html.sky-default-mode.dark .VPDoc .content:hover {
 .dark .home-editor-chip--history {
   border-color: rgba(119, 142, 214, 0.58);
   background: rgba(22, 30, 52, 0.72);
+}
+
+.dark .home-editor-layer-panel {
+  border-color: rgba(105, 149, 179, 0.58);
+  background: rgba(13, 24, 37, 0.76);
+}
+
+.dark .home-editor-layer-panel__head strong {
+  color: rgba(197, 220, 237, 0.94);
+}
+
+.dark .home-editor-layer-btn {
+  border-color: rgba(108, 153, 183, 0.6);
+  background: rgba(20, 33, 48, 0.82);
+  color: rgba(205, 226, 241, 0.94);
+}
+
+.dark .home-editor-layer-item {
+  border-color: rgba(106, 148, 177, 0.6);
+  background: rgba(16, 29, 42, 0.78);
+  color: rgba(215, 232, 245, 0.94);
+}
+
+.dark .home-editor-layer-item.is-active {
+  border-color: rgba(119, 187, 233, 0.84);
+  background: rgba(25, 43, 62, 0.92);
 }
 
 .dark .home-editor-chip.is-dirty {
@@ -4704,6 +4897,10 @@ html.sky-default-mode.dark .VPDoc .content:hover {
 
 .dark .home-editor-empty-hint {
   color: rgba(176, 206, 228, 0.88);
+}
+
+.dark .home-editor-shortcut-hint {
+  color: rgba(172, 202, 223, 0.84);
 }
 
 .dark .home-editor-input,

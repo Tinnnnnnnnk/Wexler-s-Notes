@@ -524,6 +524,120 @@ function getSelectedRouteBlock(routeInput) {
   return blocks.find((block) => block.id === selectedId) || null
 }
 
+function getRouteDraftLayout(routeInput) {
+  const route = ensureRouteLayout(routeInput)
+  return clone(draftLayoutsByRoute.value[route] || createDefaultLayout(route))
+}
+
+function replaceRouteDraftLayout(routeInput, layout, options = {}) {
+  const route = ensureRouteLayout(routeInput)
+  setDraftLayout(route, layout, options)
+  ensureSelectedValid(route)
+  return {
+    ok: true,
+    route
+  }
+}
+
+function duplicateRouteBlock(routeInput, blockId, options = {}) {
+  const route = ensureRouteLayout(routeInput)
+  const targetId = typeof blockId === 'string' ? blockId : ''
+  const sourceBlock = getRouteBlocks(route).find((item) => item.id === targetId)
+  if (!sourceBlock) {
+    return {
+      ok: false,
+      route,
+      message: '未找到待复制的模块。'
+    }
+  }
+
+  const offsetX = Number.isFinite(Number(options.offsetX)) ? Number(options.offsetX) : 24
+  const offsetY = Number.isFinite(Number(options.offsetY)) ? Number(options.offsetY) : 24
+  const persist = options.persist !== false
+  const nextLayout = clone(draftLayoutsByRoute.value[route])
+  const cloneId = `block-${Date.now()}-${Math.floor(Math.random() * 1000)}`
+  const nextIndex = nextLayout.blocks.length
+  const nextZ = Math.max(...nextLayout.blocks.map((item) => item.z), 0) + 1
+
+  nextLayout.blocks.push(
+    normalizeBlock(
+      {
+        ...sourceBlock,
+        id: cloneId,
+        x: sourceBlock.x + offsetX,
+        y: sourceBlock.y + offsetY,
+        z: nextZ
+      },
+      nextIndex
+    )
+  )
+
+  setDraftLayout(route, nextLayout, { persist })
+  setSelectedRouteBlock(route, cloneId)
+
+  return {
+    ok: true,
+    route,
+    id: cloneId
+  }
+}
+
+function moveRouteBlockLayer(routeInput, blockId, direction, options = {}) {
+  const route = ensureRouteLayout(routeInput)
+  const targetId = typeof blockId === 'string' ? blockId : ''
+  const step = Number(direction)
+  if (!Number.isFinite(step) || step === 0) {
+    return {
+      ok: false,
+      route,
+      message: '图层移动方向无效。'
+    }
+  }
+
+  const ordered = [...getRouteBlocks(route)].sort((a, b) => a.z - b.z)
+  const currentIndex = ordered.findIndex((item) => item.id === targetId)
+  if (currentIndex < 0) {
+    return {
+      ok: false,
+      route,
+      message: '未找到目标模块。'
+    }
+  }
+
+  const targetIndex = currentIndex + (step > 0 ? 1 : -1)
+  if (targetIndex < 0 || targetIndex >= ordered.length) {
+    return {
+      ok: false,
+      route,
+      message: '已经在最顶层或最底层。'
+    }
+  }
+
+  const persist = options.persist !== false
+  const currentBlock = ordered[currentIndex]
+  const swapBlock = ordered[targetIndex]
+  const nextLayout = clone(draftLayoutsByRoute.value[route])
+  const currentLayoutIndex = nextLayout.blocks.findIndex((item) => item.id === currentBlock.id)
+  const swapLayoutIndex = nextLayout.blocks.findIndex((item) => item.id === swapBlock.id)
+  if (currentLayoutIndex < 0 || swapLayoutIndex < 0) {
+    return {
+      ok: false,
+      route,
+      message: '图层交换失败。'
+    }
+  }
+
+  const tempZ = nextLayout.blocks[currentLayoutIndex].z
+  nextLayout.blocks[currentLayoutIndex].z = nextLayout.blocks[swapLayoutIndex].z
+  nextLayout.blocks[swapLayoutIndex].z = tempZ
+  setDraftLayout(route, nextLayout, { persist })
+
+  return {
+    ok: true,
+    route
+  }
+}
+
 function getRoutePublishedHistory(routeInput) {
   const route = ensureRouteLayout(routeInput)
   return publishedHistoryByRoute.value[route] || []
@@ -953,6 +1067,8 @@ export {
   setSelectedRouteBlock,
   getRouteBlocks,
   getPublishedRouteBlocks,
+  getRouteDraftLayout,
+  replaceRouteDraftLayout,
   getRoutePublishedHistory,
   getOrderedRouteBlocks,
   getSelectedRouteBlockId,
@@ -960,6 +1076,8 @@ export {
   routeHasUnpublishedChanges,
   getRouteEditStatus,
   validateDraftRoute,
+  duplicateRouteBlock,
+  moveRouteBlockLayer,
   patchRouteBlock,
   addRouteTextBlock,
   removeRouteBlock,

@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/chunks/VPLocalSearchBox.DcMirkNa.js","assets/chunks/framework.ul-4IeKD.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/chunks/VPLocalSearchBox.DGQtm0l2.js","assets/chunks/framework.ul-4IeKD.js"])))=>i.map(i=>d[i]);
 import { d as defineComponent, c as createElementBlock, r as renderSlot, n as normalizeClass, o as openBlock, a as createTextVNode, t as toDisplayString, b as createBlock, w as withCtx, T as Transition, e as createCommentVNode, _ as _export_sfc, u as useData$1, i as isExternal, f as treatAsHtml, g as withBase, h as computed, j as createBaseVNode, k as unref, l as isActive, m as useMediaQuery, p as ref, q as watch, s as watchEffect, v as onMounted, x as onUnmounted, y as watchPostEffect, z as onUpdated, A as getScrollOffset, F as Fragment, B as renderList, C as resolveComponent, D as onContentUpdated, E as createVNode, G as shallowRef, H as resolveDynamicComponent, I as EXTERNAL_URL_RE, J as useRoute, K as mergeProps, L as inject, M as useWindowSize, N as normalizeStyle, O as onKeyStroke, P as nextTick, Q as useWindowScroll, R as inBrowser, S as readonly, U as defineAsyncComponent, V as __vitePreload, W as useScrollLock, X as provide, Y as toHandlers, Z as withKeys, $ as onBeforeUnmount, a0 as withModifiers, a1 as useSlots, a2 as withDirectives, a3 as vShow, a4 as Teleport, a5 as h } from "./framework.ul-4IeKD.js";
 const _sfc_main$10 = /* @__PURE__ */ defineComponent({
   __name: "VPBadge",
@@ -2230,7 +2230,7 @@ const _hoisted_3$6 = {
 const _sfc_main$o = /* @__PURE__ */ defineComponent({
   __name: "VPNavBarSearch",
   setup(__props) {
-    const VPLocalSearchBox = defineAsyncComponent(() => __vitePreload(() => import("./VPLocalSearchBox.DcMirkNa.js"), true ? __vite__mapDeps([0,1]) : void 0));
+    const VPLocalSearchBox = defineAsyncComponent(() => __vitePreload(() => import("./VPLocalSearchBox.DGQtm0l2.js"), true ? __vite__mapDeps([0,1]) : void 0));
     const VPAlgoliaSearchBox = () => null;
     const { theme: theme2 } = useData();
     const loaded = ref(false);
@@ -4505,6 +4505,107 @@ function getSelectedRouteBlock(routeInput) {
   const blocks = getRouteBlocks(route);
   return blocks.find((block) => block.id === selectedId) || null;
 }
+function getRouteDraftLayout(routeInput) {
+  const route = ensureRouteLayout(routeInput);
+  return clone(draftLayoutsByRoute.value[route] || createDefaultLayout(route));
+}
+function replaceRouteDraftLayout(routeInput, layout, options = {}) {
+  const route = ensureRouteLayout(routeInput);
+  setDraftLayout(route, layout, options);
+  ensureSelectedValid(route);
+  return {
+    ok: true,
+    route
+  };
+}
+function duplicateRouteBlock(routeInput, blockId, options = {}) {
+  const route = ensureRouteLayout(routeInput);
+  const targetId = typeof blockId === "string" ? blockId : "";
+  const sourceBlock = getRouteBlocks(route).find((item) => item.id === targetId);
+  if (!sourceBlock) {
+    return {
+      ok: false,
+      route,
+      message: "未找到待复制的模块。"
+    };
+  }
+  const offsetX = Number.isFinite(Number(options.offsetX)) ? Number(options.offsetX) : 24;
+  const offsetY = Number.isFinite(Number(options.offsetY)) ? Number(options.offsetY) : 24;
+  const persist = options.persist !== false;
+  const nextLayout = clone(draftLayoutsByRoute.value[route]);
+  const cloneId = `block-${Date.now()}-${Math.floor(Math.random() * 1e3)}`;
+  const nextIndex = nextLayout.blocks.length;
+  const nextZ = Math.max(...nextLayout.blocks.map((item) => item.z), 0) + 1;
+  nextLayout.blocks.push(
+    normalizeBlock(
+      {
+        ...sourceBlock,
+        id: cloneId,
+        x: sourceBlock.x + offsetX,
+        y: sourceBlock.y + offsetY,
+        z: nextZ
+      },
+      nextIndex
+    )
+  );
+  setDraftLayout(route, nextLayout, { persist });
+  setSelectedRouteBlock(route, cloneId);
+  return {
+    ok: true,
+    route,
+    id: cloneId
+  };
+}
+function moveRouteBlockLayer(routeInput, blockId, direction, options = {}) {
+  const route = ensureRouteLayout(routeInput);
+  const targetId = typeof blockId === "string" ? blockId : "";
+  const step = Number(direction);
+  if (!Number.isFinite(step) || step === 0) {
+    return {
+      ok: false,
+      route,
+      message: "图层移动方向无效。"
+    };
+  }
+  const ordered = [...getRouteBlocks(route)].sort((a, b) => a.z - b.z);
+  const currentIndex = ordered.findIndex((item) => item.id === targetId);
+  if (currentIndex < 0) {
+    return {
+      ok: false,
+      route,
+      message: "未找到目标模块。"
+    };
+  }
+  const targetIndex = currentIndex + (step > 0 ? 1 : -1);
+  if (targetIndex < 0 || targetIndex >= ordered.length) {
+    return {
+      ok: false,
+      route,
+      message: "已经在最顶层或最底层。"
+    };
+  }
+  const persist = options.persist !== false;
+  const currentBlock = ordered[currentIndex];
+  const swapBlock = ordered[targetIndex];
+  const nextLayout = clone(draftLayoutsByRoute.value[route]);
+  const currentLayoutIndex = nextLayout.blocks.findIndex((item) => item.id === currentBlock.id);
+  const swapLayoutIndex = nextLayout.blocks.findIndex((item) => item.id === swapBlock.id);
+  if (currentLayoutIndex < 0 || swapLayoutIndex < 0) {
+    return {
+      ok: false,
+      route,
+      message: "图层交换失败。"
+    };
+  }
+  const tempZ = nextLayout.blocks[currentLayoutIndex].z;
+  nextLayout.blocks[currentLayoutIndex].z = nextLayout.blocks[swapLayoutIndex].z;
+  nextLayout.blocks[swapLayoutIndex].z = tempZ;
+  setDraftLayout(route, nextLayout, { persist });
+  return {
+    ok: true,
+    route
+  };
+}
 function getRoutePublishedHistory(routeInput) {
   const route = ensureRouteLayout(routeInput);
   return publishedHistoryByRoute.value[route] || [];
@@ -4855,95 +4956,133 @@ function importEditorBundle(rawText, currentRouteInput = "/") {
   };
 }
 const _hoisted_1$1 = { class: "home-editor-canvas__blocks" };
-const _hoisted_2 = ["onPointerdown", "onClick", "onDblclick"];
-const _hoisted_3 = { class: "home-editor-block__kicker" };
-const _hoisted_4 = { class: "home-editor-block__title" };
-const _hoisted_5 = { class: "home-editor-block__body" };
-const _hoisted_6 = {
+const _hoisted_2 = {
+  class: "home-editor-guides",
+  "aria-hidden": "true"
+};
+const _hoisted_3 = ["onPointerdown", "onClick", "onDblclick"];
+const _hoisted_4 = { class: "home-editor-block__kicker" };
+const _hoisted_5 = { class: "home-editor-block__title" };
+const _hoisted_6 = { class: "home-editor-block__body" };
+const _hoisted_7 = {
   key: 0,
   class: "home-editor-block__hint"
 };
-const _hoisted_7 = {
+const _hoisted_8 = ["onPointerdown"];
+const _hoisted_9 = ["onPointerdown"];
+const _hoisted_10 = ["onPointerdown"];
+const _hoisted_11 = {
   key: 0,
   class: "home-editor-toolbar"
 };
-const _hoisted_8 = ["disabled"];
-const _hoisted_9 = {
-  key: 1,
-  class: "home-editor-panel"
-};
-const _hoisted_10 = { class: "home-editor-panel__route" };
-const _hoisted_11 = { class: "home-editor-status" };
-const _hoisted_12 = { class: "home-editor-chip home-editor-chip--count" };
-const _hoisted_13 = { class: "home-editor-chip home-editor-chip--history" };
-const _hoisted_14 = { class: "home-editor-actions home-editor-actions--secondary" };
+const _hoisted_12 = ["disabled"];
+const _hoisted_13 = ["disabled"];
+const _hoisted_14 = ["disabled"];
 const _hoisted_15 = ["disabled"];
 const _hoisted_16 = {
   key: 1,
+  class: "home-editor-panel"
+};
+const _hoisted_17 = { class: "home-editor-panel__route" };
+const _hoisted_18 = { class: "home-editor-status" };
+const _hoisted_19 = { class: "home-editor-chip home-editor-chip--count" };
+const _hoisted_20 = { class: "home-editor-chip home-editor-chip--history" };
+const _hoisted_21 = { class: "home-editor-chip home-editor-chip--history" };
+const _hoisted_22 = { class: "home-editor-layer-panel" };
+const _hoisted_23 = { class: "home-editor-layer-panel__head" };
+const _hoisted_24 = { class: "home-editor-layer-panel__actions" };
+const _hoisted_25 = ["disabled"];
+const _hoisted_26 = ["disabled"];
+const _hoisted_27 = { class: "home-editor-layer-list" };
+const _hoisted_28 = ["onClick"];
+const _hoisted_29 = { class: "home-editor-layer-item__title" };
+const _hoisted_30 = { class: "home-editor-layer-item__meta" };
+const _hoisted_31 = { class: "home-editor-actions home-editor-actions--secondary" };
+const _hoisted_32 = ["disabled"];
+const _hoisted_33 = {
+  key: 1,
   class: "home-editor-report"
 };
-const _hoisted_17 = { class: "home-editor-report__head" };
-const _hoisted_18 = { class: "home-editor-report__meta" };
-const _hoisted_19 = {
+const _hoisted_34 = { class: "home-editor-report__head" };
+const _hoisted_35 = { class: "home-editor-report__meta" };
+const _hoisted_36 = {
   key: 0,
   class: "home-editor-report__list home-editor-report__list--error"
 };
-const _hoisted_20 = {
+const _hoisted_37 = {
   key: 1,
   class: "home-editor-report__list home-editor-report__list--warn"
 };
-const _hoisted_21 = {
+const _hoisted_38 = {
   key: 2,
   class: "home-editor-report__more"
 };
-const _hoisted_22 = { class: "home-editor-field" };
-const _hoisted_23 = ["value"];
-const _hoisted_24 = { class: "home-editor-field" };
-const _hoisted_25 = ["value"];
-const _hoisted_26 = { class: "home-editor-field" };
-const _hoisted_27 = ["value"];
-const _hoisted_28 = { class: "home-editor-grid" };
-const _hoisted_29 = { class: "home-editor-field" };
-const _hoisted_30 = ["value"];
-const _hoisted_31 = { class: "home-editor-field" };
-const _hoisted_32 = ["value"];
-const _hoisted_33 = { class: "home-editor-grid" };
-const _hoisted_34 = { class: "home-editor-field" };
-const _hoisted_35 = ["value"];
-const _hoisted_36 = { class: "home-editor-field" };
-const _hoisted_37 = ["value"];
-const _hoisted_38 = { class: "home-editor-grid" };
 const _hoisted_39 = { class: "home-editor-field" };
 const _hoisted_40 = ["value"];
 const _hoisted_41 = { class: "home-editor-field" };
 const _hoisted_42 = ["value"];
 const _hoisted_43 = { class: "home-editor-field" };
 const _hoisted_44 = ["value"];
-const _hoisted_45 = {
+const _hoisted_45 = { class: "home-editor-grid" };
+const _hoisted_46 = { class: "home-editor-field" };
+const _hoisted_47 = ["value"];
+const _hoisted_48 = { class: "home-editor-field" };
+const _hoisted_49 = ["value"];
+const _hoisted_50 = { class: "home-editor-grid" };
+const _hoisted_51 = { class: "home-editor-field" };
+const _hoisted_52 = ["value"];
+const _hoisted_53 = { class: "home-editor-field" };
+const _hoisted_54 = ["value"];
+const _hoisted_55 = { class: "home-editor-grid" };
+const _hoisted_56 = { class: "home-editor-field" };
+const _hoisted_57 = ["value"];
+const _hoisted_58 = { class: "home-editor-field" };
+const _hoisted_59 = ["value"];
+const _hoisted_60 = { class: "home-editor-field" };
+const _hoisted_61 = ["value"];
+const _hoisted_62 = {
   key: 3,
   class: "home-editor-empty-hint"
 };
+const SNAP_GRID = 12;
+const SNAP_THRESHOLD = 8;
+const MAX_HISTORY_STEPS = 50;
+const CANVAS_LIMIT = 5e3;
+const BLOCK_MIN_WIDTH = 180;
+const BLOCK_MAX_WIDTH = 1200;
+const BLOCK_MIN_HEIGHT = 90;
+const BLOCK_MAX_HEIGHT = 900;
 const _sfc_main$1 = {
   __name: "EditableHomeCanvas",
   setup(__props) {
     const route = useRoute();
     const currentRoute = ref("/");
-    const dragState = ref(null);
+    const interactionState = ref(null);
+    const guideLines = ref({ vertical: [], horizontal: [] });
     const importInputRef = ref(null);
     const ioMessage = ref("");
     const ioMessageType = ref("info");
     const validationReport = ref(null);
+    const routeEditHistory = ref({});
     let ioTimer = null;
-    let dragRafId = 0;
+    let interactionRafId = 0;
     let pendingPointer = null;
     const showCanvas = computed(() => isEditorMode.value);
-    const isDragging = computed(() => Boolean(dragState.value));
+    const isInteracting = computed(() => Boolean(interactionState.value));
     const orderedBlocks = computed(() => getOrderedRouteBlocks(currentRoute.value));
+    const layerBlocks = computed(() => [...orderedBlocks.value].reverse());
     const selectedBlockId = computed(() => getSelectedRouteBlockId(currentRoute.value));
     const selectedBlock = computed(() => getSelectedRouteBlock(currentRoute.value));
     const routeStatus = computed(() => getRouteEditStatus(currentRoute.value));
     const routeHistory = computed(() => getRoutePublishedHistory(currentRoute.value));
     const latestHistory = computed(() => routeHistory.value[0] || null);
+    const historyStats = computed(() => {
+      const bucket = ensureRouteHistoryBucket(currentRoute.value);
+      return {
+        undo: bucket.undo.length,
+        redo: bucket.redo.length
+      };
+    });
     const blockCountSummary = computed(
       () => `${routeStatus.value.blockCount}/${routeStatus.value.publishedBlockCount}`
     );
@@ -4954,6 +5093,217 @@ const _sfc_main$1 = {
       if (typeof value !== "string") return fallback;
       const text = value.trim();
       return /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(text) ? text : fallback;
+    }
+    function cloneJson(value) {
+      return JSON.parse(JSON.stringify(value));
+    }
+    function ensureRouteHistoryBucket(routeInput) {
+      const routePath = ensureRouteLayout(routeInput);
+      const existing = routeEditHistory.value[routePath];
+      if (existing) return existing;
+      const next = {
+        undo: [],
+        redo: []
+      };
+      routeEditHistory.value = {
+        ...routeEditHistory.value,
+        [routePath]: next
+      };
+      return next;
+    }
+    function createLayoutSnapshot(routeInput, reason = "") {
+      const routePath = ensureRouteLayout(routeInput);
+      const layout = getRouteDraftLayout(routePath);
+      const serialized = JSON.stringify(layout);
+      return {
+        route: routePath,
+        reason,
+        at: Date.now(),
+        serialized,
+        layout
+      };
+    }
+    function pushUndoSnapshot(routeInput, reason = "") {
+      const routePath = ensureRouteLayout(routeInput);
+      const bucket = ensureRouteHistoryBucket(routePath);
+      const snapshot = createLayoutSnapshot(routePath, reason);
+      const last = bucket.undo[bucket.undo.length - 1];
+      if ((last == null ? void 0 : last.serialized) === snapshot.serialized) {
+        return;
+      }
+      bucket.undo.push(snapshot);
+      if (bucket.undo.length > MAX_HISTORY_STEPS) {
+        bucket.undo.shift();
+      }
+      bucket.redo = [];
+    }
+    function applyHistorySnapshot(snapshot) {
+      if (!snapshot) return false;
+      const routePath = ensureRouteLayout(snapshot.route || currentRoute.value);
+      replaceRouteDraftLayout(routePath, cloneJson(snapshot.layout), { persist: true });
+      return true;
+    }
+    function handleUndo() {
+      const routePath = ensureRouteLayout(currentRoute.value);
+      const bucket = ensureRouteHistoryBucket(routePath);
+      if (!bucket.undo.length) {
+        setMessage("error", "没有可撤销的操作。");
+        return;
+      }
+      const currentSnapshot = createLayoutSnapshot(routePath, "current");
+      const targetSnapshot = bucket.undo.pop();
+      bucket.redo.push(currentSnapshot);
+      if (bucket.redo.length > MAX_HISTORY_STEPS) {
+        bucket.redo.shift();
+      }
+      applyHistorySnapshot(targetSnapshot);
+    }
+    function handleRedo() {
+      const routePath = ensureRouteLayout(currentRoute.value);
+      const bucket = ensureRouteHistoryBucket(routePath);
+      if (!bucket.redo.length) {
+        setMessage("error", "没有可重做的操作。");
+        return;
+      }
+      const currentSnapshot = createLayoutSnapshot(routePath, "current");
+      const targetSnapshot = bucket.redo.pop();
+      bucket.undo.push(currentSnapshot);
+      if (bucket.undo.length > MAX_HISTORY_STEPS) {
+        bucket.undo.shift();
+      }
+      applyHistorySnapshot(targetSnapshot);
+    }
+    function getCanvasBounds() {
+      if (typeof window === "undefined") {
+        return { width: 1200, height: 900 };
+      }
+      return {
+        width: clamp2(Math.round(window.innerWidth), 320, CANVAS_LIMIT),
+        height: clamp2(Math.round(window.innerHeight - 72), 240, CANVAS_LIMIT)
+      };
+    }
+    function resolvePointSnap(value, targets) {
+      let bestValue = value;
+      let bestDiff = SNAP_THRESHOLD + 1;
+      let hasMatch = false;
+      targets.forEach((target) => {
+        const diff = Math.abs(target - value);
+        if (diff <= SNAP_THRESHOLD && diff < bestDiff) {
+          bestDiff = diff;
+          bestValue = target;
+          hasMatch = true;
+        }
+      });
+      return {
+        value: hasMatch ? bestValue : value,
+        guide: hasMatch ? bestValue : null
+      };
+    }
+    function resolveAxisSnap(start, span, targets) {
+      const anchors = [
+        { offset: 0, map: (target) => target },
+        { offset: span / 2, map: (target) => target - span / 2 },
+        { offset: span, map: (target) => target - span }
+      ];
+      let best = null;
+      anchors.forEach((anchor) => {
+        targets.forEach((target) => {
+          const anchorPos = start + anchor.offset;
+          const diff = Math.abs(target - anchorPos);
+          if (diff > SNAP_THRESHOLD) return;
+          if (!best || diff < best.diff) {
+            best = {
+              diff,
+              start: anchor.map(target),
+              guide: target
+            };
+          }
+        });
+      });
+      if (!best) {
+        return {
+          value: start,
+          guide: null
+        };
+      }
+      return {
+        value: best.start,
+        guide: best.guide
+      };
+    }
+    function collectSnapTargets(blockId) {
+      const blocks = getRouteBlocks(currentRoute.value).filter((item) => item.id !== blockId);
+      const { width: canvasWidth, height: canvasHeight } = getCanvasBounds();
+      const vertical = [0, canvasWidth / 2, canvasWidth];
+      const horizontal = [0, canvasHeight / 2, canvasHeight];
+      blocks.forEach((block) => {
+        vertical.push(block.x, block.x + block.w / 2, block.x + block.w);
+        horizontal.push(block.y, block.y + block.h / 2, block.y + block.h);
+      });
+      return {
+        vertical,
+        horizontal
+      };
+    }
+    function computeMovePatch(state, clientX, clientY) {
+      const block = getRouteBlocks(currentRoute.value).find((item) => item.id === state.id);
+      if (!block) return null;
+      const dx = clientX - state.startX;
+      const dy = clientY - state.startY;
+      let nextX = clamp2(Math.round((state.initialX + dx) / SNAP_GRID) * SNAP_GRID, 0, CANVAS_LIMIT);
+      let nextY = clamp2(Math.round((state.initialY + dy) / SNAP_GRID) * SNAP_GRID, 0, CANVAS_LIMIT);
+      const guides = { vertical: [], horizontal: [] };
+      const targets = collectSnapTargets(state.id);
+      const xSnap = resolveAxisSnap(nextX, block.w, targets.vertical);
+      if (xSnap.guide !== null) {
+        nextX = clamp2(Math.round(xSnap.value), 0, CANVAS_LIMIT);
+        guides.vertical.push(xSnap.guide);
+      }
+      const ySnap = resolveAxisSnap(nextY, block.h, targets.horizontal);
+      if (ySnap.guide !== null) {
+        nextY = clamp2(Math.round(ySnap.value), 0, CANVAS_LIMIT);
+        guides.horizontal.push(ySnap.guide);
+      }
+      return {
+        patch: { x: nextX, y: nextY },
+        guides
+      };
+    }
+    function computeResizePatch(state, clientX, clientY) {
+      const block = getRouteBlocks(currentRoute.value).find((item) => item.id === state.id);
+      if (!block) return null;
+      const dx = clientX - state.startX;
+      const dy = clientY - state.startY;
+      let nextW = state.initialW;
+      let nextH = state.initialH;
+      if (state.handle.includes("e")) {
+        nextW = state.initialW + dx;
+      }
+      if (state.handle.includes("s")) {
+        nextH = state.initialH + dy;
+      }
+      nextW = clamp2(Math.round(nextW / SNAP_GRID) * SNAP_GRID, BLOCK_MIN_WIDTH, BLOCK_MAX_WIDTH);
+      nextH = clamp2(Math.round(nextH / SNAP_GRID) * SNAP_GRID, BLOCK_MIN_HEIGHT, BLOCK_MAX_HEIGHT);
+      const guides = { vertical: [], horizontal: [] };
+      const targets = collectSnapTargets(state.id);
+      if (state.handle.includes("e")) {
+        const snapped = resolvePointSnap(block.x + nextW, targets.vertical);
+        if (snapped.guide !== null) {
+          nextW = clamp2(Math.round(snapped.value - block.x), BLOCK_MIN_WIDTH, BLOCK_MAX_WIDTH);
+          guides.vertical.push(snapped.guide);
+        }
+      }
+      if (state.handle.includes("s")) {
+        const snapped = resolvePointSnap(block.y + nextH, targets.horizontal);
+        if (snapped.guide !== null) {
+          nextH = clamp2(Math.round(snapped.value - block.y), BLOCK_MIN_HEIGHT, BLOCK_MAX_HEIGHT);
+          guides.horizontal.push(snapped.guide);
+        }
+      }
+      return {
+        patch: { w: nextW, h: nextH },
+        guides
+      };
     }
     function setMessage(type, text, duration = 2800) {
       ioMessageType.value = type;
@@ -5002,75 +5352,94 @@ const _sfc_main$1 = {
         backdropFilter: block.blur > 0 ? `blur(${block.blur}px) saturate(135%)` : "none"
       };
     }
-    function applyDragPosition(clientX, clientY) {
-      if (!dragState.value) return;
-      const dx = clientX - dragState.value.startX;
-      const dy = clientY - dragState.value.startY;
-      patchRouteBlock(
-        currentRoute.value,
-        dragState.value.id,
-        {
-          x: clamp2(Math.round(dragState.value.initialX + dx), 0, 5e3),
-          y: clamp2(Math.round(dragState.value.initialY + dy), 0, 5e3)
-        },
-        { persist: false }
-      );
+    function applyInteractionPosition(clientX, clientY) {
+      const state = interactionState.value;
+      if (!state) return;
+      let result = null;
+      if (state.mode === "move") {
+        result = computeMovePatch(state, clientX, clientY);
+      } else if (state.mode === "resize") {
+        result = computeResizePatch(state, clientX, clientY);
+      }
+      if (!result) return;
+      patchRouteBlock(currentRoute.value, state.id, result.patch, { persist: false });
+      guideLines.value = {
+        vertical: result.guides.vertical,
+        horizontal: result.guides.horizontal
+      };
     }
-    function flushDragFrame() {
-      dragRafId = 0;
-      if (!dragState.value || !pendingPointer) return;
-      applyDragPosition(pendingPointer.x, pendingPointer.y);
+    function flushInteractionFrame() {
+      interactionRafId = 0;
+      if (!interactionState.value || !pendingPointer) return;
+      applyInteractionPosition(pendingPointer.x, pendingPointer.y);
       pendingPointer = null;
     }
-    function onBlockPointerDown(event, block) {
-      if (!isEditorMode.value) return;
-      if (event.pointerType === "mouse" && event.button !== 0) return;
+    function beginInteraction(mode, event, block, extra = {}) {
+      pushUndoSnapshot(currentRoute.value, mode === "resize" ? "缩放模块" : "拖拽模块");
       setSelectedRouteBlock(currentRoute.value, block.id);
-      dragState.value = {
+      interactionState.value = {
+        mode,
         id: block.id,
         pointerId: event.pointerId,
         startX: event.clientX,
         startY: event.clientY,
         initialX: block.x,
-        initialY: block.y
+        initialY: block.y,
+        initialW: block.w,
+        initialH: block.h,
+        ...extra
       };
-      window.addEventListener("pointermove", onDragging);
-      window.addEventListener("pointerup", stopDragging);
-      window.addEventListener("pointercancel", stopDragging);
+      window.addEventListener("pointermove", onInteracting);
+      window.addEventListener("pointerup", stopInteraction);
+      window.addEventListener("pointercancel", stopInteraction);
       event.preventDefault();
     }
-    function onDragging(event) {
-      if (!dragState.value) return;
-      pendingPointer = { x: event.clientX, y: event.clientY };
-      if (dragRafId) return;
-      dragRafId = window.requestAnimationFrame(flushDragFrame);
+    function onBlockPointerDown(event, block) {
+      if (!isEditorMode.value) return;
+      if (event.pointerType === "mouse" && event.button !== 0) return;
+      beginInteraction("move", event, block);
     }
-    function stopDragging(event) {
-      if (!dragState.value) return;
-      if (event && event.pointerId && event.pointerId !== dragState.value.pointerId) return;
-      if (dragRafId) {
-        window.cancelAnimationFrame(dragRafId);
-        dragRafId = 0;
+    function onResizeHandlePointerDown(event, block, handle) {
+      if (!isEditorMode.value) return;
+      if (event.pointerType === "mouse" && event.button !== 0) return;
+      beginInteraction("resize", event, block, { handle });
+    }
+    function onInteracting(event) {
+      if (!interactionState.value) return;
+      pendingPointer = { x: event.clientX, y: event.clientY };
+      if (interactionRafId) return;
+      interactionRafId = window.requestAnimationFrame(flushInteractionFrame);
+    }
+    function stopInteraction(event) {
+      const state = interactionState.value;
+      if (!state) return;
+      if (event && event.pointerId && event.pointerId !== state.pointerId) return;
+      if (interactionRafId) {
+        window.cancelAnimationFrame(interactionRafId);
+        interactionRafId = 0;
       }
       if (pendingPointer) {
-        applyDragPosition(pendingPointer.x, pendingPointer.y);
+        applyInteractionPosition(pendingPointer.x, pendingPointer.y);
         pendingPointer = null;
       }
-      dragState.value = null;
-      window.removeEventListener("pointermove", onDragging);
-      window.removeEventListener("pointerup", stopDragging);
-      window.removeEventListener("pointercancel", stopDragging);
+      interactionState.value = null;
+      guideLines.value = { vertical: [], horizontal: [] };
+      window.removeEventListener("pointermove", onInteracting);
+      window.removeEventListener("pointerup", stopInteraction);
+      window.removeEventListener("pointercancel", stopInteraction);
       persistDraftRouteLayout(currentRoute.value);
     }
     function selectBlock(blockId) {
       setSelectedRouteBlock(currentRoute.value, blockId);
     }
     function bringToFront(blockId) {
+      pushUndoSnapshot(currentRoute.value, "置顶模块");
       const currentMax = Math.max(...getRouteBlocks(currentRoute.value).map((item) => item.z), 0);
       patchRouteBlock(currentRoute.value, blockId, { z: currentMax + 1 });
     }
     function removeCurrentBlock() {
       if (!selectedBlock.value) return;
+      pushUndoSnapshot(currentRoute.value, "删除模块");
       removeRouteBlock(currentRoute.value, selectedBlock.value.id);
     }
     function updateSelectedField(field, value) {
@@ -5085,6 +5454,94 @@ const _sfc_main$1 = {
     function updateTextColor(event) {
       const value = normalizeColorHex(event.target.value, "#ffffff");
       updateSelectedField("color", value);
+    }
+    function handleAddBlock() {
+      pushUndoSnapshot(currentRoute.value, "新增模块");
+      addRouteTextBlock(currentRoute.value);
+    }
+    function handleResetLayout() {
+      pushUndoSnapshot(currentRoute.value, "重置布局");
+      resetRouteLayout(currentRoute.value);
+    }
+    function handleDuplicateSelected() {
+      if (!selectedBlock.value) return;
+      pushUndoSnapshot(currentRoute.value, "复制模块");
+      const result = duplicateRouteBlock(currentRoute.value, selectedBlock.value.id);
+      if (!result.ok) {
+        setMessage("error", result.message || "复制失败。");
+        return;
+      }
+      setMessage("success", "已复制当前模块。");
+    }
+    function handleMoveLayer(direction) {
+      if (!selectedBlock.value) return;
+      pushUndoSnapshot(currentRoute.value, direction > 0 ? "图层上移" : "图层下移");
+      const result = moveRouteBlockLayer(currentRoute.value, selectedBlock.value.id, direction);
+      if (!result.ok) {
+        setMessage("error", result.message || "图层调整失败。");
+      }
+    }
+    function nudgeSelectedBlock(dx, dy) {
+      if (!selectedBlock.value) return;
+      pushUndoSnapshot(currentRoute.value, "微调位置");
+      patchRouteBlock(currentRoute.value, selectedBlock.value.id, {
+        x: clamp2(Math.round(selectedBlock.value.x + dx), 0, CANVAS_LIMIT),
+        y: clamp2(Math.round(selectedBlock.value.y + dy), 0, CANVAS_LIMIT)
+      });
+    }
+    function isTextEditableTarget(target) {
+      if (!target || !(target instanceof HTMLElement)) return false;
+      if (target.isContentEditable) return true;
+      const tag = target.tagName;
+      return tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT";
+    }
+    function handleEditorHotkeys(event) {
+      if (!isEditorMode.value) return;
+      if (isTextEditableTarget(event.target)) return;
+      const key = event.key.toLowerCase();
+      const withCommand = event.ctrlKey || event.metaKey;
+      if (withCommand && key === "z") {
+        event.preventDefault();
+        if (event.shiftKey) {
+          handleRedo();
+        } else {
+          handleUndo();
+        }
+        return;
+      }
+      if (withCommand && key === "y") {
+        event.preventDefault();
+        handleRedo();
+        return;
+      }
+      if (withCommand && key === "d") {
+        event.preventDefault();
+        handleDuplicateSelected();
+        return;
+      }
+      if (event.altKey && event.key === "ArrowUp") {
+        event.preventDefault();
+        handleMoveLayer(1);
+        return;
+      }
+      if (event.altKey && event.key === "ArrowDown") {
+        event.preventDefault();
+        handleMoveLayer(-1);
+        return;
+      }
+      if (selectedBlock.value && (event.key === "Delete" || event.key === "Backspace")) {
+        event.preventDefault();
+        removeCurrentBlock();
+        return;
+      }
+      if (selectedBlock.value && event.key.startsWith("Arrow")) {
+        event.preventDefault();
+        const step = event.shiftKey ? 10 : 1;
+        if (event.key === "ArrowLeft") nudgeSelectedBlock(-step, 0);
+        if (event.key === "ArrowRight") nudgeSelectedBlock(step, 0);
+        if (event.key === "ArrowUp") nudgeSelectedBlock(0, -step);
+        if (event.key === "ArrowDown") nudgeSelectedBlock(0, step);
+      }
     }
     function toRouteSlug(path) {
       if (path === "/") return "root";
@@ -5199,25 +5656,43 @@ const _sfc_main$1 = {
     onMounted(() => {
       initEditorState();
       syncRoute(route.path);
+      window.addEventListener("keydown", handleEditorHotkeys);
     });
     watch(
       () => route.path,
       (nextPath) => {
-        stopDragging();
+        stopInteraction();
         syncRoute(nextPath);
       }
     );
     onBeforeUnmount(() => {
-      stopDragging();
+      stopInteraction();
+      window.removeEventListener("keydown", handleEditorHotkeys);
       clearMessage();
     });
     return (_ctx, _cache) => {
       return showCanvas.value ? (openBlock(), createElementBlock("div", {
         key: 0,
-        class: normalizeClass(["home-editor-canvas", { "is-editing": unref(isEditorMode), "is-dragging": isDragging.value }]),
+        class: normalizeClass(["home-editor-canvas", { "is-editing": unref(isEditorMode), "is-interacting": isInteracting.value }]),
         "aria-label": "页面编辑画布"
       }, [
         createBaseVNode("div", _hoisted_1$1, [
+          createBaseVNode("div", _hoisted_2, [
+            (openBlock(true), createElementBlock(Fragment, null, renderList(guideLines.value.vertical, (x, index) => {
+              return openBlock(), createElementBlock("span", {
+                key: `v-${index}-${x}`,
+                class: "home-editor-guide home-editor-guide--vertical",
+                style: normalizeStyle({ left: `${x}px` })
+              }, null, 4);
+            }), 128)),
+            (openBlock(true), createElementBlock(Fragment, null, renderList(guideLines.value.horizontal, (y, index) => {
+              return openBlock(), createElementBlock("span", {
+                key: `h-${index}-${y}`,
+                class: "home-editor-guide home-editor-guide--horizontal",
+                style: normalizeStyle({ top: `${y}px` })
+              }, null, 4);
+            }), 128))
+          ]),
           (openBlock(true), createElementBlock(Fragment, null, renderList(orderedBlocks.value, (block) => {
             return openBlock(), createElementBlock("article", {
               key: block.id,
@@ -5227,41 +5702,80 @@ const _sfc_main$1 = {
               onClick: withModifiers(($event) => selectBlock(block.id), ["stop"]),
               onDblclick: withModifiers(($event) => bringToFront(block.id), ["stop"])
             }, [
-              createBaseVNode("p", _hoisted_3, toDisplayString(block.kicker), 1),
-              createBaseVNode("h2", _hoisted_4, toDisplayString(block.title), 1),
-              createBaseVNode("p", _hoisted_5, toDisplayString(block.body), 1),
-              unref(isEditorMode) ? (openBlock(), createElementBlock("span", _hoisted_6, "拖拽")) : createCommentVNode("", true)
-            ], 46, _hoisted_2);
+              createBaseVNode("p", _hoisted_4, toDisplayString(block.kicker), 1),
+              createBaseVNode("h2", _hoisted_5, toDisplayString(block.title), 1),
+              createBaseVNode("p", _hoisted_6, toDisplayString(block.body), 1),
+              unref(isEditorMode) ? (openBlock(), createElementBlock("span", _hoisted_7, "拖拽")) : createCommentVNode("", true),
+              unref(isEditorMode) && selectedBlockId.value === block.id ? (openBlock(), createElementBlock(Fragment, { key: 1 }, [
+                createBaseVNode("button", {
+                  type: "button",
+                  class: "home-editor-resize-handle home-editor-resize-handle--e",
+                  "aria-label": "横向缩放",
+                  onPointerdown: withModifiers(($event) => onResizeHandlePointerDown($event, block, "e"), ["stop", "prevent"])
+                }, null, 40, _hoisted_8),
+                createBaseVNode("button", {
+                  type: "button",
+                  class: "home-editor-resize-handle home-editor-resize-handle--s",
+                  "aria-label": "纵向缩放",
+                  onPointerdown: withModifiers(($event) => onResizeHandlePointerDown($event, block, "s"), ["stop", "prevent"])
+                }, null, 40, _hoisted_9),
+                createBaseVNode("button", {
+                  type: "button",
+                  class: "home-editor-resize-handle home-editor-resize-handle--se",
+                  "aria-label": "自由缩放",
+                  onPointerdown: withModifiers(($event) => onResizeHandlePointerDown($event, block, "se"), ["stop", "prevent"])
+                }, null, 40, _hoisted_10)
+              ], 64)) : createCommentVNode("", true)
+            ], 46, _hoisted_3);
           }), 128))
         ]),
-        unref(isEditorMode) ? (openBlock(), createElementBlock("div", _hoisted_7, [
+        unref(isEditorMode) ? (openBlock(), createElementBlock("div", _hoisted_11, [
           createBaseVNode("button", {
             type: "button",
             class: "home-editor-btn",
-            onClick: _cache[0] || (_cache[0] = ($event) => unref(addRouteTextBlock)(currentRoute.value))
+            onClick: handleAddBlock
           }, " 新增 "),
           createBaseVNode("button", {
             type: "button",
             class: "home-editor-btn",
             disabled: !selectedBlock.value,
-            onClick: removeCurrentBlock
-          }, " 删除 ", 8, _hoisted_8),
+            onClick: handleDuplicateSelected
+          }, " 复制 ", 8, _hoisted_12),
           createBaseVNode("button", {
             type: "button",
             class: "home-editor-btn",
-            onClick: _cache[1] || (_cache[1] = ($event) => unref(resetRouteLayout)(currentRoute.value))
+            disabled: !selectedBlock.value,
+            onClick: removeCurrentBlock
+          }, " 删除 ", 8, _hoisted_13),
+          createBaseVNode("button", {
+            type: "button",
+            class: "home-editor-btn",
+            disabled: !historyStats.value.undo,
+            onClick: handleUndo
+          }, " 撤销 ", 8, _hoisted_14),
+          createBaseVNode("button", {
+            type: "button",
+            class: "home-editor-btn",
+            disabled: !historyStats.value.redo,
+            onClick: handleRedo
+          }, " 重做 ", 8, _hoisted_15),
+          createBaseVNode("button", {
+            type: "button",
+            class: "home-editor-btn",
+            onClick: handleResetLayout
           }, " 重置 ")
         ])) : createCommentVNode("", true),
-        unref(isEditorMode) ? (openBlock(), createElementBlock("aside", _hoisted_9, [
-          _cache[24] || (_cache[24] = createBaseVNode("h3", { class: "home-editor-panel__title" }, "页面编辑器", -1)),
-          createBaseVNode("p", _hoisted_10, toDisplayString(currentRoute.value), 1),
-          createBaseVNode("div", _hoisted_11, [
+        unref(isEditorMode) ? (openBlock(), createElementBlock("aside", _hoisted_16, [
+          _cache[25] || (_cache[25] = createBaseVNode("h3", { class: "home-editor-panel__title" }, "页面编辑器", -1)),
+          createBaseVNode("p", _hoisted_17, toDisplayString(currentRoute.value), 1),
+          createBaseVNode("div", _hoisted_18, [
             _cache[11] || (_cache[11] = createBaseVNode("span", { class: "home-editor-chip home-editor-chip--draft" }, "草稿", -1)),
             createBaseVNode("span", {
               class: normalizeClass(["home-editor-chip", routeStatus.value.dirty ? "is-dirty" : "is-clean"])
             }, toDisplayString(routeStatus.value.dirty ? "有未发布改动" : "已与发布版同步"), 3),
-            createBaseVNode("span", _hoisted_12, "草稿/发布 " + toDisplayString(blockCountSummary.value), 1),
-            createBaseVNode("span", _hoisted_13, "回滚点 " + toDisplayString(routeStatus.value.historyCount), 1)
+            createBaseVNode("span", _hoisted_19, "草稿/发布 " + toDisplayString(blockCountSummary.value), 1),
+            createBaseVNode("span", _hoisted_20, "回滚点 " + toDisplayString(routeStatus.value.historyCount), 1),
+            createBaseVNode("span", _hoisted_21, "撤销 " + toDisplayString(historyStats.value.undo) + "/重做 " + toDisplayString(historyStats.value.redo), 1)
           ]),
           createBaseVNode("div", { class: "home-editor-actions" }, [
             createBaseVNode("button", {
@@ -5280,7 +5794,42 @@ const _sfc_main$1 = {
               onClick: handleRevertDraft
             }, " 回滚草稿 ")
           ]),
-          createBaseVNode("div", _hoisted_14, [
+          createBaseVNode("section", _hoisted_22, [
+            createBaseVNode("div", _hoisted_23, [
+              _cache[12] || (_cache[12] = createBaseVNode("strong", null, "图层面板", -1)),
+              createBaseVNode("div", _hoisted_24, [
+                createBaseVNode("button", {
+                  type: "button",
+                  class: "home-editor-layer-btn",
+                  disabled: !selectedBlock.value,
+                  onClick: _cache[0] || (_cache[0] = ($event) => handleMoveLayer(1))
+                }, " 上移 ", 8, _hoisted_25),
+                createBaseVNode("button", {
+                  type: "button",
+                  class: "home-editor-layer-btn",
+                  disabled: !selectedBlock.value,
+                  onClick: _cache[1] || (_cache[1] = ($event) => handleMoveLayer(-1))
+                }, " 下移 ", 8, _hoisted_26)
+              ])
+            ]),
+            createBaseVNode("ul", _hoisted_27, [
+              (openBlock(true), createElementBlock(Fragment, null, renderList(layerBlocks.value, (block) => {
+                return openBlock(), createElementBlock("li", {
+                  key: `layer-${block.id}`
+                }, [
+                  createBaseVNode("button", {
+                    type: "button",
+                    class: normalizeClass(["home-editor-layer-item", { "is-active": selectedBlockId.value === block.id }]),
+                    onClick: ($event) => selectBlock(block.id)
+                  }, [
+                    createBaseVNode("span", _hoisted_29, toDisplayString(block.title || block.kicker || block.id), 1),
+                    createBaseVNode("span", _hoisted_30, "z" + toDisplayString(block.z), 1)
+                  ], 10, _hoisted_28)
+                ]);
+              }), 128))
+            ])
+          ]),
+          createBaseVNode("div", _hoisted_31, [
             createBaseVNode("button", {
               type: "button",
               class: "home-editor-btn",
@@ -5291,14 +5840,14 @@ const _sfc_main$1 = {
               class: "home-editor-btn",
               disabled: !routeStatus.value.historyCount,
               onClick: handleRollbackPublished
-            }, " 一键回滚 ", 8, _hoisted_15)
+            }, " 一键回滚 ", 8, _hoisted_32)
           ]),
           createBaseVNode("div", { class: "home-editor-actions" }, [
             createBaseVNode("button", {
               type: "button",
               class: "home-editor-btn home-editor-btn--export",
               onClick: handleExportCurrent
-            }, [..._cache[12] || (_cache[12] = [
+            }, [..._cache[13] || (_cache[13] = [
               createBaseVNode("span", {
                 class: "home-editor-export-icon",
                 "aria-hidden": "true"
@@ -5309,7 +5858,7 @@ const _sfc_main$1 = {
               type: "button",
               class: "home-editor-btn home-editor-btn--export",
               onClick: handleExportAll
-            }, [..._cache[13] || (_cache[13] = [
+            }, [..._cache[14] || (_cache[14] = [
               createBaseVNode("span", {
                 class: "home-editor-export-icon",
                 "aria-hidden": "true"
@@ -5334,59 +5883,59 @@ const _sfc_main$1 = {
             key: 0,
             class: normalizeClass(["home-editor-message", `is-${ioMessageType.value}`])
           }, toDisplayString(ioMessage.value), 3)) : createCommentVNode("", true),
-          validationReport.value ? (openBlock(), createElementBlock("section", _hoisted_16, [
-            createBaseVNode("div", _hoisted_17, [
+          validationReport.value ? (openBlock(), createElementBlock("section", _hoisted_33, [
+            createBaseVNode("div", _hoisted_34, [
               createBaseVNode("span", {
                 class: normalizeClass(["home-editor-report__badge", validationReport.value.ok ? "is-pass" : "is-block"])
               }, toDisplayString(validationReport.value.ok ? "校验通过" : "校验失败"), 3),
-              createBaseVNode("span", _hoisted_18, " 错误 " + toDisplayString(validationReport.value.errors.length) + " / 提醒 " + toDisplayString(validationReport.value.warnings.length), 1)
+              createBaseVNode("span", _hoisted_35, " 错误 " + toDisplayString(validationReport.value.errors.length) + " / 提醒 " + toDisplayString(validationReport.value.warnings.length), 1)
             ]),
-            validationReport.value.errors.length ? (openBlock(), createElementBlock("ul", _hoisted_19, [
+            validationReport.value.errors.length ? (openBlock(), createElementBlock("ul", _hoisted_36, [
               (openBlock(true), createElementBlock(Fragment, null, renderList(validationReport.value.errors.slice(0, 6), (item, index) => {
                 return openBlock(), createElementBlock("li", {
                   key: `error-${index}`
                 }, toDisplayString(item.message), 1);
               }), 128))
             ])) : createCommentVNode("", true),
-            validationReport.value.warnings.length ? (openBlock(), createElementBlock("ul", _hoisted_20, [
+            validationReport.value.warnings.length ? (openBlock(), createElementBlock("ul", _hoisted_37, [
               (openBlock(true), createElementBlock(Fragment, null, renderList(validationReport.value.warnings.slice(0, 6), (item, index) => {
                 return openBlock(), createElementBlock("li", {
                   key: `warning-${index}`
                 }, toDisplayString(item.message), 1);
               }), 128))
             ])) : createCommentVNode("", true),
-            validationReport.value.errors.length > 6 || validationReport.value.warnings.length > 6 ? (openBlock(), createElementBlock("p", _hoisted_21, " 仅展示前 6 条，请先优先处理关键问题。 ")) : createCommentVNode("", true)
+            validationReport.value.errors.length > 6 || validationReport.value.warnings.length > 6 ? (openBlock(), createElementBlock("p", _hoisted_38, " 仅展示前 6 条，请先优先处理关键问题。 ")) : createCommentVNode("", true)
           ])) : createCommentVNode("", true),
           selectedBlock.value ? (openBlock(), createElementBlock(Fragment, { key: 2 }, [
-            createBaseVNode("label", _hoisted_22, [
-              _cache[14] || (_cache[14] = createBaseVNode("span", null, "前缀文案", -1)),
+            createBaseVNode("label", _hoisted_39, [
+              _cache[15] || (_cache[15] = createBaseVNode("span", null, "前缀文案", -1)),
               createBaseVNode("input", {
                 class: "home-editor-input",
                 type: "text",
                 value: selectedBlock.value.kicker,
                 onInput: _cache[2] || (_cache[2] = ($event) => updateSelectedField("kicker", $event.target.value))
-              }, null, 40, _hoisted_23)
+              }, null, 40, _hoisted_40)
             ]),
-            createBaseVNode("label", _hoisted_24, [
-              _cache[15] || (_cache[15] = createBaseVNode("span", null, "标题", -1)),
+            createBaseVNode("label", _hoisted_41, [
+              _cache[16] || (_cache[16] = createBaseVNode("span", null, "标题", -1)),
               createBaseVNode("input", {
                 class: "home-editor-input",
                 type: "text",
                 value: selectedBlock.value.title,
                 onInput: _cache[3] || (_cache[3] = ($event) => updateSelectedField("title", $event.target.value))
-              }, null, 40, _hoisted_25)
+              }, null, 40, _hoisted_42)
             ]),
-            createBaseVNode("label", _hoisted_26, [
-              _cache[16] || (_cache[16] = createBaseVNode("span", null, "正文", -1)),
+            createBaseVNode("label", _hoisted_43, [
+              _cache[17] || (_cache[17] = createBaseVNode("span", null, "正文", -1)),
               createBaseVNode("textarea", {
                 class: "home-editor-input home-editor-input--textarea",
                 value: selectedBlock.value.body,
                 onInput: _cache[4] || (_cache[4] = ($event) => updateSelectedField("body", $event.target.value))
-              }, null, 40, _hoisted_27)
+              }, null, 40, _hoisted_44)
             ]),
-            createBaseVNode("div", _hoisted_28, [
-              createBaseVNode("label", _hoisted_29, [
-                _cache[17] || (_cache[17] = createBaseVNode("span", null, "宽度", -1)),
+            createBaseVNode("div", _hoisted_45, [
+              createBaseVNode("label", _hoisted_46, [
+                _cache[18] || (_cache[18] = createBaseVNode("span", null, "宽度", -1)),
                 createBaseVNode("input", {
                   class: "home-editor-range",
                   type: "range",
@@ -5395,10 +5944,10 @@ const _sfc_main$1 = {
                   step: "1",
                   value: selectedBlock.value.w,
                   onInput: _cache[5] || (_cache[5] = ($event) => updateSelectedNumberField("w", $event.target.value, 180, 1200))
-                }, null, 40, _hoisted_30)
+                }, null, 40, _hoisted_47)
               ]),
-              createBaseVNode("label", _hoisted_31, [
-                _cache[18] || (_cache[18] = createBaseVNode("span", null, "高度", -1)),
+              createBaseVNode("label", _hoisted_48, [
+                _cache[19] || (_cache[19] = createBaseVNode("span", null, "高度", -1)),
                 createBaseVNode("input", {
                   class: "home-editor-range",
                   type: "range",
@@ -5407,12 +5956,12 @@ const _sfc_main$1 = {
                   step: "1",
                   value: selectedBlock.value.h,
                   onInput: _cache[6] || (_cache[6] = ($event) => updateSelectedNumberField("h", $event.target.value, 90, 900))
-                }, null, 40, _hoisted_32)
+                }, null, 40, _hoisted_49)
               ])
             ]),
-            createBaseVNode("div", _hoisted_33, [
-              createBaseVNode("label", _hoisted_34, [
-                _cache[19] || (_cache[19] = createBaseVNode("span", null, "透明度", -1)),
+            createBaseVNode("div", _hoisted_50, [
+              createBaseVNode("label", _hoisted_51, [
+                _cache[20] || (_cache[20] = createBaseVNode("span", null, "透明度", -1)),
                 createBaseVNode("input", {
                   class: "home-editor-range",
                   type: "range",
@@ -5421,10 +5970,10 @@ const _sfc_main$1 = {
                   step: "0.01",
                   value: selectedBlock.value.opacity,
                   onInput: _cache[7] || (_cache[7] = ($event) => updateSelectedNumberField("opacity", $event.target.value, 0.05, 1))
-                }, null, 40, _hoisted_35)
+                }, null, 40, _hoisted_52)
               ]),
-              createBaseVNode("label", _hoisted_36, [
-                _cache[20] || (_cache[20] = createBaseVNode("span", null, "圆角", -1)),
+              createBaseVNode("label", _hoisted_53, [
+                _cache[21] || (_cache[21] = createBaseVNode("span", null, "圆角", -1)),
                 createBaseVNode("input", {
                   class: "home-editor-range",
                   type: "range",
@@ -5433,12 +5982,12 @@ const _sfc_main$1 = {
                   step: "1",
                   value: selectedBlock.value.radius,
                   onInput: _cache[8] || (_cache[8] = ($event) => updateSelectedNumberField("radius", $event.target.value, 0, 60))
-                }, null, 40, _hoisted_37)
+                }, null, 40, _hoisted_54)
               ])
             ]),
-            createBaseVNode("div", _hoisted_38, [
-              createBaseVNode("label", _hoisted_39, [
-                _cache[21] || (_cache[21] = createBaseVNode("span", null, "模糊度", -1)),
+            createBaseVNode("div", _hoisted_55, [
+              createBaseVNode("label", _hoisted_56, [
+                _cache[22] || (_cache[22] = createBaseVNode("span", null, "模糊度", -1)),
                 createBaseVNode("input", {
                   class: "home-editor-range",
                   type: "range",
@@ -5447,28 +5996,29 @@ const _sfc_main$1 = {
                   step: "1",
                   value: selectedBlock.value.blur,
                   onInput: _cache[9] || (_cache[9] = ($event) => updateSelectedNumberField("blur", $event.target.value, 0, 24))
-                }, null, 40, _hoisted_40)
+                }, null, 40, _hoisted_57)
               ]),
-              createBaseVNode("label", _hoisted_41, [
-                _cache[22] || (_cache[22] = createBaseVNode("span", null, "文字颜色", -1)),
+              createBaseVNode("label", _hoisted_58, [
+                _cache[23] || (_cache[23] = createBaseVNode("span", null, "文字颜色", -1)),
                 createBaseVNode("input", {
                   class: "home-editor-color",
                   type: "color",
                   value: normalizeColorHex(selectedBlock.value.color),
                   onInput: updateTextColor
-                }, null, 40, _hoisted_42)
+                }, null, 40, _hoisted_59)
               ])
             ]),
-            createBaseVNode("label", _hoisted_43, [
-              _cache[23] || (_cache[23] = createBaseVNode("span", null, "背景样式", -1)),
+            createBaseVNode("label", _hoisted_60, [
+              _cache[24] || (_cache[24] = createBaseVNode("span", null, "背景样式", -1)),
               createBaseVNode("input", {
                 class: "home-editor-input",
                 type: "text",
                 value: selectedBlock.value.bg,
                 onInput: _cache[10] || (_cache[10] = ($event) => updateSelectedField("bg", $event.target.value))
-              }, null, 40, _hoisted_44)
+              }, null, 40, _hoisted_61)
             ])
-          ], 64)) : (openBlock(), createElementBlock("p", _hoisted_45, " 当前未选中模块。请点击画布中的模块，或先点击“新增”创建模块。 "))
+          ], 64)) : (openBlock(), createElementBlock("p", _hoisted_62, " 当前未选中模块。请点击画布中的模块，或先点击“新增”创建模块。 ")),
+          _cache[26] || (_cache[26] = createBaseVNode("p", { class: "home-editor-shortcut-hint" }, " 快捷键：Ctrl/Cmd+Z 撤销，Shift+Ctrl/Cmd+Z 重做，Ctrl/Cmd+D 复制，Delete 删除，方向键微调，Alt+↑/↓ 调整图层。 ", -1))
         ])) : createCommentVNode("", true)
       ], 2)) : createCommentVNode("", true);
     };

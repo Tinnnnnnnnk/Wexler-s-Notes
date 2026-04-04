@@ -3102,7 +3102,7 @@ const _sfc_main$x = /* @__PURE__ */ defineComponent({
   __name: "VPNavBarSearch",
   __ssrInlineRender: true,
   setup(__props) {
-    const VPLocalSearchBox = defineAsyncComponent(() => import("./VPLocalSearchBox.07OyFIdL.js"));
+    const VPLocalSearchBox = defineAsyncComponent(() => import("./VPLocalSearchBox.CmGSscKB.js"));
     const VPAlgoliaSearchBox = () => null;
     const { theme: theme2 } = useData();
     const loaded = ref(false);
@@ -5663,6 +5663,13 @@ function initEditorState() {
   isEditorMode.value = savedMode === "1";
   initialized = true;
 }
+function setSelectedRouteBlock(routeInput, blockId) {
+  const route = ensureRouteLayout(routeInput);
+  selectedByRoute.value = {
+    ...selectedByRoute.value,
+    [route]: typeof blockId === "string" ? blockId : ""
+  };
+}
 function getRouteBlocks(routeInput) {
   var _a;
   const route = ensureRouteLayout(routeInput);
@@ -5685,6 +5692,107 @@ function getSelectedRouteBlock(routeInput) {
   const selectedId = selectedByRoute.value[route] || "";
   const blocks = getRouteBlocks(route);
   return blocks.find((block) => block.id === selectedId) || null;
+}
+function getRouteDraftLayout(routeInput) {
+  const route = ensureRouteLayout(routeInput);
+  return clone(draftLayoutsByRoute.value[route] || createDefaultLayout(route));
+}
+function replaceRouteDraftLayout(routeInput, layout, options = {}) {
+  const route = ensureRouteLayout(routeInput);
+  setDraftLayout(route, layout, options);
+  ensureSelectedValid(route);
+  return {
+    ok: true,
+    route
+  };
+}
+function duplicateRouteBlock(routeInput, blockId, options = {}) {
+  const route = ensureRouteLayout(routeInput);
+  const targetId = typeof blockId === "string" ? blockId : "";
+  const sourceBlock = getRouteBlocks(route).find((item) => item.id === targetId);
+  if (!sourceBlock) {
+    return {
+      ok: false,
+      route,
+      message: "未找到待复制的模块。"
+    };
+  }
+  const offsetX = Number.isFinite(Number(options.offsetX)) ? Number(options.offsetX) : 24;
+  const offsetY = Number.isFinite(Number(options.offsetY)) ? Number(options.offsetY) : 24;
+  const persist = options.persist !== false;
+  const nextLayout = clone(draftLayoutsByRoute.value[route]);
+  const cloneId = `block-${Date.now()}-${Math.floor(Math.random() * 1e3)}`;
+  const nextIndex = nextLayout.blocks.length;
+  const nextZ = Math.max(...nextLayout.blocks.map((item) => item.z), 0) + 1;
+  nextLayout.blocks.push(
+    normalizeBlock(
+      {
+        ...sourceBlock,
+        id: cloneId,
+        x: sourceBlock.x + offsetX,
+        y: sourceBlock.y + offsetY,
+        z: nextZ
+      },
+      nextIndex
+    )
+  );
+  setDraftLayout(route, nextLayout, { persist });
+  setSelectedRouteBlock(route, cloneId);
+  return {
+    ok: true,
+    route,
+    id: cloneId
+  };
+}
+function moveRouteBlockLayer(routeInput, blockId, direction, options = {}) {
+  const route = ensureRouteLayout(routeInput);
+  const targetId = typeof blockId === "string" ? blockId : "";
+  const step = Number(direction);
+  if (!Number.isFinite(step) || step === 0) {
+    return {
+      ok: false,
+      route,
+      message: "图层移动方向无效。"
+    };
+  }
+  const ordered = [...getRouteBlocks(route)].sort((a, b) => a.z - b.z);
+  const currentIndex = ordered.findIndex((item) => item.id === targetId);
+  if (currentIndex < 0) {
+    return {
+      ok: false,
+      route,
+      message: "未找到目标模块。"
+    };
+  }
+  const targetIndex = currentIndex + (step > 0 ? 1 : -1);
+  if (targetIndex < 0 || targetIndex >= ordered.length) {
+    return {
+      ok: false,
+      route,
+      message: "已经在最顶层或最底层。"
+    };
+  }
+  const persist = options.persist !== false;
+  const currentBlock = ordered[currentIndex];
+  const swapBlock = ordered[targetIndex];
+  const nextLayout = clone(draftLayoutsByRoute.value[route]);
+  const currentLayoutIndex = nextLayout.blocks.findIndex((item) => item.id === currentBlock.id);
+  const swapLayoutIndex = nextLayout.blocks.findIndex((item) => item.id === swapBlock.id);
+  if (currentLayoutIndex < 0 || swapLayoutIndex < 0) {
+    return {
+      ok: false,
+      route,
+      message: "图层交换失败。"
+    };
+  }
+  const tempZ = nextLayout.blocks[currentLayoutIndex].z;
+  nextLayout.blocks[currentLayoutIndex].z = nextLayout.blocks[swapLayoutIndex].z;
+  nextLayout.blocks[swapLayoutIndex].z = tempZ;
+  setDraftLayout(route, nextLayout, { persist });
+  return {
+    ok: true,
+    route
+  };
 }
 function getRoutePublishedHistory(routeInput) {
   const route = ensureRouteLayout(routeInput);
@@ -5717,27 +5825,58 @@ function patchRouteBlock(routeInput, blockId, patch, options = {}) {
   );
   setDraftLayout(route, nextLayout, { persist });
 }
+function removeRouteBlock(routeInput, blockId) {
+  var _a;
+  const route = ensureRouteLayout(routeInput);
+  const nextLayout = clone(draftLayoutsByRoute.value[route]);
+  const filtered = nextLayout.blocks.filter((block) => block.id !== blockId);
+  if (filtered.length === nextLayout.blocks.length) return;
+  nextLayout.blocks = filtered;
+  setDraftLayout(route, nextLayout, { persist: true });
+  if (selectedByRoute.value[route] === blockId) {
+    setSelectedRouteBlock(route, ((_a = nextLayout.blocks[0]) == null ? void 0 : _a.id) || "");
+  }
+}
+const SNAP_GRID = 12;
+const SNAP_THRESHOLD = 8;
+const MAX_HISTORY_STEPS = 50;
+const CANVAS_LIMIT = 5e3;
+const BLOCK_MIN_WIDTH = 180;
+const BLOCK_MAX_WIDTH = 1200;
+const BLOCK_MIN_HEIGHT = 90;
+const BLOCK_MAX_HEIGHT = 900;
 const _sfc_main$1 = {
   __name: "EditableHomeCanvas",
   __ssrInlineRender: true,
   setup(__props) {
     const route = useRoute();
     const currentRoute = ref("/");
-    const dragState = ref(null);
+    const interactionState = ref(null);
+    const guideLines = ref({ vertical: [], horizontal: [] });
     ref(null);
     const ioMessage = ref("");
     const ioMessageType = ref("info");
     const validationReport = ref(null);
-    let dragRafId = 0;
+    const routeEditHistory = ref({});
+    let ioTimer = null;
+    let interactionRafId = 0;
     let pendingPointer = null;
     const showCanvas = computed(() => isEditorMode.value);
-    const isDragging = computed(() => Boolean(dragState.value));
+    const isInteracting = computed(() => Boolean(interactionState.value));
     const orderedBlocks = computed(() => getOrderedRouteBlocks(currentRoute.value));
+    const layerBlocks = computed(() => [...orderedBlocks.value].reverse());
     const selectedBlockId = computed(() => getSelectedRouteBlockId(currentRoute.value));
     const selectedBlock = computed(() => getSelectedRouteBlock(currentRoute.value));
     const routeStatus = computed(() => getRouteEditStatus(currentRoute.value));
     const routeHistory = computed(() => getRoutePublishedHistory(currentRoute.value));
     computed(() => routeHistory.value[0] || null);
+    const historyStats = computed(() => {
+      const bucket = ensureRouteHistoryBucket(currentRoute.value);
+      return {
+        undo: bucket.undo.length,
+        redo: bucket.redo.length
+      };
+    });
     const blockCountSummary = computed(
       () => `${routeStatus.value.blockCount}/${routeStatus.value.publishedBlockCount}`
     );
@@ -5749,7 +5888,233 @@ const _sfc_main$1 = {
       const text = value.trim();
       return /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(text) ? text : fallback;
     }
+    function cloneJson(value) {
+      return JSON.parse(JSON.stringify(value));
+    }
+    function ensureRouteHistoryBucket(routeInput) {
+      const routePath = ensureRouteLayout(routeInput);
+      const existing = routeEditHistory.value[routePath];
+      if (existing) return existing;
+      const next = {
+        undo: [],
+        redo: []
+      };
+      routeEditHistory.value = {
+        ...routeEditHistory.value,
+        [routePath]: next
+      };
+      return next;
+    }
+    function createLayoutSnapshot(routeInput, reason = "") {
+      const routePath = ensureRouteLayout(routeInput);
+      const layout = getRouteDraftLayout(routePath);
+      const serialized = JSON.stringify(layout);
+      return {
+        route: routePath,
+        reason,
+        at: Date.now(),
+        serialized,
+        layout
+      };
+    }
+    function pushUndoSnapshot(routeInput, reason = "") {
+      const routePath = ensureRouteLayout(routeInput);
+      const bucket = ensureRouteHistoryBucket(routePath);
+      const snapshot = createLayoutSnapshot(routePath, reason);
+      const last = bucket.undo[bucket.undo.length - 1];
+      if ((last == null ? void 0 : last.serialized) === snapshot.serialized) {
+        return;
+      }
+      bucket.undo.push(snapshot);
+      if (bucket.undo.length > MAX_HISTORY_STEPS) {
+        bucket.undo.shift();
+      }
+      bucket.redo = [];
+    }
+    function applyHistorySnapshot(snapshot) {
+      if (!snapshot) return false;
+      const routePath = ensureRouteLayout(snapshot.route || currentRoute.value);
+      replaceRouteDraftLayout(routePath, cloneJson(snapshot.layout), { persist: true });
+      return true;
+    }
+    function handleUndo() {
+      const routePath = ensureRouteLayout(currentRoute.value);
+      const bucket = ensureRouteHistoryBucket(routePath);
+      if (!bucket.undo.length) {
+        setMessage("error", "没有可撤销的操作。");
+        return;
+      }
+      const currentSnapshot = createLayoutSnapshot(routePath, "current");
+      const targetSnapshot = bucket.undo.pop();
+      bucket.redo.push(currentSnapshot);
+      if (bucket.redo.length > MAX_HISTORY_STEPS) {
+        bucket.redo.shift();
+      }
+      applyHistorySnapshot(targetSnapshot);
+    }
+    function handleRedo() {
+      const routePath = ensureRouteLayout(currentRoute.value);
+      const bucket = ensureRouteHistoryBucket(routePath);
+      if (!bucket.redo.length) {
+        setMessage("error", "没有可重做的操作。");
+        return;
+      }
+      const currentSnapshot = createLayoutSnapshot(routePath, "current");
+      const targetSnapshot = bucket.redo.pop();
+      bucket.undo.push(currentSnapshot);
+      if (bucket.undo.length > MAX_HISTORY_STEPS) {
+        bucket.undo.shift();
+      }
+      applyHistorySnapshot(targetSnapshot);
+    }
+    function getCanvasBounds() {
+      if (typeof window === "undefined") {
+        return { width: 1200, height: 900 };
+      }
+      return {
+        width: clamp2(Math.round(window.innerWidth), 320, CANVAS_LIMIT),
+        height: clamp2(Math.round(window.innerHeight - 72), 240, CANVAS_LIMIT)
+      };
+    }
+    function resolvePointSnap(value, targets) {
+      let bestValue = value;
+      let bestDiff = SNAP_THRESHOLD + 1;
+      let hasMatch = false;
+      targets.forEach((target) => {
+        const diff = Math.abs(target - value);
+        if (diff <= SNAP_THRESHOLD && diff < bestDiff) {
+          bestDiff = diff;
+          bestValue = target;
+          hasMatch = true;
+        }
+      });
+      return {
+        value: hasMatch ? bestValue : value,
+        guide: hasMatch ? bestValue : null
+      };
+    }
+    function resolveAxisSnap(start, span, targets) {
+      const anchors = [
+        { offset: 0, map: (target) => target },
+        { offset: span / 2, map: (target) => target - span / 2 },
+        { offset: span, map: (target) => target - span }
+      ];
+      let best = null;
+      anchors.forEach((anchor) => {
+        targets.forEach((target) => {
+          const anchorPos = start + anchor.offset;
+          const diff = Math.abs(target - anchorPos);
+          if (diff > SNAP_THRESHOLD) return;
+          if (!best || diff < best.diff) {
+            best = {
+              diff,
+              start: anchor.map(target),
+              guide: target
+            };
+          }
+        });
+      });
+      if (!best) {
+        return {
+          value: start,
+          guide: null
+        };
+      }
+      return {
+        value: best.start,
+        guide: best.guide
+      };
+    }
+    function collectSnapTargets(blockId) {
+      const blocks = getRouteBlocks(currentRoute.value).filter((item) => item.id !== blockId);
+      const { width: canvasWidth, height: canvasHeight } = getCanvasBounds();
+      const vertical = [0, canvasWidth / 2, canvasWidth];
+      const horizontal = [0, canvasHeight / 2, canvasHeight];
+      blocks.forEach((block) => {
+        vertical.push(block.x, block.x + block.w / 2, block.x + block.w);
+        horizontal.push(block.y, block.y + block.h / 2, block.y + block.h);
+      });
+      return {
+        vertical,
+        horizontal
+      };
+    }
+    function computeMovePatch(state, clientX, clientY) {
+      const block = getRouteBlocks(currentRoute.value).find((item) => item.id === state.id);
+      if (!block) return null;
+      const dx = clientX - state.startX;
+      const dy = clientY - state.startY;
+      let nextX = clamp2(Math.round((state.initialX + dx) / SNAP_GRID) * SNAP_GRID, 0, CANVAS_LIMIT);
+      let nextY = clamp2(Math.round((state.initialY + dy) / SNAP_GRID) * SNAP_GRID, 0, CANVAS_LIMIT);
+      const guides = { vertical: [], horizontal: [] };
+      const targets = collectSnapTargets(state.id);
+      const xSnap = resolveAxisSnap(nextX, block.w, targets.vertical);
+      if (xSnap.guide !== null) {
+        nextX = clamp2(Math.round(xSnap.value), 0, CANVAS_LIMIT);
+        guides.vertical.push(xSnap.guide);
+      }
+      const ySnap = resolveAxisSnap(nextY, block.h, targets.horizontal);
+      if (ySnap.guide !== null) {
+        nextY = clamp2(Math.round(ySnap.value), 0, CANVAS_LIMIT);
+        guides.horizontal.push(ySnap.guide);
+      }
+      return {
+        patch: { x: nextX, y: nextY },
+        guides
+      };
+    }
+    function computeResizePatch(state, clientX, clientY) {
+      const block = getRouteBlocks(currentRoute.value).find((item) => item.id === state.id);
+      if (!block) return null;
+      const dx = clientX - state.startX;
+      const dy = clientY - state.startY;
+      let nextW = state.initialW;
+      let nextH = state.initialH;
+      if (state.handle.includes("e")) {
+        nextW = state.initialW + dx;
+      }
+      if (state.handle.includes("s")) {
+        nextH = state.initialH + dy;
+      }
+      nextW = clamp2(Math.round(nextW / SNAP_GRID) * SNAP_GRID, BLOCK_MIN_WIDTH, BLOCK_MAX_WIDTH);
+      nextH = clamp2(Math.round(nextH / SNAP_GRID) * SNAP_GRID, BLOCK_MIN_HEIGHT, BLOCK_MAX_HEIGHT);
+      const guides = { vertical: [], horizontal: [] };
+      const targets = collectSnapTargets(state.id);
+      if (state.handle.includes("e")) {
+        const snapped = resolvePointSnap(block.x + nextW, targets.vertical);
+        if (snapped.guide !== null) {
+          nextW = clamp2(Math.round(snapped.value - block.x), BLOCK_MIN_WIDTH, BLOCK_MAX_WIDTH);
+          guides.vertical.push(snapped.guide);
+        }
+      }
+      if (state.handle.includes("s")) {
+        const snapped = resolvePointSnap(block.y + nextH, targets.horizontal);
+        if (snapped.guide !== null) {
+          nextH = clamp2(Math.round(snapped.value - block.y), BLOCK_MIN_HEIGHT, BLOCK_MAX_HEIGHT);
+          guides.horizontal.push(snapped.guide);
+        }
+      }
+      return {
+        patch: { w: nextW, h: nextH },
+        guides
+      };
+    }
+    function setMessage(type, text, duration = 2800) {
+      ioMessageType.value = type;
+      ioMessage.value = text;
+      if (ioTimer) {
+        window.clearTimeout(ioTimer);
+      }
+      ioTimer = window.setTimeout(() => {
+        ioMessage.value = "";
+        ioTimer = null;
+      }, duration);
+    }
     function clearMessage() {
+      if (ioTimer) {
+        window.clearTimeout(ioTimer);
+        ioTimer = null;
+      }
       ioMessage.value = "";
     }
     function syncRoute(nextPath) {
@@ -5770,70 +6135,169 @@ const _sfc_main$1 = {
         backdropFilter: block.blur > 0 ? `blur(${block.blur}px) saturate(135%)` : "none"
       };
     }
-    function applyDragPosition(clientX, clientY) {
-      if (!dragState.value) return;
-      const dx = clientX - dragState.value.startX;
-      const dy = clientY - dragState.value.startY;
-      patchRouteBlock(
-        currentRoute.value,
-        dragState.value.id,
-        {
-          x: clamp2(Math.round(dragState.value.initialX + dx), 0, 5e3),
-          y: clamp2(Math.round(dragState.value.initialY + dy), 0, 5e3)
-        },
-        { persist: false }
-      );
+    function applyInteractionPosition(clientX, clientY) {
+      const state = interactionState.value;
+      if (!state) return;
+      let result = null;
+      if (state.mode === "move") {
+        result = computeMovePatch(state, clientX, clientY);
+      } else if (state.mode === "resize") {
+        result = computeResizePatch(state, clientX, clientY);
+      }
+      if (!result) return;
+      patchRouteBlock(currentRoute.value, state.id, result.patch, { persist: false });
+      guideLines.value = {
+        vertical: result.guides.vertical,
+        horizontal: result.guides.horizontal
+      };
     }
-    function flushDragFrame() {
-      dragRafId = 0;
-      if (!dragState.value || !pendingPointer) return;
-      applyDragPosition(pendingPointer.x, pendingPointer.y);
+    function flushInteractionFrame() {
+      interactionRafId = 0;
+      if (!interactionState.value || !pendingPointer) return;
+      applyInteractionPosition(pendingPointer.x, pendingPointer.y);
       pendingPointer = null;
     }
-    function onDragging(event) {
-      if (!dragState.value) return;
+    function onInteracting(event) {
+      if (!interactionState.value) return;
       pendingPointer = { x: event.clientX, y: event.clientY };
-      if (dragRafId) return;
-      dragRafId = window.requestAnimationFrame(flushDragFrame);
+      if (interactionRafId) return;
+      interactionRafId = window.requestAnimationFrame(flushInteractionFrame);
     }
-    function stopDragging(event) {
-      if (!dragState.value) return;
-      if (event && event.pointerId && event.pointerId !== dragState.value.pointerId) return;
-      if (dragRafId) {
-        window.cancelAnimationFrame(dragRafId);
-        dragRafId = 0;
+    function stopInteraction(event) {
+      const state = interactionState.value;
+      if (!state) return;
+      if (event && event.pointerId && event.pointerId !== state.pointerId) return;
+      if (interactionRafId) {
+        window.cancelAnimationFrame(interactionRafId);
+        interactionRafId = 0;
       }
       if (pendingPointer) {
-        applyDragPosition(pendingPointer.x, pendingPointer.y);
+        applyInteractionPosition(pendingPointer.x, pendingPointer.y);
         pendingPointer = null;
       }
-      dragState.value = null;
-      window.removeEventListener("pointermove", onDragging);
-      window.removeEventListener("pointerup", stopDragging);
-      window.removeEventListener("pointercancel", stopDragging);
+      interactionState.value = null;
+      guideLines.value = { vertical: [], horizontal: [] };
+      window.removeEventListener("pointermove", onInteracting);
+      window.removeEventListener("pointerup", stopInteraction);
+      window.removeEventListener("pointercancel", stopInteraction);
       persistDraftRouteLayout(currentRoute.value);
+    }
+    function removeCurrentBlock() {
+      if (!selectedBlock.value) return;
+      pushUndoSnapshot(currentRoute.value, "删除模块");
+      removeRouteBlock(currentRoute.value, selectedBlock.value.id);
+    }
+    function handleDuplicateSelected() {
+      if (!selectedBlock.value) return;
+      pushUndoSnapshot(currentRoute.value, "复制模块");
+      const result = duplicateRouteBlock(currentRoute.value, selectedBlock.value.id);
+      if (!result.ok) {
+        setMessage("error", result.message || "复制失败。");
+        return;
+      }
+      setMessage("success", "已复制当前模块。");
+    }
+    function handleMoveLayer(direction) {
+      if (!selectedBlock.value) return;
+      pushUndoSnapshot(currentRoute.value, direction > 0 ? "图层上移" : "图层下移");
+      const result = moveRouteBlockLayer(currentRoute.value, selectedBlock.value.id, direction);
+      if (!result.ok) {
+        setMessage("error", result.message || "图层调整失败。");
+      }
+    }
+    function nudgeSelectedBlock(dx, dy) {
+      if (!selectedBlock.value) return;
+      pushUndoSnapshot(currentRoute.value, "微调位置");
+      patchRouteBlock(currentRoute.value, selectedBlock.value.id, {
+        x: clamp2(Math.round(selectedBlock.value.x + dx), 0, CANVAS_LIMIT),
+        y: clamp2(Math.round(selectedBlock.value.y + dy), 0, CANVAS_LIMIT)
+      });
+    }
+    function isTextEditableTarget(target) {
+      if (!target || !(target instanceof HTMLElement)) return false;
+      if (target.isContentEditable) return true;
+      const tag = target.tagName;
+      return tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT";
+    }
+    function handleEditorHotkeys(event) {
+      if (!isEditorMode.value) return;
+      if (isTextEditableTarget(event.target)) return;
+      const key = event.key.toLowerCase();
+      const withCommand = event.ctrlKey || event.metaKey;
+      if (withCommand && key === "z") {
+        event.preventDefault();
+        if (event.shiftKey) {
+          handleRedo();
+        } else {
+          handleUndo();
+        }
+        return;
+      }
+      if (withCommand && key === "y") {
+        event.preventDefault();
+        handleRedo();
+        return;
+      }
+      if (withCommand && key === "d") {
+        event.preventDefault();
+        handleDuplicateSelected();
+        return;
+      }
+      if (event.altKey && event.key === "ArrowUp") {
+        event.preventDefault();
+        handleMoveLayer(1);
+        return;
+      }
+      if (event.altKey && event.key === "ArrowDown") {
+        event.preventDefault();
+        handleMoveLayer(-1);
+        return;
+      }
+      if (selectedBlock.value && (event.key === "Delete" || event.key === "Backspace")) {
+        event.preventDefault();
+        removeCurrentBlock();
+        return;
+      }
+      if (selectedBlock.value && event.key.startsWith("Arrow")) {
+        event.preventDefault();
+        const step = event.shiftKey ? 10 : 1;
+        if (event.key === "ArrowLeft") nudgeSelectedBlock(-step, 0);
+        if (event.key === "ArrowRight") nudgeSelectedBlock(step, 0);
+        if (event.key === "ArrowUp") nudgeSelectedBlock(0, -step);
+        if (event.key === "ArrowDown") nudgeSelectedBlock(0, step);
+      }
     }
     onMounted(() => {
       initEditorState();
       syncRoute(route.path);
+      window.addEventListener("keydown", handleEditorHotkeys);
     });
     watch(
       () => route.path,
       (nextPath) => {
-        stopDragging();
+        stopInteraction();
         syncRoute(nextPath);
       }
     );
     onBeforeUnmount(() => {
-      stopDragging();
+      stopInteraction();
+      window.removeEventListener("keydown", handleEditorHotkeys);
       clearMessage();
     });
     return (_ctx, _push, _parent, _attrs) => {
       if (showCanvas.value) {
         _push(`<div${ssrRenderAttrs(mergeProps({
-          class: ["home-editor-canvas", { "is-editing": unref(isEditorMode), "is-dragging": isDragging.value }],
+          class: ["home-editor-canvas", { "is-editing": unref(isEditorMode), "is-interacting": isInteracting.value }],
           "aria-label": "页面编辑画布"
-        }, _attrs))}><div class="home-editor-canvas__blocks"><!--[-->`);
+        }, _attrs))}><div class="home-editor-canvas__blocks"><div class="home-editor-guides" aria-hidden="true"><!--[-->`);
+        ssrRenderList(guideLines.value.vertical, (x, index) => {
+          _push(`<span class="home-editor-guide home-editor-guide--vertical" style="${ssrRenderStyle({ left: `${x}px` })}"></span>`);
+        });
+        _push(`<!--]--><!--[-->`);
+        ssrRenderList(guideLines.value.horizontal, (y, index) => {
+          _push(`<span class="home-editor-guide home-editor-guide--horizontal" style="${ssrRenderStyle({ top: `${y}px` })}"></span>`);
+        });
+        _push(`<!--]--></div><!--[-->`);
         ssrRenderList(orderedBlocks.value, (block) => {
           _push(`<article class="${ssrRenderClass([{ "is-selected": selectedBlockId.value === block.id }, "home-editor-block"])}" style="${ssrRenderStyle(blockStyle(block))}"><p class="home-editor-block__kicker">${ssrInterpolate(block.kicker)}</p><h2 class="home-editor-block__title">${ssrInterpolate(block.title)}</h2><p class="home-editor-block__body">${ssrInterpolate(block.body)}</p>`);
           if (unref(isEditorMode)) {
@@ -5841,16 +6305,25 @@ const _sfc_main$1 = {
           } else {
             _push(`<!---->`);
           }
+          if (unref(isEditorMode) && selectedBlockId.value === block.id) {
+            _push(`<!--[--><button type="button" class="home-editor-resize-handle home-editor-resize-handle--e" aria-label="横向缩放"></button><button type="button" class="home-editor-resize-handle home-editor-resize-handle--s" aria-label="纵向缩放"></button><button type="button" class="home-editor-resize-handle home-editor-resize-handle--se" aria-label="自由缩放"></button><!--]-->`);
+          } else {
+            _push(`<!---->`);
+          }
           _push(`</article>`);
         });
         _push(`<!--]--></div>`);
         if (unref(isEditorMode)) {
-          _push(`<div class="home-editor-toolbar"><button type="button" class="home-editor-btn"> 新增 </button><button type="button" class="home-editor-btn"${ssrIncludeBooleanAttr(!selectedBlock.value) ? " disabled" : ""}> 删除 </button><button type="button" class="home-editor-btn"> 重置 </button></div>`);
+          _push(`<div class="home-editor-toolbar"><button type="button" class="home-editor-btn"> 新增 </button><button type="button" class="home-editor-btn"${ssrIncludeBooleanAttr(!selectedBlock.value) ? " disabled" : ""}> 复制 </button><button type="button" class="home-editor-btn"${ssrIncludeBooleanAttr(!selectedBlock.value) ? " disabled" : ""}> 删除 </button><button type="button" class="home-editor-btn"${ssrIncludeBooleanAttr(!historyStats.value.undo) ? " disabled" : ""}> 撤销 </button><button type="button" class="home-editor-btn"${ssrIncludeBooleanAttr(!historyStats.value.redo) ? " disabled" : ""}> 重做 </button><button type="button" class="home-editor-btn"> 重置 </button></div>`);
         } else {
           _push(`<!---->`);
         }
         if (unref(isEditorMode)) {
-          _push(`<aside class="home-editor-panel"><h3 class="home-editor-panel__title">页面编辑器</h3><p class="home-editor-panel__route">${ssrInterpolate(currentRoute.value)}</p><div class="home-editor-status"><span class="home-editor-chip home-editor-chip--draft">草稿</span><span class="${ssrRenderClass([routeStatus.value.dirty ? "is-dirty" : "is-clean", "home-editor-chip"])}">${ssrInterpolate(routeStatus.value.dirty ? "有未发布改动" : "已与发布版同步")}</span><span class="home-editor-chip home-editor-chip--count">草稿/发布 ${ssrInterpolate(blockCountSummary.value)}</span><span class="home-editor-chip home-editor-chip--history">回滚点 ${ssrInterpolate(routeStatus.value.historyCount)}</span></div><div class="home-editor-actions"><button type="button" class="home-editor-btn"> 保存草稿 </button><button type="button" class="home-editor-btn"> 立即发布 </button><button type="button" class="home-editor-btn"> 回滚草稿 </button></div><div class="home-editor-actions home-editor-actions--secondary"><button type="button" class="home-editor-btn"> 校验发布 </button><button type="button" class="home-editor-btn"${ssrIncludeBooleanAttr(!routeStatus.value.historyCount) ? " disabled" : ""}> 一键回滚 </button></div><div class="home-editor-actions"><button type="button" class="home-editor-btn home-editor-btn--export"><span class="home-editor-export-icon" aria-hidden="true"></span><span>导出当前页</span></button><button type="button" class="home-editor-btn home-editor-btn--export"><span class="home-editor-export-icon" aria-hidden="true"></span><span>导出全站</span></button><button type="button" class="home-editor-btn"> 导入 JSON </button></div><input class="home-editor-import-input" type="file" accept="application/json,.json">`);
+          _push(`<aside class="home-editor-panel"><h3 class="home-editor-panel__title">页面编辑器</h3><p class="home-editor-panel__route">${ssrInterpolate(currentRoute.value)}</p><div class="home-editor-status"><span class="home-editor-chip home-editor-chip--draft">草稿</span><span class="${ssrRenderClass([routeStatus.value.dirty ? "is-dirty" : "is-clean", "home-editor-chip"])}">${ssrInterpolate(routeStatus.value.dirty ? "有未发布改动" : "已与发布版同步")}</span><span class="home-editor-chip home-editor-chip--count">草稿/发布 ${ssrInterpolate(blockCountSummary.value)}</span><span class="home-editor-chip home-editor-chip--history">回滚点 ${ssrInterpolate(routeStatus.value.historyCount)}</span><span class="home-editor-chip home-editor-chip--history">撤销 ${ssrInterpolate(historyStats.value.undo)}/重做 ${ssrInterpolate(historyStats.value.redo)}</span></div><div class="home-editor-actions"><button type="button" class="home-editor-btn"> 保存草稿 </button><button type="button" class="home-editor-btn"> 立即发布 </button><button type="button" class="home-editor-btn"> 回滚草稿 </button></div><section class="home-editor-layer-panel"><div class="home-editor-layer-panel__head"><strong>图层面板</strong><div class="home-editor-layer-panel__actions"><button type="button" class="home-editor-layer-btn"${ssrIncludeBooleanAttr(!selectedBlock.value) ? " disabled" : ""}> 上移 </button><button type="button" class="home-editor-layer-btn"${ssrIncludeBooleanAttr(!selectedBlock.value) ? " disabled" : ""}> 下移 </button></div></div><ul class="home-editor-layer-list"><!--[-->`);
+          ssrRenderList(layerBlocks.value, (block) => {
+            _push(`<li><button type="button" class="${ssrRenderClass([{ "is-active": selectedBlockId.value === block.id }, "home-editor-layer-item"])}"><span class="home-editor-layer-item__title">${ssrInterpolate(block.title || block.kicker || block.id)}</span><span class="home-editor-layer-item__meta">z${ssrInterpolate(block.z)}</span></button></li>`);
+          });
+          _push(`<!--]--></ul></section><div class="home-editor-actions home-editor-actions--secondary"><button type="button" class="home-editor-btn"> 校验发布 </button><button type="button" class="home-editor-btn"${ssrIncludeBooleanAttr(!routeStatus.value.historyCount) ? " disabled" : ""}> 一键回滚 </button></div><div class="home-editor-actions"><button type="button" class="home-editor-btn home-editor-btn--export"><span class="home-editor-export-icon" aria-hidden="true"></span><span>导出当前页</span></button><button type="button" class="home-editor-btn home-editor-btn--export"><span class="home-editor-export-icon" aria-hidden="true"></span><span>导出全站</span></button><button type="button" class="home-editor-btn"> 导入 JSON </button></div><input class="home-editor-import-input" type="file" accept="application/json,.json">`);
           if (ioMessage.value) {
             _push(`<p class="${ssrRenderClass([`is-${ioMessageType.value}`, "home-editor-message"])}">${ssrInterpolate(ioMessage.value)}</p>`);
           } else {
@@ -5890,7 +6363,7 @@ const _sfc_main$1 = {
           } else {
             _push(`<p class="home-editor-empty-hint"> 当前未选中模块。请点击画布中的模块，或先点击“新增”创建模块。 </p>`);
           }
-          _push(`</aside>`);
+          _push(`<p class="home-editor-shortcut-hint"> 快捷键：Ctrl/Cmd+Z 撤销，Shift+Ctrl/Cmd+Z 重做，Ctrl/Cmd+D 复制，Delete 删除，方向键微调，Alt+↑/↓ 调整图层。 </p></aside>`);
         } else {
           _push(`<!---->`);
         }

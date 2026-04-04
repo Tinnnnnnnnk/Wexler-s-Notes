@@ -3102,7 +3102,7 @@ const _sfc_main$x = /* @__PURE__ */ defineComponent({
   __name: "VPNavBarSearch",
   __ssrInlineRender: true,
   setup(__props) {
-    const VPLocalSearchBox = defineAsyncComponent(() => import("./VPLocalSearchBox.BDNfUs0p.js"));
+    const VPLocalSearchBox = defineAsyncComponent(() => import("./VPLocalSearchBox.nODRu4Uz.js"));
     const VPAlgoliaSearchBox = () => null;
     const { theme: theme2 } = useData();
     const loaded = ref(false);
@@ -5377,9 +5377,11 @@ const EDIT_MODE_KEY = "wexler.editor.mode";
 const ROUTE_DRAFT_KEY_PREFIX = "wexler.editor.layout.route.draft.v2.";
 const ROUTE_PUBLISHED_KEY_PREFIX = "wexler.editor.layout.route.published.v2.";
 const ROUTE_PUBLISHED_HISTORY_KEY_PREFIX = "wexler.editor.layout.route.published.history.v3.";
+const ROUTE_AUDIT_KEY_PREFIX = "wexler.editor.audit.route.v1.";
 const LEGACY_ROUTE_LAYOUT_KEY_PREFIX = "wexler.editor.layout.route.v1.";
 const LAYOUT_SCHEMA_VERSION = 2;
 const MAX_PUBLISHED_HISTORY = 12;
+const MAX_ROUTE_AUDIT_LOGS = 160;
 const EDIT_ACCESS_KEY = "wexler.editor.auth";
 const isEditorMode = ref(false);
 const isEditorAccessUnlocked = ref(false);
@@ -5398,6 +5400,7 @@ const editorGuardState = ref({
 const draftLayoutsByRoute = ref({});
 const publishedLayoutsByRoute = ref({});
 const publishedHistoryByRoute = ref({});
+const auditLogsByRoute = ref({});
 const selectedByRoute = ref({});
 let initialized = false;
 function normalizeRoute(routeInput) {
@@ -5663,6 +5666,20 @@ function normalizeHistoryList(routeInput, rawList) {
   if (!Array.isArray(rawList)) return [];
   return rawList.map((item, index) => normalizeHistoryEntry(routeInput, item, index)).filter(Boolean).slice(0, MAX_PUBLISHED_HISTORY);
 }
+function normalizeAuditEntry(raw, index = 0) {
+  if (!raw || typeof raw !== "object") return null;
+  const detail = raw.detail && typeof raw.detail === "object" && !Array.isArray(raw.detail) ? raw.detail : {};
+  return {
+    id: typeof raw.id === "string" && raw.id.trim() ? raw.id.trim() : `audit-${Date.now()}-${index}-${Math.random().toString(36).slice(2, 7)}`,
+    at: typeof raw.at === "string" && raw.at.trim() ? raw.at.trim() : (/* @__PURE__ */ new Date()).toISOString(),
+    action: typeof raw.action === "string" && raw.action.trim() ? raw.action.trim() : "update",
+    detail
+  };
+}
+function normalizeAuditLog(routeInput, rawList) {
+  if (!Array.isArray(rawList)) return [];
+  return rawList.map((item, index) => normalizeAuditEntry(item, index)).filter(Boolean).slice(0, MAX_ROUTE_AUDIT_LOGS);
+}
 function routeDraftKey(routeInput) {
   return `${ROUTE_DRAFT_KEY_PREFIX}${encodeURIComponent(normalizeRoute(routeInput))}`;
 }
@@ -5674,6 +5691,9 @@ function routePublishedHistoryKey(routeInput) {
 }
 function routeLegacyKey(routeInput) {
   return `${LEGACY_ROUTE_LAYOUT_KEY_PREFIX}${encodeURIComponent(normalizeRoute(routeInput))}`;
+}
+function routeAuditKey(routeInput) {
+  return `${ROUTE_AUDIT_KEY_PREFIX}${encodeURIComponent(normalizeRoute(routeInput))}`;
 }
 function safeReadStorage(key) {
   if (typeof window === "undefined") return null;
@@ -5703,6 +5723,57 @@ function persistEditorMode() {
 function persistDraftRouteLayout(routeInput) {
   const route = ensureRouteLayout(routeInput);
   safeWriteStorage(routeDraftKey(route), JSON.stringify(draftLayoutsByRoute.value[route]));
+}
+function persistRouteAuditLog(routeInput) {
+  const route = ensureRouteLayout(routeInput);
+  safeWriteStorage(routeAuditKey(route), JSON.stringify(auditLogsByRoute.value[route] || []));
+}
+function loadRouteAuditLog(routeInput) {
+  const route = normalizeRoute(routeInput);
+  const raw = safeReadStorage(routeAuditKey(route));
+  let logs = [];
+  if (raw) {
+    try {
+      logs = normalizeAuditLog(route, JSON.parse(raw));
+    } catch (error) {
+      logs = [];
+    }
+  }
+  auditLogsByRoute.value = {
+    ...auditLogsByRoute.value,
+    [route]: logs
+  };
+}
+function ensureRouteAuditLog(routeInput) {
+  const route = ensureRouteLayout(routeInput);
+  if (!auditLogsByRoute.value[route]) {
+    loadRouteAuditLog(route);
+  }
+  return route;
+}
+function getRouteAuditLog(routeInput) {
+  const route = ensureRouteAuditLog(routeInput);
+  return auditLogsByRoute.value[route] || [];
+}
+function appendRouteAuditLog(routeInput, action, detail = {}, options = {}) {
+  const route = ensureRouteAuditLog(routeInput);
+  const persist = options.persist !== false;
+  const safeDetail = detail && typeof detail === "object" && !Array.isArray(detail) ? detail : {};
+  const entry = normalizeAuditEntry({
+    id: `audit-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+    at: (/* @__PURE__ */ new Date()).toISOString(),
+    action,
+    detail: safeDetail
+  });
+  if (!entry) return null;
+  auditLogsByRoute.value = {
+    ...auditLogsByRoute.value,
+    [route]: [entry, ...getRouteAuditLog(route)].slice(0, MAX_ROUTE_AUDIT_LOGS)
+  };
+  if (persist) {
+    persistRouteAuditLog(route);
+  }
+  return entry;
 }
 function ensureSelectedValid(routeInput) {
   var _a, _b;
@@ -5823,6 +5894,8 @@ function collectStoredRoutes() {
         result.add(decodeURIComponent(key.slice(ROUTE_PUBLISHED_KEY_PREFIX.length)));
       } else if (key.startsWith(ROUTE_PUBLISHED_HISTORY_KEY_PREFIX)) {
         result.add(decodeURIComponent(key.slice(ROUTE_PUBLISHED_HISTORY_KEY_PREFIX.length)));
+      } else if (key.startsWith(ROUTE_AUDIT_KEY_PREFIX)) {
+        result.add(decodeURIComponent(key.slice(ROUTE_AUDIT_KEY_PREFIX.length)));
       } else if (key.startsWith(LEGACY_ROUTE_LAYOUT_KEY_PREFIX)) {
         result.add(decodeURIComponent(key.slice(LEGACY_ROUTE_LAYOUT_KEY_PREFIX.length)));
       }
@@ -6074,6 +6147,8 @@ const _sfc_main$1 = {
       height: `${canvasMetrics.value.height}px`
     }));
     const allEditedRoutes = computed(() => getAllEditorRoutes());
+    const routeAuditLogs = computed(() => getRouteAuditLog(currentRoute.value));
+    const auditPreviewLogs = computed(() => routeAuditLogs.value.slice(0, 8));
     function clamp2(value, min, max) {
       return Math.min(max, Math.max(min, value));
     }
@@ -6145,6 +6220,7 @@ const _sfc_main$1 = {
         bucket.redo.shift();
       }
       applyHistorySnapshot(targetSnapshot);
+      appendAudit("undo", { summary: (targetSnapshot == null ? void 0 : targetSnapshot.reason) || "undo" });
     }
     function handleRedo() {
       const routePath = ensureRouteLayout(currentRoute.value);
@@ -6160,6 +6236,7 @@ const _sfc_main$1 = {
         bucket.undo.shift();
       }
       applyHistorySnapshot(targetSnapshot);
+      appendAudit("redo", { summary: (targetSnapshot == null ? void 0 : targetSnapshot.reason) || "redo" });
     }
     function getCanvasBounds() {
       return canvasMetrics.value;
@@ -6337,6 +6414,71 @@ const _sfc_main$1 = {
       await nextTick();
       refreshCanvasMetrics();
     }
+    function formatAuditTime(value) {
+      if (!value) return "--:--";
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return "--:--";
+      return new Intl.DateTimeFormat("zh-CN", {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit"
+      }).format(date);
+    }
+    function appendAudit(action, detail = {}) {
+      appendRouteAuditLog(currentRoute.value, action, detail);
+    }
+    const AUDIT_ACTION_LABELS = {
+      add_block: "新增模块",
+      remove_block: "删除模块",
+      duplicate_block: "复制模块",
+      move_block: "拖拽模块",
+      resize_block: "缩放模块",
+      nudge_block: "微调位置",
+      layer_move: "调整图层",
+      bring_front: "置顶模块",
+      save_draft: "保存草稿",
+      publish: "发布页面",
+      validate: "校验草稿",
+      revert_draft: "回退草稿",
+      rollback_published: "回滚发布",
+      export_route: "导出当前页",
+      export_all: "导出全站布局",
+      export_audit: "导出操作记录",
+      import_bundle: "导入布局",
+      generate_template: "生成页面模板",
+      reset_layout: "重置布局",
+      undo: "撤销",
+      redo: "重做"
+    };
+    function getAuditActionLabel(entry) {
+      const action = String((entry == null ? void 0 : entry.action) || "").trim();
+      return AUDIT_ACTION_LABELS[action] || action || "编辑操作";
+    }
+    function getAuditDetailText(entry) {
+      const detail = (entry == null ? void 0 : entry.detail) && typeof entry.detail === "object" ? entry.detail : null;
+      if (!detail) return "";
+      const blockId = typeof detail.blockId === "string" && detail.blockId ? ` #${detail.blockId}` : "";
+      if (Number.isFinite(detail.dx) || Number.isFinite(detail.dy)) {
+        const dx = Number.isFinite(detail.dx) ? detail.dx : 0;
+        const dy = Number.isFinite(detail.dy) ? detail.dy : 0;
+        return `位移 ${dx}, ${dy}${blockId}`;
+      }
+      if (Number.isFinite(detail.dw) || Number.isFinite(detail.dh)) {
+        const dw = Number.isFinite(detail.dw) ? detail.dw : 0;
+        const dh = Number.isFinite(detail.dh) ? detail.dh : 0;
+        return `尺寸变化 ${dw}, ${dh}${blockId}`;
+      }
+      if (typeof detail.message === "string" && detail.message.trim()) {
+        return detail.message.trim();
+      }
+      if (typeof detail.route === "string" && detail.route) {
+        return detail.route;
+      }
+      if (typeof detail.summary === "string" && detail.summary.trim()) {
+        return detail.summary.trim();
+      }
+      return blockId ? `目标${blockId}` : "";
+    }
     function blockStyle(block) {
       return {
         transform: `translate3d(${block.x}px, ${block.y}px, 0)`,
@@ -6390,6 +6532,33 @@ const _sfc_main$1 = {
         applyInteractionPosition(pendingPointer.x, pendingPointer.y);
         pendingPointer = null;
       }
+      const currentBlock = getRouteBlocks(currentRoute.value).find((item) => item.id === state.id);
+      if (currentBlock) {
+        if (state.mode === "move") {
+          const dx = Math.round(currentBlock.x - state.initialX);
+          const dy = Math.round(currentBlock.y - state.initialY);
+          if (dx !== 0 || dy !== 0) {
+            appendAudit("move_block", {
+              blockId: state.id,
+              dx,
+              dy,
+              spentMs: Math.max(0, Date.now() - Number(state.startedAt || Date.now()))
+            });
+          }
+        } else if (state.mode === "resize") {
+          const dw = Math.round(currentBlock.w - state.initialW);
+          const dh = Math.round(currentBlock.h - state.initialH);
+          if (dw !== 0 || dh !== 0) {
+            appendAudit("resize_block", {
+              blockId: state.id,
+              dw,
+              dh,
+              handle: state.handle || "",
+              spentMs: Math.max(0, Date.now() - Number(state.startedAt || Date.now()))
+            });
+          }
+        }
+      }
       interactionState.value = null;
       guideLines.value = { vertical: [], horizontal: [] };
       window.removeEventListener("pointermove", onInteracting);
@@ -6399,13 +6568,20 @@ const _sfc_main$1 = {
     }
     function removeCurrentBlock() {
       if (!selectedBlock.value) return;
+      const targetId = selectedBlock.value.id;
       pushUndoSnapshot(currentRoute.value, "删除模块");
-      removeRouteBlock(currentRoute.value, selectedBlock.value.id);
+      removeRouteBlock(currentRoute.value, targetId);
+      appendAudit("remove_block", { blockId: targetId });
     }
     function handleDuplicateSelected() {
       if (!selectedBlock.value) return;
       pushUndoSnapshot(currentRoute.value, "复制模块");
       const result = duplicateRouteBlock(currentRoute.value, selectedBlock.value.id);
+      if (result.ok) {
+        appendAudit("duplicate_block", {
+          blockId: result.id || selectedBlock.value.id
+        });
+      }
       if (!result.ok) {
         setMessage("error", result.message || "复制失败。");
         return;
@@ -6416,23 +6592,47 @@ const _sfc_main$1 = {
       if (!selectedBlock.value) return;
       pushUndoSnapshot(currentRoute.value, direction > 0 ? "图层上移" : "图层下移");
       const result = moveRouteBlockLayer(currentRoute.value, selectedBlock.value.id, direction);
+      if (result.ok) {
+        appendAudit("layer_move", {
+          blockId: selectedBlock.value.id,
+          direction: direction > 0 ? "up" : "down"
+        });
+      }
       if (!result.ok) {
         setMessage("error", result.message || "图层调整失败。");
       }
     }
     function nudgeSelectedBlock(dx, dy) {
       if (!selectedBlock.value) return;
+      const nextX = clamp2(Math.round(selectedBlock.value.x + dx), 0, CANVAS_LIMIT);
+      const nextY = clamp2(Math.round(selectedBlock.value.y + dy), 0, CANVAS_LIMIT);
+      const deltaX = nextX - selectedBlock.value.x;
+      const deltaY = nextY - selectedBlock.value.y;
       pushUndoSnapshot(currentRoute.value, "微调位置");
       patchRouteBlock(currentRoute.value, selectedBlock.value.id, {
-        x: clamp2(Math.round(selectedBlock.value.x + dx), 0, CANVAS_LIMIT),
-        y: clamp2(Math.round(selectedBlock.value.y + dy), 0, CANVAS_LIMIT)
+        x: nextX,
+        y: nextY
       });
+      if (deltaX !== 0 || deltaY !== 0) {
+        appendAudit("nudge_block", {
+          blockId: selectedBlock.value.id,
+          dx: deltaX,
+          dy: deltaY
+        });
+      }
     }
     function isTextEditableTarget(target) {
       if (!target || !(target instanceof HTMLElement)) return false;
       if (target.isContentEditable) return true;
       const tag = target.tagName;
       return tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT";
+    }
+    function handleBeforeUnload(event) {
+      var _a;
+      if (!isEditorMode.value) return;
+      if (!((_a = routeStatus.value) == null ? void 0 : _a.dirty)) return;
+      event.preventDefault();
+      event.returnValue = "";
     }
     function handleEditorHotkeys(event) {
       if (!isEditorMode.value) return;
@@ -6488,6 +6688,7 @@ const _sfc_main$1 = {
       window.addEventListener("keydown", handleEditorHotkeys);
       window.addEventListener("resize", refreshCanvasMetrics);
       window.addEventListener("load", refreshCanvasMetrics);
+      window.addEventListener("beforeunload", handleBeforeUnload);
     });
     watch(
       () => route.path,
@@ -6507,6 +6708,7 @@ const _sfc_main$1 = {
       window.removeEventListener("keydown", handleEditorHotkeys);
       window.removeEventListener("resize", refreshCanvasMetrics);
       window.removeEventListener("load", refreshCanvasMetrics);
+      window.removeEventListener("beforeunload", handleBeforeUnload);
       clearMessage();
     });
     return (_ctx, _push, _parent, _attrs) => {
@@ -6553,7 +6755,17 @@ const _sfc_main$1 = {
           ssrRenderList(allEditedRoutes.value, (path) => {
             _push(`<li><button type="button" class="${ssrRenderClass([{ "is-active": currentRoute.value === path }, "home-editor-layer-item"])}"><span class="home-editor-layer-item__title">${ssrInterpolate(path)}</span><span class="home-editor-layer-item__meta">${ssrInterpolate(path === currentRoute.value ? "当前" : "打开")}</span></button></li>`);
           });
-          _push(`<!--]--></ul></section><div class="home-editor-actions home-editor-actions--secondary"><button type="button" class="home-editor-btn"> 校验发布 </button><button type="button" class="home-editor-btn"${ssrIncludeBooleanAttr(!routeStatus.value.historyCount) ? " disabled" : ""}> 一键回滚 </button></div><div class="home-editor-actions"><button type="button" class="home-editor-btn home-editor-btn--export"><span class="home-editor-export-icon" aria-hidden="true"></span><span>导出当前页</span></button><button type="button" class="home-editor-btn home-editor-btn--export"><span class="home-editor-export-icon" aria-hidden="true"></span><span>导出全站</span></button><button type="button" class="home-editor-btn"> 导入 JSON </button></div><input class="home-editor-import-input" type="file" accept="application/json,.json">`);
+          _push(`<!--]--></ul></section><div class="home-editor-actions home-editor-actions--secondary"><button type="button" class="home-editor-btn"> 校验发布 </button><button type="button" class="home-editor-btn"${ssrIncludeBooleanAttr(!routeStatus.value.historyCount) ? " disabled" : ""}> 一键回滚 </button></div><div class="home-editor-actions"><button type="button" class="home-editor-btn home-editor-btn--export"><span class="home-editor-export-icon" aria-hidden="true"></span><span>导出当前页</span></button><button type="button" class="home-editor-btn home-editor-btn--export"><span class="home-editor-export-icon" aria-hidden="true"></span><span>导出全站</span></button><button type="button" class="home-editor-btn"> 导入 JSON </button></div><section class="home-editor-audit-panel"><div class="home-editor-layer-panel__head"><strong>操作记录（${ssrInterpolate(routeAuditLogs.value.length)}）</strong><div class="home-editor-layer-panel__actions"><button type="button" class="home-editor-layer-btn"> 导出 </button><button type="button" class="home-editor-layer-btn"${ssrIncludeBooleanAttr(!routeAuditLogs.value.length) ? " disabled" : ""}> 清空 </button></div></div>`);
+          if (auditPreviewLogs.value.length) {
+            _push(`<ul class="home-editor-audit-list"><!--[-->`);
+            ssrRenderList(auditPreviewLogs.value, (item) => {
+              _push(`<li class="home-editor-audit-item"><p class="home-editor-audit-item__title">${ssrInterpolate(getAuditActionLabel(item))}</p><p class="home-editor-audit-item__detail">${ssrInterpolate(getAuditDetailText(item) || "无补充信息")}</p><time class="home-editor-audit-item__time">${ssrInterpolate(formatAuditTime(item.at))}</time></li>`);
+            });
+            _push(`<!--]--></ul>`);
+          } else {
+            _push(`<p class="home-editor-route-tools__hint">当前页面暂无操作记录。</p>`);
+          }
+          _push(`</section><input class="home-editor-import-input" type="file" accept="application/json,.json">`);
           if (ioMessage.value) {
             _push(`<p class="${ssrRenderClass([`is-${ioMessageType.value}`, "home-editor-message"])}">${ssrInterpolate(ioMessage.value)}</p>`);
           } else {

@@ -27,12 +27,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "docs/面试笔记/MyWeb/构建过程end.md",
+                "file": "docs/图像处理和信息安全/security-basics-compact-guide-zh.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "构建过程end"
+              "title": "security-basics-compact-guide-zh"
             }
           }
         ]
@@ -224,6 +224,10 @@
   },
   "active": "dca74a61d38130bd",
   "lastOpenFiles": [
+    "docs/图像处理和信息安全/security-basics-compact-guide-zh.md",
+    "docs/图像处理和信息安全/Week4.md",
+    "docs/面试笔记/MyWeb/构建过程end.md",
+    "docs/面试笔记/JavaSe/并发编程.md",
     "docs/public/images/Pasted image 20260209171059.png",
     "docs/public/images/Pasted image 20260209170200.png",
     "docs/public/images/Pasted image 20260209165911.png",
@@ -234,16 +238,12 @@
     "docs/public/images/Pasted image 20260209165833.png",
     "docs/public/images/Pasted image 20260209165732.png",
     "docs/public/images/Pasted image 20260209165728.png",
-    "docs/public/images/Pasted image 20260209165724.png",
-    "docs/面试笔记/MyWeb/构建过程end.md",
-    "docs/面试笔记/JavaSe/并发编程.md",
     "docs/Info/Software.md",
     "docs/Info/HowToUseObsidian.md",
     "docs/index.md",
     "docs/test1.md",
     "docs/面试笔记/JavaSe/集合框架.md",
     "docs/面试笔记/JavaSe/String.md",
-    "docs/图像处理和信息安全/Week4.md",
     "docs/PaiSmart/面试/v2-day6.md",
     "docs/图像处理和信息安全",
     "docs/MyWeb/03-theme-index-主题入口详解.md",

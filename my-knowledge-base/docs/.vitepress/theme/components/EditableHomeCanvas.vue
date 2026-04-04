@@ -455,10 +455,6 @@ async function syncRoute(nextPath) {
   clearMessage()
   await nextTick()
   refreshCanvasMetrics()
-  appendAudit('generate_template', {
-    route: currentRoute.value,
-    blockCount: nextLayout.blocks.length
-  })
 }
 
 function formatSnapshotTime(value) {
@@ -733,6 +729,10 @@ function handleGenerateRouteTemplate() {
   replaceRouteDraftLayout(currentRoute.value, nextLayout, { persist: true })
   setSelectedRouteBlock(currentRoute.value, nextLayout.blocks[0]?.id || '')
   refreshCanvasMetrics()
+  appendAudit('generate_template', {
+    route: currentRoute.value,
+    blockCount: nextLayout.blocks.length
+  })
   setMessage('success', '已为当前页面生成基础模板。')
 }
 

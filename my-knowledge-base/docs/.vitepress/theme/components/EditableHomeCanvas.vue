@@ -1,4 +1,4 @@
-<script setup>
+﻿<script setup>
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useData, useRoute } from 'vitepress'
 import {
@@ -48,6 +48,8 @@ const ioMessage = ref('')
 const ioMessageType = ref('info')
 const validationReport = ref(null)
 const routeEditHistory = ref({})
+const panelCollapsed = ref(false)
+const performanceMode = ref(false)
 const canvasMetrics = ref({
   width: 1200,
   height: 900
@@ -82,6 +84,7 @@ const canvasStyle = computed(() => ({
 const allEditedRoutes = computed(() => getAllEditorRoutes())
 const routeAuditLogs = computed(() => getRouteAuditLog(currentRoute.value))
 const auditPreviewLogs = computed(() => routeAuditLogs.value.slice(0, 8))
+const publishDiffPreview = computed(() => getPublishDiffPreview(currentRoute.value))
 
 const SNAP_GRID = 12
 const SNAP_THRESHOLD = 8
@@ -104,6 +107,67 @@ function normalizeColorHex(value, fallback = '#ffffff') {
 
 function cloneJson(value) {
   return JSON.parse(JSON.stringify(value))
+}
+
+function getComparableBlockSnapshot(block) {
+  if (!block || typeof block !== 'object') return null
+  return {
+    id: String(block.id || ''),
+    kind: String(block.kind || ''),
+    x: Number(block.x || 0),
+    y: Number(block.y || 0),
+    w: Number(block.w || 0),
+    h: Number(block.h || 0),
+    z: Number(block.z || 0),
+    opacity: Number(block.opacity || 0),
+    radius: Number(block.radius || 0),
+    blur: Number(block.blur || 0),
+    bg: String(block.bg || ''),
+    color: String(block.color || ''),
+    kicker: String(block.kicker || ''),
+    title: String(block.title || ''),
+    body: String(block.body || '')
+  }
+}
+
+function getPublishDiffPreview(routeInput) {
+  const routePath = ensureRouteLayout(routeInput)
+  const draftBlocks = getRouteBlocks(routePath)
+  const publishedBlocks = getPublishedRouteBlocks(routePath)
+  const draftMap = new Map(draftBlocks.map((item) => [item.id, getComparableBlockSnapshot(item)]))
+  const publishedMap = new Map(
+    publishedBlocks.map((item) => [item.id, getComparableBlockSnapshot(item)])
+  )
+
+  let added = 0
+  let removed = 0
+  let changed = 0
+
+  draftMap.forEach((draftBlock, id) => {
+    if (!publishedMap.has(id)) {
+      added += 1
+      return
+    }
+    const publishedBlock = publishedMap.get(id)
+    if (JSON.stringify(draftBlock) !== JSON.stringify(publishedBlock)) {
+      changed += 1
+    }
+  })
+
+  publishedMap.forEach((_, id) => {
+    if (!draftMap.has(id)) {
+      removed += 1
+    }
+  })
+
+  return {
+    route: routePath,
+    added,
+    removed,
+    changed,
+    totalDraft: draftBlocks.length,
+    totalPublished: publishedBlocks.length
+  }
 }
 
 function ensureRouteHistoryBucket(routeInput) {
@@ -162,7 +226,7 @@ function handleUndo() {
   const routePath = ensureRouteLayout(currentRoute.value)
   const bucket = ensureRouteHistoryBucket(routePath)
   if (!bucket.undo.length) {
-    setMessage('error', '没有可撤销的操作。')
+    setMessage('error', '娌℃湁鍙挙閿€鐨勬搷浣溿€?)
     return
   }
 
@@ -181,7 +245,7 @@ function handleRedo() {
   const routePath = ensureRouteLayout(currentRoute.value)
   const bucket = ensureRouteHistoryBucket(routePath)
   if (!bucket.redo.length) {
-    setMessage('error', '没有可重做的操作。')
+    setMessage('error', '娌℃湁鍙噸鍋氱殑鎿嶄綔銆?)
     return
   }
 
@@ -232,7 +296,7 @@ function refreshCanvasMetrics() {
 function createPageTemplateLayout() {
   const now = Date.now()
   const pageTitle = String(page.value?.title || '').trim()
-  const routeLabel = currentRoute.value === '/' ? '主页' : currentRoute.value
+  const routeLabel = currentRoute.value === '/' ? '涓婚〉' : currentRoute.value
   const docTitle =
     pageTitle ||
     document.querySelector('.VPDoc h1, .VPHero .name, .VPHero .text')?.textContent?.trim() ||
@@ -240,7 +304,7 @@ function createPageTemplateLayout() {
   const description =
     String(page.value?.description || '').trim() ||
     document.querySelector('.VPDoc p')?.textContent?.trim() ||
-    '从这里开始编辑当前页面，支持拖拽、缩放、发布和回滚。'
+    '浠庤繖閲屽紑濮嬬紪杈戝綋鍓嶉〉闈紝鏀寔鎷栨嫿銆佺缉鏀俱€佸彂甯冨拰鍥炴粴銆?
 
   const primaryBlock = {
     id: `route-hero-${now}`,
@@ -275,7 +339,7 @@ function createPageTemplateLayout() {
     color: '#e6eff8',
     kicker: 'Route',
     title: routeLabel,
-    body: '可在图层面板中管理模块顺序，发布前先做校验。'
+    body: '鍙湪鍥惧眰闈㈡澘涓鐞嗘ā鍧楅『搴忥紝鍙戝竷鍓嶅厛鍋氭牎楠屻€?
   }
 
   return {
@@ -460,7 +524,7 @@ async function syncRoute(nextPath) {
 }
 
 function formatSnapshotTime(value) {
-  if (!value) return '未知时间'
+  if (!value) return '鏈煡鏃堕棿'
   const date = new Date(value)
   if (Number.isNaN(date.getTime())) return String(value)
 
@@ -488,32 +552,32 @@ function appendAudit(action, detail = {}) {
 }
 
 const AUDIT_ACTION_LABELS = {
-  add_block: '新增模块',
-  remove_block: '删除模块',
-  duplicate_block: '复制模块',
-  move_block: '拖拽模块',
-  resize_block: '缩放模块',
-  nudge_block: '微调位置',
-  layer_move: '调整图层',
-  bring_front: '置顶模块',
-  save_draft: '保存草稿',
-  publish: '发布页面',
-  validate: '校验草稿',
-  revert_draft: '回退草稿',
-  rollback_published: '回滚发布',
-  export_route: '导出当前页',
-  export_all: '导出全站布局',
-  export_audit: '导出操作记录',
-  import_bundle: '导入布局',
-  generate_template: '生成页面模板',
-  reset_layout: '重置布局',
-  undo: '撤销',
-  redo: '重做'
+  add_block: '鏂板妯″潡',
+  remove_block: '鍒犻櫎妯″潡',
+  duplicate_block: '澶嶅埗妯″潡',
+  move_block: '鎷栨嫿妯″潡',
+  resize_block: '缂╂斁妯″潡',
+  nudge_block: '寰皟浣嶇疆',
+  layer_move: '璋冩暣鍥惧眰',
+  bring_front: '缃《妯″潡',
+  save_draft: '淇濆瓨鑽夌',
+  publish: '鍙戝竷椤甸潰',
+  validate: '鏍￠獙鑽夌',
+  revert_draft: '鍥為€€鑽夌',
+  rollback_published: '鍥炴粴鍙戝竷',
+  export_route: '瀵煎嚭褰撳墠椤?,
+  export_all: '瀵煎嚭鍏ㄧ珯甯冨眬',
+  export_audit: '瀵煎嚭鎿嶄綔璁板綍',
+  import_bundle: '瀵煎叆甯冨眬',
+  generate_template: '鐢熸垚椤甸潰妯℃澘',
+  reset_layout: '閲嶇疆甯冨眬',
+  undo: '鎾ら攢',
+  redo: '閲嶅仛'
 }
 
 function getAuditActionLabel(entry) {
   const action = String(entry?.action || '').trim()
-  return AUDIT_ACTION_LABELS[action] || action || '编辑操作'
+  return AUDIT_ACTION_LABELS[action] || action || '缂栬緫鎿嶄綔'
 }
 
 function getAuditDetailText(entry) {
@@ -524,12 +588,12 @@ function getAuditDetailText(entry) {
   if (Number.isFinite(detail.dx) || Number.isFinite(detail.dy)) {
     const dx = Number.isFinite(detail.dx) ? detail.dx : 0
     const dy = Number.isFinite(detail.dy) ? detail.dy : 0
-    return `位移 ${dx}, ${dy}${blockId}`
+    return `浣嶇Щ ${dx}, ${dy}${blockId}`
   }
   if (Number.isFinite(detail.dw) || Number.isFinite(detail.dh)) {
     const dw = Number.isFinite(detail.dw) ? detail.dw : 0
     const dh = Number.isFinite(detail.dh) ? detail.dh : 0
-    return `尺寸变化 ${dw}, ${dh}${blockId}`
+    return `灏哄鍙樺寲 ${dw}, ${dh}${blockId}`
   }
   if (typeof detail.message === 'string' && detail.message.trim()) {
     return detail.message.trim()
@@ -540,7 +604,7 @@ function getAuditDetailText(entry) {
   if (typeof detail.summary === 'string' && detail.summary.trim()) {
     return detail.summary.trim()
   }
-  return blockId ? `目标${blockId}` : ''
+  return blockId ? `鐩爣${blockId}` : ''
 }
 
 function blockStyle(block) {
@@ -584,7 +648,7 @@ function flushInteractionFrame() {
 }
 
 function beginInteraction(mode, event, block, extra = {}) {
-  pushUndoSnapshot(currentRoute.value, mode === 'resize' ? '缩放模块' : '拖拽模块')
+  pushUndoSnapshot(currentRoute.value, mode === 'resize' ? '缂╂斁妯″潡' : '鎷栨嫿妯″潡')
   setSelectedRouteBlock(currentRoute.value, block.id)
 
   interactionState.value = {
@@ -681,7 +745,7 @@ function selectBlock(blockId) {
 }
 
 function bringToFront(blockId) {
-  pushUndoSnapshot(currentRoute.value, '置顶模块')
+  pushUndoSnapshot(currentRoute.value, '缃《妯″潡')
   const currentMax = Math.max(...getRouteBlocks(currentRoute.value).map((item) => item.z), 0)
   patchRouteBlock(currentRoute.value, blockId, { z: currentMax + 1 })
   appendAudit('bring_front', { blockId, z: currentMax + 1 })
@@ -690,7 +754,7 @@ function bringToFront(blockId) {
 function removeCurrentBlock() {
   if (!selectedBlock.value) return
   const targetId = selectedBlock.value.id
-  pushUndoSnapshot(currentRoute.value, '删除模块')
+  pushUndoSnapshot(currentRoute.value, '鍒犻櫎妯″潡')
   removeRouteBlock(currentRoute.value, targetId)
   appendAudit('remove_block', { blockId: targetId })
 }
@@ -712,7 +776,7 @@ function updateTextColor(event) {
 }
 
 function handleAddBlock() {
-  pushUndoSnapshot(currentRoute.value, '新增模块')
+  pushUndoSnapshot(currentRoute.value, '鏂板妯″潡')
   const beforeIds = getRouteBlocks(currentRoute.value).map((item) => item.id)
   addRouteTextBlock(currentRoute.value)
   const nextBlock = getRouteBlocks(currentRoute.value).find((item) => !beforeIds.includes(item.id))
@@ -720,13 +784,13 @@ function handleAddBlock() {
 }
 
 function handleResetLayout() {
-  pushUndoSnapshot(currentRoute.value, '重置布局')
+  pushUndoSnapshot(currentRoute.value, '閲嶇疆甯冨眬')
   resetRouteLayout(currentRoute.value)
   appendAudit('reset_layout', { route: currentRoute.value })
 }
 
 function handleGenerateRouteTemplate() {
-  pushUndoSnapshot(currentRoute.value, '生成页面模板')
+  pushUndoSnapshot(currentRoute.value, '鐢熸垚椤甸潰妯℃澘')
   const nextLayout = createPageTemplateLayout()
   replaceRouteDraftLayout(currentRoute.value, nextLayout, { persist: true })
   setSelectedRouteBlock(currentRoute.value, nextLayout.blocks[0]?.id || '')
@@ -735,12 +799,12 @@ function handleGenerateRouteTemplate() {
     route: currentRoute.value,
     blockCount: nextLayout.blocks.length
   })
-  setMessage('success', '已为当前页面生成基础模板。')
+  setMessage('success', '宸蹭负褰撳墠椤甸潰鐢熸垚鍩虹妯℃澘銆?)
 }
 
 function handleDuplicateSelected() {
   if (!selectedBlock.value) return
-  pushUndoSnapshot(currentRoute.value, '复制模块')
+  pushUndoSnapshot(currentRoute.value, '澶嶅埗妯″潡')
   const result = duplicateRouteBlock(currentRoute.value, selectedBlock.value.id)
   if (result.ok) {
     appendAudit('duplicate_block', {
@@ -748,15 +812,15 @@ function handleDuplicateSelected() {
     })
   }
   if (!result.ok) {
-    setMessage('error', result.message || '复制失败。')
+    setMessage('error', result.message || '澶嶅埗澶辫触銆?)
     return
   }
-  setMessage('success', '已复制当前模块。')
+  setMessage('success', '宸插鍒跺綋鍓嶆ā鍧椼€?)
 }
 
 function handleMoveLayer(direction) {
   if (!selectedBlock.value) return
-  pushUndoSnapshot(currentRoute.value, direction > 0 ? '图层上移' : '图层下移')
+  pushUndoSnapshot(currentRoute.value, direction > 0 ? '鍥惧眰涓婄Щ' : '鍥惧眰涓嬬Щ')
   const result = moveRouteBlockLayer(currentRoute.value, selectedBlock.value.id, direction)
   if (result.ok) {
     appendAudit('layer_move', {
@@ -765,7 +829,7 @@ function handleMoveLayer(direction) {
     })
   }
   if (!result.ok) {
-    setMessage('error', result.message || '图层调整失败。')
+    setMessage('error', result.message || '鍥惧眰璋冩暣澶辫触銆?)
   }
 }
 
@@ -781,7 +845,7 @@ function nudgeSelectedBlock(dx, dy) {
   const nextY = clamp(Math.round(selectedBlock.value.y + dy), 0, CANVAS_LIMIT)
   const deltaX = nextX - selectedBlock.value.x
   const deltaY = nextY - selectedBlock.value.y
-  pushUndoSnapshot(currentRoute.value, '微调位置')
+  pushUndoSnapshot(currentRoute.value, '寰皟浣嶇疆')
   patchRouteBlock(currentRoute.value, selectedBlock.value.id, {
     x: nextX,
     y: nextY
@@ -886,10 +950,26 @@ function handleSaveDraft() {
   const result = saveDraftRoute(currentRoute.value)
   if (result.ok) {
     appendAudit('save_draft', { route: currentRoute.value })
-    setMessage('success', '草稿已保存。')
+    setMessage('success', '鑽夌宸蹭繚瀛樸€?)
   }
 }
 
+function handlePublishWithDiffPreview() {
+  const diff = publishDiffPreview.value
+  const previewText = [
+    `页面：${diff.route}`,
+    `新增模块：${diff.added}`,
+    `删除模块：${diff.removed}`,
+    `修改模块：${diff.changed}`,
+    '',
+    '确认发布当前草稿吗？'
+  ].join('\n')
+
+  const confirmed = window.confirm(previewText)
+  if (!confirmed) return
+
+  handlePublish()
+}
 function handlePublish() {
   const result = publishDraftRoute(currentRoute.value)
   validationReport.value = result.validation || null
@@ -899,10 +979,10 @@ function handlePublish() {
       warnings: result.validation?.warnings?.length || 0
     })
     const warningCount = result.validation?.warnings?.length || 0
-    const warningHint = warningCount ? `，含 ${warningCount} 条提醒` : ''
-    setMessage('success', `当前页面布局已发布${warningHint}。`)
+    const warningHint = warningCount ? `锛屽惈 ${warningCount} 鏉℃彁閱抈 : ''
+    setMessage('success', `褰撳墠椤甸潰甯冨眬宸插彂甯?{warningHint}銆俙)
   } else {
-    setMessage('error', result.message || '发布失败，请先修复校验问题。', 3800)
+    setMessage('error', result.message || '鍙戝竷澶辫触锛岃鍏堜慨澶嶆牎楠岄棶棰樸€?, 3800)
   }
 }
 
@@ -917,44 +997,44 @@ function handleValidatePublish() {
   })
 
   if (!report.ok) {
-    setMessage('error', `发布校验失败：${report.errors.length} 个错误。`, 4200)
+    setMessage('error', `鍙戝竷鏍￠獙澶辫触锛?{report.errors.length} 涓敊璇€俙, 4200)
     return
   }
 
   const warningCount = report.warnings.length
   if (warningCount) {
-    setMessage('success', `校验通过，另有 ${warningCount} 条提醒。`, 3600)
+    setMessage('success', `鏍￠獙閫氳繃锛屽彟鏈?${warningCount} 鏉℃彁閱掋€俙, 3600)
   } else {
-    setMessage('success', '校验通过，可安全发布。')
+    setMessage('success', '鏍￠獙閫氳繃锛屽彲瀹夊叏鍙戝竷銆?)
   }
 }
 
 function handleRevertDraft() {
   if (routeStatus.value.dirty) {
-    const confirmed = window.confirm('将放弃当前草稿改动，并恢复为已发布版本，是否继续？')
+    const confirmed = window.confirm('灏嗘斁寮冨綋鍓嶈崏绋挎敼鍔紝骞舵仮澶嶄负宸插彂甯冪増鏈紝鏄惁缁х画锛?)
     if (!confirmed) return
   }
   const result = revertRouteDraft(currentRoute.value)
   if (result.ok) {
     appendAudit('revert_draft', { route: currentRoute.value })
-    setMessage('success', '草稿已恢复到已发布版本。')
+    setMessage('success', '鑽夌宸叉仮澶嶅埌宸插彂甯冪増鏈€?)
   }
 }
 
 function handleRollbackPublished() {
   if (!routeHistory.value.length) {
-    setMessage('error', '暂无可回滚快照。')
+    setMessage('error', '鏆傛棤鍙洖婊氬揩鐓с€?)
     return
   }
 
   const latest = latestHistory.value
-  const targetHint = latest ? `（目标：${formatSnapshotTime(latest.at)}）` : ''
-  const confirmed = window.confirm(`将回滚已发布版本并同步覆盖草稿${targetHint}，是否继续？`)
+  const targetHint = latest ? `锛堢洰鏍囷細${formatSnapshotTime(latest.at)}锛塦 : ''
+  const confirmed = window.confirm(`灏嗗洖婊氬凡鍙戝竷鐗堟湰骞跺悓姝ヨ鐩栬崏绋?{targetHint}锛屾槸鍚︾户缁紵`)
   if (!confirmed) return
 
   const result = rollbackPublishedRoute(currentRoute.value)
   if (!result.ok) {
-    setMessage('error', result.message || '回滚失败。', 3600)
+    setMessage('error', result.message || '鍥炴粴澶辫触銆?, 3600)
     return
   }
 
@@ -964,7 +1044,7 @@ function handleRollbackPublished() {
     snapshotId: result.snapshot?.id || ''
   })
   const snapshotTime = formatSnapshotTime(result.snapshot?.at)
-  setMessage('success', `已回滚到快照：${snapshotTime}。`)
+  setMessage('success', `宸插洖婊氬埌蹇収锛?{snapshotTime}銆俙)
 }
 
 function handleExportCurrent() {
@@ -972,7 +1052,7 @@ function handleExportCurrent() {
   const filename = `editor-layout-${toRouteSlug(currentRoute.value)}-${Date.now()}.json`
   downloadJson(filename, bundle)
   appendAudit('export_route', { route: currentRoute.value })
-  setMessage('success', '当前页面布局已导出。')
+  setMessage('success', '褰撳墠椤甸潰甯冨眬宸插鍑恒€?)
 }
 
 function handleExportAll() {
@@ -982,9 +1062,19 @@ function handleExportAll() {
   appendAudit('export_all', {
     routeCount: Object.keys(bundle.routes || {}).length
   })
-  setMessage('success', '全站页面布局已导出。')
+  setMessage('success', '鍏ㄧ珯椤甸潰甯冨眬宸插鍑恒€?)
 }
 
+function handleExportProject() {
+  const bundle = getEditorProjectBundle()
+  const filename = `editor-project-${Date.now()}.json`
+  downloadJson(filename, bundle)
+  appendAudit('export_all', {
+    routeCount: Object.keys(bundle.layoutBundle?.routes || {}).length,
+    auditRouteCount: Object.keys(bundle.auditBundle?.routes || {}).length
+  })
+  setMessage('success', '编辑工程已导出（含布局与操作记录）。')
+}
 function handleExportAudit() {
   const bundle = getAllRoutesAuditBundle()
   const filename = `editor-audit-all-routes-${Date.now()}.json`
@@ -992,23 +1082,31 @@ function handleExportAudit() {
   appendAudit('export_audit', {
     routeCount: Object.keys(bundle.routes || {}).length
   })
-  setMessage('success', '操作记录已导出。')
+  setMessage('success', '鎿嶄綔璁板綍宸插鍑恒€?)
 }
 
 function handleClearAudit() {
   if (!routeAuditLogs.value.length) {
-    setMessage('error', '当前页面暂无操作记录。')
+    setMessage('error', '褰撳墠椤甸潰鏆傛棤鎿嶄綔璁板綍銆?)
     return
   }
 
   const confirmed = window.confirm(
-    `将清空当前页面 ${routeAuditLogs.value.length} 条操作记录，此操作不可恢复，是否继续？`
+    `灏嗘竻绌哄綋鍓嶉〉闈?${routeAuditLogs.value.length} 鏉℃搷浣滆褰曪紝姝ゆ搷浣滀笉鍙仮澶嶏紝鏄惁缁х画锛焋
   )
   if (!confirmed) return
   clearRouteAuditLog(currentRoute.value)
-  setMessage('success', '当前页面操作记录已清空。')
+  setMessage('success', '褰撳墠椤甸潰鎿嶄綔璁板綍宸叉竻绌恒€?)
 }
 
+function togglePanelCollapsed() {
+  panelCollapsed.value = !panelCollapsed.value
+}
+
+function togglePerformanceMode() {
+  performanceMode.value = !performanceMode.value
+  setMessage('success', performanceMode.value ? '已开启性能优先模式。' : '已恢复视觉优先模式。', 1800)
+}
 function triggerImport() {
   importInputRef.value?.click()
 }
@@ -1019,7 +1117,7 @@ async function handleImportFile(event) {
 
   try {
     const text = await file.text()
-    const result = importEditorBundle(text, currentRoute.value)
+    const result = importEditorProjectBundle(text, currentRoute.value)
     if (result.ok) {
       validationReport.value = null
       appendAudit('import_bundle', {
@@ -1041,7 +1139,7 @@ async function handleImportFile(event) {
         return
       }
 
-      const forced = importEditorBundle(text, currentRoute.value, { force: true })
+      const forced = importEditorProjectBundle(text, currentRoute.value, { force: true })
       if (forced.ok) {
         validationReport.value = null
         appendAudit('import_bundle', {
@@ -1062,9 +1160,9 @@ async function handleImportFile(event) {
     event.target.value = ''
   }
 }
-
 onMounted(() => {
   initEditorState()
+  performanceMode.value = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches === true
   syncRoute(route.path)
   window.addEventListener('keydown', handleEditorHotkeys)
   window.addEventListener('resize', refreshCanvasMetrics)
@@ -1101,9 +1199,9 @@ onBeforeUnmount(() => {
   <div
     v-if="showCanvas"
     class="home-editor-canvas"
-    :class="{ 'is-editing': isEditorMode, 'is-interacting': isInteracting }"
+    :class="{ 'is-editing': isEditorMode, 'is-interacting': isInteracting, 'is-performance': performanceMode }"
     :style="canvasStyle"
-    aria-label="页面编辑画布"
+    aria-label="椤甸潰缂栬緫鐢诲竷"
   >
     <div class="home-editor-canvas__blocks">
       <div class="home-editor-guides" aria-hidden="true">
@@ -1134,25 +1232,25 @@ onBeforeUnmount(() => {
         <p class="home-editor-block__kicker">{{ block.kicker }}</p>
         <h2 class="home-editor-block__title">{{ block.title }}</h2>
         <p class="home-editor-block__body">{{ block.body }}</p>
-        <span v-if="isEditorMode" class="home-editor-block__hint">拖拽</span>
+        <span v-if="isEditorMode" class="home-editor-block__hint">鎷栨嫿</span>
 
         <template v-if="isEditorMode && selectedBlockId === block.id">
           <button
             type="button"
             class="home-editor-resize-handle home-editor-resize-handle--e"
-            aria-label="横向缩放"
+            aria-label="妯悜缂╂斁"
             @pointerdown.stop.prevent="onResizeHandlePointerDown($event, block, 'e')"
           />
           <button
             type="button"
             class="home-editor-resize-handle home-editor-resize-handle--s"
-            aria-label="纵向缩放"
+            aria-label="绾靛悜缂╂斁"
             @pointerdown.stop.prevent="onResizeHandlePointerDown($event, block, 's')"
           />
           <button
             type="button"
             class="home-editor-resize-handle home-editor-resize-handle--se"
-            aria-label="自由缩放"
+            aria-label="鑷敱缂╂斁"
             @pointerdown.stop.prevent="onResizeHandlePointerDown($event, block, 'se')"
           />
         </template>
@@ -1161,7 +1259,7 @@ onBeforeUnmount(() => {
 
     <div v-if="isEditorMode" class="home-editor-toolbar">
       <button type="button" class="home-editor-btn" @click="handleAddBlock">
-        新增
+        鏂板
       </button>
       <button
         type="button"
@@ -1169,7 +1267,7 @@ onBeforeUnmount(() => {
         :disabled="!selectedBlock"
         @click="handleDuplicateSelected"
       >
-        复制
+        澶嶅埗
       </button>
       <button
         type="button"
@@ -1177,64 +1275,83 @@ onBeforeUnmount(() => {
         :disabled="!selectedBlock"
         @click="removeCurrentBlock"
       >
-        删除
+        鍒犻櫎
       </button>
       <button type="button" class="home-editor-btn" :disabled="!historyStats.undo" @click="handleUndo">
-        撤销
+        鎾ら攢
       </button>
       <button type="button" class="home-editor-btn" :disabled="!historyStats.redo" @click="handleRedo">
-        重做
+        閲嶅仛
       </button>
       <button type="button" class="home-editor-btn" @click="handleResetLayout">
-        重置
+        閲嶇疆
       </button>
     </div>
 
-    <aside v-if="isEditorMode" class="home-editor-panel">
-      <h3 class="home-editor-panel__title">页面编辑器</h3>
+    <aside v-if="isEditorMode" class="home-editor-panel" :class="{ 'is-collapsed': panelCollapsed, 'is-performance': performanceMode }">
+      <h3 class="home-editor-panel__title">椤甸潰缂栬緫鍣</h3>
       <p class="home-editor-panel__route">{{ currentRoute }}</p>
+      <div class="home-editor-panel__controls">
+        <button type="button" class="home-editor-layer-btn" @click="togglePanelCollapsed">
+          {{ panelCollapsed ? '展开面板' : '折叠面板' }}
+        </button>
+        <button
+          type="button"
+          class="home-editor-layer-btn"
+          :class="{ 'is-active': performanceMode }"
+          @click="togglePerformanceMode"
+        >
+          {{ performanceMode ? '性能优先' : '视觉优先' }}
+        </button>
+      </div>
 
       <div class="home-editor-status">
-        <span class="home-editor-chip home-editor-chip--draft">草稿</span>
+        <span class="home-editor-chip home-editor-chip--draft">鑽夌</span>
         <span class="home-editor-chip" :class="routeStatus.dirty ? 'is-dirty' : 'is-clean'">
           {{ routeStatus.dirty ? '有未发布改动' : '已与发布版同步' }}
         </span>
-        <span class="home-editor-chip home-editor-chip--count">草稿/发布 {{ blockCountSummary }}</span>
-        <span class="home-editor-chip home-editor-chip--history">回滚点 {{ routeStatus.historyCount }}</span>
-        <span class="home-editor-chip home-editor-chip--history">撤销 {{ historyStats.undo }}/重做 {{ historyStats.redo }}</span>
-        <span class="home-editor-chip home-editor-chip--count">Schema v3 / Layout v2</span>
+        <span class="home-editor-chip home-editor-chip--count">鑽夌/鍙戝竷 {{ blockCountSummary }}</span>
+        <span class="home-editor-chip home-editor-chip--history">鍥炴粴鐐?{{ routeStatus.historyCount }}</span>
+        <span class="home-editor-chip home-editor-chip--history">鎾ら攢 {{ historyStats.undo }}/閲嶅仛 {{ historyStats.redo }}</span>
+        <span class="home-editor-chip home-editor-chip--count">Schema v3 / Layout v2 / Project v1</span>
       </div>
 
+      <section class="home-editor-route-tools home-editor-diff-preview">
+        <div class="home-editor-layer-panel__head">
+          <strong>发布预览</strong>
+        </div>
+        <p class="home-editor-route-tools__hint">
+          +{{ publishDiffPreview.added }} / -{{ publishDiffPreview.removed }} / Δ{{ publishDiffPreview.changed }}
+        </p>
+      </section>
       <section class="home-editor-route-tools">
         <button type="button" class="home-editor-btn home-editor-btn--full" @click="handleGenerateRouteTemplate">
-          生成当前页模板
-        </button>
+          鐢熸垚褰撳墠椤垫ā鏉?        </button>
         <p class="home-editor-route-tools__hint">
-          当页面还没有模块时，可一键生成标题与说明区块，快速开始编辑。
-        </p>
+          褰撻〉闈㈣繕娌℃湁妯″潡鏃讹紝鍙竴閿敓鎴愭爣棰樹笌璇存槑鍖哄潡锛屽揩閫熷紑濮嬬紪杈戙€?        </p>
       </section>
 
       <div class="home-editor-actions">
         <button type="button" class="home-editor-btn" @click="handleSaveDraft">
-          保存草稿
+          淇濆瓨鑽夌
         </button>
-        <button type="button" class="home-editor-btn" @click="handlePublish">
-          立即发布
+        <button type="button" class="home-editor-btn" @click="handlePublishWithDiffPreview">
+          绔嬪嵆鍙戝竷
         </button>
         <button type="button" class="home-editor-btn" @click="handleRevertDraft">
-          回滚草稿
+          鍥炴粴鑽夌
         </button>
       </div>
 
       <section class="home-editor-layer-panel">
         <div class="home-editor-layer-panel__head">
-          <strong>图层面板</strong>
+          <strong>鍥惧眰闈㈡澘</strong>
           <div class="home-editor-layer-panel__actions">
             <button type="button" class="home-editor-layer-btn" :disabled="!selectedBlock" @click="handleMoveLayer(1)">
-              上移
+              涓婄Щ
             </button>
             <button type="button" class="home-editor-layer-btn" :disabled="!selectedBlock" @click="handleMoveLayer(-1)">
-              下移
+              涓嬬Щ
             </button>
           </div>
         </div>
@@ -1256,7 +1373,7 @@ onBeforeUnmount(() => {
 
       <section class="home-editor-route-list-panel">
         <div class="home-editor-layer-panel__head">
-          <strong>已编辑页面（{{ allEditedRoutes.length }}）</strong>
+          <strong>宸茬紪杈戦〉闈紙{{ allEditedRoutes.length }}锛</strong>
         </div>
         <ul class="home-editor-layer-list">
           <li v-for="path in allEditedRoutes" :key="`route-${path}`">
@@ -1267,7 +1384,7 @@ onBeforeUnmount(() => {
               @click="navigateToEditedRoute(path)"
             >
               <span class="home-editor-layer-item__title">{{ path }}</span>
-              <span class="home-editor-layer-item__meta">{{ path === currentRoute ? '当前' : '打开' }}</span>
+              <span class="home-editor-layer-item__meta">{{ path === currentRoute ? '褰撳墠' : '鎵撳紑' }}</span>
             </button>
           </li>
         </ul>
@@ -1275,7 +1392,7 @@ onBeforeUnmount(() => {
 
       <div class="home-editor-actions home-editor-actions--secondary">
         <button type="button" class="home-editor-btn" @click="handleValidatePublish">
-          校验发布
+          鏍￠獙鍙戝竷
         </button>
         <button
           type="button"
@@ -1283,30 +1400,33 @@ onBeforeUnmount(() => {
           :disabled="!routeStatus.historyCount"
           @click="handleRollbackPublished"
         >
-          一键回滚
-        </button>
+          涓€閿洖婊?        </button>
       </div>
 
       <div class="home-editor-actions">
         <button type="button" class="home-editor-btn home-editor-btn--export" @click="handleExportCurrent">
           <span class="home-editor-export-icon" aria-hidden="true" />
-          <span>导出当前页</span>
+          <span>瀵煎嚭褰撳墠椤</span>
         </button>
         <button type="button" class="home-editor-btn home-editor-btn--export" @click="handleExportAll">
           <span class="home-editor-export-icon" aria-hidden="true" />
-          <span>导出全站</span>
+          <span>瀵煎嚭鍏ㄧ珯</span>
+        </button>
+        <button type="button" class="home-editor-btn home-editor-btn--export" @click="handleExportProject">
+          <span class="home-editor-export-icon" aria-hidden="true" />
+          <span>导出工程</span>
         </button>
         <button type="button" class="home-editor-btn" @click="triggerImport">
-          导入 JSON
+          导入工程/布局
         </button>
       </div>
 
       <section class="home-editor-audit-panel">
         <div class="home-editor-layer-panel__head">
-          <strong>操作记录（{{ routeAuditLogs.length }}）</strong>
+          <strong>鎿嶄綔璁板綍锛坽{ routeAuditLogs.length }}锛</strong>
           <div class="home-editor-layer-panel__actions">
             <button type="button" class="home-editor-layer-btn" @click="handleExportAudit">
-              导出
+              瀵煎嚭
             </button>
             <button
               type="button"
@@ -1314,7 +1434,7 @@ onBeforeUnmount(() => {
               :disabled="!routeAuditLogs.length"
               @click="handleClearAudit"
             >
-              清空
+              娓呯┖
             </button>
           </div>
         </div>
@@ -1326,7 +1446,7 @@ onBeforeUnmount(() => {
             <time class="home-editor-audit-item__time">{{ formatAuditTime(item.at) }}</time>
           </li>
         </ul>
-        <p v-else class="home-editor-route-tools__hint">当前页面暂无操作记录。</p>
+        <p v-else class="home-editor-route-tools__hint">褰撳墠椤甸潰鏆傛棤鎿嶄綔璁板綍銆</p>
       </section>
 
       <input
@@ -1347,10 +1467,10 @@ onBeforeUnmount(() => {
             class="home-editor-report__badge"
             :class="validationReport.ok ? 'is-pass' : 'is-block'"
           >
-            {{ validationReport.ok ? '校验通过' : '校验失败' }}
+            {{ validationReport.ok ? '鏍￠獙閫氳繃' : '鏍￠獙澶辫触' }}
           </span>
           <span class="home-editor-report__meta">
-            错误 {{ validationReport.errors.length }} / 提醒 {{ validationReport.warnings.length }}
+            閿欒 {{ validationReport.errors.length }} / 鎻愰啋 {{ validationReport.warnings.length }}
           </span>
         </div>
 
@@ -1379,13 +1499,12 @@ onBeforeUnmount(() => {
           v-if="validationReport.errors.length > 6 || validationReport.warnings.length > 6"
           class="home-editor-report__more"
         >
-          仅展示前 6 条，请先优先处理关键问题。
-        </p>
+          浠呭睍绀哄墠 6 鏉★紝璇峰厛浼樺厛澶勭悊鍏抽敭闂銆?        </p>
       </section>
 
       <template v-if="selectedBlock">
         <label class="home-editor-field">
-          <span>前缀文案</span>
+          <span>鍓嶇紑鏂囨</span>
           <input
             class="home-editor-input"
             type="text"
@@ -1395,7 +1514,7 @@ onBeforeUnmount(() => {
         </label>
 
         <label class="home-editor-field">
-          <span>标题</span>
+          <span>鏍囬</span>
           <input
             class="home-editor-input"
             type="text"
@@ -1405,7 +1524,7 @@ onBeforeUnmount(() => {
         </label>
 
         <label class="home-editor-field">
-          <span>正文</span>
+          <span>姝ｆ枃</span>
           <textarea
             class="home-editor-input home-editor-input--textarea"
             :value="selectedBlock.body"
@@ -1415,7 +1534,7 @@ onBeforeUnmount(() => {
 
         <div class="home-editor-grid">
           <label class="home-editor-field">
-            <span>宽度</span>
+            <span>瀹藉害</span>
             <input
               class="home-editor-range"
               type="range"
@@ -1427,7 +1546,7 @@ onBeforeUnmount(() => {
             />
           </label>
           <label class="home-editor-field">
-            <span>高度</span>
+            <span>楂樺害</span>
             <input
               class="home-editor-range"
               type="range"
@@ -1442,7 +1561,7 @@ onBeforeUnmount(() => {
 
         <div class="home-editor-grid">
           <label class="home-editor-field">
-            <span>透明度</span>
+            <span>閫忔槑搴</span>
             <input
               class="home-editor-range"
               type="range"
@@ -1454,7 +1573,7 @@ onBeforeUnmount(() => {
             />
           </label>
           <label class="home-editor-field">
-            <span>圆角</span>
+            <span>鍦嗚</span>
             <input
               class="home-editor-range"
               type="range"
@@ -1469,7 +1588,7 @@ onBeforeUnmount(() => {
 
         <div class="home-editor-grid">
           <label class="home-editor-field">
-            <span>模糊度</span>
+            <span>妯＄硦搴</span>
             <input
               class="home-editor-range"
               type="range"
@@ -1481,7 +1600,7 @@ onBeforeUnmount(() => {
             />
           </label>
           <label class="home-editor-field">
-            <span>文字颜色</span>
+            <span>鏂囧瓧棰滆壊</span>
             <input
               class="home-editor-color"
               type="color"
@@ -1492,7 +1611,7 @@ onBeforeUnmount(() => {
         </div>
 
         <label class="home-editor-field">
-          <span>背景样式</span>
+          <span>鑳屾櫙鏍峰紡</span>
           <input
             class="home-editor-input"
             type="text"
@@ -1502,12 +1621,12 @@ onBeforeUnmount(() => {
         </label>
       </template>
       <p v-else class="home-editor-empty-hint">
-        当前未选中模块。请点击画布中的模块，或先点击“新增”创建模块。
-      </p>
+        褰撳墠鏈€変腑妯″潡銆傝鐐瑰嚮鐢诲竷涓殑妯″潡锛屾垨鍏堢偣鍑烩€滄柊澧炩€濆垱寤烘ā鍧椼€?      </p>
 
       <p class="home-editor-shortcut-hint">
-        快捷键：Ctrl/Cmd+Z 撤销，Shift+Ctrl/Cmd+Z 重做，Ctrl/Cmd+D 复制，Delete 删除，方向键微调，Alt+↑/↓ 调整图层。
-      </p>
+        蹇嵎閿細Ctrl/Cmd+Z 鎾ら攢锛孲hift+Ctrl/Cmd+Z 閲嶅仛锛孋trl/Cmd+D 澶嶅埗锛孌elete 鍒犻櫎锛屾柟鍚戦敭寰皟锛孉lt+鈫?鈫?璋冩暣鍥惧眰銆?      </p>
     </aside>
   </div>
 </template>
+
+

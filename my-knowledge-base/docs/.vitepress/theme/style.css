@@ -4370,6 +4370,15 @@ html.sky-default-mode.dark .VPDoc .content:hover {
   cursor: move;
 }
 
+.home-editor-canvas.is-performance .home-editor-block {
+  transition: none;
+  box-shadow: 0 8px 18px rgba(8, 16, 28, 0.1);
+}
+
+.home-editor-canvas.is-performance .home-editor-guide {
+  box-shadow: none;
+}
+
 .home-editor-canvas.is-interacting .home-editor-block {
   transition: none;
 }
@@ -4508,6 +4517,10 @@ html.sky-default-mode.dark .VPDoc .content:hover {
   z-index: 58;
 }
 
+.home-editor-panel.is-performance {
+  backdrop-filter: blur(8px) saturate(115%);
+}
+
 .home-editor-panel__title {
   margin: 0 0 12px;
   font-size: 13px;
@@ -4521,6 +4534,35 @@ html.sky-default-mode.dark .VPDoc .content:hover {
   font-size: 11px;
   color: rgba(56, 84, 108, 0.78);
   word-break: break-all;
+}
+
+.home-editor-panel__controls {
+  display: flex;
+  gap: 6px;
+  margin: 0 0 10px;
+}
+
+.home-editor-panel__controls .home-editor-layer-btn {
+  flex: 1;
+}
+
+.home-editor-layer-btn.is-active {
+  border-color: rgba(103, 176, 225, 0.86);
+  background: rgba(227, 242, 252, 0.9);
+}
+
+.home-editor-panel.is-collapsed {
+  overflow: hidden;
+}
+
+.home-editor-panel.is-collapsed > :not(.home-editor-panel__title):not(.home-editor-panel__route):not(.home-editor-panel__controls) {
+  display: none;
+}
+
+.home-editor-diff-preview .home-editor-route-tools__hint {
+  margin-top: 4px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
 }
 
 .home-editor-status {
@@ -4998,6 +5040,11 @@ html.sky-default-mode.dark .VPDoc .content:hover {
   border-color: rgba(108, 153, 183, 0.6);
   background: rgba(20, 33, 48, 0.82);
   color: rgba(205, 226, 241, 0.94);
+}
+
+.dark .home-editor-layer-btn.is-active {
+  border-color: rgba(123, 190, 231, 0.84);
+  background: rgba(34, 56, 74, 0.94);
 }
 
 .dark .home-editor-layer-item {

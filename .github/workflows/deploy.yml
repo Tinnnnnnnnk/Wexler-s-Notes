@@ -26,6 +26,10 @@ jobs:
           cp -a my-knowledge-base/images/. my-knowledge-base/docs/public/images/
 
       - name: Build VitePress site
+        env:
+          VITE_EDITOR_ENABLE: ${{ secrets.VITE_EDITOR_ENABLE }}
+          VITE_EDITOR_ALLOWED_HOSTS: ${{ secrets.VITE_EDITOR_ALLOWED_HOSTS }}
+          VITE_EDITOR_ADMIN_KEY: ${{ secrets.VITE_EDITOR_ADMIN_KEY }}
         run: npm run docs:build
 
       - name: Rsync deploy

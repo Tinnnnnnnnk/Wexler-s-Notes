@@ -3102,7 +3102,7 @@ const _sfc_main$x = /* @__PURE__ */ defineComponent({
   __name: "VPNavBarSearch",
   __ssrInlineRender: true,
   setup(__props) {
-    const VPLocalSearchBox = defineAsyncComponent(() => import("./VPLocalSearchBox.jnkCcW6j.js"));
+    const VPLocalSearchBox = defineAsyncComponent(() => import("./VPLocalSearchBox.07OyFIdL.js"));
     const VPAlgoliaSearchBox = () => null;
     const { theme: theme2 } = useData();
     const loaded = ref(false);
@@ -5375,10 +5375,13 @@ _sfc_main$2.setup = (props, ctx) => {
 const EDIT_MODE_KEY = "wexler.editor.mode";
 const ROUTE_DRAFT_KEY_PREFIX = "wexler.editor.layout.route.draft.v2.";
 const ROUTE_PUBLISHED_KEY_PREFIX = "wexler.editor.layout.route.published.v2.";
+const ROUTE_PUBLISHED_HISTORY_KEY_PREFIX = "wexler.editor.layout.route.published.history.v3.";
 const LEGACY_ROUTE_LAYOUT_KEY_PREFIX = "wexler.editor.layout.route.v1.";
+const MAX_PUBLISHED_HISTORY = 12;
 const isEditorMode = ref(false);
 const draftLayoutsByRoute = ref({});
 const publishedLayoutsByRoute = ref({});
+const publishedHistoryByRoute = ref({});
 const selectedByRoute = ref({});
 let initialized = false;
 function normalizeRoute(routeInput) {
@@ -5497,11 +5500,33 @@ function normalizeLayout(routeInput, raw) {
 function stringifyLayout(routeInput, layout) {
   return JSON.stringify(normalizeLayout(routeInput, layout));
 }
+function createSnapshotId() {
+  return `snap-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+}
+function normalizeHistoryEntry(routeInput, raw, index = 0) {
+  const route = normalizeRoute(routeInput);
+  if (!raw || typeof raw !== "object") return null;
+  const layoutSource = raw.layout && typeof raw.layout === "object" ? raw.layout : Array.isArray(raw.blocks) ? raw : null;
+  if (!layoutSource) return null;
+  return {
+    id: typeof raw.id === "string" && raw.id.trim() ? raw.id.trim() : `${createSnapshotId()}-${index}`,
+    at: typeof raw.at === "string" && raw.at.trim() ? raw.at.trim() : (/* @__PURE__ */ new Date()).toISOString(),
+    reason: typeof raw.reason === "string" && raw.reason.trim() ? raw.reason.trim() : "publish",
+    layout: normalizeLayout(route, layoutSource)
+  };
+}
+function normalizeHistoryList(routeInput, rawList) {
+  if (!Array.isArray(rawList)) return [];
+  return rawList.map((item, index) => normalizeHistoryEntry(routeInput, item, index)).filter(Boolean).slice(0, MAX_PUBLISHED_HISTORY);
+}
 function routeDraftKey(routeInput) {
   return `${ROUTE_DRAFT_KEY_PREFIX}${encodeURIComponent(normalizeRoute(routeInput))}`;
 }
 function routePublishedKey(routeInput) {
   return `${ROUTE_PUBLISHED_KEY_PREFIX}${encodeURIComponent(normalizeRoute(routeInput))}`;
+}
+function routePublishedHistoryKey(routeInput) {
+  return `${ROUTE_PUBLISHED_HISTORY_KEY_PREFIX}${encodeURIComponent(normalizeRoute(routeInput))}`;
 }
 function routeLegacyKey(routeInput) {
   return `${LEGACY_ROUTE_LAYOUT_KEY_PREFIX}${encodeURIComponent(normalizeRoute(routeInput))}`;
@@ -5561,9 +5586,11 @@ function loadRouteLayout(routeInput) {
   const route = normalizeRoute(routeInput);
   const draftRaw = safeReadStorage(routeDraftKey(route));
   const publishedRaw = safeReadStorage(routePublishedKey(route));
+  const historyRaw = safeReadStorage(routePublishedHistoryKey(route));
   const legacyRaw = safeReadStorage(routeLegacyKey(route));
   let draftLayout = null;
   let publishedLayout = null;
+  let publishedHistory = [];
   if (draftRaw) {
     try {
       draftLayout = normalizeLayout(route, JSON.parse(draftRaw));
@@ -5578,13 +5605,22 @@ function loadRouteLayout(routeInput) {
       publishedLayout = null;
     }
   }
+  if (historyRaw) {
+    try {
+      publishedHistory = normalizeHistoryList(route, JSON.parse(historyRaw));
+    } catch (error) {
+      publishedHistory = [];
+    }
+  }
   if (!draftLayout && !publishedLayout && legacyRaw) {
     try {
       const legacyLayout = normalizeLayout(route, JSON.parse(legacyRaw));
       draftLayout = clone(legacyLayout);
       publishedLayout = clone(legacyLayout);
+      publishedHistory = [];
       safeWriteStorage(routeDraftKey(route), JSON.stringify(draftLayout));
       safeWriteStorage(routePublishedKey(route), JSON.stringify(publishedLayout));
+      safeWriteStorage(routePublishedHistoryKey(route), JSON.stringify(publishedHistory));
       safeRemoveStorage(routeLegacyKey(route));
     } catch (error) {
     }
@@ -5608,11 +5644,15 @@ function loadRouteLayout(routeInput) {
     ...publishedLayoutsByRoute.value,
     [route]: normalizeLayout(route, publishedLayout)
   };
+  publishedHistoryByRoute.value = {
+    ...publishedHistoryByRoute.value,
+    [route]: normalizeHistoryList(route, publishedHistory)
+  };
   ensureSelectedValid(route);
 }
 function ensureRouteLayout(routeInput) {
   const route = normalizeRoute(routeInput);
-  if (!draftLayoutsByRoute.value[route] || !publishedLayoutsByRoute.value[route]) {
+  if (!draftLayoutsByRoute.value[route] || !publishedLayoutsByRoute.value[route] || !publishedHistoryByRoute.value[route]) {
     loadRouteLayout(route);
   }
   return route;
@@ -5646,6 +5686,10 @@ function getSelectedRouteBlock(routeInput) {
   const blocks = getRouteBlocks(route);
   return blocks.find((block) => block.id === selectedId) || null;
 }
+function getRoutePublishedHistory(routeInput) {
+  const route = ensureRouteLayout(routeInput);
+  return publishedHistoryByRoute.value[route] || [];
+}
 function routeHasUnpublishedChanges(routeInput) {
   const route = ensureRouteLayout(routeInput);
   return stringifyLayout(route, draftLayoutsByRoute.value[route]) !== stringifyLayout(route, publishedLayoutsByRoute.value[route]);
@@ -5656,6 +5700,7 @@ function getRouteEditStatus(routeInput) {
     route,
     blockCount: getRouteBlocks(route).length,
     publishedBlockCount: getPublishedRouteBlocks(route).length,
+    historyCount: getRoutePublishedHistory(route).length,
     dirty: routeHasUnpublishedChanges(route)
   };
 }
@@ -5682,6 +5727,7 @@ const _sfc_main$1 = {
     ref(null);
     const ioMessage = ref("");
     const ioMessageType = ref("info");
+    const validationReport = ref(null);
     let dragRafId = 0;
     let pendingPointer = null;
     const showCanvas = computed(() => isEditorMode.value);
@@ -5690,6 +5736,8 @@ const _sfc_main$1 = {
     const selectedBlockId = computed(() => getSelectedRouteBlockId(currentRoute.value));
     const selectedBlock = computed(() => getSelectedRouteBlock(currentRoute.value));
     const routeStatus = computed(() => getRouteEditStatus(currentRoute.value));
+    const routeHistory = computed(() => getRoutePublishedHistory(currentRoute.value));
+    computed(() => routeHistory.value[0] || null);
     const blockCountSummary = computed(
       () => `${routeStatus.value.blockCount}/${routeStatus.value.publishedBlockCount}`
     );
@@ -5706,6 +5754,7 @@ const _sfc_main$1 = {
     }
     function syncRoute(nextPath) {
       currentRoute.value = ensureRouteLayout(nextPath);
+      validationReport.value = null;
       clearMessage();
     }
     function blockStyle(block) {
@@ -5801,9 +5850,38 @@ const _sfc_main$1 = {
           _push(`<!---->`);
         }
         if (unref(isEditorMode)) {
-          _push(`<aside class="home-editor-panel"><h3 class="home-editor-panel__title">页面编辑器</h3><p class="home-editor-panel__route">${ssrInterpolate(currentRoute.value)}</p><div class="home-editor-status"><span class="home-editor-chip home-editor-chip--draft">草稿</span><span class="${ssrRenderClass([routeStatus.value.dirty ? "is-dirty" : "is-clean", "home-editor-chip"])}">${ssrInterpolate(routeStatus.value.dirty ? "有未发布改动" : "已与发布版同步")}</span><span class="home-editor-chip home-editor-chip--count">草稿/发布 ${ssrInterpolate(blockCountSummary.value)}</span></div><div class="home-editor-actions"><button type="button" class="home-editor-btn"> 保存草稿 </button><button type="button" class="home-editor-btn"> 立即发布 </button><button type="button" class="home-editor-btn"> 回滚草稿 </button></div><div class="home-editor-actions"><button type="button" class="home-editor-btn home-editor-btn--export"><span class="home-editor-export-icon" aria-hidden="true"></span><span>导出当前页</span></button><button type="button" class="home-editor-btn home-editor-btn--export"><span class="home-editor-export-icon" aria-hidden="true"></span><span>导出全站</span></button><button type="button" class="home-editor-btn"> 导入 JSON </button></div><input class="home-editor-import-input" type="file" accept="application/json,.json">`);
+          _push(`<aside class="home-editor-panel"><h3 class="home-editor-panel__title">页面编辑器</h3><p class="home-editor-panel__route">${ssrInterpolate(currentRoute.value)}</p><div class="home-editor-status"><span class="home-editor-chip home-editor-chip--draft">草稿</span><span class="${ssrRenderClass([routeStatus.value.dirty ? "is-dirty" : "is-clean", "home-editor-chip"])}">${ssrInterpolate(routeStatus.value.dirty ? "有未发布改动" : "已与发布版同步")}</span><span class="home-editor-chip home-editor-chip--count">草稿/发布 ${ssrInterpolate(blockCountSummary.value)}</span><span class="home-editor-chip home-editor-chip--history">回滚点 ${ssrInterpolate(routeStatus.value.historyCount)}</span></div><div class="home-editor-actions"><button type="button" class="home-editor-btn"> 保存草稿 </button><button type="button" class="home-editor-btn"> 立即发布 </button><button type="button" class="home-editor-btn"> 回滚草稿 </button></div><div class="home-editor-actions home-editor-actions--secondary"><button type="button" class="home-editor-btn"> 校验发布 </button><button type="button" class="home-editor-btn"${ssrIncludeBooleanAttr(!routeStatus.value.historyCount) ? " disabled" : ""}> 一键回滚 </button></div><div class="home-editor-actions"><button type="button" class="home-editor-btn home-editor-btn--export"><span class="home-editor-export-icon" aria-hidden="true"></span><span>导出当前页</span></button><button type="button" class="home-editor-btn home-editor-btn--export"><span class="home-editor-export-icon" aria-hidden="true"></span><span>导出全站</span></button><button type="button" class="home-editor-btn"> 导入 JSON </button></div><input class="home-editor-import-input" type="file" accept="application/json,.json">`);
           if (ioMessage.value) {
             _push(`<p class="${ssrRenderClass([`is-${ioMessageType.value}`, "home-editor-message"])}">${ssrInterpolate(ioMessage.value)}</p>`);
+          } else {
+            _push(`<!---->`);
+          }
+          if (validationReport.value) {
+            _push(`<section class="home-editor-report"><div class="home-editor-report__head"><span class="${ssrRenderClass([validationReport.value.ok ? "is-pass" : "is-block", "home-editor-report__badge"])}">${ssrInterpolate(validationReport.value.ok ? "校验通过" : "校验失败")}</span><span class="home-editor-report__meta"> 错误 ${ssrInterpolate(validationReport.value.errors.length)} / 提醒 ${ssrInterpolate(validationReport.value.warnings.length)}</span></div>`);
+            if (validationReport.value.errors.length) {
+              _push(`<ul class="home-editor-report__list home-editor-report__list--error"><!--[-->`);
+              ssrRenderList(validationReport.value.errors.slice(0, 6), (item, index) => {
+                _push(`<li>${ssrInterpolate(item.message)}</li>`);
+              });
+              _push(`<!--]--></ul>`);
+            } else {
+              _push(`<!---->`);
+            }
+            if (validationReport.value.warnings.length) {
+              _push(`<ul class="home-editor-report__list home-editor-report__list--warn"><!--[-->`);
+              ssrRenderList(validationReport.value.warnings.slice(0, 6), (item, index) => {
+                _push(`<li>${ssrInterpolate(item.message)}</li>`);
+              });
+              _push(`<!--]--></ul>`);
+            } else {
+              _push(`<!---->`);
+            }
+            if (validationReport.value.errors.length > 6 || validationReport.value.warnings.length > 6) {
+              _push(`<p class="home-editor-report__more"> 仅展示前 6 条，请先优先处理关键问题。 </p>`);
+            } else {
+              _push(`<!---->`);
+            }
+            _push(`</section>`);
           } else {
             _push(`<!---->`);
           }

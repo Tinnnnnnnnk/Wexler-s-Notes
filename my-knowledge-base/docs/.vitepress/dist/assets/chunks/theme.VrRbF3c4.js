@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/chunks/VPLocalSearchBox.BKJHR7X2.js","assets/chunks/framework.ul-4IeKD.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/chunks/VPLocalSearchBox.DcMirkNa.js","assets/chunks/framework.ul-4IeKD.js"])))=>i.map(i=>d[i]);
 import { d as defineComponent, c as createElementBlock, r as renderSlot, n as normalizeClass, o as openBlock, a as createTextVNode, t as toDisplayString, b as createBlock, w as withCtx, T as Transition, e as createCommentVNode, _ as _export_sfc, u as useData$1, i as isExternal, f as treatAsHtml, g as withBase, h as computed, j as createBaseVNode, k as unref, l as isActive, m as useMediaQuery, p as ref, q as watch, s as watchEffect, v as onMounted, x as onUnmounted, y as watchPostEffect, z as onUpdated, A as getScrollOffset, F as Fragment, B as renderList, C as resolveComponent, D as onContentUpdated, E as createVNode, G as shallowRef, H as resolveDynamicComponent, I as EXTERNAL_URL_RE, J as useRoute, K as mergeProps, L as inject, M as useWindowSize, N as normalizeStyle, O as onKeyStroke, P as nextTick, Q as useWindowScroll, R as inBrowser, S as readonly, U as defineAsyncComponent, V as __vitePreload, W as useScrollLock, X as provide, Y as toHandlers, Z as withKeys, $ as onBeforeUnmount, a0 as withModifiers, a1 as useSlots, a2 as withDirectives, a3 as vShow, a4 as Teleport, a5 as h } from "./framework.ul-4IeKD.js";
 const _sfc_main$10 = /* @__PURE__ */ defineComponent({
   __name: "VPBadge",
@@ -2230,7 +2230,7 @@ const _hoisted_3$6 = {
 const _sfc_main$o = /* @__PURE__ */ defineComponent({
   __name: "VPNavBarSearch",
   setup(__props) {
-    const VPLocalSearchBox = defineAsyncComponent(() => __vitePreload(() => import("./VPLocalSearchBox.BKJHR7X2.js"), true ? __vite__mapDeps([0,1]) : void 0));
+    const VPLocalSearchBox = defineAsyncComponent(() => __vitePreload(() => import("./VPLocalSearchBox.DcMirkNa.js"), true ? __vite__mapDeps([0,1]) : void 0));
     const VPAlgoliaSearchBox = () => null;
     const { theme: theme2 } = useData();
     const loaded = ref(false);
@@ -4090,12 +4090,15 @@ const _sfc_main$2 = {
 const EDIT_MODE_KEY = "wexler.editor.mode";
 const ROUTE_DRAFT_KEY_PREFIX = "wexler.editor.layout.route.draft.v2.";
 const ROUTE_PUBLISHED_KEY_PREFIX = "wexler.editor.layout.route.published.v2.";
+const ROUTE_PUBLISHED_HISTORY_KEY_PREFIX = "wexler.editor.layout.route.published.history.v3.";
 const LEGACY_ROUTE_LAYOUT_KEY_PREFIX = "wexler.editor.layout.route.v1.";
 const EXPORT_SCHEMA = "wexler.editor.layout.bundle";
-const EXPORT_VERSION = 2;
+const EXPORT_VERSION = 3;
+const MAX_PUBLISHED_HISTORY = 12;
 const isEditorMode = ref(false);
 const draftLayoutsByRoute = ref({});
 const publishedLayoutsByRoute = ref({});
+const publishedHistoryByRoute = ref({});
 const selectedByRoute = ref({});
 let initialized = false;
 function normalizeRoute(routeInput) {
@@ -4216,20 +4219,54 @@ function normalizeRoutePayload(routeInput, payload) {
   const source = payload && typeof payload === "object" ? payload : {};
   const draftCandidate = source.draft && typeof source.draft === "object" ? source.draft : source.layout && typeof source.layout === "object" ? source.layout : source;
   const publishedCandidate = source.published && typeof source.published === "object" ? source.published : source.layout && typeof source.layout === "object" ? source.layout : draftCandidate;
+  const historyCandidate = Array.isArray(source.publishedHistory) ? source.publishedHistory : Array.isArray(source.history) ? source.history : [];
   return {
     route,
     draft: normalizeLayout(route, draftCandidate),
-    published: normalizeLayout(route, publishedCandidate)
+    published: normalizeLayout(route, publishedCandidate),
+    publishedHistory: normalizeHistoryList(route, historyCandidate)
   };
 }
 function stringifyLayout(routeInput, layout) {
   return JSON.stringify(normalizeLayout(routeInput, layout));
+}
+function createSnapshotId() {
+  return `snap-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+}
+function createHistorySnapshot(routeInput, layout, reason = "publish") {
+  const route = normalizeRoute(routeInput);
+  const snapshotReason = typeof reason === "string" && reason.trim() ? reason.trim() : "publish";
+  return {
+    id: createSnapshotId(),
+    at: (/* @__PURE__ */ new Date()).toISOString(),
+    reason: snapshotReason,
+    layout: normalizeLayout(route, layout)
+  };
+}
+function normalizeHistoryEntry(routeInput, raw, index = 0) {
+  const route = normalizeRoute(routeInput);
+  if (!raw || typeof raw !== "object") return null;
+  const layoutSource = raw.layout && typeof raw.layout === "object" ? raw.layout : Array.isArray(raw.blocks) ? raw : null;
+  if (!layoutSource) return null;
+  return {
+    id: typeof raw.id === "string" && raw.id.trim() ? raw.id.trim() : `${createSnapshotId()}-${index}`,
+    at: typeof raw.at === "string" && raw.at.trim() ? raw.at.trim() : (/* @__PURE__ */ new Date()).toISOString(),
+    reason: typeof raw.reason === "string" && raw.reason.trim() ? raw.reason.trim() : "publish",
+    layout: normalizeLayout(route, layoutSource)
+  };
+}
+function normalizeHistoryList(routeInput, rawList) {
+  if (!Array.isArray(rawList)) return [];
+  return rawList.map((item, index) => normalizeHistoryEntry(routeInput, item, index)).filter(Boolean).slice(0, MAX_PUBLISHED_HISTORY);
 }
 function routeDraftKey(routeInput) {
   return `${ROUTE_DRAFT_KEY_PREFIX}${encodeURIComponent(normalizeRoute(routeInput))}`;
 }
 function routePublishedKey(routeInput) {
   return `${ROUTE_PUBLISHED_KEY_PREFIX}${encodeURIComponent(normalizeRoute(routeInput))}`;
+}
+function routePublishedHistoryKey(routeInput) {
+  return `${ROUTE_PUBLISHED_HISTORY_KEY_PREFIX}${encodeURIComponent(normalizeRoute(routeInput))}`;
 }
 function routeLegacyKey(routeInput) {
   return `${LEGACY_ROUTE_LAYOUT_KEY_PREFIX}${encodeURIComponent(normalizeRoute(routeInput))}`;
@@ -4266,6 +4303,13 @@ function persistDraftRouteLayout(routeInput) {
 function persistPublishedRouteLayout(routeInput) {
   const route = ensureRouteLayout(routeInput);
   safeWriteStorage(routePublishedKey(route), JSON.stringify(publishedLayoutsByRoute.value[route]));
+}
+function persistPublishedRouteHistory(routeInput) {
+  const route = ensureRouteLayout(routeInput);
+  safeWriteStorage(
+    routePublishedHistoryKey(route),
+    JSON.stringify(publishedHistoryByRoute.value[route] || [])
+  );
 }
 function ensureSelectedValid(routeInput) {
   var _a, _b;
@@ -4304,13 +4348,27 @@ function setPublishedLayout(routeInput, layout, options = {}) {
     persistPublishedRouteLayout(route);
   }
 }
+function setPublishedHistory(routeInput, historyList, options = {}) {
+  const route = normalizeRoute(routeInput);
+  const persist = options.persist !== false;
+  const normalized = normalizeHistoryList(route, historyList);
+  publishedHistoryByRoute.value = {
+    ...publishedHistoryByRoute.value,
+    [route]: normalized
+  };
+  if (persist) {
+    persistPublishedRouteHistory(route);
+  }
+}
 function loadRouteLayout(routeInput) {
   const route = normalizeRoute(routeInput);
   const draftRaw = safeReadStorage(routeDraftKey(route));
   const publishedRaw = safeReadStorage(routePublishedKey(route));
+  const historyRaw = safeReadStorage(routePublishedHistoryKey(route));
   const legacyRaw = safeReadStorage(routeLegacyKey(route));
   let draftLayout = null;
   let publishedLayout = null;
+  let publishedHistory = [];
   if (draftRaw) {
     try {
       draftLayout = normalizeLayout(route, JSON.parse(draftRaw));
@@ -4325,13 +4383,22 @@ function loadRouteLayout(routeInput) {
       publishedLayout = null;
     }
   }
+  if (historyRaw) {
+    try {
+      publishedHistory = normalizeHistoryList(route, JSON.parse(historyRaw));
+    } catch (error) {
+      publishedHistory = [];
+    }
+  }
   if (!draftLayout && !publishedLayout && legacyRaw) {
     try {
       const legacyLayout = normalizeLayout(route, JSON.parse(legacyRaw));
       draftLayout = clone(legacyLayout);
       publishedLayout = clone(legacyLayout);
+      publishedHistory = [];
       safeWriteStorage(routeDraftKey(route), JSON.stringify(draftLayout));
       safeWriteStorage(routePublishedKey(route), JSON.stringify(publishedLayout));
+      safeWriteStorage(routePublishedHistoryKey(route), JSON.stringify(publishedHistory));
       safeRemoveStorage(routeLegacyKey(route));
     } catch (error) {
     }
@@ -4355,11 +4422,15 @@ function loadRouteLayout(routeInput) {
     ...publishedLayoutsByRoute.value,
     [route]: normalizeLayout(route, publishedLayout)
   };
+  publishedHistoryByRoute.value = {
+    ...publishedHistoryByRoute.value,
+    [route]: normalizeHistoryList(route, publishedHistory)
+  };
   ensureSelectedValid(route);
 }
 function ensureRouteLayout(routeInput) {
   const route = normalizeRoute(routeInput);
-  if (!draftLayoutsByRoute.value[route] || !publishedLayoutsByRoute.value[route]) {
+  if (!draftLayoutsByRoute.value[route] || !publishedLayoutsByRoute.value[route] || !publishedHistoryByRoute.value[route]) {
     loadRouteLayout(route);
   }
   return route;
@@ -4367,7 +4438,8 @@ function ensureRouteLayout(routeInput) {
 function collectStoredRoutes() {
   const result = /* @__PURE__ */ new Set([
     ...Object.keys(draftLayoutsByRoute.value),
-    ...Object.keys(publishedLayoutsByRoute.value)
+    ...Object.keys(publishedLayoutsByRoute.value),
+    ...Object.keys(publishedHistoryByRoute.value)
   ]);
   if (typeof window === "undefined") {
     return [...result];
@@ -4380,6 +4452,8 @@ function collectStoredRoutes() {
         result.add(decodeURIComponent(key.slice(ROUTE_DRAFT_KEY_PREFIX.length)));
       } else if (key.startsWith(ROUTE_PUBLISHED_KEY_PREFIX)) {
         result.add(decodeURIComponent(key.slice(ROUTE_PUBLISHED_KEY_PREFIX.length)));
+      } else if (key.startsWith(ROUTE_PUBLISHED_HISTORY_KEY_PREFIX)) {
+        result.add(decodeURIComponent(key.slice(ROUTE_PUBLISHED_HISTORY_KEY_PREFIX.length)));
       } else if (key.startsWith(LEGACY_ROUTE_LAYOUT_KEY_PREFIX)) {
         result.add(decodeURIComponent(key.slice(LEGACY_ROUTE_LAYOUT_KEY_PREFIX.length)));
       }
@@ -4431,6 +4505,93 @@ function getSelectedRouteBlock(routeInput) {
   const blocks = getRouteBlocks(route);
   return blocks.find((block) => block.id === selectedId) || null;
 }
+function getRoutePublishedHistory(routeInput) {
+  const route = ensureRouteLayout(routeInput);
+  return publishedHistoryByRoute.value[route] || [];
+}
+function validateRouteLayout(routeInput, layoutInput) {
+  const route = normalizeRoute(routeInput);
+  const layout = normalizeLayout(route, layoutInput);
+  const errors = [];
+  const warnings = [];
+  const seenIds = /* @__PURE__ */ new Set();
+  if (layout.blocks.length > 80) {
+    errors.push({
+      code: "TOO_MANY_BLOCKS",
+      message: `模块数量为 ${layout.blocks.length}，超过 80 的上限。`
+    });
+  }
+  if (!layout.blocks.length) {
+    warnings.push({
+      code: "EMPTY_LAYOUT",
+      message: "当前页面没有模块，发布后会是空白页面。"
+    });
+  }
+  layout.blocks.forEach((block, index) => {
+    const label = `模块 #${index + 1}${block.id ? `（${block.id}）` : ""}`;
+    const contentLength = `${block.kicker}${block.title}${block.body}`.trim().length;
+    if (seenIds.has(block.id)) {
+      errors.push({
+        code: "DUPLICATE_ID",
+        blockId: block.id,
+        index,
+        message: `${label} 与其他模块使用了重复 ID。`
+      });
+    }
+    seenIds.add(block.id);
+    if (!contentLength) {
+      warnings.push({
+        code: "EMPTY_CONTENT",
+        blockId: block.id,
+        index,
+        message: `${label} 没有任何文案内容。`
+      });
+    }
+    if (block.title.length > 120) {
+      warnings.push({
+        code: "TITLE_TOO_LONG",
+        blockId: block.id,
+        index,
+        message: `${label} 标题过长（>${120} 字）。`
+      });
+    }
+    if (block.body.length > 2e3) {
+      warnings.push({
+        code: "BODY_TOO_LONG",
+        blockId: block.id,
+        index,
+        message: `${label} 正文过长（>${2e3} 字），可能影响可读性。`
+      });
+    }
+    if (block.x + block.w > 5e3 || block.y + block.h > 5e3) {
+      warnings.push({
+        code: "OUT_OF_VIEWPORT",
+        blockId: block.id,
+        index,
+        message: `${label} 可能超出可编辑区域边界。`
+      });
+    }
+  });
+  return {
+    ok: errors.length === 0,
+    route,
+    checkedAt: (/* @__PURE__ */ new Date()).toISOString(),
+    blockCount: layout.blocks.length,
+    errors,
+    warnings
+  };
+}
+function validateDraftRoute(routeInput) {
+  const route = ensureRouteLayout(routeInput);
+  return validateRouteLayout(route, draftLayoutsByRoute.value[route]);
+}
+function pushPublishedHistorySnapshot(routeInput, layout, reason = "publish") {
+  const route = ensureRouteLayout(routeInput);
+  const snapshot = createHistorySnapshot(route, layout, reason);
+  const nextHistory = [snapshot, ...getRoutePublishedHistory(route)].slice(0, MAX_PUBLISHED_HISTORY);
+  setPublishedHistory(route, nextHistory, { persist: true });
+  return snapshot;
+}
 function routeHasUnpublishedChanges(routeInput) {
   const route = ensureRouteLayout(routeInput);
   return stringifyLayout(route, draftLayoutsByRoute.value[route]) !== stringifyLayout(route, publishedLayoutsByRoute.value[route]);
@@ -4441,6 +4602,7 @@ function getRouteEditStatus(routeInput) {
     route,
     blockCount: getRouteBlocks(route).length,
     publishedBlockCount: getPublishedRouteBlocks(route).length,
+    historyCount: getRoutePublishedHistory(route).length,
     dirty: routeHasUnpublishedChanges(route)
   };
 }
@@ -4507,11 +4669,26 @@ function saveDraftRoute(routeInput) {
 function publishDraftRoute(routeInput) {
   const route = ensureRouteLayout(routeInput);
   const draftLayout = clone(draftLayoutsByRoute.value[route]);
+  const publishedLayout = clone(publishedLayoutsByRoute.value[route] || createDefaultLayout(route));
+  const validation = validateRouteLayout(route, draftLayout);
+  if (!validation.ok) {
+    return {
+      ok: false,
+      route,
+      message: "发布校验未通过，请先修复错误项。",
+      validation
+    };
+  }
+  if (stringifyLayout(route, publishedLayout) !== stringifyLayout(route, draftLayout)) {
+    pushPublishedHistorySnapshot(route, publishedLayout, "publish");
+  }
   setPublishedLayout(route, draftLayout, { persist: true });
   persistDraftRouteLayout(route);
   return {
     ok: true,
-    route
+    route,
+    validation,
+    historyCount: getRoutePublishedHistory(route).length
   };
 }
 function revertRouteDraft(routeInput) {
@@ -4524,6 +4701,44 @@ function revertRouteDraft(routeInput) {
     route
   };
 }
+function rollbackPublishedRoute(routeInput, snapshotId = "") {
+  const route = ensureRouteLayout(routeInput);
+  const history = getRoutePublishedHistory(route);
+  if (!history.length) {
+    return {
+      ok: false,
+      route,
+      message: "没有可回滚的发布快照。"
+    };
+  }
+  const targetIndex = snapshotId ? history.findIndex((item) => item.id === snapshotId) : 0;
+  if (targetIndex < 0) {
+    return {
+      ok: false,
+      route,
+      message: "未找到指定的回滚快照。"
+    };
+  }
+  const targetSnapshot = history[targetIndex];
+  const currentPublished = clone(publishedLayoutsByRoute.value[route] || createDefaultLayout(route));
+  const historyWithoutTarget = history.filter((_, index) => index !== targetIndex);
+  const shouldKeepCurrentAsSnapshot = stringifyLayout(route, currentPublished) !== stringifyLayout(route, targetSnapshot.layout);
+  const nextHistory = shouldKeepCurrentAsSnapshot ? [createHistorySnapshot(route, currentPublished, "rollback"), ...historyWithoutTarget] : historyWithoutTarget;
+  setPublishedHistory(route, nextHistory.slice(0, MAX_PUBLISHED_HISTORY), { persist: true });
+  setPublishedLayout(route, clone(targetSnapshot.layout), { persist: true });
+  setDraftLayout(route, clone(targetSnapshot.layout), { persist: true });
+  ensureSelectedValid(route);
+  return {
+    ok: true,
+    route,
+    snapshot: {
+      id: targetSnapshot.id,
+      at: targetSnapshot.at,
+      reason: targetSnapshot.reason
+    },
+    historyCount: getRoutePublishedHistory(route).length
+  };
+}
 function getRouteExportBundle(routeInput) {
   const route = ensureRouteLayout(routeInput);
   return {
@@ -4533,7 +4748,8 @@ function getRouteExportBundle(routeInput) {
     scope: "route",
     route,
     draft: clone(draftLayoutsByRoute.value[route]),
-    published: clone(publishedLayoutsByRoute.value[route])
+    published: clone(publishedLayoutsByRoute.value[route]),
+    publishedHistory: clone(getRoutePublishedHistory(route))
   };
 }
 function getAllRoutesExportBundle() {
@@ -4543,7 +4759,8 @@ function getAllRoutesExportBundle() {
     const route = ensureRouteLayout(rawRoute);
     payload[route] = {
       draft: clone(draftLayoutsByRoute.value[route]),
-      published: clone(publishedLayoutsByRoute.value[route])
+      published: clone(publishedLayoutsByRoute.value[route]),
+      publishedHistory: clone(getRoutePublishedHistory(route))
     };
   });
   return {
@@ -4560,6 +4777,7 @@ function importRoutePayload(payload, fallbackRouteInput) {
   const normalized = normalizeRoutePayload(route, payload);
   setDraftLayout(normalized.route, normalized.draft, { persist: true });
   setPublishedLayout(normalized.route, normalized.published, { persist: true });
+  setPublishedHistory(normalized.route, normalized.publishedHistory, { persist: true });
   ensureSelectedValid(normalized.route);
   return {
     route: normalized.route
@@ -4577,6 +4795,7 @@ function importAllRoutesPayload(routesMap) {
     const normalized = normalizeRoutePayload(rawRoute, payload);
     setDraftLayout(normalized.route, normalized.draft, { persist: true });
     setPublishedLayout(normalized.route, normalized.published, { persist: true });
+    setPublishedHistory(normalized.route, normalized.publishedHistory, { persist: true });
     ensureSelectedValid(normalized.route);
     updatedRoutes.push(normalized.route);
   });
@@ -4656,31 +4875,52 @@ const _hoisted_9 = {
 const _hoisted_10 = { class: "home-editor-panel__route" };
 const _hoisted_11 = { class: "home-editor-status" };
 const _hoisted_12 = { class: "home-editor-chip home-editor-chip--count" };
-const _hoisted_13 = { class: "home-editor-field" };
-const _hoisted_14 = ["value"];
-const _hoisted_15 = { class: "home-editor-field" };
-const _hoisted_16 = ["value"];
-const _hoisted_17 = { class: "home-editor-field" };
-const _hoisted_18 = ["value"];
-const _hoisted_19 = { class: "home-editor-grid" };
-const _hoisted_20 = { class: "home-editor-field" };
-const _hoisted_21 = ["value"];
+const _hoisted_13 = { class: "home-editor-chip home-editor-chip--history" };
+const _hoisted_14 = { class: "home-editor-actions home-editor-actions--secondary" };
+const _hoisted_15 = ["disabled"];
+const _hoisted_16 = {
+  key: 1,
+  class: "home-editor-report"
+};
+const _hoisted_17 = { class: "home-editor-report__head" };
+const _hoisted_18 = { class: "home-editor-report__meta" };
+const _hoisted_19 = {
+  key: 0,
+  class: "home-editor-report__list home-editor-report__list--error"
+};
+const _hoisted_20 = {
+  key: 1,
+  class: "home-editor-report__list home-editor-report__list--warn"
+};
+const _hoisted_21 = {
+  key: 2,
+  class: "home-editor-report__more"
+};
 const _hoisted_22 = { class: "home-editor-field" };
 const _hoisted_23 = ["value"];
-const _hoisted_24 = { class: "home-editor-grid" };
-const _hoisted_25 = { class: "home-editor-field" };
-const _hoisted_26 = ["value"];
-const _hoisted_27 = { class: "home-editor-field" };
-const _hoisted_28 = ["value"];
-const _hoisted_29 = { class: "home-editor-grid" };
-const _hoisted_30 = { class: "home-editor-field" };
-const _hoisted_31 = ["value"];
-const _hoisted_32 = { class: "home-editor-field" };
-const _hoisted_33 = ["value"];
+const _hoisted_24 = { class: "home-editor-field" };
+const _hoisted_25 = ["value"];
+const _hoisted_26 = { class: "home-editor-field" };
+const _hoisted_27 = ["value"];
+const _hoisted_28 = { class: "home-editor-grid" };
+const _hoisted_29 = { class: "home-editor-field" };
+const _hoisted_30 = ["value"];
+const _hoisted_31 = { class: "home-editor-field" };
+const _hoisted_32 = ["value"];
+const _hoisted_33 = { class: "home-editor-grid" };
 const _hoisted_34 = { class: "home-editor-field" };
 const _hoisted_35 = ["value"];
-const _hoisted_36 = {
-  key: 2,
+const _hoisted_36 = { class: "home-editor-field" };
+const _hoisted_37 = ["value"];
+const _hoisted_38 = { class: "home-editor-grid" };
+const _hoisted_39 = { class: "home-editor-field" };
+const _hoisted_40 = ["value"];
+const _hoisted_41 = { class: "home-editor-field" };
+const _hoisted_42 = ["value"];
+const _hoisted_43 = { class: "home-editor-field" };
+const _hoisted_44 = ["value"];
+const _hoisted_45 = {
+  key: 3,
   class: "home-editor-empty-hint"
 };
 const _sfc_main$1 = {
@@ -4692,6 +4932,7 @@ const _sfc_main$1 = {
     const importInputRef = ref(null);
     const ioMessage = ref("");
     const ioMessageType = ref("info");
+    const validationReport = ref(null);
     let ioTimer = null;
     let dragRafId = 0;
     let pendingPointer = null;
@@ -4701,6 +4942,8 @@ const _sfc_main$1 = {
     const selectedBlockId = computed(() => getSelectedRouteBlockId(currentRoute.value));
     const selectedBlock = computed(() => getSelectedRouteBlock(currentRoute.value));
     const routeStatus = computed(() => getRouteEditStatus(currentRoute.value));
+    const routeHistory = computed(() => getRoutePublishedHistory(currentRoute.value));
+    const latestHistory = computed(() => routeHistory.value[0] || null);
     const blockCountSummary = computed(
       () => `${routeStatus.value.blockCount}/${routeStatus.value.publishedBlockCount}`
     );
@@ -4732,7 +4975,19 @@ const _sfc_main$1 = {
     }
     function syncRoute(nextPath) {
       currentRoute.value = ensureRouteLayout(nextPath);
+      validationReport.value = null;
       clearMessage();
+    }
+    function formatSnapshotTime(value) {
+      if (!value) return "未知时间";
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return String(value);
+      return new Intl.DateTimeFormat("zh-CN", {
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit"
+      }).format(date);
     }
     function blockStyle(block) {
       return {
@@ -4852,9 +5107,29 @@ const _sfc_main$1 = {
       }
     }
     function handlePublish() {
-      publishDraftRoute(currentRoute.value);
-      {
-        setMessage("success", "当前页面布局已发布。");
+      var _a, _b;
+      const result = publishDraftRoute(currentRoute.value);
+      validationReport.value = result.validation || null;
+      if (result.ok) {
+        const warningCount = ((_b = (_a = result.validation) == null ? void 0 : _a.warnings) == null ? void 0 : _b.length) || 0;
+        const warningHint = warningCount ? `，含 ${warningCount} 条提醒` : "";
+        setMessage("success", `当前页面布局已发布${warningHint}。`);
+      } else {
+        setMessage("error", result.message || "发布失败，请先修复校验问题。", 3800);
+      }
+    }
+    function handleValidatePublish() {
+      const report = validateDraftRoute(currentRoute.value);
+      validationReport.value = report;
+      if (!report.ok) {
+        setMessage("error", `发布校验失败：${report.errors.length} 个错误。`, 4200);
+        return;
+      }
+      const warningCount = report.warnings.length;
+      if (warningCount) {
+        setMessage("success", `校验通过，另有 ${warningCount} 条提醒。`, 3600);
+      } else {
+        setMessage("success", "校验通过，可安全发布。");
       }
     }
     function handleRevertDraft() {
@@ -4866,6 +5141,25 @@ const _sfc_main$1 = {
       {
         setMessage("success", "草稿已恢复到已发布版本。");
       }
+    }
+    function handleRollbackPublished() {
+      var _a;
+      if (!routeHistory.value.length) {
+        setMessage("error", "暂无可回滚快照。");
+        return;
+      }
+      const latest = latestHistory.value;
+      const targetHint = latest ? `（目标：${formatSnapshotTime(latest.at)}）` : "";
+      const confirmed = window.confirm(`将回滚已发布版本并同步覆盖草稿${targetHint}，是否继续？`);
+      if (!confirmed) return;
+      const result = rollbackPublishedRoute(currentRoute.value);
+      if (!result.ok) {
+        setMessage("error", result.message || "回滚失败。", 3600);
+        return;
+      }
+      validationReport.value = null;
+      const snapshotTime = formatSnapshotTime((_a = result.snapshot) == null ? void 0 : _a.at);
+      setMessage("success", `已回滚到快照：${snapshotTime}。`);
     }
     function handleExportCurrent() {
       const bundle = getRouteExportBundle(currentRoute.value);
@@ -4891,6 +5185,7 @@ const _sfc_main$1 = {
         const text = await file.text();
         const result = importEditorBundle(text, currentRoute.value);
         if (result.ok) {
+          validationReport.value = null;
           setMessage("success", result.message || "导入完成。");
         } else {
           setMessage("error", result.message || "导入失败。", 3600);
@@ -4965,7 +5260,8 @@ const _sfc_main$1 = {
             createBaseVNode("span", {
               class: normalizeClass(["home-editor-chip", routeStatus.value.dirty ? "is-dirty" : "is-clean"])
             }, toDisplayString(routeStatus.value.dirty ? "有未发布改动" : "已与发布版同步"), 3),
-            createBaseVNode("span", _hoisted_12, "草稿/发布 " + toDisplayString(blockCountSummary.value), 1)
+            createBaseVNode("span", _hoisted_12, "草稿/发布 " + toDisplayString(blockCountSummary.value), 1),
+            createBaseVNode("span", _hoisted_13, "回滚点 " + toDisplayString(routeStatus.value.historyCount), 1)
           ]),
           createBaseVNode("div", { class: "home-editor-actions" }, [
             createBaseVNode("button", {
@@ -4983,6 +5279,19 @@ const _sfc_main$1 = {
               class: "home-editor-btn",
               onClick: handleRevertDraft
             }, " 回滚草稿 ")
+          ]),
+          createBaseVNode("div", _hoisted_14, [
+            createBaseVNode("button", {
+              type: "button",
+              class: "home-editor-btn",
+              onClick: handleValidatePublish
+            }, " 校验发布 "),
+            createBaseVNode("button", {
+              type: "button",
+              class: "home-editor-btn",
+              disabled: !routeStatus.value.historyCount,
+              onClick: handleRollbackPublished
+            }, " 一键回滚 ", 8, _hoisted_15)
           ]),
           createBaseVNode("div", { class: "home-editor-actions" }, [
             createBaseVNode("button", {
@@ -5025,35 +5334,58 @@ const _sfc_main$1 = {
             key: 0,
             class: normalizeClass(["home-editor-message", `is-${ioMessageType.value}`])
           }, toDisplayString(ioMessage.value), 3)) : createCommentVNode("", true),
-          selectedBlock.value ? (openBlock(), createElementBlock(Fragment, { key: 1 }, [
-            createBaseVNode("label", _hoisted_13, [
+          validationReport.value ? (openBlock(), createElementBlock("section", _hoisted_16, [
+            createBaseVNode("div", _hoisted_17, [
+              createBaseVNode("span", {
+                class: normalizeClass(["home-editor-report__badge", validationReport.value.ok ? "is-pass" : "is-block"])
+              }, toDisplayString(validationReport.value.ok ? "校验通过" : "校验失败"), 3),
+              createBaseVNode("span", _hoisted_18, " 错误 " + toDisplayString(validationReport.value.errors.length) + " / 提醒 " + toDisplayString(validationReport.value.warnings.length), 1)
+            ]),
+            validationReport.value.errors.length ? (openBlock(), createElementBlock("ul", _hoisted_19, [
+              (openBlock(true), createElementBlock(Fragment, null, renderList(validationReport.value.errors.slice(0, 6), (item, index) => {
+                return openBlock(), createElementBlock("li", {
+                  key: `error-${index}`
+                }, toDisplayString(item.message), 1);
+              }), 128))
+            ])) : createCommentVNode("", true),
+            validationReport.value.warnings.length ? (openBlock(), createElementBlock("ul", _hoisted_20, [
+              (openBlock(true), createElementBlock(Fragment, null, renderList(validationReport.value.warnings.slice(0, 6), (item, index) => {
+                return openBlock(), createElementBlock("li", {
+                  key: `warning-${index}`
+                }, toDisplayString(item.message), 1);
+              }), 128))
+            ])) : createCommentVNode("", true),
+            validationReport.value.errors.length > 6 || validationReport.value.warnings.length > 6 ? (openBlock(), createElementBlock("p", _hoisted_21, " 仅展示前 6 条，请先优先处理关键问题。 ")) : createCommentVNode("", true)
+          ])) : createCommentVNode("", true),
+          selectedBlock.value ? (openBlock(), createElementBlock(Fragment, { key: 2 }, [
+            createBaseVNode("label", _hoisted_22, [
               _cache[14] || (_cache[14] = createBaseVNode("span", null, "前缀文案", -1)),
               createBaseVNode("input", {
                 class: "home-editor-input",
                 type: "text",
                 value: selectedBlock.value.kicker,
                 onInput: _cache[2] || (_cache[2] = ($event) => updateSelectedField("kicker", $event.target.value))
-              }, null, 40, _hoisted_14)
+              }, null, 40, _hoisted_23)
             ]),
-            createBaseVNode("label", _hoisted_15, [
+            createBaseVNode("label", _hoisted_24, [
               _cache[15] || (_cache[15] = createBaseVNode("span", null, "标题", -1)),
               createBaseVNode("input", {
                 class: "home-editor-input",
                 type: "text",
                 value: selectedBlock.value.title,
                 onInput: _cache[3] || (_cache[3] = ($event) => updateSelectedField("title", $event.target.value))
-              }, null, 40, _hoisted_16)
+              }, null, 40, _hoisted_25)
             ]),
-            createBaseVNode("label", _hoisted_17, [
+            createBaseVNode("label", _hoisted_26, [
               _cache[16] || (_cache[16] = createBaseVNode("span", null, "正文", -1)),
               createBaseVNode("textarea", {
                 class: "home-editor-input home-editor-input--textarea",
                 value: selectedBlock.value.body,
                 onInput: _cache[4] || (_cache[4] = ($event) => updateSelectedField("body", $event.target.value))
-              }, null, 40, _hoisted_18)
+              }, null, 40, _hoisted_27)
             ]),
-            createBaseVNode("div", _hoisted_19, [
-              createBaseVNode("label", _hoisted_20, [
+            createBaseVNode("div", _hoisted_28, [
+              createBaseVNode("label", _hoisted_29, [
                 _cache[17] || (_cache[17] = createBaseVNode("span", null, "宽度", -1)),
                 createBaseVNode("input", {
                   class: "home-editor-range",
@@ -5063,9 +5395,9 @@ const _sfc_main$1 = {
                   step: "1",
                   value: selectedBlock.value.w,
                   onInput: _cache[5] || (_cache[5] = ($event) => updateSelectedNumberField("w", $event.target.value, 180, 1200))
-                }, null, 40, _hoisted_21)
+                }, null, 40, _hoisted_30)
               ]),
-              createBaseVNode("label", _hoisted_22, [
+              createBaseVNode("label", _hoisted_31, [
                 _cache[18] || (_cache[18] = createBaseVNode("span", null, "高度", -1)),
                 createBaseVNode("input", {
                   class: "home-editor-range",
@@ -5075,11 +5407,11 @@ const _sfc_main$1 = {
                   step: "1",
                   value: selectedBlock.value.h,
                   onInput: _cache[6] || (_cache[6] = ($event) => updateSelectedNumberField("h", $event.target.value, 90, 900))
-                }, null, 40, _hoisted_23)
+                }, null, 40, _hoisted_32)
               ])
             ]),
-            createBaseVNode("div", _hoisted_24, [
-              createBaseVNode("label", _hoisted_25, [
+            createBaseVNode("div", _hoisted_33, [
+              createBaseVNode("label", _hoisted_34, [
                 _cache[19] || (_cache[19] = createBaseVNode("span", null, "透明度", -1)),
                 createBaseVNode("input", {
                   class: "home-editor-range",
@@ -5089,9 +5421,9 @@ const _sfc_main$1 = {
                   step: "0.01",
                   value: selectedBlock.value.opacity,
                   onInput: _cache[7] || (_cache[7] = ($event) => updateSelectedNumberField("opacity", $event.target.value, 0.05, 1))
-                }, null, 40, _hoisted_26)
+                }, null, 40, _hoisted_35)
               ]),
-              createBaseVNode("label", _hoisted_27, [
+              createBaseVNode("label", _hoisted_36, [
                 _cache[20] || (_cache[20] = createBaseVNode("span", null, "圆角", -1)),
                 createBaseVNode("input", {
                   class: "home-editor-range",
@@ -5101,11 +5433,11 @@ const _sfc_main$1 = {
                   step: "1",
                   value: selectedBlock.value.radius,
                   onInput: _cache[8] || (_cache[8] = ($event) => updateSelectedNumberField("radius", $event.target.value, 0, 60))
-                }, null, 40, _hoisted_28)
+                }, null, 40, _hoisted_37)
               ])
             ]),
-            createBaseVNode("div", _hoisted_29, [
-              createBaseVNode("label", _hoisted_30, [
+            createBaseVNode("div", _hoisted_38, [
+              createBaseVNode("label", _hoisted_39, [
                 _cache[21] || (_cache[21] = createBaseVNode("span", null, "模糊度", -1)),
                 createBaseVNode("input", {
                   class: "home-editor-range",
@@ -5115,28 +5447,28 @@ const _sfc_main$1 = {
                   step: "1",
                   value: selectedBlock.value.blur,
                   onInput: _cache[9] || (_cache[9] = ($event) => updateSelectedNumberField("blur", $event.target.value, 0, 24))
-                }, null, 40, _hoisted_31)
+                }, null, 40, _hoisted_40)
               ]),
-              createBaseVNode("label", _hoisted_32, [
+              createBaseVNode("label", _hoisted_41, [
                 _cache[22] || (_cache[22] = createBaseVNode("span", null, "文字颜色", -1)),
                 createBaseVNode("input", {
                   class: "home-editor-color",
                   type: "color",
                   value: normalizeColorHex(selectedBlock.value.color),
                   onInput: updateTextColor
-                }, null, 40, _hoisted_33)
+                }, null, 40, _hoisted_42)
               ])
             ]),
-            createBaseVNode("label", _hoisted_34, [
+            createBaseVNode("label", _hoisted_43, [
               _cache[23] || (_cache[23] = createBaseVNode("span", null, "背景样式", -1)),
               createBaseVNode("input", {
                 class: "home-editor-input",
                 type: "text",
                 value: selectedBlock.value.bg,
                 onInput: _cache[10] || (_cache[10] = ($event) => updateSelectedField("bg", $event.target.value))
-              }, null, 40, _hoisted_35)
+              }, null, 40, _hoisted_44)
             ])
-          ], 64)) : (openBlock(), createElementBlock("p", _hoisted_36, " 当前未选中模块。请点击画布中的模块，或先点击“新增”创建模块。 "))
+          ], 64)) : (openBlock(), createElementBlock("p", _hoisted_45, " 当前未选中模块。请点击画布中的模块，或先点击“新增”创建模块。 "))
         ])) : createCommentVNode("", true)
       ], 2)) : createCommentVNode("", true);
     };

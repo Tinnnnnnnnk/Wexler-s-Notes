@@ -5,6 +5,7 @@ import {
   addRouteTextBlock,
   ensureRouteLayout,
   getOrderedRouteBlocks,
+  getRoutePublishedHistory,
   getRouteBlocks,
   getRouteEditStatus,
   getRouteExportBundle,
@@ -19,9 +20,11 @@ import {
   publishDraftRoute,
   removeRouteBlock,
   resetRouteLayout,
+  rollbackPublishedRoute,
   revertRouteDraft,
   saveDraftRoute,
-  setSelectedRouteBlock
+  setSelectedRouteBlock,
+  validateDraftRoute
 } from './editorState'
 
 const route = useRoute()
@@ -30,6 +33,7 @@ const dragState = ref(null)
 const importInputRef = ref(null)
 const ioMessage = ref('')
 const ioMessageType = ref('info')
+const validationReport = ref(null)
 
 let ioTimer = null
 let dragRafId = 0
@@ -41,6 +45,8 @@ const orderedBlocks = computed(() => getOrderedRouteBlocks(currentRoute.value))
 const selectedBlockId = computed(() => getSelectedRouteBlockId(currentRoute.value))
 const selectedBlock = computed(() => getSelectedRouteBlock(currentRoute.value))
 const routeStatus = computed(() => getRouteEditStatus(currentRoute.value))
+const routeHistory = computed(() => getRoutePublishedHistory(currentRoute.value))
+const latestHistory = computed(() => routeHistory.value[0] || null)
 const blockCountSummary = computed(
   () => `${routeStatus.value.blockCount}/${routeStatus.value.publishedBlockCount}`
 )
@@ -77,7 +83,21 @@ function clearMessage() {
 
 function syncRoute(nextPath) {
   currentRoute.value = ensureRouteLayout(nextPath)
+  validationReport.value = null
   clearMessage()
+}
+
+function formatSnapshotTime(value) {
+  if (!value) return '未知时间'
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return String(value)
+
+  return new Intl.DateTimeFormat('zh-CN', {
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit'
+  }).format(date)
 }
 
 function blockStyle(block) {
@@ -220,8 +240,30 @@ function handleSaveDraft() {
 
 function handlePublish() {
   const result = publishDraftRoute(currentRoute.value)
+  validationReport.value = result.validation || null
   if (result.ok) {
-    setMessage('success', '当前页面布局已发布。')
+    const warningCount = result.validation?.warnings?.length || 0
+    const warningHint = warningCount ? `，含 ${warningCount} 条提醒` : ''
+    setMessage('success', `当前页面布局已发布${warningHint}。`)
+  } else {
+    setMessage('error', result.message || '发布失败，请先修复校验问题。', 3800)
+  }
+}
+
+function handleValidatePublish() {
+  const report = validateDraftRoute(currentRoute.value)
+  validationReport.value = report
+
+  if (!report.ok) {
+    setMessage('error', `发布校验失败：${report.errors.length} 个错误。`, 4200)
+    return
+  }
+
+  const warningCount = report.warnings.length
+  if (warningCount) {
+    setMessage('success', `校验通过，另有 ${warningCount} 条提醒。`, 3600)
+  } else {
+    setMessage('success', '校验通过，可安全发布。')
   }
 }
 
@@ -234,6 +276,28 @@ function handleRevertDraft() {
   if (result.ok) {
     setMessage('success', '草稿已恢复到已发布版本。')
   }
+}
+
+function handleRollbackPublished() {
+  if (!routeHistory.value.length) {
+    setMessage('error', '暂无可回滚快照。')
+    return
+  }
+
+  const latest = latestHistory.value
+  const targetHint = latest ? `（目标：${formatSnapshotTime(latest.at)}）` : ''
+  const confirmed = window.confirm(`将回滚已发布版本并同步覆盖草稿${targetHint}，是否继续？`)
+  if (!confirmed) return
+
+  const result = rollbackPublishedRoute(currentRoute.value)
+  if (!result.ok) {
+    setMessage('error', result.message || '回滚失败。', 3600)
+    return
+  }
+
+  validationReport.value = null
+  const snapshotTime = formatSnapshotTime(result.snapshot?.at)
+  setMessage('success', `已回滚到快照：${snapshotTime}。`)
 }
 
 function handleExportCurrent() {
@@ -262,6 +326,7 @@ async function handleImportFile(event) {
     const text = await file.text()
     const result = importEditorBundle(text, currentRoute.value)
     if (result.ok) {
+      validationReport.value = null
       setMessage('success', result.message || '导入完成。')
     } else {
       setMessage('error', result.message || '导入失败。', 3600)
@@ -344,6 +409,7 @@ onBeforeUnmount(() => {
           {{ routeStatus.dirty ? '有未发布改动' : '已与发布版同步' }}
         </span>
         <span class="home-editor-chip home-editor-chip--count">草稿/发布 {{ blockCountSummary }}</span>
+        <span class="home-editor-chip home-editor-chip--history">回滚点 {{ routeStatus.historyCount }}</span>
       </div>
 
       <div class="home-editor-actions">
@@ -355,6 +421,20 @@ onBeforeUnmount(() => {
         </button>
         <button type="button" class="home-editor-btn" @click="handleRevertDraft">
           回滚草稿
+        </button>
+      </div>
+
+      <div class="home-editor-actions home-editor-actions--secondary">
+        <button type="button" class="home-editor-btn" @click="handleValidatePublish">
+          校验发布
+        </button>
+        <button
+          type="button"
+          class="home-editor-btn"
+          :disabled="!routeStatus.historyCount"
+          @click="handleRollbackPublished"
+        >
+          一键回滚
         </button>
       </div>
 
@@ -383,6 +463,48 @@ onBeforeUnmount(() => {
       <p v-if="ioMessage" class="home-editor-message" :class="`is-${ioMessageType}`">
         {{ ioMessage }}
       </p>
+
+      <section v-if="validationReport" class="home-editor-report">
+        <div class="home-editor-report__head">
+          <span
+            class="home-editor-report__badge"
+            :class="validationReport.ok ? 'is-pass' : 'is-block'"
+          >
+            {{ validationReport.ok ? '校验通过' : '校验失败' }}
+          </span>
+          <span class="home-editor-report__meta">
+            错误 {{ validationReport.errors.length }} / 提醒 {{ validationReport.warnings.length }}
+          </span>
+        </div>
+
+        <ul
+          v-if="validationReport.errors.length"
+          class="home-editor-report__list home-editor-report__list--error"
+        >
+          <li v-for="(item, index) in validationReport.errors.slice(0, 6)" :key="`error-${index}`">
+            {{ item.message }}
+          </li>
+        </ul>
+
+        <ul
+          v-if="validationReport.warnings.length"
+          class="home-editor-report__list home-editor-report__list--warn"
+        >
+          <li
+            v-for="(item, index) in validationReport.warnings.slice(0, 6)"
+            :key="`warning-${index}`"
+          >
+            {{ item.message }}
+          </li>
+        </ul>
+
+        <p
+          v-if="validationReport.errors.length > 6 || validationReport.warnings.length > 6"
+          class="home-editor-report__more"
+        >
+          仅展示前 6 条，请先优先处理关键问题。
+        </p>
+      </section>
 
       <template v-if="selectedBlock">
         <label class="home-editor-field">

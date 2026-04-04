@@ -7,7 +7,7 @@ const ROUTE_PUBLISHED_HISTORY_KEY_PREFIX = 'wexler.editor.layout.route.published
 const LEGACY_ROUTE_LAYOUT_KEY_PREFIX = 'wexler.editor.layout.route.v1.'
 
 const EXPORT_SCHEMA = 'wexler.editor.layout.bundle'
-const EXPORT_VERSION = 2
+const EXPORT_VERSION = 3
 const MAX_PUBLISHED_HISTORY = 12
 
 const isEditorMode = ref(false)
@@ -159,16 +159,71 @@ function normalizeRoutePayload(routeInput, payload) {
       : source.layout && typeof source.layout === 'object'
         ? source.layout
         : draftCandidate
+  const historyCandidate = Array.isArray(source.publishedHistory)
+    ? source.publishedHistory
+    : Array.isArray(source.history)
+      ? source.history
+      : []
 
   return {
     route,
     draft: normalizeLayout(route, draftCandidate),
-    published: normalizeLayout(route, publishedCandidate)
+    published: normalizeLayout(route, publishedCandidate),
+    publishedHistory: normalizeHistoryList(route, historyCandidate)
   }
 }
 
 function stringifyLayout(routeInput, layout) {
   return JSON.stringify(normalizeLayout(routeInput, layout))
+}
+
+function createSnapshotId() {
+  return `snap-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
+}
+
+function createHistorySnapshot(routeInput, layout, reason = 'publish') {
+  const route = normalizeRoute(routeInput)
+  const snapshotReason =
+    typeof reason === 'string' && reason.trim() ? reason.trim() : 'publish'
+
+  return {
+    id: createSnapshotId(),
+    at: new Date().toISOString(),
+    reason: snapshotReason,
+    layout: normalizeLayout(route, layout)
+  }
+}
+
+function normalizeHistoryEntry(routeInput, raw, index = 0) {
+  const route = normalizeRoute(routeInput)
+  if (!raw || typeof raw !== 'object') return null
+
+  const layoutSource =
+    raw.layout && typeof raw.layout === 'object'
+      ? raw.layout
+      : Array.isArray(raw.blocks)
+        ? raw
+        : null
+  if (!layoutSource) return null
+
+  return {
+    id:
+      typeof raw.id === 'string' && raw.id.trim()
+        ? raw.id.trim()
+        : `${createSnapshotId()}-${index}`,
+    at: typeof raw.at === 'string' && raw.at.trim() ? raw.at.trim() : new Date().toISOString(),
+    reason: typeof raw.reason === 'string' && raw.reason.trim() ? raw.reason.trim() : 'publish',
+    layout: normalizeLayout(route, layoutSource)
+  }
+}
+
+function normalizeHistoryList(routeInput, rawList) {
+  if (!Array.isArray(rawList)) return []
+
+  return rawList
+    .map((item, index) => normalizeHistoryEntry(routeInput, item, index))
+    .filter(Boolean)
+    .slice(0, MAX_PUBLISHED_HISTORY)
 }
 
 function routeDraftKey(routeInput) {
@@ -177,6 +232,10 @@ function routeDraftKey(routeInput) {
 
 function routePublishedKey(routeInput) {
   return `${ROUTE_PUBLISHED_KEY_PREFIX}${encodeURIComponent(normalizeRoute(routeInput))}`
+}
+
+function routePublishedHistoryKey(routeInput) {
+  return `${ROUTE_PUBLISHED_HISTORY_KEY_PREFIX}${encodeURIComponent(normalizeRoute(routeInput))}`
 }
 
 function routeLegacyKey(routeInput) {
@@ -224,6 +283,14 @@ function persistPublishedRouteLayout(routeInput) {
   safeWriteStorage(routePublishedKey(route), JSON.stringify(publishedLayoutsByRoute.value[route]))
 }
 
+function persistPublishedRouteHistory(routeInput) {
+  const route = ensureRouteLayout(routeInput)
+  safeWriteStorage(
+    routePublishedHistoryKey(route),
+    JSON.stringify(publishedHistoryByRoute.value[route] || [])
+  )
+}
+
 function ensureSelectedValid(routeInput) {
   const route = normalizeRoute(routeInput)
   const blocks = draftLayoutsByRoute.value[route]?.blocks || []
@@ -268,15 +335,32 @@ function setPublishedLayout(routeInput, layout, options = {}) {
   }
 }
 
+function setPublishedHistory(routeInput, historyList, options = {}) {
+  const route = normalizeRoute(routeInput)
+  const persist = options.persist !== false
+  const normalized = normalizeHistoryList(route, historyList)
+
+  publishedHistoryByRoute.value = {
+    ...publishedHistoryByRoute.value,
+    [route]: normalized
+  }
+
+  if (persist) {
+    persistPublishedRouteHistory(route)
+  }
+}
+
 function loadRouteLayout(routeInput) {
   const route = normalizeRoute(routeInput)
 
   const draftRaw = safeReadStorage(routeDraftKey(route))
   const publishedRaw = safeReadStorage(routePublishedKey(route))
+  const historyRaw = safeReadStorage(routePublishedHistoryKey(route))
   const legacyRaw = safeReadStorage(routeLegacyKey(route))
 
   let draftLayout = null
   let publishedLayout = null
+  let publishedHistory = []
 
   if (draftRaw) {
     try {
@@ -294,13 +378,23 @@ function loadRouteLayout(routeInput) {
     }
   }
 
+  if (historyRaw) {
+    try {
+      publishedHistory = normalizeHistoryList(route, JSON.parse(historyRaw))
+    } catch (error) {
+      publishedHistory = []
+    }
+  }
+
   if (!draftLayout && !publishedLayout && legacyRaw) {
     try {
       const legacyLayout = normalizeLayout(route, JSON.parse(legacyRaw))
       draftLayout = clone(legacyLayout)
       publishedLayout = clone(legacyLayout)
+      publishedHistory = []
       safeWriteStorage(routeDraftKey(route), JSON.stringify(draftLayout))
       safeWriteStorage(routePublishedKey(route), JSON.stringify(publishedLayout))
+      safeWriteStorage(routePublishedHistoryKey(route), JSON.stringify(publishedHistory))
       safeRemoveStorage(routeLegacyKey(route))
     } catch (error) {
       // Ignore legacy parse errors.
@@ -327,13 +421,21 @@ function loadRouteLayout(routeInput) {
     ...publishedLayoutsByRoute.value,
     [route]: normalizeLayout(route, publishedLayout)
   }
+  publishedHistoryByRoute.value = {
+    ...publishedHistoryByRoute.value,
+    [route]: normalizeHistoryList(route, publishedHistory)
+  }
 
   ensureSelectedValid(route)
 }
 
 function ensureRouteLayout(routeInput) {
   const route = normalizeRoute(routeInput)
-  if (!draftLayoutsByRoute.value[route] || !publishedLayoutsByRoute.value[route]) {
+  if (
+    !draftLayoutsByRoute.value[route] ||
+    !publishedLayoutsByRoute.value[route] ||
+    !publishedHistoryByRoute.value[route]
+  ) {
     loadRouteLayout(route)
   }
   return route
@@ -342,7 +444,8 @@ function ensureRouteLayout(routeInput) {
 function collectStoredRoutes() {
   const result = new Set([
     ...Object.keys(draftLayoutsByRoute.value),
-    ...Object.keys(publishedLayoutsByRoute.value)
+    ...Object.keys(publishedLayoutsByRoute.value),
+    ...Object.keys(publishedHistoryByRoute.value)
   ])
 
   if (typeof window === 'undefined') {
@@ -358,6 +461,8 @@ function collectStoredRoutes() {
         result.add(decodeURIComponent(key.slice(ROUTE_DRAFT_KEY_PREFIX.length)))
       } else if (key.startsWith(ROUTE_PUBLISHED_KEY_PREFIX)) {
         result.add(decodeURIComponent(key.slice(ROUTE_PUBLISHED_KEY_PREFIX.length)))
+      } else if (key.startsWith(ROUTE_PUBLISHED_HISTORY_KEY_PREFIX)) {
+        result.add(decodeURIComponent(key.slice(ROUTE_PUBLISHED_HISTORY_KEY_PREFIX.length)))
       } else if (key.startsWith(LEGACY_ROUTE_LAYOUT_KEY_PREFIX)) {
         result.add(decodeURIComponent(key.slice(LEGACY_ROUTE_LAYOUT_KEY_PREFIX.length)))
       }
@@ -419,6 +524,106 @@ function getSelectedRouteBlock(routeInput) {
   return blocks.find((block) => block.id === selectedId) || null
 }
 
+function getRoutePublishedHistory(routeInput) {
+  const route = ensureRouteLayout(routeInput)
+  return publishedHistoryByRoute.value[route] || []
+}
+
+function validateRouteLayout(routeInput, layoutInput) {
+  const route = normalizeRoute(routeInput)
+  const layout = normalizeLayout(route, layoutInput)
+  const errors = []
+  const warnings = []
+  const seenIds = new Set()
+
+  if (layout.blocks.length > 80) {
+    errors.push({
+      code: 'TOO_MANY_BLOCKS',
+      message: `模块数量为 ${layout.blocks.length}，超过 80 的上限。`
+    })
+  }
+
+  if (!layout.blocks.length) {
+    warnings.push({
+      code: 'EMPTY_LAYOUT',
+      message: '当前页面没有模块，发布后会是空白页面。'
+    })
+  }
+
+  layout.blocks.forEach((block, index) => {
+    const label = `模块 #${index + 1}${block.id ? `（${block.id}）` : ''}`
+    const contentLength = `${block.kicker}${block.title}${block.body}`.trim().length
+
+    if (seenIds.has(block.id)) {
+      errors.push({
+        code: 'DUPLICATE_ID',
+        blockId: block.id,
+        index,
+        message: `${label} 与其他模块使用了重复 ID。`
+      })
+    }
+    seenIds.add(block.id)
+
+    if (!contentLength) {
+      warnings.push({
+        code: 'EMPTY_CONTENT',
+        blockId: block.id,
+        index,
+        message: `${label} 没有任何文案内容。`
+      })
+    }
+
+    if (block.title.length > 120) {
+      warnings.push({
+        code: 'TITLE_TOO_LONG',
+        blockId: block.id,
+        index,
+        message: `${label} 标题过长（>${120} 字）。`
+      })
+    }
+
+    if (block.body.length > 2000) {
+      warnings.push({
+        code: 'BODY_TOO_LONG',
+        blockId: block.id,
+        index,
+        message: `${label} 正文过长（>${2000} 字），可能影响可读性。`
+      })
+    }
+
+    if (block.x + block.w > 5000 || block.y + block.h > 5000) {
+      warnings.push({
+        code: 'OUT_OF_VIEWPORT',
+        blockId: block.id,
+        index,
+        message: `${label} 可能超出可编辑区域边界。`
+      })
+    }
+  })
+
+  return {
+    ok: errors.length === 0,
+    route,
+    checkedAt: new Date().toISOString(),
+    blockCount: layout.blocks.length,
+    errors,
+    warnings
+  }
+}
+
+function validateDraftRoute(routeInput) {
+  const route = ensureRouteLayout(routeInput)
+  return validateRouteLayout(route, draftLayoutsByRoute.value[route])
+}
+
+function pushPublishedHistorySnapshot(routeInput, layout, reason = 'publish') {
+  const route = ensureRouteLayout(routeInput)
+  const snapshot = createHistorySnapshot(route, layout, reason)
+  const nextHistory = [snapshot, ...getRoutePublishedHistory(route)].slice(0, MAX_PUBLISHED_HISTORY)
+  setPublishedHistory(route, nextHistory, { persist: true })
+  return snapshot
+}
+
 function routeHasUnpublishedChanges(routeInput) {
   const route = ensureRouteLayout(routeInput)
   return (
@@ -433,6 +638,7 @@ function getRouteEditStatus(routeInput) {
     route,
     blockCount: getRouteBlocks(route).length,
     publishedBlockCount: getPublishedRouteBlocks(route).length,
+    historyCount: getRoutePublishedHistory(route).length,
     dirty: routeHasUnpublishedChanges(route)
   }
 }
@@ -509,11 +715,29 @@ function saveDraftRoute(routeInput) {
 function publishDraftRoute(routeInput) {
   const route = ensureRouteLayout(routeInput)
   const draftLayout = clone(draftLayoutsByRoute.value[route])
+  const publishedLayout = clone(publishedLayoutsByRoute.value[route] || createDefaultLayout(route))
+  const validation = validateRouteLayout(route, draftLayout)
+
+  if (!validation.ok) {
+    return {
+      ok: false,
+      route,
+      message: '发布校验未通过，请先修复错误项。',
+      validation
+    }
+  }
+
+  if (stringifyLayout(route, publishedLayout) !== stringifyLayout(route, draftLayout)) {
+    pushPublishedHistorySnapshot(route, publishedLayout, 'publish')
+  }
+
   setPublishedLayout(route, draftLayout, { persist: true })
   persistDraftRouteLayout(route)
   return {
     ok: true,
-    route
+    route,
+    validation,
+    historyCount: getRoutePublishedHistory(route).length
   }
 }
 
@@ -528,6 +752,55 @@ function revertRouteDraft(routeInput) {
   }
 }
 
+function rollbackPublishedRoute(routeInput, snapshotId = '') {
+  const route = ensureRouteLayout(routeInput)
+  const history = getRoutePublishedHistory(route)
+  if (!history.length) {
+    return {
+      ok: false,
+      route,
+      message: '没有可回滚的发布快照。'
+    }
+  }
+
+  const targetIndex = snapshotId
+    ? history.findIndex((item) => item.id === snapshotId)
+    : 0
+  if (targetIndex < 0) {
+    return {
+      ok: false,
+      route,
+      message: '未找到指定的回滚快照。'
+    }
+  }
+
+  const targetSnapshot = history[targetIndex]
+  const currentPublished = clone(publishedLayoutsByRoute.value[route] || createDefaultLayout(route))
+  const historyWithoutTarget = history.filter((_, index) => index !== targetIndex)
+  const shouldKeepCurrentAsSnapshot =
+    stringifyLayout(route, currentPublished) !== stringifyLayout(route, targetSnapshot.layout)
+
+  const nextHistory = shouldKeepCurrentAsSnapshot
+    ? [createHistorySnapshot(route, currentPublished, 'rollback'), ...historyWithoutTarget]
+    : historyWithoutTarget
+
+  setPublishedHistory(route, nextHistory.slice(0, MAX_PUBLISHED_HISTORY), { persist: true })
+  setPublishedLayout(route, clone(targetSnapshot.layout), { persist: true })
+  setDraftLayout(route, clone(targetSnapshot.layout), { persist: true })
+  ensureSelectedValid(route)
+
+  return {
+    ok: true,
+    route,
+    snapshot: {
+      id: targetSnapshot.id,
+      at: targetSnapshot.at,
+      reason: targetSnapshot.reason
+    },
+    historyCount: getRoutePublishedHistory(route).length
+  }
+}
+
 function getRouteExportBundle(routeInput) {
   const route = ensureRouteLayout(routeInput)
   return {
@@ -537,7 +810,8 @@ function getRouteExportBundle(routeInput) {
     scope: 'route',
     route,
     draft: clone(draftLayoutsByRoute.value[route]),
-    published: clone(publishedLayoutsByRoute.value[route])
+    published: clone(publishedLayoutsByRoute.value[route]),
+    publishedHistory: clone(getRoutePublishedHistory(route))
   }
 }
 
@@ -549,7 +823,8 @@ function getAllRoutesExportBundle() {
     const route = ensureRouteLayout(rawRoute)
     payload[route] = {
       draft: clone(draftLayoutsByRoute.value[route]),
-      published: clone(publishedLayoutsByRoute.value[route])
+      published: clone(publishedLayoutsByRoute.value[route]),
+      publishedHistory: clone(getRoutePublishedHistory(route))
     }
   })
 
@@ -574,6 +849,7 @@ function importRoutePayload(payload, fallbackRouteInput) {
 
   setDraftLayout(normalized.route, normalized.draft, { persist: true })
   setPublishedLayout(normalized.route, normalized.published, { persist: true })
+  setPublishedHistory(normalized.route, normalized.publishedHistory, { persist: true })
   ensureSelectedValid(normalized.route)
 
   return {
@@ -594,6 +870,7 @@ function importAllRoutesPayload(routesMap) {
     const normalized = normalizeRoutePayload(rawRoute, payload)
     setDraftLayout(normalized.route, normalized.draft, { persist: true })
     setPublishedLayout(normalized.route, normalized.published, { persist: true })
+    setPublishedHistory(normalized.route, normalized.publishedHistory, { persist: true })
     ensureSelectedValid(normalized.route)
     updatedRoutes.push(normalized.route)
   })
@@ -666,6 +943,7 @@ export {
   isEditorMode,
   draftLayoutsByRoute,
   publishedLayoutsByRoute,
+  publishedHistoryByRoute,
   selectedByRoute,
   initEditorState,
   normalizeRoute,
@@ -675,20 +953,24 @@ export {
   setSelectedRouteBlock,
   getRouteBlocks,
   getPublishedRouteBlocks,
+  getRoutePublishedHistory,
   getOrderedRouteBlocks,
   getSelectedRouteBlockId,
   getSelectedRouteBlock,
   routeHasUnpublishedChanges,
   getRouteEditStatus,
+  validateDraftRoute,
   patchRouteBlock,
   addRouteTextBlock,
   removeRouteBlock,
   resetRouteLayout,
   saveDraftRoute,
   publishDraftRoute,
+  rollbackPublishedRoute,
   revertRouteDraft,
   persistDraftRouteLayout,
   persistPublishedRouteLayout,
+  persistPublishedRouteHistory,
   getRouteExportBundle,
   getAllRoutesExportBundle,
   importEditorBundle

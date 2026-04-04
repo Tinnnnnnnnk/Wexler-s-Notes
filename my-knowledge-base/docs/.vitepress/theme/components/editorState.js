@@ -8,6 +8,9 @@ const LEGACY_ROUTE_LAYOUT_KEY_PREFIX = 'wexler.editor.layout.route.v1.'
 
 const EXPORT_SCHEMA = 'wexler.editor.layout.bundle'
 const EXPORT_VERSION = 3
+const LAYOUT_SCHEMA_VERSION = 2
+const IMPORT_CONFLICT_CODE = 'IMPORT_CONFLICT'
+const UNSUPPORTED_BUNDLE_VERSION_CODE = 'UNSUPPORTED_BUNDLE_VERSION'
 const MAX_PUBLISHED_HISTORY = 12
 
 const isEditorMode = ref(false)
@@ -49,7 +52,7 @@ function createDefaultLayout(routeInput) {
 
   if (route === '/') {
     return {
-      version: 1,
+      version: LAYOUT_SCHEMA_VERSION,
       blocks: [
         {
           ...createDefaultBlockSeed(),
@@ -90,7 +93,7 @@ function createDefaultLayout(routeInput) {
   }
 
   return {
-    version: 1,
+    version: LAYOUT_SCHEMA_VERSION,
     blocks: []
   }
 }
@@ -134,12 +137,20 @@ function normalizeLayout(routeInput, raw) {
   const fallback = createDefaultLayout(routeInput)
   if (!raw || typeof raw !== 'object') return fallback
 
-  const blocks = Array.isArray(raw.blocks)
-    ? raw.blocks.map((block, index) => normalizeBlock(block, index))
+  const blockSource = Array.isArray(raw.blocks)
+    ? raw.blocks
+    : Array.isArray(raw.items)
+      ? raw.items
+      : Array.isArray(raw.modules)
+        ? raw.modules
+        : null
+
+  const blocks = blockSource
+    ? blockSource.map((block, index) => normalizeBlock(block, index))
     : fallback.blocks
 
   return {
-    version: 1,
+    version: LAYOUT_SCHEMA_VERSION,
     blocks
   }
 }
@@ -170,6 +181,123 @@ function normalizeRoutePayload(routeInput, payload) {
     draft: normalizeLayout(route, draftCandidate),
     published: normalizeLayout(route, publishedCandidate),
     publishedHistory: normalizeHistoryList(route, historyCandidate)
+  }
+}
+
+function normalizeBundleVersion(value) {
+  const parsed = Number(value)
+  if (!Number.isFinite(parsed)) return 1
+  return Math.max(1, Math.floor(parsed))
+}
+
+function coerceImportBundle(parsed, currentRouteInput = '/') {
+  if (!parsed || typeof parsed !== 'object') {
+    return {
+      ok: false,
+      message: 'Import payload must be an object.'
+    }
+  }
+
+  if (parsed.schema === EXPORT_SCHEMA) {
+    const version = normalizeBundleVersion(parsed.version)
+    if (version > EXPORT_VERSION) {
+      return {
+        ok: false,
+        code: UNSUPPORTED_BUNDLE_VERSION_CODE,
+        message: `导入文件版本 v${version} 高于当前支持的 v${EXPORT_VERSION}。`
+      }
+    }
+
+    if (parsed.scope === 'route' || parsed.scope === 'all') {
+      return {
+        ok: true,
+        bundle: {
+          ...parsed,
+          version
+        }
+      }
+    }
+
+    if (parsed.routes && typeof parsed.routes === 'object' && !Array.isArray(parsed.routes)) {
+      return {
+        ok: true,
+        bundle: {
+          schema: EXPORT_SCHEMA,
+          version,
+          scope: 'all',
+          routes: parsed.routes,
+          migratedFrom: version
+        }
+      }
+    }
+
+    return {
+      ok: true,
+      bundle: {
+        schema: EXPORT_SCHEMA,
+        version,
+        scope: 'route',
+        route:
+          typeof parsed.route === 'string' && parsed.route.trim()
+            ? normalizeRoute(parsed.route)
+            : normalizeRoute(currentRouteInput),
+        draft:
+          parsed.draft && typeof parsed.draft === 'object'
+            ? parsed.draft
+            : parsed.layout && typeof parsed.layout === 'object'
+              ? parsed.layout
+              : parsed,
+        published:
+          parsed.published && typeof parsed.published === 'object'
+            ? parsed.published
+            : parsed.layout && typeof parsed.layout === 'object'
+              ? parsed.layout
+              : parsed.draft && typeof parsed.draft === 'object'
+                ? parsed.draft
+                : parsed,
+        publishedHistory: Array.isArray(parsed.publishedHistory)
+          ? parsed.publishedHistory
+          : Array.isArray(parsed.history)
+            ? parsed.history
+            : [],
+        migratedFrom: version
+      }
+    }
+  }
+
+  if (
+    Array.isArray(parsed.blocks) ||
+    Array.isArray(parsed.items) ||
+    Array.isArray(parsed.modules) ||
+    (parsed.layout && typeof parsed.layout === 'object')
+  ) {
+    return {
+      ok: true,
+      bundle: {
+        schema: EXPORT_SCHEMA,
+        version: 1,
+        scope: 'route',
+        route:
+          typeof parsed.route === 'string' && parsed.route.trim()
+            ? normalizeRoute(parsed.route)
+            : normalizeRoute(currentRouteInput),
+        draft:
+          parsed.layout && typeof parsed.layout === 'object'
+            ? parsed.layout
+            : parsed,
+        published:
+          parsed.layout && typeof parsed.layout === 'object'
+            ? parsed.layout
+            : parsed,
+        publishedHistory: [],
+        migratedFrom: 1
+      }
+    }
+  }
+
+  return {
+    ok: false,
+    message: 'Unsupported import payload structure.'
   }
 }
 
@@ -932,6 +1060,10 @@ function getRouteExportBundle(routeInput) {
     schema: EXPORT_SCHEMA,
     version: EXPORT_VERSION,
     exportedAt: new Date().toISOString(),
+    meta: {
+      layoutVersion: LAYOUT_SCHEMA_VERSION,
+      maxPublishedHistory: MAX_PUBLISHED_HISTORY
+    },
     scope: 'route',
     route,
     draft: clone(draftLayoutsByRoute.value[route]),
@@ -957,12 +1089,31 @@ function getAllRoutesExportBundle() {
     schema: EXPORT_SCHEMA,
     version: EXPORT_VERSION,
     exportedAt: new Date().toISOString(),
+    meta: {
+      layoutVersion: LAYOUT_SCHEMA_VERSION,
+      maxPublishedHistory: MAX_PUBLISHED_HISTORY
+    },
     scope: 'all',
     routes: payload
   }
 }
 
-function importRoutePayload(payload, fallbackRouteInput) {
+function detectRouteImportConflict(routeInput, incomingDraft, options = {}) {
+  if (options.force === true) return null
+  const route = ensureRouteLayout(routeInput)
+  if (!routeHasUnpublishedChanges(route)) return null
+
+  const currentDraft = draftLayoutsByRoute.value[route] || createDefaultLayout(route)
+  const nextDraft = normalizeLayout(route, incomingDraft)
+  if (stringifyLayout(route, currentDraft) === stringifyLayout(route, nextDraft)) return null
+
+  return {
+    route,
+    reason: '当前页面存在未发布草稿改动，导入会覆盖这些改动。'
+  }
+}
+
+function importRoutePayload(payload, fallbackRouteInput, options = {}) {
   const fallbackRoute = ensureRouteLayout(fallbackRouteInput)
 
   const route =
@@ -971,6 +1122,16 @@ function importRoutePayload(payload, fallbackRouteInput) {
       : fallbackRoute
 
   const normalized = normalizeRoutePayload(route, payload)
+  const conflict = detectRouteImportConflict(normalized.route, normalized.draft, options)
+  if (conflict) {
+    return {
+      ok: false,
+      code: IMPORT_CONFLICT_CODE,
+      message: '检测到导入冲突，请确认后再覆盖导入。',
+      routes: [conflict.route],
+      conflicts: [conflict]
+    }
+  }
 
   setDraftLayout(normalized.route, normalized.draft, { persist: true })
   setPublishedLayout(normalized.route, normalized.published, { persist: true })
@@ -978,11 +1139,12 @@ function importRoutePayload(payload, fallbackRouteInput) {
   ensureSelectedValid(normalized.route)
 
   return {
+    ok: true,
     route: normalized.route
   }
 }
 
-function importAllRoutesPayload(routesMap) {
+function importAllRoutesPayload(routesMap, options = {}) {
   if (!routesMap || typeof routesMap !== 'object' || Array.isArray(routesMap)) {
     return {
       ok: false,
@@ -990,9 +1152,25 @@ function importAllRoutesPayload(routesMap) {
     }
   }
 
+  const normalizedList = Object.entries(routesMap).map(([rawRoute, payload]) =>
+    normalizeRoutePayload(rawRoute, payload)
+  )
+  const conflicts = normalizedList
+    .map((normalized) => detectRouteImportConflict(normalized.route, normalized.draft, options))
+    .filter(Boolean)
+
+  if (conflicts.length) {
+    return {
+      ok: false,
+      code: IMPORT_CONFLICT_CODE,
+      message: `检测到 ${conflicts.length} 个页面存在未发布草稿冲突。`,
+      routes: conflicts.map((item) => item.route),
+      conflicts
+    }
+  }
+
   const updatedRoutes = []
-  Object.entries(routesMap).forEach(([rawRoute, payload]) => {
-    const normalized = normalizeRoutePayload(rawRoute, payload)
+  normalizedList.forEach((normalized) => {
     setDraftLayout(normalized.route, normalized.draft, { persist: true })
     setPublishedLayout(normalized.route, normalized.published, { persist: true })
     setPublishedHistory(normalized.route, normalized.publishedHistory, { persist: true })
@@ -1007,7 +1185,7 @@ function importAllRoutesPayload(routesMap) {
   }
 }
 
-function importEditorBundle(rawText, currentRouteInput = '/') {
+function importEditorBundle(rawText, currentRouteInput = '/', options = {}) {
   let parsed
   try {
     parsed = JSON.parse(rawText)
@@ -1018,49 +1196,39 @@ function importEditorBundle(rawText, currentRouteInput = '/') {
     }
   }
 
-  if (!parsed || typeof parsed !== 'object') {
-    return {
-      ok: false,
-      message: 'Import payload must be an object.'
-    }
-  }
+  const coerced = coerceImportBundle(parsed, currentRouteInput)
+  if (!coerced.ok) return coerced
+  const bundle = coerced.bundle
 
-  if (parsed.schema === EXPORT_SCHEMA) {
-    if (parsed.scope === 'route') {
-      const result = importRoutePayload(parsed, currentRouteInput)
-      return {
-        ok: true,
-        message: `Imported route layout: ${result.route}`,
-        routes: [result.route]
-      }
-    }
+  if (bundle.scope === 'route') {
+    const result = importRoutePayload(bundle, currentRouteInput, options)
+    if (!result.ok) return result
 
-    if (parsed.scope === 'all') {
-      return importAllRoutesPayload(parsed.routes)
-    }
-
-    return {
-      ok: false,
-      message: 'Unsupported bundle scope.'
-    }
-  }
-
-  if (Array.isArray(parsed.blocks)) {
-    const route = ensureRouteLayout(currentRouteInput)
-    const normalized = normalizeLayout(route, parsed)
-    setDraftLayout(route, normalized, { persist: true })
-    ensureSelectedValid(route)
-
+    const migratedHint = Number.isFinite(Number(bundle.migratedFrom))
+      ? `（已迁移自 v${bundle.migratedFrom}）`
+      : ''
     return {
       ok: true,
-      message: `Imported plain layout to draft: ${route}`,
-      routes: [route]
+      message: `Imported route layout: ${result.route}${migratedHint}`,
+      routes: [result.route]
+    }
+  }
+
+  if (bundle.scope === 'all') {
+    const result = importAllRoutesPayload(bundle.routes, options)
+    if (!result.ok) return result
+    const migratedHint = Number.isFinite(Number(bundle.migratedFrom))
+      ? `（已迁移自 v${bundle.migratedFrom}）`
+      : ''
+    return {
+      ...result,
+      message: `${result.message}${migratedHint}`
     }
   }
 
   return {
     ok: false,
-    message: 'Unsupported import payload structure.'
+    message: 'Unsupported bundle scope.'
   }
 }
 

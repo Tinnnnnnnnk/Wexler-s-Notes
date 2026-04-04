@@ -3102,7 +3102,7 @@ const _sfc_main$x = /* @__PURE__ */ defineComponent({
   __name: "VPNavBarSearch",
   __ssrInlineRender: true,
   setup(__props) {
-    const VPLocalSearchBox = defineAsyncComponent(() => import("./VPLocalSearchBox.bSTzcgUf.js"));
+    const VPLocalSearchBox = defineAsyncComponent(() => import("./VPLocalSearchBox.Cxx-eWBo.js"));
     const VPAlgoliaSearchBox = () => null;
     const { theme: theme2 } = useData();
     const loaded = ref(false);
@@ -5377,6 +5377,7 @@ const ROUTE_DRAFT_KEY_PREFIX = "wexler.editor.layout.route.draft.v2.";
 const ROUTE_PUBLISHED_KEY_PREFIX = "wexler.editor.layout.route.published.v2.";
 const ROUTE_PUBLISHED_HISTORY_KEY_PREFIX = "wexler.editor.layout.route.published.history.v3.";
 const LEGACY_ROUTE_LAYOUT_KEY_PREFIX = "wexler.editor.layout.route.v1.";
+const LAYOUT_SCHEMA_VERSION = 2;
 const MAX_PUBLISHED_HISTORY = 12;
 const isEditorMode = ref(false);
 const draftLayoutsByRoute = ref({});
@@ -5413,7 +5414,7 @@ function createDefaultLayout(routeInput) {
   const route = normalizeRoute(routeInput);
   if (route === "/") {
     return {
-      version: 1,
+      version: LAYOUT_SCHEMA_VERSION,
       blocks: [
         {
           ...createDefaultBlockSeed(),
@@ -5453,7 +5454,7 @@ function createDefaultLayout(routeInput) {
     };
   }
   return {
-    version: 1,
+    version: LAYOUT_SCHEMA_VERSION,
     blocks: []
   };
 }
@@ -5491,9 +5492,10 @@ function normalizeBlock(raw, index) {
 function normalizeLayout(routeInput, raw) {
   const fallback = createDefaultLayout(routeInput);
   if (!raw || typeof raw !== "object") return fallback;
-  const blocks = Array.isArray(raw.blocks) ? raw.blocks.map((block, index) => normalizeBlock(block, index)) : fallback.blocks;
+  const blockSource = Array.isArray(raw.blocks) ? raw.blocks : Array.isArray(raw.items) ? raw.items : Array.isArray(raw.modules) ? raw.modules : null;
+  const blocks = blockSource ? blockSource.map((block, index) => normalizeBlock(block, index)) : fallback.blocks;
   return {
-    version: 1,
+    version: LAYOUT_SCHEMA_VERSION,
     blocks
   };
 }
@@ -6394,7 +6396,7 @@ const _sfc_main$1 = {
           _push(`<!---->`);
         }
         if (unref(isEditorMode)) {
-          _push(`<aside class="home-editor-panel"><h3 class="home-editor-panel__title">页面编辑器</h3><p class="home-editor-panel__route">${ssrInterpolate(currentRoute.value)}</p><div class="home-editor-status"><span class="home-editor-chip home-editor-chip--draft">草稿</span><span class="${ssrRenderClass([routeStatus.value.dirty ? "is-dirty" : "is-clean", "home-editor-chip"])}">${ssrInterpolate(routeStatus.value.dirty ? "有未发布改动" : "已与发布版同步")}</span><span class="home-editor-chip home-editor-chip--count">草稿/发布 ${ssrInterpolate(blockCountSummary.value)}</span><span class="home-editor-chip home-editor-chip--history">回滚点 ${ssrInterpolate(routeStatus.value.historyCount)}</span><span class="home-editor-chip home-editor-chip--history">撤销 ${ssrInterpolate(historyStats.value.undo)}/重做 ${ssrInterpolate(historyStats.value.redo)}</span></div><section class="home-editor-route-tools"><button type="button" class="home-editor-btn home-editor-btn--full"> 生成当前页模板 </button><p class="home-editor-route-tools__hint"> 当页面还没有模块时，可一键生成标题与说明区块，快速开始编辑。 </p></section><div class="home-editor-actions"><button type="button" class="home-editor-btn"> 保存草稿 </button><button type="button" class="home-editor-btn"> 立即发布 </button><button type="button" class="home-editor-btn"> 回滚草稿 </button></div><section class="home-editor-layer-panel"><div class="home-editor-layer-panel__head"><strong>图层面板</strong><div class="home-editor-layer-panel__actions"><button type="button" class="home-editor-layer-btn"${ssrIncludeBooleanAttr(!selectedBlock.value) ? " disabled" : ""}> 上移 </button><button type="button" class="home-editor-layer-btn"${ssrIncludeBooleanAttr(!selectedBlock.value) ? " disabled" : ""}> 下移 </button></div></div><ul class="home-editor-layer-list"><!--[-->`);
+          _push(`<aside class="home-editor-panel"><h3 class="home-editor-panel__title">页面编辑器</h3><p class="home-editor-panel__route">${ssrInterpolate(currentRoute.value)}</p><div class="home-editor-status"><span class="home-editor-chip home-editor-chip--draft">草稿</span><span class="${ssrRenderClass([routeStatus.value.dirty ? "is-dirty" : "is-clean", "home-editor-chip"])}">${ssrInterpolate(routeStatus.value.dirty ? "有未发布改动" : "已与发布版同步")}</span><span class="home-editor-chip home-editor-chip--count">草稿/发布 ${ssrInterpolate(blockCountSummary.value)}</span><span class="home-editor-chip home-editor-chip--history">回滚点 ${ssrInterpolate(routeStatus.value.historyCount)}</span><span class="home-editor-chip home-editor-chip--history">撤销 ${ssrInterpolate(historyStats.value.undo)}/重做 ${ssrInterpolate(historyStats.value.redo)}</span><span class="home-editor-chip home-editor-chip--count">Schema v3 / Layout v2</span></div><section class="home-editor-route-tools"><button type="button" class="home-editor-btn home-editor-btn--full"> 生成当前页模板 </button><p class="home-editor-route-tools__hint"> 当页面还没有模块时，可一键生成标题与说明区块，快速开始编辑。 </p></section><div class="home-editor-actions"><button type="button" class="home-editor-btn"> 保存草稿 </button><button type="button" class="home-editor-btn"> 立即发布 </button><button type="button" class="home-editor-btn"> 回滚草稿 </button></div><section class="home-editor-layer-panel"><div class="home-editor-layer-panel__head"><strong>图层面板</strong><div class="home-editor-layer-panel__actions"><button type="button" class="home-editor-layer-btn"${ssrIncludeBooleanAttr(!selectedBlock.value) ? " disabled" : ""}> 上移 </button><button type="button" class="home-editor-layer-btn"${ssrIncludeBooleanAttr(!selectedBlock.value) ? " disabled" : ""}> 下移 </button></div></div><ul class="home-editor-layer-list"><!--[-->`);
           ssrRenderList(layerBlocks.value, (block) => {
             _push(`<li><button type="button" class="${ssrRenderClass([{ "is-active": selectedBlockId.value === block.id }, "home-editor-layer-item"])}"><span class="home-editor-layer-item__title">${ssrInterpolate(block.title || block.kicker || block.id)}</span><span class="home-editor-layer-item__meta">z${ssrInterpolate(block.z)}</span></button></li>`);
           });

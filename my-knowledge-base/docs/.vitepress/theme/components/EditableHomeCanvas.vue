@@ -270,7 +270,7 @@ function createPageTemplateLayout() {
   }
 
   return {
-    version: 1,
+    version: 2,
     blocks: [primaryBlock, secondaryBlock]
   }
 }
@@ -830,9 +830,31 @@ async function handleImportFile(event) {
     if (result.ok) {
       validationReport.value = null
       setMessage('success', result.message || '导入完成。')
-    } else {
-      setMessage('error', result.message || '导入失败。', 3600)
+      return
     }
+
+    if (result.code === 'IMPORT_CONFLICT') {
+      const routes = Array.isArray(result.routes) ? result.routes : []
+      const routeText = routes.length ? routes.join('、') : currentRoute.value
+      const confirmed = window.confirm(
+        `检测到未发布草稿冲突（${routeText}）。\n继续将会覆盖这些草稿，是否强制导入？`
+      )
+      if (!confirmed) {
+        setMessage('error', '已取消导入。')
+        return
+      }
+
+      const forced = importEditorBundle(text, currentRoute.value, { force: true })
+      if (forced.ok) {
+        validationReport.value = null
+        setMessage('success', forced.message || '已强制导入完成。')
+      } else {
+        setMessage('error', forced.message || '强制导入失败。', 3600)
+      }
+      return
+    }
+
+    setMessage('error', result.message || '导入失败。', 3600)
   } catch (error) {
     setMessage('error', '读取导入文件失败。', 3600)
   } finally {
@@ -977,6 +999,7 @@ onBeforeUnmount(() => {
         <span class="home-editor-chip home-editor-chip--count">草稿/发布 {{ blockCountSummary }}</span>
         <span class="home-editor-chip home-editor-chip--history">回滚点 {{ routeStatus.historyCount }}</span>
         <span class="home-editor-chip home-editor-chip--history">撤销 {{ historyStats.undo }}/重做 {{ historyStats.redo }}</span>
+        <span class="home-editor-chip home-editor-chip--count">Schema v3 / Layout v2</span>
       </div>
 
       <section class="home-editor-route-tools">

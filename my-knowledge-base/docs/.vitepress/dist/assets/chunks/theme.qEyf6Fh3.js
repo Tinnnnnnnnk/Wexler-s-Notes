@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/chunks/VPLocalSearchBox.C6-wWjG2.js","assets/chunks/framework.ul-4IeKD.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/chunks/VPLocalSearchBox.DySkf9mX.js","assets/chunks/framework.ul-4IeKD.js"])))=>i.map(i=>d[i]);
 import { d as defineComponent, c as createElementBlock, r as renderSlot, n as normalizeClass, o as openBlock, a as createTextVNode, t as toDisplayString, b as createBlock, w as withCtx, T as Transition, e as createCommentVNode, _ as _export_sfc, u as useData$1, i as isExternal, f as treatAsHtml, g as withBase, h as computed, j as createBaseVNode, k as unref, l as isActive, m as useMediaQuery, p as ref, q as watch, s as watchEffect, v as onMounted, x as onUnmounted, y as watchPostEffect, z as onUpdated, A as getScrollOffset, F as Fragment, B as renderList, C as resolveComponent, D as onContentUpdated, E as createVNode, G as shallowRef, H as resolveDynamicComponent, I as EXTERNAL_URL_RE, J as useRoute, K as mergeProps, L as inject, M as useWindowSize, N as normalizeStyle, O as onKeyStroke, P as nextTick, Q as useWindowScroll, R as inBrowser, S as readonly, U as defineAsyncComponent, V as __vitePreload, W as useScrollLock, X as provide, Y as toHandlers, Z as withKeys, $ as onBeforeUnmount, a0 as withModifiers, a1 as useSlots, a2 as withDirectives, a3 as vShow, a4 as Teleport, a5 as h } from "./framework.ul-4IeKD.js";
 const _sfc_main$10 = /* @__PURE__ */ defineComponent({
   __name: "VPBadge",
@@ -2230,7 +2230,7 @@ const _hoisted_3$6 = {
 const _sfc_main$o = /* @__PURE__ */ defineComponent({
   __name: "VPNavBarSearch",
   setup(__props) {
-    const VPLocalSearchBox = defineAsyncComponent(() => __vitePreload(() => import("./VPLocalSearchBox.C6-wWjG2.js"), true ? __vite__mapDeps([0,1]) : void 0));
+    const VPLocalSearchBox = defineAsyncComponent(() => __vitePreload(() => import("./VPLocalSearchBox.DySkf9mX.js"), true ? __vite__mapDeps([0,1]) : void 0));
     const VPAlgoliaSearchBox = () => null;
     const { theme: theme2 } = useData();
     const loaded = ref(false);
@@ -4094,6 +4094,9 @@ const ROUTE_PUBLISHED_HISTORY_KEY_PREFIX = "wexler.editor.layout.route.published
 const LEGACY_ROUTE_LAYOUT_KEY_PREFIX = "wexler.editor.layout.route.v1.";
 const EXPORT_SCHEMA = "wexler.editor.layout.bundle";
 const EXPORT_VERSION = 3;
+const LAYOUT_SCHEMA_VERSION = 2;
+const IMPORT_CONFLICT_CODE = "IMPORT_CONFLICT";
+const UNSUPPORTED_BUNDLE_VERSION_CODE = "UNSUPPORTED_BUNDLE_VERSION";
 const MAX_PUBLISHED_HISTORY = 12;
 const isEditorMode = ref(false);
 const draftLayoutsByRoute = ref({});
@@ -4130,7 +4133,7 @@ function createDefaultLayout(routeInput) {
   const route = normalizeRoute(routeInput);
   if (route === "/") {
     return {
-      version: 1,
+      version: LAYOUT_SCHEMA_VERSION,
       blocks: [
         {
           ...createDefaultBlockSeed(),
@@ -4170,7 +4173,7 @@ function createDefaultLayout(routeInput) {
     };
   }
   return {
-    version: 1,
+    version: LAYOUT_SCHEMA_VERSION,
     blocks: []
   };
 }
@@ -4208,9 +4211,10 @@ function normalizeBlock(raw, index) {
 function normalizeLayout(routeInput, raw) {
   const fallback = createDefaultLayout(routeInput);
   if (!raw || typeof raw !== "object") return fallback;
-  const blocks = Array.isArray(raw.blocks) ? raw.blocks.map((block, index) => normalizeBlock(block, index)) : fallback.blocks;
+  const blockSource = Array.isArray(raw.blocks) ? raw.blocks : Array.isArray(raw.items) ? raw.items : Array.isArray(raw.modules) ? raw.modules : null;
+  const blocks = blockSource ? blockSource.map((block, index) => normalizeBlock(block, index)) : fallback.blocks;
   return {
-    version: 1,
+    version: LAYOUT_SCHEMA_VERSION,
     blocks
   };
 }
@@ -4225,6 +4229,82 @@ function normalizeRoutePayload(routeInput, payload) {
     draft: normalizeLayout(route, draftCandidate),
     published: normalizeLayout(route, publishedCandidate),
     publishedHistory: normalizeHistoryList(route, historyCandidate)
+  };
+}
+function normalizeBundleVersion(value) {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed)) return 1;
+  return Math.max(1, Math.floor(parsed));
+}
+function coerceImportBundle(parsed, currentRouteInput = "/") {
+  if (!parsed || typeof parsed !== "object") {
+    return {
+      ok: false,
+      message: "Import payload must be an object."
+    };
+  }
+  if (parsed.schema === EXPORT_SCHEMA) {
+    const version = normalizeBundleVersion(parsed.version);
+    if (version > EXPORT_VERSION) {
+      return {
+        ok: false,
+        code: UNSUPPORTED_BUNDLE_VERSION_CODE,
+        message: `导入文件版本 v${version} 高于当前支持的 v${EXPORT_VERSION}。`
+      };
+    }
+    if (parsed.scope === "route" || parsed.scope === "all") {
+      return {
+        ok: true,
+        bundle: {
+          ...parsed,
+          version
+        }
+      };
+    }
+    if (parsed.routes && typeof parsed.routes === "object" && !Array.isArray(parsed.routes)) {
+      return {
+        ok: true,
+        bundle: {
+          schema: EXPORT_SCHEMA,
+          version,
+          scope: "all",
+          routes: parsed.routes,
+          migratedFrom: version
+        }
+      };
+    }
+    return {
+      ok: true,
+      bundle: {
+        schema: EXPORT_SCHEMA,
+        version,
+        scope: "route",
+        route: typeof parsed.route === "string" && parsed.route.trim() ? normalizeRoute(parsed.route) : normalizeRoute(currentRouteInput),
+        draft: parsed.draft && typeof parsed.draft === "object" ? parsed.draft : parsed.layout && typeof parsed.layout === "object" ? parsed.layout : parsed,
+        published: parsed.published && typeof parsed.published === "object" ? parsed.published : parsed.layout && typeof parsed.layout === "object" ? parsed.layout : parsed.draft && typeof parsed.draft === "object" ? parsed.draft : parsed,
+        publishedHistory: Array.isArray(parsed.publishedHistory) ? parsed.publishedHistory : Array.isArray(parsed.history) ? parsed.history : [],
+        migratedFrom: version
+      }
+    };
+  }
+  if (Array.isArray(parsed.blocks) || Array.isArray(parsed.items) || Array.isArray(parsed.modules) || parsed.layout && typeof parsed.layout === "object") {
+    return {
+      ok: true,
+      bundle: {
+        schema: EXPORT_SCHEMA,
+        version: 1,
+        scope: "route",
+        route: typeof parsed.route === "string" && parsed.route.trim() ? normalizeRoute(parsed.route) : normalizeRoute(currentRouteInput),
+        draft: parsed.layout && typeof parsed.layout === "object" ? parsed.layout : parsed,
+        published: parsed.layout && typeof parsed.layout === "object" ? parsed.layout : parsed,
+        publishedHistory: [],
+        migratedFrom: 1
+      }
+    };
+  }
+  return {
+    ok: false,
+    message: "Unsupported import payload structure."
   };
 }
 function stringifyLayout(routeInput, layout) {
@@ -4853,6 +4933,10 @@ function getRouteExportBundle(routeInput) {
     schema: EXPORT_SCHEMA,
     version: EXPORT_VERSION,
     exportedAt: (/* @__PURE__ */ new Date()).toISOString(),
+    meta: {
+      layoutVersion: LAYOUT_SCHEMA_VERSION,
+      maxPublishedHistory: MAX_PUBLISHED_HISTORY
+    },
     scope: "route",
     route,
     draft: clone(draftLayoutsByRoute.value[route]),
@@ -4875,32 +4959,71 @@ function getAllRoutesExportBundle() {
     schema: EXPORT_SCHEMA,
     version: EXPORT_VERSION,
     exportedAt: (/* @__PURE__ */ new Date()).toISOString(),
+    meta: {
+      layoutVersion: LAYOUT_SCHEMA_VERSION,
+      maxPublishedHistory: MAX_PUBLISHED_HISTORY
+    },
     scope: "all",
     routes: payload
   };
 }
-function importRoutePayload(payload, fallbackRouteInput) {
+function detectRouteImportConflict(routeInput, incomingDraft, options = {}) {
+  if (options.force === true) return null;
+  const route = ensureRouteLayout(routeInput);
+  if (!routeHasUnpublishedChanges(route)) return null;
+  const currentDraft = draftLayoutsByRoute.value[route] || createDefaultLayout(route);
+  const nextDraft = normalizeLayout(route, incomingDraft);
+  if (stringifyLayout(route, currentDraft) === stringifyLayout(route, nextDraft)) return null;
+  return {
+    route,
+    reason: "当前页面存在未发布草稿改动，导入会覆盖这些改动。"
+  };
+}
+function importRoutePayload(payload, fallbackRouteInput, options = {}) {
   const fallbackRoute = ensureRouteLayout(fallbackRouteInput);
   const route = typeof (payload == null ? void 0 : payload.route) === "string" && payload.route.trim() ? normalizeRoute(payload.route) : fallbackRoute;
   const normalized = normalizeRoutePayload(route, payload);
+  const conflict = detectRouteImportConflict(normalized.route, normalized.draft, options);
+  if (conflict) {
+    return {
+      ok: false,
+      code: IMPORT_CONFLICT_CODE,
+      message: "检测到导入冲突，请确认后再覆盖导入。",
+      routes: [conflict.route],
+      conflicts: [conflict]
+    };
+  }
   setDraftLayout(normalized.route, normalized.draft, { persist: true });
   setPublishedLayout(normalized.route, normalized.published, { persist: true });
   setPublishedHistory(normalized.route, normalized.publishedHistory, { persist: true });
   ensureSelectedValid(normalized.route);
   return {
+    ok: true,
     route: normalized.route
   };
 }
-function importAllRoutesPayload(routesMap) {
+function importAllRoutesPayload(routesMap, options = {}) {
   if (!routesMap || typeof routesMap !== "object" || Array.isArray(routesMap)) {
     return {
       ok: false,
       message: "Invalid routes payload."
     };
   }
+  const normalizedList = Object.entries(routesMap).map(
+    ([rawRoute, payload]) => normalizeRoutePayload(rawRoute, payload)
+  );
+  const conflicts = normalizedList.map((normalized) => detectRouteImportConflict(normalized.route, normalized.draft, options)).filter(Boolean);
+  if (conflicts.length) {
+    return {
+      ok: false,
+      code: IMPORT_CONFLICT_CODE,
+      message: `检测到 ${conflicts.length} 个页面存在未发布草稿冲突。`,
+      routes: conflicts.map((item) => item.route),
+      conflicts
+    };
+  }
   const updatedRoutes = [];
-  Object.entries(routesMap).forEach(([rawRoute, payload]) => {
-    const normalized = normalizeRoutePayload(rawRoute, payload);
+  normalizedList.forEach((normalized) => {
     setDraftLayout(normalized.route, normalized.draft, { persist: true });
     setPublishedLayout(normalized.route, normalized.published, { persist: true });
     setPublishedHistory(normalized.route, normalized.publishedHistory, { persist: true });
@@ -4913,7 +5036,7 @@ function importAllRoutesPayload(routesMap) {
     routes: updatedRoutes
   };
 }
-function importEditorBundle(rawText, currentRouteInput = "/") {
+function importEditorBundle(rawText, currentRouteInput = "/", options = {}) {
   let parsed;
   try {
     parsed = JSON.parse(rawText);
@@ -4923,43 +5046,31 @@ function importEditorBundle(rawText, currentRouteInput = "/") {
       message: "Invalid JSON file."
     };
   }
-  if (!parsed || typeof parsed !== "object") {
-    return {
-      ok: false,
-      message: "Import payload must be an object."
-    };
-  }
-  if (parsed.schema === EXPORT_SCHEMA) {
-    if (parsed.scope === "route") {
-      const result = importRoutePayload(parsed, currentRouteInput);
-      return {
-        ok: true,
-        message: `Imported route layout: ${result.route}`,
-        routes: [result.route]
-      };
-    }
-    if (parsed.scope === "all") {
-      return importAllRoutesPayload(parsed.routes);
-    }
-    return {
-      ok: false,
-      message: "Unsupported bundle scope."
-    };
-  }
-  if (Array.isArray(parsed.blocks)) {
-    const route = ensureRouteLayout(currentRouteInput);
-    const normalized = normalizeLayout(route, parsed);
-    setDraftLayout(route, normalized, { persist: true });
-    ensureSelectedValid(route);
+  const coerced = coerceImportBundle(parsed, currentRouteInput);
+  if (!coerced.ok) return coerced;
+  const bundle = coerced.bundle;
+  if (bundle.scope === "route") {
+    const result = importRoutePayload(bundle, currentRouteInput, options);
+    if (!result.ok) return result;
+    const migratedHint = Number.isFinite(Number(bundle.migratedFrom)) ? `（已迁移自 v${bundle.migratedFrom}）` : "";
     return {
       ok: true,
-      message: `Imported plain layout to draft: ${route}`,
-      routes: [route]
+      message: `Imported route layout: ${result.route}${migratedHint}`,
+      routes: [result.route]
+    };
+  }
+  if (bundle.scope === "all") {
+    const result = importAllRoutesPayload(bundle.routes, options);
+    if (!result.ok) return result;
+    const migratedHint = Number.isFinite(Number(bundle.migratedFrom)) ? `（已迁移自 v${bundle.migratedFrom}）` : "";
+    return {
+      ...result,
+      message: `${result.message}${migratedHint}`
     };
   }
   return {
     ok: false,
-    message: "Unsupported import payload structure."
+    message: "Unsupported bundle scope."
   };
 }
 const _hoisted_1$1 = { class: "home-editor-canvas__blocks" };
@@ -5265,7 +5376,7 @@ const _sfc_main$1 = {
         body: "可在图层面板中管理模块顺序，发布前先做校验。"
       };
       return {
-        version: 1,
+        version: 2,
         blocks: [primaryBlock, secondaryBlock]
       };
     }
@@ -5747,9 +5858,29 @@ const _sfc_main$1 = {
         if (result.ok) {
           validationReport.value = null;
           setMessage("success", result.message || "导入完成。");
-        } else {
-          setMessage("error", result.message || "导入失败。", 3600);
+          return;
         }
+        if (result.code === "IMPORT_CONFLICT") {
+          const routes = Array.isArray(result.routes) ? result.routes : [];
+          const routeText = routes.length ? routes.join("、") : currentRoute.value;
+          const confirmed = window.confirm(
+            `检测到未发布草稿冲突（${routeText}）。
+继续将会覆盖这些草稿，是否强制导入？`
+          );
+          if (!confirmed) {
+            setMessage("error", "已取消导入。");
+            return;
+          }
+          const forced = importEditorBundle(text, currentRoute.value, { force: true });
+          if (forced.ok) {
+            validationReport.value = null;
+            setMessage("success", forced.message || "已强制导入完成。");
+          } else {
+            setMessage("error", forced.message || "强制导入失败。", 3600);
+          }
+          return;
+        }
+        setMessage("error", result.message || "导入失败。", 3600);
       } catch (error) {
         setMessage("error", "读取导入文件失败。", 3600);
       } finally {
@@ -5880,7 +6011,7 @@ const _sfc_main$1 = {
           }, " 重置 ")
         ])) : createCommentVNode("", true),
         unref(isEditorMode) ? (openBlock(), createElementBlock("aside", _hoisted_16, [
-          _cache[26] || (_cache[26] = createBaseVNode("h3", { class: "home-editor-panel__title" }, "页面编辑器", -1)),
+          _cache[27] || (_cache[27] = createBaseVNode("h3", { class: "home-editor-panel__title" }, "页面编辑器", -1)),
           createBaseVNode("p", _hoisted_17, toDisplayString(currentRoute.value), 1),
           createBaseVNode("div", _hoisted_18, [
             _cache[11] || (_cache[11] = createBaseVNode("span", { class: "home-editor-chip home-editor-chip--draft" }, "草稿", -1)),
@@ -5889,7 +6020,8 @@ const _sfc_main$1 = {
             }, toDisplayString(routeStatus.value.dirty ? "有未发布改动" : "已与发布版同步"), 3),
             createBaseVNode("span", _hoisted_19, "草稿/发布 " + toDisplayString(blockCountSummary.value), 1),
             createBaseVNode("span", _hoisted_20, "回滚点 " + toDisplayString(routeStatus.value.historyCount), 1),
-            createBaseVNode("span", _hoisted_21, "撤销 " + toDisplayString(historyStats.value.undo) + "/重做 " + toDisplayString(historyStats.value.redo), 1)
+            createBaseVNode("span", _hoisted_21, "撤销 " + toDisplayString(historyStats.value.undo) + "/重做 " + toDisplayString(historyStats.value.redo), 1),
+            _cache[12] || (_cache[12] = createBaseVNode("span", { class: "home-editor-chip home-editor-chip--count" }, "Schema v3 / Layout v2", -1))
           ]),
           createBaseVNode("section", { class: "home-editor-route-tools" }, [
             createBaseVNode("button", {
@@ -5897,7 +6029,7 @@ const _sfc_main$1 = {
               class: "home-editor-btn home-editor-btn--full",
               onClick: handleGenerateRouteTemplate
             }, " 生成当前页模板 "),
-            _cache[12] || (_cache[12] = createBaseVNode("p", { class: "home-editor-route-tools__hint" }, " 当页面还没有模块时，可一键生成标题与说明区块，快速开始编辑。 ", -1))
+            _cache[13] || (_cache[13] = createBaseVNode("p", { class: "home-editor-route-tools__hint" }, " 当页面还没有模块时，可一键生成标题与说明区块，快速开始编辑。 ", -1))
           ]),
           createBaseVNode("div", { class: "home-editor-actions" }, [
             createBaseVNode("button", {
@@ -5918,7 +6050,7 @@ const _sfc_main$1 = {
           ]),
           createBaseVNode("section", _hoisted_22, [
             createBaseVNode("div", _hoisted_23, [
-              _cache[13] || (_cache[13] = createBaseVNode("strong", null, "图层面板", -1)),
+              _cache[14] || (_cache[14] = createBaseVNode("strong", null, "图层面板", -1)),
               createBaseVNode("div", _hoisted_24, [
                 createBaseVNode("button", {
                   type: "button",
@@ -5990,7 +6122,7 @@ const _sfc_main$1 = {
               type: "button",
               class: "home-editor-btn home-editor-btn--export",
               onClick: handleExportCurrent
-            }, [..._cache[14] || (_cache[14] = [
+            }, [..._cache[15] || (_cache[15] = [
               createBaseVNode("span", {
                 class: "home-editor-export-icon",
                 "aria-hidden": "true"
@@ -6001,7 +6133,7 @@ const _sfc_main$1 = {
               type: "button",
               class: "home-editor-btn home-editor-btn--export",
               onClick: handleExportAll
-            }, [..._cache[15] || (_cache[15] = [
+            }, [..._cache[16] || (_cache[16] = [
               createBaseVNode("span", {
                 class: "home-editor-export-icon",
                 "aria-hidden": "true"
@@ -6051,7 +6183,7 @@ const _sfc_main$1 = {
           ])) : createCommentVNode("", true),
           selectedBlock.value ? (openBlock(), createElementBlock(Fragment, { key: 2 }, [
             createBaseVNode("label", _hoisted_45, [
-              _cache[16] || (_cache[16] = createBaseVNode("span", null, "前缀文案", -1)),
+              _cache[17] || (_cache[17] = createBaseVNode("span", null, "前缀文案", -1)),
               createBaseVNode("input", {
                 class: "home-editor-input",
                 type: "text",
@@ -6060,7 +6192,7 @@ const _sfc_main$1 = {
               }, null, 40, _hoisted_46)
             ]),
             createBaseVNode("label", _hoisted_47, [
-              _cache[17] || (_cache[17] = createBaseVNode("span", null, "标题", -1)),
+              _cache[18] || (_cache[18] = createBaseVNode("span", null, "标题", -1)),
               createBaseVNode("input", {
                 class: "home-editor-input",
                 type: "text",
@@ -6069,7 +6201,7 @@ const _sfc_main$1 = {
               }, null, 40, _hoisted_48)
             ]),
             createBaseVNode("label", _hoisted_49, [
-              _cache[18] || (_cache[18] = createBaseVNode("span", null, "正文", -1)),
+              _cache[19] || (_cache[19] = createBaseVNode("span", null, "正文", -1)),
               createBaseVNode("textarea", {
                 class: "home-editor-input home-editor-input--textarea",
                 value: selectedBlock.value.body,
@@ -6078,7 +6210,7 @@ const _sfc_main$1 = {
             ]),
             createBaseVNode("div", _hoisted_51, [
               createBaseVNode("label", _hoisted_52, [
-                _cache[19] || (_cache[19] = createBaseVNode("span", null, "宽度", -1)),
+                _cache[20] || (_cache[20] = createBaseVNode("span", null, "宽度", -1)),
                 createBaseVNode("input", {
                   class: "home-editor-range",
                   type: "range",
@@ -6090,7 +6222,7 @@ const _sfc_main$1 = {
                 }, null, 40, _hoisted_53)
               ]),
               createBaseVNode("label", _hoisted_54, [
-                _cache[20] || (_cache[20] = createBaseVNode("span", null, "高度", -1)),
+                _cache[21] || (_cache[21] = createBaseVNode("span", null, "高度", -1)),
                 createBaseVNode("input", {
                   class: "home-editor-range",
                   type: "range",
@@ -6104,7 +6236,7 @@ const _sfc_main$1 = {
             ]),
             createBaseVNode("div", _hoisted_56, [
               createBaseVNode("label", _hoisted_57, [
-                _cache[21] || (_cache[21] = createBaseVNode("span", null, "透明度", -1)),
+                _cache[22] || (_cache[22] = createBaseVNode("span", null, "透明度", -1)),
                 createBaseVNode("input", {
                   class: "home-editor-range",
                   type: "range",
@@ -6116,7 +6248,7 @@ const _sfc_main$1 = {
                 }, null, 40, _hoisted_58)
               ]),
               createBaseVNode("label", _hoisted_59, [
-                _cache[22] || (_cache[22] = createBaseVNode("span", null, "圆角", -1)),
+                _cache[23] || (_cache[23] = createBaseVNode("span", null, "圆角", -1)),
                 createBaseVNode("input", {
                   class: "home-editor-range",
                   type: "range",
@@ -6130,7 +6262,7 @@ const _sfc_main$1 = {
             ]),
             createBaseVNode("div", _hoisted_61, [
               createBaseVNode("label", _hoisted_62, [
-                _cache[23] || (_cache[23] = createBaseVNode("span", null, "模糊度", -1)),
+                _cache[24] || (_cache[24] = createBaseVNode("span", null, "模糊度", -1)),
                 createBaseVNode("input", {
                   class: "home-editor-range",
                   type: "range",
@@ -6142,7 +6274,7 @@ const _sfc_main$1 = {
                 }, null, 40, _hoisted_63)
               ]),
               createBaseVNode("label", _hoisted_64, [
-                _cache[24] || (_cache[24] = createBaseVNode("span", null, "文字颜色", -1)),
+                _cache[25] || (_cache[25] = createBaseVNode("span", null, "文字颜色", -1)),
                 createBaseVNode("input", {
                   class: "home-editor-color",
                   type: "color",
@@ -6152,7 +6284,7 @@ const _sfc_main$1 = {
               ])
             ]),
             createBaseVNode("label", _hoisted_66, [
-              _cache[25] || (_cache[25] = createBaseVNode("span", null, "背景样式", -1)),
+              _cache[26] || (_cache[26] = createBaseVNode("span", null, "背景样式", -1)),
               createBaseVNode("input", {
                 class: "home-editor-input",
                 type: "text",
@@ -6161,7 +6293,7 @@ const _sfc_main$1 = {
               }, null, 40, _hoisted_67)
             ])
           ], 64)) : (openBlock(), createElementBlock("p", _hoisted_68, " 当前未选中模块。请点击画布中的模块，或先点击“新增”创建模块。 ")),
-          _cache[27] || (_cache[27] = createBaseVNode("p", { class: "home-editor-shortcut-hint" }, " 快捷键：Ctrl/Cmd+Z 撤销，Shift+Ctrl/Cmd+Z 重做，Ctrl/Cmd+D 复制，Delete 删除，方向键微调，Alt+↑/↓ 调整图层。 ", -1))
+          _cache[28] || (_cache[28] = createBaseVNode("p", { class: "home-editor-shortcut-hint" }, " 快捷键：Ctrl/Cmd+Z 撤销，Shift+Ctrl/Cmd+Z 重做，Ctrl/Cmd+D 复制，Delete 删除，方向键微调，Alt+↑/↓ 调整图层。 ", -1))
         ])) : createCommentVNode("", true)
       ], 6)) : createCommentVNode("", true);
     };

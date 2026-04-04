@@ -142,7 +142,6 @@ function pushUndoSnapshot(routeInput, reason = '') {
   if (last?.serialized === snapshot.serialized) {
     return
   }
-
   bucket.undo.push(snapshot)
   if (bucket.undo.length > MAX_HISTORY_STEPS) {
     bucket.undo.shift()
@@ -173,6 +172,7 @@ function handleUndo() {
   }
 
   applyHistorySnapshot(targetSnapshot)
+  appendAudit('undo', { summary: targetSnapshot?.reason || 'undo' })
 }
 
 function handleRedo() {
@@ -191,6 +191,7 @@ function handleRedo() {
   }
 
   applyHistorySnapshot(targetSnapshot)
+  appendAudit('redo', { summary: targetSnapshot?.reason || 'redo' })
 }
 
 function getCanvasBounds() {
@@ -454,6 +455,10 @@ async function syncRoute(nextPath) {
   clearMessage()
   await nextTick()
   refreshCanvasMetrics()
+  appendAudit('generate_template', {
+    route: currentRoute.value,
+    blockCount: nextLayout.blocks.length
+  })
 }
 
 function formatSnapshotTime(value) {
@@ -735,6 +740,11 @@ function handleDuplicateSelected() {
   if (!selectedBlock.value) return
   pushUndoSnapshot(currentRoute.value, '复制模块')
   const result = duplicateRouteBlock(currentRoute.value, selectedBlock.value.id)
+  if (result.ok) {
+    appendAudit('duplicate_block', {
+      blockId: result.id || selectedBlock.value.id
+    })
+  }
   if (!result.ok) {
     setMessage('error', result.message || '复制失败。')
     return
@@ -746,6 +756,12 @@ function handleMoveLayer(direction) {
   if (!selectedBlock.value) return
   pushUndoSnapshot(currentRoute.value, direction > 0 ? '图层上移' : '图层下移')
   const result = moveRouteBlockLayer(currentRoute.value, selectedBlock.value.id, direction)
+  if (result.ok) {
+    appendAudit('layer_move', {
+      blockId: selectedBlock.value.id,
+      direction: direction > 0 ? 'up' : 'down'
+    })
+  }
   if (!result.ok) {
     setMessage('error', result.message || '图层调整失败。')
   }
@@ -759,11 +775,22 @@ function navigateToEditedRoute(path) {
 
 function nudgeSelectedBlock(dx, dy) {
   if (!selectedBlock.value) return
+  const nextX = clamp(Math.round(selectedBlock.value.x + dx), 0, CANVAS_LIMIT)
+  const nextY = clamp(Math.round(selectedBlock.value.y + dy), 0, CANVAS_LIMIT)
+  const deltaX = nextX - selectedBlock.value.x
+  const deltaY = nextY - selectedBlock.value.y
   pushUndoSnapshot(currentRoute.value, '微调位置')
   patchRouteBlock(currentRoute.value, selectedBlock.value.id, {
-    x: clamp(Math.round(selectedBlock.value.x + dx), 0, CANVAS_LIMIT),
-    y: clamp(Math.round(selectedBlock.value.y + dy), 0, CANVAS_LIMIT)
+    x: nextX,
+    y: nextY
   })
+  if (deltaX !== 0 || deltaY !== 0) {
+    appendAudit('nudge_block', {
+      blockId: selectedBlock.value.id,
+      dx: deltaX,
+      dy: deltaY
+    })
+  }
 }
 
 function isTextEditableTarget(target) {
@@ -771,6 +798,13 @@ function isTextEditableTarget(target) {
   if (target.isContentEditable) return true
   const tag = target.tagName
   return tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT'
+}
+
+function handleBeforeUnload(event) {
+  if (!isEditorMode.value) return
+  if (!routeStatus.value?.dirty) return
+  event.preventDefault()
+  event.returnValue = ''
 }
 
 function handleEditorHotkeys(event) {
@@ -849,6 +883,7 @@ function downloadJson(filename, data) {
 function handleSaveDraft() {
   const result = saveDraftRoute(currentRoute.value)
   if (result.ok) {
+    appendAudit('save_draft', { route: currentRoute.value })
     setMessage('success', '草稿已保存。')
   }
 }
@@ -857,6 +892,10 @@ function handlePublish() {
   const result = publishDraftRoute(currentRoute.value)
   validationReport.value = result.validation || null
   if (result.ok) {
+    appendAudit('publish', {
+      route: currentRoute.value,
+      warnings: result.validation?.warnings?.length || 0
+    })
     const warningCount = result.validation?.warnings?.length || 0
     const warningHint = warningCount ? `，含 ${warningCount} 条提醒` : ''
     setMessage('success', `当前页面布局已发布${warningHint}。`)
@@ -868,6 +907,12 @@ function handlePublish() {
 function handleValidatePublish() {
   const report = validateDraftRoute(currentRoute.value)
   validationReport.value = report
+  appendAudit('validate', {
+    route: currentRoute.value,
+    ok: report.ok,
+    errors: report.errors.length,
+    warnings: report.warnings.length
+  })
 
   if (!report.ok) {
     setMessage('error', `发布校验失败：${report.errors.length} 个错误。`, 4200)
@@ -889,6 +934,7 @@ function handleRevertDraft() {
   }
   const result = revertRouteDraft(currentRoute.value)
   if (result.ok) {
+    appendAudit('revert_draft', { route: currentRoute.value })
     setMessage('success', '草稿已恢复到已发布版本。')
   }
 }
@@ -911,6 +957,10 @@ function handleRollbackPublished() {
   }
 
   validationReport.value = null
+  appendAudit('rollback_published', {
+    route: currentRoute.value,
+    snapshotId: result.snapshot?.id || ''
+  })
   const snapshotTime = formatSnapshotTime(result.snapshot?.at)
   setMessage('success', `已回滚到快照：${snapshotTime}。`)
 }
@@ -919,6 +969,7 @@ function handleExportCurrent() {
   const bundle = getRouteExportBundle(currentRoute.value)
   const filename = `editor-layout-${toRouteSlug(currentRoute.value)}-${Date.now()}.json`
   downloadJson(filename, bundle)
+  appendAudit('export_route', { route: currentRoute.value })
   setMessage('success', '当前页面布局已导出。')
 }
 
@@ -926,7 +977,34 @@ function handleExportAll() {
   const bundle = getAllRoutesExportBundle()
   const filename = `editor-layout-all-routes-${Date.now()}.json`
   downloadJson(filename, bundle)
+  appendAudit('export_all', {
+    routeCount: Object.keys(bundle.routes || {}).length
+  })
   setMessage('success', '全站页面布局已导出。')
+}
+
+function handleExportAudit() {
+  const bundle = getAllRoutesAuditBundle()
+  const filename = `editor-audit-all-routes-${Date.now()}.json`
+  downloadJson(filename, bundle)
+  appendAudit('export_audit', {
+    routeCount: Object.keys(bundle.routes || {}).length
+  })
+  setMessage('success', '操作记录已导出。')
+}
+
+function handleClearAudit() {
+  if (!routeAuditLogs.value.length) {
+    setMessage('error', '当前页面暂无操作记录。')
+    return
+  }
+
+  const confirmed = window.confirm(
+    `将清空当前页面 ${routeAuditLogs.value.length} 条操作记录，此操作不可恢复，是否继续？`
+  )
+  if (!confirmed) return
+  clearRouteAuditLog(currentRoute.value)
+  setMessage('success', '当前页面操作记录已清空。')
 }
 
 function triggerImport() {
@@ -942,6 +1020,10 @@ async function handleImportFile(event) {
     const result = importEditorBundle(text, currentRoute.value)
     if (result.ok) {
       validationReport.value = null
+      appendAudit('import_bundle', {
+        route: currentRoute.value,
+        summary: result.message || 'import ok'
+      })
       setMessage('success', result.message || '导入完成。')
       return
     }
@@ -960,6 +1042,10 @@ async function handleImportFile(event) {
       const forced = importEditorBundle(text, currentRoute.value, { force: true })
       if (forced.ok) {
         validationReport.value = null
+        appendAudit('import_bundle', {
+          route: currentRoute.value,
+          summary: forced.message || 'force import ok'
+        })
         setMessage('success', forced.message || '已强制导入完成。')
       } else {
         setMessage('error', forced.message || '强制导入失败。', 3600)
@@ -981,6 +1067,7 @@ onMounted(() => {
   window.addEventListener('keydown', handleEditorHotkeys)
   window.addEventListener('resize', refreshCanvasMetrics)
   window.addEventListener('load', refreshCanvasMetrics)
+  window.addEventListener('beforeunload', handleBeforeUnload)
 })
 
 watch(
@@ -1003,6 +1090,7 @@ onBeforeUnmount(() => {
   window.removeEventListener('keydown', handleEditorHotkeys)
   window.removeEventListener('resize', refreshCanvasMetrics)
   window.removeEventListener('load', refreshCanvasMetrics)
+  window.removeEventListener('beforeunload', handleBeforeUnload)
   clearMessage()
 })
 </script>
@@ -1210,6 +1298,34 @@ onBeforeUnmount(() => {
           导入 JSON
         </button>
       </div>
+
+      <section class="home-editor-audit-panel">
+        <div class="home-editor-layer-panel__head">
+          <strong>操作记录（{{ routeAuditLogs.length }}）</strong>
+          <div class="home-editor-layer-panel__actions">
+            <button type="button" class="home-editor-layer-btn" @click="handleExportAudit">
+              导出
+            </button>
+            <button
+              type="button"
+              class="home-editor-layer-btn"
+              :disabled="!routeAuditLogs.length"
+              @click="handleClearAudit"
+            >
+              清空
+            </button>
+          </div>
+        </div>
+
+        <ul v-if="auditPreviewLogs.length" class="home-editor-audit-list">
+          <li v-for="item in auditPreviewLogs" :key="item.id" class="home-editor-audit-item">
+            <p class="home-editor-audit-item__title">{{ getAuditActionLabel(item) }}</p>
+            <p class="home-editor-audit-item__detail">{{ getAuditDetailText(item) || '无补充信息' }}</p>
+            <time class="home-editor-audit-item__time">{{ formatAuditTime(item.at) }}</time>
+          </li>
+        </ul>
+        <p v-else class="home-editor-route-tools__hint">当前页面暂无操作记录。</p>
+      </section>
 
       <input
         ref="importInputRef"

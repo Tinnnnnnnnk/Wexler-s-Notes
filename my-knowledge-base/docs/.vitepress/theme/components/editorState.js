@@ -474,6 +474,17 @@ function collectStoredRoutes() {
   return [...result]
 }
 
+function getAllEditorRoutes() {
+  return collectStoredRoutes()
+    .map((item) => normalizeRoute(item))
+    .filter((item, index, arr) => arr.indexOf(item) === index)
+    .sort((a, b) => {
+      if (a === '/') return -1
+      if (b === '/') return 1
+      return a.localeCompare(b, 'zh-Hans-CN')
+    })
+}
+
 function initEditorState() {
   if (initialized) return
   const savedMode = safeReadStorage(EDIT_MODE_KEY)
@@ -1062,6 +1073,7 @@ export {
   initEditorState,
   normalizeRoute,
   ensureRouteLayout,
+  getAllEditorRoutes,
   setEditorMode,
   toggleEditorMode,
   setSelectedRouteBlock,

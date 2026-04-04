@@ -3102,7 +3102,7 @@ const _sfc_main$x = /* @__PURE__ */ defineComponent({
   __name: "VPNavBarSearch",
   __ssrInlineRender: true,
   setup(__props) {
-    const VPLocalSearchBox = defineAsyncComponent(() => import("./VPLocalSearchBox.CmGSscKB.js"));
+    const VPLocalSearchBox = defineAsyncComponent(() => import("./VPLocalSearchBox.bSTzcgUf.js"));
     const VPAlgoliaSearchBox = () => null;
     const { theme: theme2 } = useData();
     const loaded = ref(false);
@@ -5657,6 +5657,40 @@ function ensureRouteLayout(routeInput) {
   }
   return route;
 }
+function collectStoredRoutes() {
+  const result = /* @__PURE__ */ new Set([
+    ...Object.keys(draftLayoutsByRoute.value),
+    ...Object.keys(publishedLayoutsByRoute.value),
+    ...Object.keys(publishedHistoryByRoute.value)
+  ]);
+  if (typeof window === "undefined") {
+    return [...result];
+  }
+  try {
+    for (let i = 0; i < localStorage.length; i += 1) {
+      const key = localStorage.key(i);
+      if (!key) continue;
+      if (key.startsWith(ROUTE_DRAFT_KEY_PREFIX)) {
+        result.add(decodeURIComponent(key.slice(ROUTE_DRAFT_KEY_PREFIX.length)));
+      } else if (key.startsWith(ROUTE_PUBLISHED_KEY_PREFIX)) {
+        result.add(decodeURIComponent(key.slice(ROUTE_PUBLISHED_KEY_PREFIX.length)));
+      } else if (key.startsWith(ROUTE_PUBLISHED_HISTORY_KEY_PREFIX)) {
+        result.add(decodeURIComponent(key.slice(ROUTE_PUBLISHED_HISTORY_KEY_PREFIX.length)));
+      } else if (key.startsWith(LEGACY_ROUTE_LAYOUT_KEY_PREFIX)) {
+        result.add(decodeURIComponent(key.slice(LEGACY_ROUTE_LAYOUT_KEY_PREFIX.length)));
+      }
+    }
+  } catch (error) {
+  }
+  return [...result];
+}
+function getAllEditorRoutes() {
+  return collectStoredRoutes().map((item) => normalizeRoute(item)).filter((item, index, arr) => arr.indexOf(item) === index).sort((a, b) => {
+    if (a === "/") return -1;
+    if (b === "/") return 1;
+    return a.localeCompare(b, "zh-Hans-CN");
+  });
+}
 function initEditorState() {
   if (initialized) return;
   const savedMode = safeReadStorage(EDIT_MODE_KEY);
@@ -5850,6 +5884,7 @@ const _sfc_main$1 = {
   __ssrInlineRender: true,
   setup(__props) {
     const route = useRoute();
+    const { page } = useData$1();
     const currentRoute = ref("/");
     const interactionState = ref(null);
     const guideLines = ref({ vertical: [], horizontal: [] });
@@ -5858,6 +5893,10 @@ const _sfc_main$1 = {
     const ioMessageType = ref("info");
     const validationReport = ref(null);
     const routeEditHistory = ref({});
+    const canvasMetrics = ref({
+      width: 1200,
+      height: 900
+    });
     let ioTimer = null;
     let interactionRafId = 0;
     let pendingPointer = null;
@@ -5880,6 +5919,10 @@ const _sfc_main$1 = {
     const blockCountSummary = computed(
       () => `${routeStatus.value.blockCount}/${routeStatus.value.publishedBlockCount}`
     );
+    const canvasStyle = computed(() => ({
+      height: `${canvasMetrics.value.height}px`
+    }));
+    const allEditedRoutes = computed(() => getAllEditorRoutes());
     function clamp2(value, min, max) {
       return Math.min(max, Math.max(min, value));
     }
@@ -5968,13 +6011,32 @@ const _sfc_main$1 = {
       applyHistorySnapshot(targetSnapshot);
     }
     function getCanvasBounds() {
-      if (typeof window === "undefined") {
-        return { width: 1200, height: 900 };
-      }
-      return {
-        width: clamp2(Math.round(window.innerWidth), 320, CANVAS_LIMIT),
-        height: clamp2(Math.round(window.innerHeight - 72), 240, CANVAS_LIMIT)
-      };
+      return canvasMetrics.value;
+    }
+    function getDocumentHeight() {
+      if (typeof window === "undefined") return 900;
+      const body = document.body;
+      const html = document.documentElement;
+      return Math.max(
+        (body == null ? void 0 : body.scrollHeight) || 0,
+        (body == null ? void 0 : body.offsetHeight) || 0,
+        (html == null ? void 0 : html.clientHeight) || 0,
+        (html == null ? void 0 : html.scrollHeight) || 0,
+        (html == null ? void 0 : html.offsetHeight) || 0
+      );
+    }
+    function refreshCanvasMetrics() {
+      if (typeof window === "undefined") return;
+      const routeBlocks = getRouteBlocks(currentRoute.value);
+      const maxBlockBottom = routeBlocks.reduce((max, block) => Math.max(max, block.y + block.h), 0);
+      const docHeight = getDocumentHeight();
+      const width = clamp2(Math.round(window.innerWidth), 320, CANVAS_LIMIT);
+      const height = clamp2(
+        Math.max(docHeight - 72, maxBlockBottom + 280, 760),
+        760,
+        CANVAS_LIMIT
+      );
+      canvasMetrics.value = { width, height };
     }
     function resolvePointSnap(value, targets) {
       let bestValue = value;
@@ -6117,10 +6179,12 @@ const _sfc_main$1 = {
       }
       ioMessage.value = "";
     }
-    function syncRoute(nextPath) {
+    async function syncRoute(nextPath) {
       currentRoute.value = ensureRouteLayout(nextPath);
       validationReport.value = null;
       clearMessage();
+      await nextTick();
+      refreshCanvasMetrics();
     }
     function blockStyle(block) {
       return {
@@ -6271,23 +6335,34 @@ const _sfc_main$1 = {
       initEditorState();
       syncRoute(route.path);
       window.addEventListener("keydown", handleEditorHotkeys);
+      window.addEventListener("resize", refreshCanvasMetrics);
+      window.addEventListener("load", refreshCanvasMetrics);
     });
     watch(
       () => route.path,
-      (nextPath) => {
+      async (nextPath) => {
         stopInteraction();
-        syncRoute(nextPath);
+        await syncRoute(nextPath);
+      }
+    );
+    watch(
+      () => orderedBlocks.value.map((block) => `${block.id}:${block.x}:${block.y}:${block.w}:${block.h}`).join("|"),
+      () => {
+        refreshCanvasMetrics();
       }
     );
     onBeforeUnmount(() => {
       stopInteraction();
       window.removeEventListener("keydown", handleEditorHotkeys);
+      window.removeEventListener("resize", refreshCanvasMetrics);
+      window.removeEventListener("load", refreshCanvasMetrics);
       clearMessage();
     });
     return (_ctx, _push, _parent, _attrs) => {
       if (showCanvas.value) {
         _push(`<div${ssrRenderAttrs(mergeProps({
           class: ["home-editor-canvas", { "is-editing": unref(isEditorMode), "is-interacting": isInteracting.value }],
+          style: canvasStyle.value,
           "aria-label": "页面编辑画布"
         }, _attrs))}><div class="home-editor-canvas__blocks"><div class="home-editor-guides" aria-hidden="true"><!--[-->`);
         ssrRenderList(guideLines.value.vertical, (x, index) => {
@@ -6319,9 +6394,13 @@ const _sfc_main$1 = {
           _push(`<!---->`);
         }
         if (unref(isEditorMode)) {
-          _push(`<aside class="home-editor-panel"><h3 class="home-editor-panel__title">页面编辑器</h3><p class="home-editor-panel__route">${ssrInterpolate(currentRoute.value)}</p><div class="home-editor-status"><span class="home-editor-chip home-editor-chip--draft">草稿</span><span class="${ssrRenderClass([routeStatus.value.dirty ? "is-dirty" : "is-clean", "home-editor-chip"])}">${ssrInterpolate(routeStatus.value.dirty ? "有未发布改动" : "已与发布版同步")}</span><span class="home-editor-chip home-editor-chip--count">草稿/发布 ${ssrInterpolate(blockCountSummary.value)}</span><span class="home-editor-chip home-editor-chip--history">回滚点 ${ssrInterpolate(routeStatus.value.historyCount)}</span><span class="home-editor-chip home-editor-chip--history">撤销 ${ssrInterpolate(historyStats.value.undo)}/重做 ${ssrInterpolate(historyStats.value.redo)}</span></div><div class="home-editor-actions"><button type="button" class="home-editor-btn"> 保存草稿 </button><button type="button" class="home-editor-btn"> 立即发布 </button><button type="button" class="home-editor-btn"> 回滚草稿 </button></div><section class="home-editor-layer-panel"><div class="home-editor-layer-panel__head"><strong>图层面板</strong><div class="home-editor-layer-panel__actions"><button type="button" class="home-editor-layer-btn"${ssrIncludeBooleanAttr(!selectedBlock.value) ? " disabled" : ""}> 上移 </button><button type="button" class="home-editor-layer-btn"${ssrIncludeBooleanAttr(!selectedBlock.value) ? " disabled" : ""}> 下移 </button></div></div><ul class="home-editor-layer-list"><!--[-->`);
+          _push(`<aside class="home-editor-panel"><h3 class="home-editor-panel__title">页面编辑器</h3><p class="home-editor-panel__route">${ssrInterpolate(currentRoute.value)}</p><div class="home-editor-status"><span class="home-editor-chip home-editor-chip--draft">草稿</span><span class="${ssrRenderClass([routeStatus.value.dirty ? "is-dirty" : "is-clean", "home-editor-chip"])}">${ssrInterpolate(routeStatus.value.dirty ? "有未发布改动" : "已与发布版同步")}</span><span class="home-editor-chip home-editor-chip--count">草稿/发布 ${ssrInterpolate(blockCountSummary.value)}</span><span class="home-editor-chip home-editor-chip--history">回滚点 ${ssrInterpolate(routeStatus.value.historyCount)}</span><span class="home-editor-chip home-editor-chip--history">撤销 ${ssrInterpolate(historyStats.value.undo)}/重做 ${ssrInterpolate(historyStats.value.redo)}</span></div><section class="home-editor-route-tools"><button type="button" class="home-editor-btn home-editor-btn--full"> 生成当前页模板 </button><p class="home-editor-route-tools__hint"> 当页面还没有模块时，可一键生成标题与说明区块，快速开始编辑。 </p></section><div class="home-editor-actions"><button type="button" class="home-editor-btn"> 保存草稿 </button><button type="button" class="home-editor-btn"> 立即发布 </button><button type="button" class="home-editor-btn"> 回滚草稿 </button></div><section class="home-editor-layer-panel"><div class="home-editor-layer-panel__head"><strong>图层面板</strong><div class="home-editor-layer-panel__actions"><button type="button" class="home-editor-layer-btn"${ssrIncludeBooleanAttr(!selectedBlock.value) ? " disabled" : ""}> 上移 </button><button type="button" class="home-editor-layer-btn"${ssrIncludeBooleanAttr(!selectedBlock.value) ? " disabled" : ""}> 下移 </button></div></div><ul class="home-editor-layer-list"><!--[-->`);
           ssrRenderList(layerBlocks.value, (block) => {
             _push(`<li><button type="button" class="${ssrRenderClass([{ "is-active": selectedBlockId.value === block.id }, "home-editor-layer-item"])}"><span class="home-editor-layer-item__title">${ssrInterpolate(block.title || block.kicker || block.id)}</span><span class="home-editor-layer-item__meta">z${ssrInterpolate(block.z)}</span></button></li>`);
+          });
+          _push(`<!--]--></ul></section><section class="home-editor-route-list-panel"><div class="home-editor-layer-panel__head"><strong>已编辑页面（${ssrInterpolate(allEditedRoutes.value.length)}）</strong></div><ul class="home-editor-layer-list"><!--[-->`);
+          ssrRenderList(allEditedRoutes.value, (path) => {
+            _push(`<li><button type="button" class="${ssrRenderClass([{ "is-active": currentRoute.value === path }, "home-editor-layer-item"])}"><span class="home-editor-layer-item__title">${ssrInterpolate(path)}</span><span class="home-editor-layer-item__meta">${ssrInterpolate(path === currentRoute.value ? "当前" : "打开")}</span></button></li>`);
           });
           _push(`<!--]--></ul></section><div class="home-editor-actions home-editor-actions--secondary"><button type="button" class="home-editor-btn"> 校验发布 </button><button type="button" class="home-editor-btn"${ssrIncludeBooleanAttr(!routeStatus.value.historyCount) ? " disabled" : ""}> 一键回滚 </button></div><div class="home-editor-actions"><button type="button" class="home-editor-btn home-editor-btn--export"><span class="home-editor-export-icon" aria-hidden="true"></span><span>导出当前页</span></button><button type="button" class="home-editor-btn home-editor-btn--export"><span class="home-editor-export-icon" aria-hidden="true"></span><span>导出全站</span></button><button type="button" class="home-editor-btn"> 导入 JSON </button></div><input class="home-editor-import-input" type="file" accept="application/json,.json">`);
           if (ioMessage.value) {

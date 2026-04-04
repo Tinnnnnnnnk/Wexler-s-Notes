@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/chunks/VPLocalSearchBox.DGQtm0l2.js","assets/chunks/framework.ul-4IeKD.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/chunks/VPLocalSearchBox.C6-wWjG2.js","assets/chunks/framework.ul-4IeKD.js"])))=>i.map(i=>d[i]);
 import { d as defineComponent, c as createElementBlock, r as renderSlot, n as normalizeClass, o as openBlock, a as createTextVNode, t as toDisplayString, b as createBlock, w as withCtx, T as Transition, e as createCommentVNode, _ as _export_sfc, u as useData$1, i as isExternal, f as treatAsHtml, g as withBase, h as computed, j as createBaseVNode, k as unref, l as isActive, m as useMediaQuery, p as ref, q as watch, s as watchEffect, v as onMounted, x as onUnmounted, y as watchPostEffect, z as onUpdated, A as getScrollOffset, F as Fragment, B as renderList, C as resolveComponent, D as onContentUpdated, E as createVNode, G as shallowRef, H as resolveDynamicComponent, I as EXTERNAL_URL_RE, J as useRoute, K as mergeProps, L as inject, M as useWindowSize, N as normalizeStyle, O as onKeyStroke, P as nextTick, Q as useWindowScroll, R as inBrowser, S as readonly, U as defineAsyncComponent, V as __vitePreload, W as useScrollLock, X as provide, Y as toHandlers, Z as withKeys, $ as onBeforeUnmount, a0 as withModifiers, a1 as useSlots, a2 as withDirectives, a3 as vShow, a4 as Teleport, a5 as h } from "./framework.ul-4IeKD.js";
 const _sfc_main$10 = /* @__PURE__ */ defineComponent({
   __name: "VPBadge",
@@ -2230,7 +2230,7 @@ const _hoisted_3$6 = {
 const _sfc_main$o = /* @__PURE__ */ defineComponent({
   __name: "VPNavBarSearch",
   setup(__props) {
-    const VPLocalSearchBox = defineAsyncComponent(() => __vitePreload(() => import("./VPLocalSearchBox.DGQtm0l2.js"), true ? __vite__mapDeps([0,1]) : void 0));
+    const VPLocalSearchBox = defineAsyncComponent(() => __vitePreload(() => import("./VPLocalSearchBox.C6-wWjG2.js"), true ? __vite__mapDeps([0,1]) : void 0));
     const VPAlgoliaSearchBox = () => null;
     const { theme: theme2 } = useData();
     const loaded = ref(false);
@@ -4462,6 +4462,13 @@ function collectStoredRoutes() {
   }
   return [...result];
 }
+function getAllEditorRoutes() {
+  return collectStoredRoutes().map((item) => normalizeRoute(item)).filter((item, index, arr) => arr.indexOf(item) === index).sort((a, b) => {
+    if (a === "/") return -1;
+    if (b === "/") return 1;
+    return a.localeCompare(b, "zh-Hans-CN");
+  });
+}
 function initEditorState() {
   if (initialized) return;
   const savedMode = safeReadStorage(EDIT_MODE_KEY);
@@ -4997,50 +5004,56 @@ const _hoisted_27 = { class: "home-editor-layer-list" };
 const _hoisted_28 = ["onClick"];
 const _hoisted_29 = { class: "home-editor-layer-item__title" };
 const _hoisted_30 = { class: "home-editor-layer-item__meta" };
-const _hoisted_31 = { class: "home-editor-actions home-editor-actions--secondary" };
-const _hoisted_32 = ["disabled"];
-const _hoisted_33 = {
+const _hoisted_31 = { class: "home-editor-route-list-panel" };
+const _hoisted_32 = { class: "home-editor-layer-panel__head" };
+const _hoisted_33 = { class: "home-editor-layer-list" };
+const _hoisted_34 = ["onClick"];
+const _hoisted_35 = { class: "home-editor-layer-item__title" };
+const _hoisted_36 = { class: "home-editor-layer-item__meta" };
+const _hoisted_37 = { class: "home-editor-actions home-editor-actions--secondary" };
+const _hoisted_38 = ["disabled"];
+const _hoisted_39 = {
   key: 1,
   class: "home-editor-report"
 };
-const _hoisted_34 = { class: "home-editor-report__head" };
-const _hoisted_35 = { class: "home-editor-report__meta" };
-const _hoisted_36 = {
+const _hoisted_40 = { class: "home-editor-report__head" };
+const _hoisted_41 = { class: "home-editor-report__meta" };
+const _hoisted_42 = {
   key: 0,
   class: "home-editor-report__list home-editor-report__list--error"
 };
-const _hoisted_37 = {
+const _hoisted_43 = {
   key: 1,
   class: "home-editor-report__list home-editor-report__list--warn"
 };
-const _hoisted_38 = {
+const _hoisted_44 = {
   key: 2,
   class: "home-editor-report__more"
 };
-const _hoisted_39 = { class: "home-editor-field" };
-const _hoisted_40 = ["value"];
-const _hoisted_41 = { class: "home-editor-field" };
-const _hoisted_42 = ["value"];
-const _hoisted_43 = { class: "home-editor-field" };
-const _hoisted_44 = ["value"];
-const _hoisted_45 = { class: "home-editor-grid" };
-const _hoisted_46 = { class: "home-editor-field" };
-const _hoisted_47 = ["value"];
-const _hoisted_48 = { class: "home-editor-field" };
-const _hoisted_49 = ["value"];
-const _hoisted_50 = { class: "home-editor-grid" };
-const _hoisted_51 = { class: "home-editor-field" };
-const _hoisted_52 = ["value"];
-const _hoisted_53 = { class: "home-editor-field" };
-const _hoisted_54 = ["value"];
-const _hoisted_55 = { class: "home-editor-grid" };
-const _hoisted_56 = { class: "home-editor-field" };
-const _hoisted_57 = ["value"];
-const _hoisted_58 = { class: "home-editor-field" };
-const _hoisted_59 = ["value"];
-const _hoisted_60 = { class: "home-editor-field" };
-const _hoisted_61 = ["value"];
-const _hoisted_62 = {
+const _hoisted_45 = { class: "home-editor-field" };
+const _hoisted_46 = ["value"];
+const _hoisted_47 = { class: "home-editor-field" };
+const _hoisted_48 = ["value"];
+const _hoisted_49 = { class: "home-editor-field" };
+const _hoisted_50 = ["value"];
+const _hoisted_51 = { class: "home-editor-grid" };
+const _hoisted_52 = { class: "home-editor-field" };
+const _hoisted_53 = ["value"];
+const _hoisted_54 = { class: "home-editor-field" };
+const _hoisted_55 = ["value"];
+const _hoisted_56 = { class: "home-editor-grid" };
+const _hoisted_57 = { class: "home-editor-field" };
+const _hoisted_58 = ["value"];
+const _hoisted_59 = { class: "home-editor-field" };
+const _hoisted_60 = ["value"];
+const _hoisted_61 = { class: "home-editor-grid" };
+const _hoisted_62 = { class: "home-editor-field" };
+const _hoisted_63 = ["value"];
+const _hoisted_64 = { class: "home-editor-field" };
+const _hoisted_65 = ["value"];
+const _hoisted_66 = { class: "home-editor-field" };
+const _hoisted_67 = ["value"];
+const _hoisted_68 = {
   key: 3,
   class: "home-editor-empty-hint"
 };
@@ -5056,6 +5069,7 @@ const _sfc_main$1 = {
   __name: "EditableHomeCanvas",
   setup(__props) {
     const route = useRoute();
+    const { page } = useData$1();
     const currentRoute = ref("/");
     const interactionState = ref(null);
     const guideLines = ref({ vertical: [], horizontal: [] });
@@ -5064,6 +5078,10 @@ const _sfc_main$1 = {
     const ioMessageType = ref("info");
     const validationReport = ref(null);
     const routeEditHistory = ref({});
+    const canvasMetrics = ref({
+      width: 1200,
+      height: 900
+    });
     let ioTimer = null;
     let interactionRafId = 0;
     let pendingPointer = null;
@@ -5086,6 +5104,10 @@ const _sfc_main$1 = {
     const blockCountSummary = computed(
       () => `${routeStatus.value.blockCount}/${routeStatus.value.publishedBlockCount}`
     );
+    const canvasStyle = computed(() => ({
+      height: `${canvasMetrics.value.height}px`
+    }));
+    const allEditedRoutes = computed(() => getAllEditorRoutes());
     function clamp2(value, min, max) {
       return Math.min(max, Math.max(min, value));
     }
@@ -5174,12 +5196,77 @@ const _sfc_main$1 = {
       applyHistorySnapshot(targetSnapshot);
     }
     function getCanvasBounds() {
-      if (typeof window === "undefined") {
-        return { width: 1200, height: 900 };
-      }
+      return canvasMetrics.value;
+    }
+    function getDocumentHeight() {
+      if (typeof window === "undefined") return 900;
+      const body = document.body;
+      const html = document.documentElement;
+      return Math.max(
+        (body == null ? void 0 : body.scrollHeight) || 0,
+        (body == null ? void 0 : body.offsetHeight) || 0,
+        (html == null ? void 0 : html.clientHeight) || 0,
+        (html == null ? void 0 : html.scrollHeight) || 0,
+        (html == null ? void 0 : html.offsetHeight) || 0
+      );
+    }
+    function refreshCanvasMetrics() {
+      if (typeof window === "undefined") return;
+      const routeBlocks = getRouteBlocks(currentRoute.value);
+      const maxBlockBottom = routeBlocks.reduce((max, block) => Math.max(max, block.y + block.h), 0);
+      const docHeight = getDocumentHeight();
+      const width = clamp2(Math.round(window.innerWidth), 320, CANVAS_LIMIT);
+      const height = clamp2(
+        Math.max(docHeight - 72, maxBlockBottom + 280, 760),
+        760,
+        CANVAS_LIMIT
+      );
+      canvasMetrics.value = { width, height };
+    }
+    function createPageTemplateLayout() {
+      var _a, _b, _c, _d, _e, _f;
+      const now = Date.now();
+      const pageTitle = String(((_a = page.value) == null ? void 0 : _a.title) || "").trim();
+      const routeLabel = currentRoute.value === "/" ? "主页" : currentRoute.value;
+      const docTitle = pageTitle || ((_c = (_b = document.querySelector(".VPDoc h1, .VPHero .name, .VPHero .text")) == null ? void 0 : _b.textContent) == null ? void 0 : _c.trim()) || routeLabel;
+      const description = String(((_d = page.value) == null ? void 0 : _d.description) || "").trim() || ((_f = (_e = document.querySelector(".VPDoc p")) == null ? void 0 : _e.textContent) == null ? void 0 : _f.trim()) || "从这里开始编辑当前页面，支持拖拽、缩放、发布和回滚。";
+      const primaryBlock = {
+        id: `route-hero-${now}`,
+        kind: "text",
+        x: 88,
+        y: 120,
+        w: 560,
+        h: 220,
+        z: 20,
+        opacity: 0.94,
+        radius: 18,
+        blur: 12,
+        bg: "rgba(16, 28, 40, 0.34)",
+        color: "#f3f7fc",
+        kicker: "Page Intro",
+        title: docTitle,
+        body: description
+      };
+      const secondaryBlock = {
+        id: `route-meta-${now}`,
+        kind: "text",
+        x: 88,
+        y: 368,
+        w: 390,
+        h: 140,
+        z: 21,
+        opacity: 0.9,
+        radius: 16,
+        blur: 10,
+        bg: "rgba(12, 20, 30, 0.28)",
+        color: "#e6eff8",
+        kicker: "Route",
+        title: routeLabel,
+        body: "可在图层面板中管理模块顺序，发布前先做校验。"
+      };
       return {
-        width: clamp2(Math.round(window.innerWidth), 320, CANVAS_LIMIT),
-        height: clamp2(Math.round(window.innerHeight - 72), 240, CANVAS_LIMIT)
+        version: 1,
+        blocks: [primaryBlock, secondaryBlock]
       };
     }
     function resolvePointSnap(value, targets) {
@@ -5323,10 +5410,12 @@ const _sfc_main$1 = {
       }
       ioMessage.value = "";
     }
-    function syncRoute(nextPath) {
+    async function syncRoute(nextPath) {
       currentRoute.value = ensureRouteLayout(nextPath);
       validationReport.value = null;
       clearMessage();
+      await nextTick();
+      refreshCanvasMetrics();
     }
     function formatSnapshotTime(value) {
       if (!value) return "未知时间";
@@ -5463,6 +5552,15 @@ const _sfc_main$1 = {
       pushUndoSnapshot(currentRoute.value, "重置布局");
       resetRouteLayout(currentRoute.value);
     }
+    function handleGenerateRouteTemplate() {
+      var _a;
+      pushUndoSnapshot(currentRoute.value, "生成页面模板");
+      const nextLayout = createPageTemplateLayout();
+      replaceRouteDraftLayout(currentRoute.value, nextLayout, { persist: true });
+      setSelectedRouteBlock(currentRoute.value, ((_a = nextLayout.blocks[0]) == null ? void 0 : _a.id) || "");
+      refreshCanvasMetrics();
+      setMessage("success", "已为当前页面生成基础模板。");
+    }
     function handleDuplicateSelected() {
       if (!selectedBlock.value) return;
       pushUndoSnapshot(currentRoute.value, "复制模块");
@@ -5480,6 +5578,11 @@ const _sfc_main$1 = {
       if (!result.ok) {
         setMessage("error", result.message || "图层调整失败。");
       }
+    }
+    function navigateToEditedRoute(path) {
+      const target = ensureRouteLayout(path);
+      if (target === currentRoute.value) return;
+      window.location.assign(target);
     }
     function nudgeSelectedBlock(dx, dy) {
       if (!selectedBlock.value) return;
@@ -5657,23 +5760,34 @@ const _sfc_main$1 = {
       initEditorState();
       syncRoute(route.path);
       window.addEventListener("keydown", handleEditorHotkeys);
+      window.addEventListener("resize", refreshCanvasMetrics);
+      window.addEventListener("load", refreshCanvasMetrics);
     });
     watch(
       () => route.path,
-      (nextPath) => {
+      async (nextPath) => {
         stopInteraction();
-        syncRoute(nextPath);
+        await syncRoute(nextPath);
+      }
+    );
+    watch(
+      () => orderedBlocks.value.map((block) => `${block.id}:${block.x}:${block.y}:${block.w}:${block.h}`).join("|"),
+      () => {
+        refreshCanvasMetrics();
       }
     );
     onBeforeUnmount(() => {
       stopInteraction();
       window.removeEventListener("keydown", handleEditorHotkeys);
+      window.removeEventListener("resize", refreshCanvasMetrics);
+      window.removeEventListener("load", refreshCanvasMetrics);
       clearMessage();
     });
     return (_ctx, _cache) => {
       return showCanvas.value ? (openBlock(), createElementBlock("div", {
         key: 0,
         class: normalizeClass(["home-editor-canvas", { "is-editing": unref(isEditorMode), "is-interacting": isInteracting.value }]),
+        style: normalizeStyle(canvasStyle.value),
         "aria-label": "页面编辑画布"
       }, [
         createBaseVNode("div", _hoisted_1$1, [
@@ -5766,7 +5880,7 @@ const _sfc_main$1 = {
           }, " 重置 ")
         ])) : createCommentVNode("", true),
         unref(isEditorMode) ? (openBlock(), createElementBlock("aside", _hoisted_16, [
-          _cache[25] || (_cache[25] = createBaseVNode("h3", { class: "home-editor-panel__title" }, "页面编辑器", -1)),
+          _cache[26] || (_cache[26] = createBaseVNode("h3", { class: "home-editor-panel__title" }, "页面编辑器", -1)),
           createBaseVNode("p", _hoisted_17, toDisplayString(currentRoute.value), 1),
           createBaseVNode("div", _hoisted_18, [
             _cache[11] || (_cache[11] = createBaseVNode("span", { class: "home-editor-chip home-editor-chip--draft" }, "草稿", -1)),
@@ -5776,6 +5890,14 @@ const _sfc_main$1 = {
             createBaseVNode("span", _hoisted_19, "草稿/发布 " + toDisplayString(blockCountSummary.value), 1),
             createBaseVNode("span", _hoisted_20, "回滚点 " + toDisplayString(routeStatus.value.historyCount), 1),
             createBaseVNode("span", _hoisted_21, "撤销 " + toDisplayString(historyStats.value.undo) + "/重做 " + toDisplayString(historyStats.value.redo), 1)
+          ]),
+          createBaseVNode("section", { class: "home-editor-route-tools" }, [
+            createBaseVNode("button", {
+              type: "button",
+              class: "home-editor-btn home-editor-btn--full",
+              onClick: handleGenerateRouteTemplate
+            }, " 生成当前页模板 "),
+            _cache[12] || (_cache[12] = createBaseVNode("p", { class: "home-editor-route-tools__hint" }, " 当页面还没有模块时，可一键生成标题与说明区块，快速开始编辑。 ", -1))
           ]),
           createBaseVNode("div", { class: "home-editor-actions" }, [
             createBaseVNode("button", {
@@ -5796,7 +5918,7 @@ const _sfc_main$1 = {
           ]),
           createBaseVNode("section", _hoisted_22, [
             createBaseVNode("div", _hoisted_23, [
-              _cache[12] || (_cache[12] = createBaseVNode("strong", null, "图层面板", -1)),
+              _cache[13] || (_cache[13] = createBaseVNode("strong", null, "图层面板", -1)),
               createBaseVNode("div", _hoisted_24, [
                 createBaseVNode("button", {
                   type: "button",
@@ -5829,7 +5951,28 @@ const _sfc_main$1 = {
               }), 128))
             ])
           ]),
-          createBaseVNode("div", _hoisted_31, [
+          createBaseVNode("section", _hoisted_31, [
+            createBaseVNode("div", _hoisted_32, [
+              createBaseVNode("strong", null, "已编辑页面（" + toDisplayString(allEditedRoutes.value.length) + "）", 1)
+            ]),
+            createBaseVNode("ul", _hoisted_33, [
+              (openBlock(true), createElementBlock(Fragment, null, renderList(allEditedRoutes.value, (path) => {
+                return openBlock(), createElementBlock("li", {
+                  key: `route-${path}`
+                }, [
+                  createBaseVNode("button", {
+                    type: "button",
+                    class: normalizeClass(["home-editor-layer-item", { "is-active": currentRoute.value === path }]),
+                    onClick: ($event) => navigateToEditedRoute(path)
+                  }, [
+                    createBaseVNode("span", _hoisted_35, toDisplayString(path), 1),
+                    createBaseVNode("span", _hoisted_36, toDisplayString(path === currentRoute.value ? "当前" : "打开"), 1)
+                  ], 10, _hoisted_34)
+                ]);
+              }), 128))
+            ])
+          ]),
+          createBaseVNode("div", _hoisted_37, [
             createBaseVNode("button", {
               type: "button",
               class: "home-editor-btn",
@@ -5840,14 +5983,14 @@ const _sfc_main$1 = {
               class: "home-editor-btn",
               disabled: !routeStatus.value.historyCount,
               onClick: handleRollbackPublished
-            }, " 一键回滚 ", 8, _hoisted_32)
+            }, " 一键回滚 ", 8, _hoisted_38)
           ]),
           createBaseVNode("div", { class: "home-editor-actions" }, [
             createBaseVNode("button", {
               type: "button",
               class: "home-editor-btn home-editor-btn--export",
               onClick: handleExportCurrent
-            }, [..._cache[13] || (_cache[13] = [
+            }, [..._cache[14] || (_cache[14] = [
               createBaseVNode("span", {
                 class: "home-editor-export-icon",
                 "aria-hidden": "true"
@@ -5858,7 +6001,7 @@ const _sfc_main$1 = {
               type: "button",
               class: "home-editor-btn home-editor-btn--export",
               onClick: handleExportAll
-            }, [..._cache[14] || (_cache[14] = [
+            }, [..._cache[15] || (_cache[15] = [
               createBaseVNode("span", {
                 class: "home-editor-export-icon",
                 "aria-hidden": "true"
@@ -5883,59 +6026,59 @@ const _sfc_main$1 = {
             key: 0,
             class: normalizeClass(["home-editor-message", `is-${ioMessageType.value}`])
           }, toDisplayString(ioMessage.value), 3)) : createCommentVNode("", true),
-          validationReport.value ? (openBlock(), createElementBlock("section", _hoisted_33, [
-            createBaseVNode("div", _hoisted_34, [
+          validationReport.value ? (openBlock(), createElementBlock("section", _hoisted_39, [
+            createBaseVNode("div", _hoisted_40, [
               createBaseVNode("span", {
                 class: normalizeClass(["home-editor-report__badge", validationReport.value.ok ? "is-pass" : "is-block"])
               }, toDisplayString(validationReport.value.ok ? "校验通过" : "校验失败"), 3),
-              createBaseVNode("span", _hoisted_35, " 错误 " + toDisplayString(validationReport.value.errors.length) + " / 提醒 " + toDisplayString(validationReport.value.warnings.length), 1)
+              createBaseVNode("span", _hoisted_41, " 错误 " + toDisplayString(validationReport.value.errors.length) + " / 提醒 " + toDisplayString(validationReport.value.warnings.length), 1)
             ]),
-            validationReport.value.errors.length ? (openBlock(), createElementBlock("ul", _hoisted_36, [
+            validationReport.value.errors.length ? (openBlock(), createElementBlock("ul", _hoisted_42, [
               (openBlock(true), createElementBlock(Fragment, null, renderList(validationReport.value.errors.slice(0, 6), (item, index) => {
                 return openBlock(), createElementBlock("li", {
                   key: `error-${index}`
                 }, toDisplayString(item.message), 1);
               }), 128))
             ])) : createCommentVNode("", true),
-            validationReport.value.warnings.length ? (openBlock(), createElementBlock("ul", _hoisted_37, [
+            validationReport.value.warnings.length ? (openBlock(), createElementBlock("ul", _hoisted_43, [
               (openBlock(true), createElementBlock(Fragment, null, renderList(validationReport.value.warnings.slice(0, 6), (item, index) => {
                 return openBlock(), createElementBlock("li", {
                   key: `warning-${index}`
                 }, toDisplayString(item.message), 1);
               }), 128))
             ])) : createCommentVNode("", true),
-            validationReport.value.errors.length > 6 || validationReport.value.warnings.length > 6 ? (openBlock(), createElementBlock("p", _hoisted_38, " 仅展示前 6 条，请先优先处理关键问题。 ")) : createCommentVNode("", true)
+            validationReport.value.errors.length > 6 || validationReport.value.warnings.length > 6 ? (openBlock(), createElementBlock("p", _hoisted_44, " 仅展示前 6 条，请先优先处理关键问题。 ")) : createCommentVNode("", true)
           ])) : createCommentVNode("", true),
           selectedBlock.value ? (openBlock(), createElementBlock(Fragment, { key: 2 }, [
-            createBaseVNode("label", _hoisted_39, [
-              _cache[15] || (_cache[15] = createBaseVNode("span", null, "前缀文案", -1)),
+            createBaseVNode("label", _hoisted_45, [
+              _cache[16] || (_cache[16] = createBaseVNode("span", null, "前缀文案", -1)),
               createBaseVNode("input", {
                 class: "home-editor-input",
                 type: "text",
                 value: selectedBlock.value.kicker,
                 onInput: _cache[2] || (_cache[2] = ($event) => updateSelectedField("kicker", $event.target.value))
-              }, null, 40, _hoisted_40)
+              }, null, 40, _hoisted_46)
             ]),
-            createBaseVNode("label", _hoisted_41, [
-              _cache[16] || (_cache[16] = createBaseVNode("span", null, "标题", -1)),
+            createBaseVNode("label", _hoisted_47, [
+              _cache[17] || (_cache[17] = createBaseVNode("span", null, "标题", -1)),
               createBaseVNode("input", {
                 class: "home-editor-input",
                 type: "text",
                 value: selectedBlock.value.title,
                 onInput: _cache[3] || (_cache[3] = ($event) => updateSelectedField("title", $event.target.value))
-              }, null, 40, _hoisted_42)
+              }, null, 40, _hoisted_48)
             ]),
-            createBaseVNode("label", _hoisted_43, [
-              _cache[17] || (_cache[17] = createBaseVNode("span", null, "正文", -1)),
+            createBaseVNode("label", _hoisted_49, [
+              _cache[18] || (_cache[18] = createBaseVNode("span", null, "正文", -1)),
               createBaseVNode("textarea", {
                 class: "home-editor-input home-editor-input--textarea",
                 value: selectedBlock.value.body,
                 onInput: _cache[4] || (_cache[4] = ($event) => updateSelectedField("body", $event.target.value))
-              }, null, 40, _hoisted_44)
+              }, null, 40, _hoisted_50)
             ]),
-            createBaseVNode("div", _hoisted_45, [
-              createBaseVNode("label", _hoisted_46, [
-                _cache[18] || (_cache[18] = createBaseVNode("span", null, "宽度", -1)),
+            createBaseVNode("div", _hoisted_51, [
+              createBaseVNode("label", _hoisted_52, [
+                _cache[19] || (_cache[19] = createBaseVNode("span", null, "宽度", -1)),
                 createBaseVNode("input", {
                   class: "home-editor-range",
                   type: "range",
@@ -5944,10 +6087,10 @@ const _sfc_main$1 = {
                   step: "1",
                   value: selectedBlock.value.w,
                   onInput: _cache[5] || (_cache[5] = ($event) => updateSelectedNumberField("w", $event.target.value, 180, 1200))
-                }, null, 40, _hoisted_47)
+                }, null, 40, _hoisted_53)
               ]),
-              createBaseVNode("label", _hoisted_48, [
-                _cache[19] || (_cache[19] = createBaseVNode("span", null, "高度", -1)),
+              createBaseVNode("label", _hoisted_54, [
+                _cache[20] || (_cache[20] = createBaseVNode("span", null, "高度", -1)),
                 createBaseVNode("input", {
                   class: "home-editor-range",
                   type: "range",
@@ -5956,12 +6099,12 @@ const _sfc_main$1 = {
                   step: "1",
                   value: selectedBlock.value.h,
                   onInput: _cache[6] || (_cache[6] = ($event) => updateSelectedNumberField("h", $event.target.value, 90, 900))
-                }, null, 40, _hoisted_49)
+                }, null, 40, _hoisted_55)
               ])
             ]),
-            createBaseVNode("div", _hoisted_50, [
-              createBaseVNode("label", _hoisted_51, [
-                _cache[20] || (_cache[20] = createBaseVNode("span", null, "透明度", -1)),
+            createBaseVNode("div", _hoisted_56, [
+              createBaseVNode("label", _hoisted_57, [
+                _cache[21] || (_cache[21] = createBaseVNode("span", null, "透明度", -1)),
                 createBaseVNode("input", {
                   class: "home-editor-range",
                   type: "range",
@@ -5970,10 +6113,10 @@ const _sfc_main$1 = {
                   step: "0.01",
                   value: selectedBlock.value.opacity,
                   onInput: _cache[7] || (_cache[7] = ($event) => updateSelectedNumberField("opacity", $event.target.value, 0.05, 1))
-                }, null, 40, _hoisted_52)
+                }, null, 40, _hoisted_58)
               ]),
-              createBaseVNode("label", _hoisted_53, [
-                _cache[21] || (_cache[21] = createBaseVNode("span", null, "圆角", -1)),
+              createBaseVNode("label", _hoisted_59, [
+                _cache[22] || (_cache[22] = createBaseVNode("span", null, "圆角", -1)),
                 createBaseVNode("input", {
                   class: "home-editor-range",
                   type: "range",
@@ -5982,12 +6125,12 @@ const _sfc_main$1 = {
                   step: "1",
                   value: selectedBlock.value.radius,
                   onInput: _cache[8] || (_cache[8] = ($event) => updateSelectedNumberField("radius", $event.target.value, 0, 60))
-                }, null, 40, _hoisted_54)
+                }, null, 40, _hoisted_60)
               ])
             ]),
-            createBaseVNode("div", _hoisted_55, [
-              createBaseVNode("label", _hoisted_56, [
-                _cache[22] || (_cache[22] = createBaseVNode("span", null, "模糊度", -1)),
+            createBaseVNode("div", _hoisted_61, [
+              createBaseVNode("label", _hoisted_62, [
+                _cache[23] || (_cache[23] = createBaseVNode("span", null, "模糊度", -1)),
                 createBaseVNode("input", {
                   class: "home-editor-range",
                   type: "range",
@@ -5996,31 +6139,31 @@ const _sfc_main$1 = {
                   step: "1",
                   value: selectedBlock.value.blur,
                   onInput: _cache[9] || (_cache[9] = ($event) => updateSelectedNumberField("blur", $event.target.value, 0, 24))
-                }, null, 40, _hoisted_57)
+                }, null, 40, _hoisted_63)
               ]),
-              createBaseVNode("label", _hoisted_58, [
-                _cache[23] || (_cache[23] = createBaseVNode("span", null, "文字颜色", -1)),
+              createBaseVNode("label", _hoisted_64, [
+                _cache[24] || (_cache[24] = createBaseVNode("span", null, "文字颜色", -1)),
                 createBaseVNode("input", {
                   class: "home-editor-color",
                   type: "color",
                   value: normalizeColorHex(selectedBlock.value.color),
                   onInput: updateTextColor
-                }, null, 40, _hoisted_59)
+                }, null, 40, _hoisted_65)
               ])
             ]),
-            createBaseVNode("label", _hoisted_60, [
-              _cache[24] || (_cache[24] = createBaseVNode("span", null, "背景样式", -1)),
+            createBaseVNode("label", _hoisted_66, [
+              _cache[25] || (_cache[25] = createBaseVNode("span", null, "背景样式", -1)),
               createBaseVNode("input", {
                 class: "home-editor-input",
                 type: "text",
                 value: selectedBlock.value.bg,
                 onInput: _cache[10] || (_cache[10] = ($event) => updateSelectedField("bg", $event.target.value))
-              }, null, 40, _hoisted_61)
+              }, null, 40, _hoisted_67)
             ])
-          ], 64)) : (openBlock(), createElementBlock("p", _hoisted_62, " 当前未选中模块。请点击画布中的模块，或先点击“新增”创建模块。 ")),
-          _cache[26] || (_cache[26] = createBaseVNode("p", { class: "home-editor-shortcut-hint" }, " 快捷键：Ctrl/Cmd+Z 撤销，Shift+Ctrl/Cmd+Z 重做，Ctrl/Cmd+D 复制，Delete 删除，方向键微调，Alt+↑/↓ 调整图层。 ", -1))
+          ], 64)) : (openBlock(), createElementBlock("p", _hoisted_68, " 当前未选中模块。请点击画布中的模块，或先点击“新增”创建模块。 ")),
+          _cache[27] || (_cache[27] = createBaseVNode("p", { class: "home-editor-shortcut-hint" }, " 快捷键：Ctrl/Cmd+Z 撤销，Shift+Ctrl/Cmd+Z 重做，Ctrl/Cmd+D 复制，Delete 删除，方向键微调，Alt+↑/↓ 调整图层。 ", -1))
         ])) : createCommentVNode("", true)
-      ], 2)) : createCommentVNode("", true);
+      ], 6)) : createCommentVNode("", true);
     };
   }
 };

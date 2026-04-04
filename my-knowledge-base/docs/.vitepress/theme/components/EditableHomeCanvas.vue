@@ -1,10 +1,11 @@
 <script setup>
-import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import { useRoute } from 'vitepress'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { useData, useRoute } from 'vitepress'
 import {
   addRouteTextBlock,
   duplicateRouteBlock,
   ensureRouteLayout,
+  getAllEditorRoutes,
   getOrderedRouteBlocks,
   getRouteDraftLayout,
   getRoutePublishedHistory,
@@ -32,6 +33,7 @@ import {
 } from './editorState'
 
 const route = useRoute()
+const { page } = useData()
 const currentRoute = ref('/')
 const interactionState = ref(null)
 const guideLines = ref({ vertical: [], horizontal: [] })
@@ -40,6 +42,10 @@ const ioMessage = ref('')
 const ioMessageType = ref('info')
 const validationReport = ref(null)
 const routeEditHistory = ref({})
+const canvasMetrics = ref({
+  width: 1200,
+  height: 900
+})
 
 let ioTimer = null
 let interactionRafId = 0
@@ -64,6 +70,10 @@ const historyStats = computed(() => {
 const blockCountSummary = computed(
   () => `${routeStatus.value.blockCount}/${routeStatus.value.publishedBlockCount}`
 )
+const canvasStyle = computed(() => ({
+  height: `${canvasMetrics.value.height}px`
+}))
+const allEditedRoutes = computed(() => getAllEditorRoutes())
 
 const SNAP_GRID = 12
 const SNAP_THRESHOLD = 8
@@ -178,13 +188,90 @@ function handleRedo() {
 }
 
 function getCanvasBounds() {
-  if (typeof window === 'undefined') {
-    return { width: 1200, height: 900 }
+  return canvasMetrics.value
+}
+
+function getDocumentHeight() {
+  if (typeof window === 'undefined') return 900
+  const body = document.body
+  const html = document.documentElement
+  return Math.max(
+    body?.scrollHeight || 0,
+    body?.offsetHeight || 0,
+    html?.clientHeight || 0,
+    html?.scrollHeight || 0,
+    html?.offsetHeight || 0
+  )
+}
+
+function refreshCanvasMetrics() {
+  if (typeof window === 'undefined') return
+
+  const routeBlocks = getRouteBlocks(currentRoute.value)
+  const maxBlockBottom = routeBlocks.reduce((max, block) => Math.max(max, block.y + block.h), 0)
+  const docHeight = getDocumentHeight()
+  const width = clamp(Math.round(window.innerWidth), 320, CANVAS_LIMIT)
+  const height = clamp(
+    Math.max(docHeight - 72, maxBlockBottom + 280, 760),
+    760,
+    CANVAS_LIMIT
+  )
+
+  canvasMetrics.value = { width, height }
+}
+
+function createPageTemplateLayout() {
+  const now = Date.now()
+  const pageTitle = String(page.value?.title || '').trim()
+  const routeLabel = currentRoute.value === '/' ? '主页' : currentRoute.value
+  const docTitle =
+    pageTitle ||
+    document.querySelector('.VPDoc h1, .VPHero .name, .VPHero .text')?.textContent?.trim() ||
+    routeLabel
+  const description =
+    String(page.value?.description || '').trim() ||
+    document.querySelector('.VPDoc p')?.textContent?.trim() ||
+    '从这里开始编辑当前页面，支持拖拽、缩放、发布和回滚。'
+
+  const primaryBlock = {
+    id: `route-hero-${now}`,
+    kind: 'text',
+    x: 88,
+    y: 120,
+    w: 560,
+    h: 220,
+    z: 20,
+    opacity: 0.94,
+    radius: 18,
+    blur: 12,
+    bg: 'rgba(16, 28, 40, 0.34)',
+    color: '#f3f7fc',
+    kicker: 'Page Intro',
+    title: docTitle,
+    body: description
+  }
+
+  const secondaryBlock = {
+    id: `route-meta-${now}`,
+    kind: 'text',
+    x: 88,
+    y: 368,
+    w: 390,
+    h: 140,
+    z: 21,
+    opacity: 0.9,
+    radius: 16,
+    blur: 10,
+    bg: 'rgba(12, 20, 30, 0.28)',
+    color: '#e6eff8',
+    kicker: 'Route',
+    title: routeLabel,
+    body: '可在图层面板中管理模块顺序，发布前先做校验。'
   }
 
   return {
-    width: clamp(Math.round(window.innerWidth), 320, CANVAS_LIMIT),
-    height: clamp(Math.round(window.innerHeight - 72), 240, CANVAS_LIMIT)
+    version: 1,
+    blocks: [primaryBlock, secondaryBlock]
   }
 }
 
@@ -355,10 +442,12 @@ function clearMessage() {
   ioMessage.value = ''
 }
 
-function syncRoute(nextPath) {
+async function syncRoute(nextPath) {
   currentRoute.value = ensureRouteLayout(nextPath)
   validationReport.value = null
   clearMessage()
+  await nextTick()
+  refreshCanvasMetrics()
 }
 
 function formatSnapshotTime(value) {
@@ -520,6 +609,15 @@ function handleResetLayout() {
   resetRouteLayout(currentRoute.value)
 }
 
+function handleGenerateRouteTemplate() {
+  pushUndoSnapshot(currentRoute.value, '生成页面模板')
+  const nextLayout = createPageTemplateLayout()
+  replaceRouteDraftLayout(currentRoute.value, nextLayout, { persist: true })
+  setSelectedRouteBlock(currentRoute.value, nextLayout.blocks[0]?.id || '')
+  refreshCanvasMetrics()
+  setMessage('success', '已为当前页面生成基础模板。')
+}
+
 function handleDuplicateSelected() {
   if (!selectedBlock.value) return
   pushUndoSnapshot(currentRoute.value, '复制模块')
@@ -538,6 +636,12 @@ function handleMoveLayer(direction) {
   if (!result.ok) {
     setMessage('error', result.message || '图层调整失败。')
   }
+}
+
+function navigateToEditedRoute(path) {
+  const target = ensureRouteLayout(path)
+  if (target === currentRoute.value) return
+  window.location.assign(target)
 }
 
 function nudgeSelectedBlock(dx, dy) {
@@ -740,19 +844,30 @@ onMounted(() => {
   initEditorState()
   syncRoute(route.path)
   window.addEventListener('keydown', handleEditorHotkeys)
+  window.addEventListener('resize', refreshCanvasMetrics)
+  window.addEventListener('load', refreshCanvasMetrics)
 })
 
 watch(
   () => route.path,
-  (nextPath) => {
+  async (nextPath) => {
     stopInteraction()
-    syncRoute(nextPath)
+    await syncRoute(nextPath)
+  }
+)
+
+watch(
+  () => orderedBlocks.value.map((block) => `${block.id}:${block.x}:${block.y}:${block.w}:${block.h}`).join('|'),
+  () => {
+    refreshCanvasMetrics()
   }
 )
 
 onBeforeUnmount(() => {
   stopInteraction()
   window.removeEventListener('keydown', handleEditorHotkeys)
+  window.removeEventListener('resize', refreshCanvasMetrics)
+  window.removeEventListener('load', refreshCanvasMetrics)
   clearMessage()
 })
 </script>
@@ -762,6 +877,7 @@ onBeforeUnmount(() => {
     v-if="showCanvas"
     class="home-editor-canvas"
     :class="{ 'is-editing': isEditorMode, 'is-interacting': isInteracting }"
+    :style="canvasStyle"
     aria-label="页面编辑画布"
   >
     <div class="home-editor-canvas__blocks">
@@ -863,6 +979,15 @@ onBeforeUnmount(() => {
         <span class="home-editor-chip home-editor-chip--history">撤销 {{ historyStats.undo }}/重做 {{ historyStats.redo }}</span>
       </div>
 
+      <section class="home-editor-route-tools">
+        <button type="button" class="home-editor-btn home-editor-btn--full" @click="handleGenerateRouteTemplate">
+          生成当前页模板
+        </button>
+        <p class="home-editor-route-tools__hint">
+          当页面还没有模块时，可一键生成标题与说明区块，快速开始编辑。
+        </p>
+      </section>
+
       <div class="home-editor-actions">
         <button type="button" class="home-editor-btn" @click="handleSaveDraft">
           保存草稿
@@ -898,6 +1023,25 @@ onBeforeUnmount(() => {
             >
               <span class="home-editor-layer-item__title">{{ block.title || block.kicker || block.id }}</span>
               <span class="home-editor-layer-item__meta">z{{ block.z }}</span>
+            </button>
+          </li>
+        </ul>
+      </section>
+
+      <section class="home-editor-route-list-panel">
+        <div class="home-editor-layer-panel__head">
+          <strong>已编辑页面（{{ allEditedRoutes.length }}）</strong>
+        </div>
+        <ul class="home-editor-layer-list">
+          <li v-for="path in allEditedRoutes" :key="`route-${path}`">
+            <button
+              type="button"
+              class="home-editor-layer-item"
+              :class="{ 'is-active': currentRoute === path }"
+              @click="navigateToEditedRoute(path)"
+            >
+              <span class="home-editor-layer-item__title">{{ path }}</span>
+              <span class="home-editor-layer-item__meta">{{ path === currentRoute ? '当前' : '打开' }}</span>
             </button>
           </li>
         </ul>

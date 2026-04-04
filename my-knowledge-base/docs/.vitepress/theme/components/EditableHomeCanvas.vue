@@ -1,26 +1,33 @@
 <script setup>
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vitepress'
 import {
-  addHomeTextBlock,
-  homeLayout,
+  addRouteTextBlock,
+  ensureRouteLayout,
+  getOrderedRouteBlocks,
+  getRouteBlocks,
+  getSelectedRouteBlock,
+  getSelectedRouteBlockId,
   initEditorState,
   isEditorMode,
-  orderedHomeBlocks,
-  patchHomeBlock,
-  persistHomeLayout,
-  removeHomeBlock,
-  resetHomeLayout,
-  selectedHomeBlock,
-  selectedHomeBlockId,
-  setSelectedHomeBlock
+  patchRouteBlock,
+  persistRouteLayout,
+  removeRouteBlock,
+  resetRouteLayout,
+  setSelectedRouteBlock
 } from './editorState'
 
 const route = useRoute()
-const isHome = computed(() => route.path === '/')
-const showCanvas = computed(() => isHome.value && isEditorMode.value)
-
+const currentRoute = ref('/')
 const dragState = ref(null)
+let dragRafId = 0
+let pendingPointer = null
+
+const showCanvas = computed(() => isEditorMode.value)
+const isDragging = computed(() => Boolean(dragState.value))
+const orderedBlocks = computed(() => getOrderedRouteBlocks(currentRoute.value))
+const selectedBlockId = computed(() => getSelectedRouteBlockId(currentRoute.value))
+const selectedBlock = computed(() => getSelectedRouteBlock(currentRoute.value))
 
 function clamp(value, min, max) {
   return Math.min(max, Math.max(min, value))
@@ -30,6 +37,10 @@ function normalizeColorHex(value, fallback = '#ffffff') {
   if (typeof value !== 'string') return fallback
   const text = value.trim()
   return /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(text) ? text : fallback
+}
+
+function syncRoute(nextPath) {
+  currentRoute.value = ensureRouteLayout(nextPath)
 }
 
 function blockStyle(block) {
@@ -46,11 +57,34 @@ function blockStyle(block) {
   }
 }
 
+function applyDragPosition(clientX, clientY) {
+  if (!dragState.value) return
+  const dx = clientX - dragState.value.startX
+  const dy = clientY - dragState.value.startY
+
+  patchRouteBlock(
+    currentRoute.value,
+    dragState.value.id,
+    {
+      x: clamp(Math.round(dragState.value.initialX + dx), 0, 5000),
+      y: clamp(Math.round(dragState.value.initialY + dy), 0, 5000)
+    },
+    { persist: false }
+  )
+}
+
+function flushDragFrame() {
+  dragRafId = 0
+  if (!dragState.value || !pendingPointer) return
+  applyDragPosition(pendingPointer.x, pendingPointer.y)
+  pendingPointer = null
+}
+
 function onBlockPointerDown(event, block) {
   if (!isEditorMode.value) return
-  if (event.button !== 0) return
+  if (event.pointerType === 'mouse' && event.button !== 0) return
 
-  setSelectedHomeBlock(block.id)
+  setSelectedRouteBlock(currentRoute.value, block.id)
 
   dragState.value = {
     id: block.id,
@@ -64,51 +98,53 @@ function onBlockPointerDown(event, block) {
   window.addEventListener('pointermove', onDragging)
   window.addEventListener('pointerup', stopDragging)
   window.addEventListener('pointercancel', stopDragging)
+  event.preventDefault()
 }
 
 function onDragging(event) {
   if (!dragState.value) return
-  const dx = event.clientX - dragState.value.startX
-  const dy = event.clientY - dragState.value.startY
-
-  patchHomeBlock(
-    dragState.value.id,
-    {
-      x: clamp(Math.round(dragState.value.initialX + dx), 0, 5000),
-      y: clamp(Math.round(dragState.value.initialY + dy), 0, 5000)
-    },
-    { persist: false }
-  )
+  pendingPointer = { x: event.clientX, y: event.clientY }
+  if (dragRafId) return
+  dragRafId = window.requestAnimationFrame(flushDragFrame)
 }
 
 function stopDragging(event) {
   if (!dragState.value) return
   if (event && event.pointerId && event.pointerId !== dragState.value.pointerId) return
 
+  if (dragRafId) {
+    window.cancelAnimationFrame(dragRafId)
+    dragRafId = 0
+  }
+  if (pendingPointer) {
+    applyDragPosition(pendingPointer.x, pendingPointer.y)
+    pendingPointer = null
+  }
+
   dragState.value = null
   window.removeEventListener('pointermove', onDragging)
   window.removeEventListener('pointerup', stopDragging)
   window.removeEventListener('pointercancel', stopDragging)
-  persistHomeLayout()
+  persistRouteLayout(currentRoute.value)
 }
 
 function selectBlock(blockId) {
-  setSelectedHomeBlock(blockId)
+  setSelectedRouteBlock(currentRoute.value, blockId)
 }
 
 function bringToFront(blockId) {
-  const currentMax = Math.max(...homeLayout.value.blocks.map((item) => item.z), 0)
-  patchHomeBlock(blockId, { z: currentMax + 1 })
+  const currentMax = Math.max(...getRouteBlocks(currentRoute.value).map((item) => item.z), 0)
+  patchRouteBlock(currentRoute.value, blockId, { z: currentMax + 1 })
 }
 
 function removeCurrentBlock() {
-  if (!selectedHomeBlock.value) return
-  removeHomeBlock(selectedHomeBlock.value.id)
+  if (!selectedBlock.value) return
+  removeRouteBlock(currentRoute.value, selectedBlock.value.id)
 }
 
 function updateSelectedField(field, value) {
-  if (!selectedHomeBlock.value) return
-  patchHomeBlock(selectedHomeBlock.value.id, { [field]: value })
+  if (!selectedBlock.value) return
+  patchRouteBlock(currentRoute.value, selectedBlock.value.id, { [field]: value })
 }
 
 function updateSelectedNumberField(field, value, min, max) {
@@ -124,7 +160,16 @@ function updateTextColor(event) {
 
 onMounted(() => {
   initEditorState()
+  syncRoute(route.path)
 })
+
+watch(
+  () => route.path,
+  (nextPath) => {
+    stopDragging()
+    syncRoute(nextPath)
+  }
+)
 
 onBeforeUnmount(() => {
   stopDragging()
@@ -135,15 +180,15 @@ onBeforeUnmount(() => {
   <div
     v-if="showCanvas"
     class="home-editor-canvas"
-    :class="{ 'is-editing': isEditorMode }"
-    aria-label="Home editor canvas"
+    :class="{ 'is-editing': isEditorMode, 'is-dragging': isDragging }"
+    aria-label="Page editor canvas"
   >
     <div class="home-editor-canvas__blocks">
       <article
-        v-for="block in orderedHomeBlocks"
+        v-for="block in orderedBlocks"
         :key="block.id"
         class="home-editor-block"
-        :class="{ 'is-selected': selectedHomeBlockId === block.id }"
+        :class="{ 'is-selected': selectedBlockId === block.id }"
         :style="blockStyle(block)"
         @pointerdown="onBlockPointerDown($event, block)"
         @click.stop="selectBlock(block.id)"
@@ -157,31 +202,32 @@ onBeforeUnmount(() => {
     </div>
 
     <div v-if="isEditorMode" class="home-editor-toolbar">
-      <button type="button" class="home-editor-btn" @click="addHomeTextBlock">
+      <button type="button" class="home-editor-btn" @click="addRouteTextBlock(currentRoute)">
         Add
       </button>
       <button
         type="button"
         class="home-editor-btn"
-        :disabled="!selectedHomeBlock"
+        :disabled="!selectedBlock"
         @click="removeCurrentBlock"
       >
         Delete
       </button>
-      <button type="button" class="home-editor-btn" @click="resetHomeLayout">
+      <button type="button" class="home-editor-btn" @click="resetRouteLayout(currentRoute)">
         Reset
       </button>
     </div>
 
-    <aside v-if="isEditorMode && selectedHomeBlock" class="home-editor-panel">
+    <aside v-if="isEditorMode && selectedBlock" class="home-editor-panel">
       <h3 class="home-editor-panel__title">Block Editor</h3>
+      <p class="home-editor-panel__route">{{ currentRoute }}</p>
 
       <label class="home-editor-field">
         <span>Kicker</span>
         <input
           class="home-editor-input"
           type="text"
-          :value="selectedHomeBlock.kicker"
+          :value="selectedBlock.kicker"
           @input="updateSelectedField('kicker', $event.target.value)"
         />
       </label>
@@ -191,7 +237,7 @@ onBeforeUnmount(() => {
         <input
           class="home-editor-input"
           type="text"
-          :value="selectedHomeBlock.title"
+          :value="selectedBlock.title"
           @input="updateSelectedField('title', $event.target.value)"
         />
       </label>
@@ -200,7 +246,7 @@ onBeforeUnmount(() => {
         <span>Body</span>
         <textarea
           class="home-editor-input home-editor-input--textarea"
-          :value="selectedHomeBlock.body"
+          :value="selectedBlock.body"
           @input="updateSelectedField('body', $event.target.value)"
         />
       </label>
@@ -214,7 +260,7 @@ onBeforeUnmount(() => {
             min="180"
             max="1200"
             step="1"
-            :value="selectedHomeBlock.w"
+            :value="selectedBlock.w"
             @input="updateSelectedNumberField('w', $event.target.value, 180, 1200)"
           />
         </label>
@@ -226,7 +272,7 @@ onBeforeUnmount(() => {
             min="90"
             max="900"
             step="1"
-            :value="selectedHomeBlock.h"
+            :value="selectedBlock.h"
             @input="updateSelectedNumberField('h', $event.target.value, 90, 900)"
           />
         </label>
@@ -241,7 +287,7 @@ onBeforeUnmount(() => {
             min="0.05"
             max="1"
             step="0.01"
-            :value="selectedHomeBlock.opacity"
+            :value="selectedBlock.opacity"
             @input="updateSelectedNumberField('opacity', $event.target.value, 0.05, 1)"
           />
         </label>
@@ -253,7 +299,7 @@ onBeforeUnmount(() => {
             min="0"
             max="60"
             step="1"
-            :value="selectedHomeBlock.radius"
+            :value="selectedBlock.radius"
             @input="updateSelectedNumberField('radius', $event.target.value, 0, 60)"
           />
         </label>
@@ -268,7 +314,7 @@ onBeforeUnmount(() => {
             min="0"
             max="24"
             step="1"
-            :value="selectedHomeBlock.blur"
+            :value="selectedBlock.blur"
             @input="updateSelectedNumberField('blur', $event.target.value, 0, 24)"
           />
         </label>
@@ -277,7 +323,7 @@ onBeforeUnmount(() => {
           <input
             class="home-editor-color"
             type="color"
-            :value="normalizeColorHex(selectedHomeBlock.color)"
+            :value="normalizeColorHex(selectedBlock.color)"
             @input="updateTextColor"
           />
         </label>
@@ -288,7 +334,7 @@ onBeforeUnmount(() => {
         <input
           class="home-editor-input"
           type="text"
-          :value="selectedHomeBlock.bg"
+          :value="selectedBlock.bg"
           @input="updateSelectedField('bg', $event.target.value)"
         />
       </label>

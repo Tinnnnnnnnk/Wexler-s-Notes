@@ -1,10 +1,13 @@
 <script setup>
 import { onMounted, onUnmounted, ref } from 'vue'
-import { homeFxMode, initHomeFxState, toggleHomeFxMode } from './homeFxState'
+import { homeFxMode, initHomeFxState, setHomeFxMode, toggleHomeFxMode } from './homeFxState'
 
 const isDark = ref(false)
 const isTransitioning = ref(false)
 const transitionOrigin = ref({ x: '100%', y: '0%' })
+let mediaQuery = null
+let mutationObserver = null
+let transitionTimer = null
 
 function getEventPosition(event, buttonEl) {
   const button = buttonEl ?? event?.currentTarget
@@ -16,21 +19,25 @@ function getEventPosition(event, buttonEl) {
   return { x, y }
 }
 
+function applyModeTransition(event, applyMode) {
+  if (isTransitioning.value) return
+  triggerThemeTransition(event, event?.currentTarget)
+  applyMode()
+}
+
 // 常态按钮 - 只切换视觉效果，不切换深色/浅色模式
 function setDefault(event) {
-  toggleHomeFxMode('default')
+  applyModeTransition(event, () => setHomeFxMode('default'))
 }
 
 // 晶透按钮
 function toggleGlass(event) {
-  transitionOrigin.value = getEventPosition(event)
-  toggleHomeFxMode('glass')
+  applyModeTransition(event, () => toggleHomeFxMode('glass'))
 }
 
 // 液态按钮
 function toggleLiquid(event) {
-  transitionOrigin.value = getEventPosition(event)
-  toggleHomeFxMode('liquid')
+  applyModeTransition(event, () => toggleHomeFxMode('liquid'))
 }
 
 function handleSystemDarkModeChange(e) {
@@ -48,9 +55,11 @@ function triggerThemeTransition(event, switchButton) {
   if (isTransitioning.value) return
   isTransitioning.value = true
   transitionOrigin.value = getEventPosition(event, switchButton)
-  setTimeout(() => {
+  if (transitionTimer) window.clearTimeout(transitionTimer)
+  transitionTimer = window.setTimeout(() => {
     isTransitioning.value = false
-  }, 600)
+    transitionTimer = null
+  }, 520)
 }
 
 // VitePress 使用 button.VPSwitch.VPSwitchAppearance，无 VPNavBarThemeSwitch；大屏在 VPNavBarAppearance，小屏在 VPNavBarExtra 菜单里，故用捕获阶段委托
@@ -66,22 +75,34 @@ onMounted(() => {
   
   isDark.value = document.documentElement.classList.contains('dark')
   
-  const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+  mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
   mediaQuery.addEventListener('change', handleSystemDarkModeChange)
   
-  const observer = new MutationObserver((mutations) => {
+  mutationObserver = new MutationObserver((mutations) => {
     mutations.forEach((mutation) => {
       if (mutation.attributeName === 'class') {
         isDark.value = document.documentElement.classList.contains('dark')
       }
     })
   })
-  observer.observe(document.documentElement, { attributes: true })
+  mutationObserver.observe(document.documentElement, { attributes: true })
 
   document.addEventListener('click', onAppearanceSwitchClickCapture, true)
 })
 
 onUnmounted(() => {
+  if (mediaQuery) {
+    mediaQuery.removeEventListener('change', handleSystemDarkModeChange)
+    mediaQuery = null
+  }
+  if (mutationObserver) {
+    mutationObserver.disconnect()
+    mutationObserver = null
+  }
+  if (transitionTimer) {
+    window.clearTimeout(transitionTimer)
+    transitionTimer = null
+  }
   document.removeEventListener('click', onAppearanceSwitchClickCapture, true)
 })
 </script>

@@ -1,10 +1,6 @@
 <script setup>
-import { computed, onMounted } from 'vue'
-import { useRoute } from 'vitepress'
+import { onMounted } from 'vue'
 import { initEditorState, isEditorMode, toggleEditorMode } from './editorState'
-
-const route = useRoute()
-const isHome = computed(() => route.path === '/')
 
 onMounted(() => {
   initEditorState()
@@ -17,7 +13,7 @@ onMounted(() => {
     class="page-editor-toggle"
     :class="{ 'is-active': isEditorMode }"
     :aria-label="isEditorMode ? 'Disable page editor mode' : 'Enable page editor mode'"
-    :title="isHome ? 'Page editor mode' : 'Page editor mode (Home fully supported in current version)'"
+    title="Page editor mode"
     @click="toggleEditorMode"
   >
     <span class="page-editor-toggle__icon" aria-hidden="true" />

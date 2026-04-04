@@ -3,6 +3,8 @@ import { ref } from 'vue'
 const STORAGE_KEY = 'wexler.homeFx.mode'
 const homeFxMode = ref('default')
 let initialized = false
+let writeRaf = 0
+let queuedMode = 'default'
 
 function safeReadStorage() {
   if (typeof window === 'undefined') return '0'
@@ -22,16 +24,42 @@ function safeWriteStorage(value) {
   }
 }
 
+function normalizeMode(mode) {
+  return mode === 'glass' || mode === 'liquid' ? mode : 'default'
+}
+
+function applyHomeFxMode(mode) {
+  if (homeFxMode.value === mode) return
+  homeFxMode.value = mode
+  safeWriteStorage(mode)
+}
+
 function initHomeFxState() {
   if (initialized) return
   const savedMode = safeReadStorage()
-  homeFxMode.value = savedMode === 'glass' || savedMode === 'liquid' ? savedMode : 'default'
+  homeFxMode.value = normalizeMode(savedMode)
+  queuedMode = homeFxMode.value
   initialized = true
 }
 
 function setHomeFxMode(mode) {
-  homeFxMode.value = mode === 'glass' || mode === 'liquid' ? mode : 'default'
-  safeWriteStorage(homeFxMode.value)
+  const normalized = normalizeMode(mode)
+
+  if (typeof window === 'undefined') {
+    applyHomeFxMode(normalized)
+    return
+  }
+
+  queuedMode = normalized
+
+  if (writeRaf) {
+    window.cancelAnimationFrame(writeRaf)
+  }
+
+  writeRaf = window.requestAnimationFrame(() => {
+    writeRaf = 0
+    applyHomeFxMode(queuedMode)
+  })
 }
 
 function toggleHomeFxMode(targetMode) {

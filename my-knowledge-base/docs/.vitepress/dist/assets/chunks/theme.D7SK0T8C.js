@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/chunks/VPLocalSearchBox.D3NBZpr_.js","assets/chunks/framework.ul-4IeKD.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/chunks/VPLocalSearchBox.DztrqYxT.js","assets/chunks/framework.ul-4IeKD.js"])))=>i.map(i=>d[i]);
 import { d as defineComponent, c as createElementBlock, r as renderSlot, n as normalizeClass, o as openBlock, a as createTextVNode, t as toDisplayString, b as createBlock, w as withCtx, T as Transition, e as createCommentVNode, _ as _export_sfc, u as useData$1, i as isExternal, f as treatAsHtml, g as withBase, h as computed, j as createBaseVNode, k as unref, l as isActive, m as useMediaQuery, p as ref, q as watch, s as watchEffect, v as onMounted, x as onUnmounted, y as watchPostEffect, z as onUpdated, A as getScrollOffset, F as Fragment, B as renderList, C as resolveComponent, D as onContentUpdated, E as createVNode, G as shallowRef, H as resolveDynamicComponent, I as EXTERNAL_URL_RE, J as useRoute, K as mergeProps, L as inject, M as useWindowSize, N as normalizeStyle, O as onKeyStroke, P as nextTick, Q as useWindowScroll, R as inBrowser, S as readonly, U as defineAsyncComponent, V as __vitePreload, W as useScrollLock, X as provide, Y as toHandlers, Z as withKeys, $ as onBeforeUnmount, a0 as withModifiers, a1 as useSlots, a2 as withDirectives, a3 as vShow, a4 as Teleport, a5 as h } from "./framework.ul-4IeKD.js";
 const _sfc_main$10 = /* @__PURE__ */ defineComponent({
   __name: "VPBadge",
@@ -2230,7 +2230,7 @@ const _hoisted_3$6 = {
 const _sfc_main$o = /* @__PURE__ */ defineComponent({
   __name: "VPNavBarSearch",
   setup(__props) {
-    const VPLocalSearchBox = defineAsyncComponent(() => __vitePreload(() => import("./VPLocalSearchBox.D3NBZpr_.js"), true ? __vite__mapDeps([0,1]) : void 0));
+    const VPLocalSearchBox = defineAsyncComponent(() => __vitePreload(() => import("./VPLocalSearchBox.DztrqYxT.js"), true ? __vite__mapDeps([0,1]) : void 0));
     const VPAlgoliaSearchBox = () => null;
     const { theme: theme2 } = useData();
     const loaded = ref(false);
@@ -3558,6 +3558,8 @@ const _sfc_main$4 = {
 const STORAGE_KEY = "wexler.homeFx.mode";
 const homeFxMode = ref("default");
 let initialized$1 = false;
+let writeRaf = 0;
+let queuedMode = "default";
 function safeReadStorage$1() {
   if (typeof window === "undefined") return "0";
   try {
@@ -3573,15 +3575,35 @@ function safeWriteStorage$1(value) {
   } catch (error) {
   }
 }
+function normalizeMode(mode) {
+  return mode === "glass" || mode === "liquid" ? mode : "default";
+}
+function applyHomeFxMode(mode) {
+  if (homeFxMode.value === mode) return;
+  homeFxMode.value = mode;
+  safeWriteStorage$1(mode);
+}
 function initHomeFxState() {
   if (initialized$1) return;
   const savedMode = safeReadStorage$1();
-  homeFxMode.value = savedMode === "glass" || savedMode === "liquid" ? savedMode : "default";
+  homeFxMode.value = normalizeMode(savedMode);
+  queuedMode = homeFxMode.value;
   initialized$1 = true;
 }
 function setHomeFxMode(mode) {
-  homeFxMode.value = mode === "glass" || mode === "liquid" ? mode : "default";
-  safeWriteStorage$1(homeFxMode.value);
+  const normalized = normalizeMode(mode);
+  if (typeof window === "undefined") {
+    applyHomeFxMode(normalized);
+    return;
+  }
+  queuedMode = normalized;
+  if (writeRaf) {
+    window.cancelAnimationFrame(writeRaf);
+  }
+  writeRaf = window.requestAnimationFrame(() => {
+    writeRaf = 0;
+    applyHomeFxMode(queuedMode);
+  });
 }
 function toggleHomeFxMode(targetMode) {
   if (targetMode !== "glass" && targetMode !== "liquid") {
@@ -3936,6 +3958,9 @@ const _sfc_main$2 = {
     const isDark = ref(false);
     const isTransitioning = ref(false);
     const transitionOrigin = ref({ x: "100%", y: "0%" });
+    let mediaQuery = null;
+    let mutationObserver = null;
+    let transitionTimer = null;
     function getEventPosition(event, buttonEl) {
       const button = buttonEl ?? (event == null ? void 0 : event.currentTarget);
       if (!(button == null ? void 0 : button.getBoundingClientRect)) return { x: "100%", y: "0%" };
@@ -3944,16 +3969,19 @@ const _sfc_main$2 = {
       const y = `${(rect.top + rect.height / 2) / window.innerHeight * 100}%`;
       return { x, y };
     }
+    function applyModeTransition(event, applyMode) {
+      if (isTransitioning.value) return;
+      triggerThemeTransition(event, event == null ? void 0 : event.currentTarget);
+      applyMode();
+    }
     function setDefault(event) {
-      toggleHomeFxMode("default");
+      applyModeTransition(event, () => setHomeFxMode("default"));
     }
     function toggleGlass(event) {
-      transitionOrigin.value = getEventPosition(event);
-      toggleHomeFxMode("glass");
+      applyModeTransition(event, () => toggleHomeFxMode("glass"));
     }
     function toggleLiquid(event) {
-      transitionOrigin.value = getEventPosition(event);
-      toggleHomeFxMode("liquid");
+      applyModeTransition(event, () => toggleHomeFxMode("liquid"));
     }
     function handleSystemDarkModeChange(e) {
       if (e.matches && !isDark.value) {
@@ -3968,9 +3996,11 @@ const _sfc_main$2 = {
       if (isTransitioning.value) return;
       isTransitioning.value = true;
       transitionOrigin.value = getEventPosition(event, switchButton);
-      setTimeout(() => {
+      if (transitionTimer) window.clearTimeout(transitionTimer);
+      transitionTimer = window.setTimeout(() => {
         isTransitioning.value = false;
-      }, 600);
+        transitionTimer = null;
+      }, 520);
     }
     function onAppearanceSwitchClickCapture(e) {
       var _a, _b;
@@ -3982,19 +4012,31 @@ const _sfc_main$2 = {
     onMounted(() => {
       initHomeFxState();
       isDark.value = document.documentElement.classList.contains("dark");
-      const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+      mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
       mediaQuery.addEventListener("change", handleSystemDarkModeChange);
-      const observer = new MutationObserver((mutations) => {
+      mutationObserver = new MutationObserver((mutations) => {
         mutations.forEach((mutation) => {
           if (mutation.attributeName === "class") {
             isDark.value = document.documentElement.classList.contains("dark");
           }
         });
       });
-      observer.observe(document.documentElement, { attributes: true });
+      mutationObserver.observe(document.documentElement, { attributes: true });
       document.addEventListener("click", onAppearanceSwitchClickCapture, true);
     });
     onUnmounted(() => {
+      if (mediaQuery) {
+        mediaQuery.removeEventListener("change", handleSystemDarkModeChange);
+        mediaQuery = null;
+      }
+      if (mutationObserver) {
+        mutationObserver.disconnect();
+        mutationObserver = null;
+      }
+      if (transitionTimer) {
+        window.clearTimeout(transitionTimer);
+        transitionTimer = null;
+      }
       document.removeEventListener("click", onAppearanceSwitchClickCapture, true);
     });
     return (_ctx, _cache) => {
@@ -4046,50 +4088,82 @@ const _sfc_main$2 = {
   }
 };
 const EDIT_MODE_KEY = "wexler.editor.mode";
-const HOME_LAYOUT_KEY = "wexler.editor.layout.home.v1";
+const ROUTE_LAYOUT_KEY_PREFIX = "wexler.editor.layout.route.v1.";
 const isEditorMode = ref(false);
-const homeLayout = ref(createDefaultHomeLayout());
-const selectedHomeBlockId = ref("");
+const layoutsByRoute = ref({});
+const selectedByRoute = ref({});
 let initialized = false;
-function createDefaultHomeLayout() {
+function normalizeRoute(routeInput) {
+  const raw = typeof routeInput === "string" && routeInput.trim() ? routeInput.trim() : "/";
+  const route = raw.split(/[?#]/)[0] || "/";
+  if (route === "/") return "/";
+  return route.startsWith("/") ? route : `/${route}`;
+}
+function createDefaultBlockSeed() {
+  return {
+    id: "block-1",
+    kind: "text",
+    x: 96,
+    y: 140,
+    w: 420,
+    h: 180,
+    z: 10,
+    opacity: 0.9,
+    radius: 16,
+    blur: 12,
+    bg: "rgba(16, 28, 40, 0.3)",
+    color: "#f3f7fc",
+    kicker: "Module",
+    title: "Untitled",
+    body: "Editable content block"
+  };
+}
+function createDefaultLayout(routeInput) {
+  const route = normalizeRoute(routeInput);
+  if (route === "/") {
+    return {
+      version: 1,
+      blocks: [
+        {
+          ...createDefaultBlockSeed(),
+          id: "hero-intro",
+          x: 76,
+          y: 128,
+          w: 560,
+          h: 220,
+          z: 10,
+          opacity: 0.95,
+          radius: 18,
+          blur: 14,
+          bg: "rgba(16, 28, 40, 0.36)",
+          color: "#f3f7fc",
+          kicker: "Digital Garden",
+          title: "Wexler's Notes",
+          body: "全栈开发与运维知识库"
+        },
+        {
+          ...createDefaultBlockSeed(),
+          id: "quick-link",
+          x: 76,
+          y: 372,
+          w: 360,
+          h: 136,
+          z: 11,
+          opacity: 0.92,
+          radius: 16,
+          blur: 12,
+          bg: "rgba(12, 20, 30, 0.28)",
+          color: "#e6eff8",
+          kicker: "Launch",
+          title: "Core Notes",
+          body: "/Sky-Take-Out/00-后端开发知识大本营"
+        }
+      ]
+    };
+  }
   return {
     version: 1,
-    blocks: [
-      {
-        id: "hero-intro",
-        kind: "text",
-        x: 76,
-        y: 128,
-        w: 560,
-        h: 220,
-        z: 10,
-        opacity: 0.95,
-        radius: 18,
-        blur: 14,
-        bg: "rgba(16, 28, 40, 0.36)",
-        color: "#f3f7fc",
-        kicker: "Digital Garden",
-        title: "Wexler's Notes",
-        body: "全栈开发与运维知识库"
-      },
-      {
-        id: "quick-link",
-        kind: "text",
-        x: 76,
-        y: 372,
-        w: 360,
-        h: 136,
-        z: 11,
-        opacity: 0.92,
-        radius: 16,
-        blur: 12,
-        bg: "rgba(12, 20, 30, 0.28)",
-        color: "#e6eff8",
-        kicker: "Launch",
-        title: "Core Notes",
-        body: "/Sky-Take-Out/00-后端开发知识大本营"
-      }
-    ]
+    blocks: []
   };
 }
 function clone(value) {
@@ -4104,7 +4178,7 @@ function toSafeNumber(value, fallback) {
   return num;
 }
 function normalizeBlock(raw, index) {
-  const fallback = createDefaultHomeLayout().blocks[0];
+  const fallback = createDefaultBlockSeed();
   return {
     id: typeof (raw == null ? void 0 : raw.id) === "string" && raw.id.trim() ? raw.id : `block-${index + 1}`,
     kind: "text",
@@ -4123,8 +4197,8 @@ function normalizeBlock(raw, index) {
     body: typeof (raw == null ? void 0 : raw.body) === "string" ? raw.body : ""
   };
 }
-function normalizeLayout(raw) {
-  const fallback = createDefaultHomeLayout();
+function normalizeLayout(routeInput, raw) {
+  const fallback = createDefaultLayout(routeInput);
   if (!raw || typeof raw !== "object") return fallback;
   const blocks = Array.isArray(raw.blocks) ? raw.blocks.map((block, index) => normalizeBlock(block, index)) : fallback.blocks;
   return {
@@ -4147,29 +4221,53 @@ function safeWriteStorage(key, value) {
   } catch (error) {
   }
 }
+function routeStorageKey(routeInput) {
+  const route = normalizeRoute(routeInput);
+  return `${ROUTE_LAYOUT_KEY_PREFIX}${encodeURIComponent(route)}`;
+}
 function persistEditorMode() {
   safeWriteStorage(EDIT_MODE_KEY, isEditorMode.value ? "1" : "0");
 }
-function persistHomeLayout() {
-  safeWriteStorage(HOME_LAYOUT_KEY, JSON.stringify(homeLayout.value));
+function persistRouteLayout(routeInput) {
+  const route = ensureRouteLayout(routeInput);
+  safeWriteStorage(routeStorageKey(route), JSON.stringify(layoutsByRoute.value[route]));
+}
+function loadRouteLayout(routeInput) {
+  var _a;
+  const route = normalizeRoute(routeInput);
+  const savedLayout = safeReadStorage(routeStorageKey(route));
+  let resolvedLayout;
+  if (savedLayout) {
+    try {
+      resolvedLayout = normalizeLayout(route, JSON.parse(savedLayout));
+    } catch (error) {
+      resolvedLayout = createDefaultLayout(route);
+    }
+  } else {
+    resolvedLayout = createDefaultLayout(route);
+  }
+  layoutsByRoute.value = {
+    ...layoutsByRoute.value,
+    [route]: resolvedLayout
+  };
+  if (!selectedByRoute.value[route]) {
+    selectedByRoute.value = {
+      ...selectedByRoute.value,
+      [route]: ((_a = resolvedLayout.blocks[0]) == null ? void 0 : _a.id) || ""
+    };
+  }
+}
+function ensureRouteLayout(routeInput) {
+  const route = normalizeRoute(routeInput);
+  if (!layoutsByRoute.value[route]) {
+    loadRouteLayout(route);
+  }
+  return route;
 }
 function initEditorState() {
-  var _a;
   if (initialized) return;
   const savedMode = safeReadStorage(EDIT_MODE_KEY);
   isEditorMode.value = savedMode === "1";
-  const savedLayout = safeReadStorage(HOME_LAYOUT_KEY);
-  if (savedLayout) {
-    try {
-      const parsed = JSON.parse(savedLayout);
-      homeLayout.value = normalizeLayout(parsed);
-    } catch (error) {
-      homeLayout.value = createDefaultHomeLayout();
-    }
-  } else {
-    homeLayout.value = createDefaultHomeLayout();
-  }
-  selectedHomeBlockId.value = ((_a = homeLayout.value.blocks[0]) == null ? void 0 : _a.id) || "";
   initialized = true;
 }
 function setEditorMode(nextValue) {
@@ -4179,72 +4277,101 @@ function setEditorMode(nextValue) {
 function toggleEditorMode() {
   setEditorMode(!isEditorMode.value);
 }
-function setSelectedHomeBlock(id) {
-  selectedHomeBlockId.value = typeof id === "string" ? id : "";
+function setSelectedRouteBlock(routeInput, blockId) {
+  const route = ensureRouteLayout(routeInput);
+  selectedByRoute.value = {
+    ...selectedByRoute.value,
+    [route]: typeof blockId === "string" ? blockId : ""
+  };
 }
-function patchHomeBlock(blockId, patch, options = {}) {
+function getRouteBlocks(routeInput) {
+  var _a;
+  const route = ensureRouteLayout(routeInput);
+  return ((_a = layoutsByRoute.value[route]) == null ? void 0 : _a.blocks) || [];
+}
+function getOrderedRouteBlocks(routeInput) {
+  return [...getRouteBlocks(routeInput)].sort((a, b) => a.z - b.z);
+}
+function getSelectedRouteBlockId(routeInput) {
+  const route = ensureRouteLayout(routeInput);
+  return selectedByRoute.value[route] || "";
+}
+function getSelectedRouteBlock(routeInput) {
+  const route = ensureRouteLayout(routeInput);
+  const selectedId = selectedByRoute.value[route] || "";
+  const blocks = getRouteBlocks(route);
+  return blocks.find((block) => block.id === selectedId) || null;
+}
+function patchRouteBlock(routeInput, blockId, patch, options = {}) {
+  const route = ensureRouteLayout(routeInput);
   const persist = options.persist !== false;
-  const layout = clone(homeLayout.value);
-  const targetIndex = layout.blocks.findIndex((block) => block.id === blockId);
+  const blocks = getRouteBlocks(route);
+  const targetIndex = blocks.findIndex((block) => block.id === blockId);
   if (targetIndex < 0) return;
-  const current = layout.blocks[targetIndex];
-  const merged = normalizeBlock({ ...current, ...patch }, targetIndex);
-  layout.blocks[targetIndex] = merged;
-  homeLayout.value = layout;
-  if (persist) persistHomeLayout();
+  const nextLayout = clone(layoutsByRoute.value[route]);
+  nextLayout.blocks[targetIndex] = normalizeBlock(
+    { ...nextLayout.blocks[targetIndex], ...patch },
+    targetIndex
+  );
+  layoutsByRoute.value = {
+    ...layoutsByRoute.value,
+    [route]: nextLayout
+  };
+  if (persist) {
+    persistRouteLayout(route);
+  }
 }
-function addHomeTextBlock() {
-  const layout = clone(homeLayout.value);
-  const nextId = `block-${Date.now()}`;
-  layout.blocks.push(
+function addRouteTextBlock(routeInput) {
+  const route = ensureRouteLayout(routeInput);
+  const nextLayout = clone(layoutsByRoute.value[route] || createDefaultLayout(route));
+  const nextId = `block-${Date.now()}-${Math.floor(Math.random() * 1e3)}`;
+  const count = nextLayout.blocks.length;
+  nextLayout.blocks.push(
     normalizeBlock(
       {
+        ...createDefaultBlockSeed(),
         id: nextId,
-        x: 120 + layout.blocks.length * 16,
-        y: 180 + layout.blocks.length * 16,
-        w: 360,
-        h: 160,
-        z: 12 + layout.blocks.length,
-        opacity: 0.9,
-        radius: 16,
-        blur: 12,
-        bg: "rgba(18, 30, 44, 0.3)",
-        color: "#f2f7fd",
-        kicker: "New Block",
-        title: "Untitled",
-        body: "Double click and edit me."
+        x: 120 + count * 18,
+        y: 170 + count * 18,
+        z: 12 + count
       },
-      layout.blocks.length
+      count
     )
   );
-  homeLayout.value = layout;
-  selectedHomeBlockId.value = nextId;
-  persistHomeLayout();
+  layoutsByRoute.value = {
+    ...layoutsByRoute.value,
+    [route]: nextLayout
+  };
+  setSelectedRouteBlock(route, nextId);
+  persistRouteLayout(route);
 }
-function removeHomeBlock(blockId) {
+function removeRouteBlock(routeInput, blockId) {
   var _a;
-  const layout = clone(homeLayout.value);
-  const filtered = layout.blocks.filter((block) => block.id !== blockId);
-  if (!filtered.length) return;
-  layout.blocks = filtered;
-  homeLayout.value = layout;
-  if (!layout.blocks.some((block) => block.id === selectedHomeBlockId.value)) {
-    selectedHomeBlockId.value = ((_a = layout.blocks[0]) == null ? void 0 : _a.id) || "";
+  const route = ensureRouteLayout(routeInput);
+  const nextLayout = clone(layoutsByRoute.value[route]);
+  const filtered = nextLayout.blocks.filter((block) => block.id !== blockId);
+  if (filtered.length === nextLayout.blocks.length) return;
+  nextLayout.blocks = filtered;
+  layoutsByRoute.value = {
+    ...layoutsByRoute.value,
+    [route]: nextLayout
+  };
+  if (selectedByRoute.value[route] === blockId) {
+    setSelectedRouteBlock(route, ((_a = nextLayout.blocks[0]) == null ? void 0 : _a.id) || "");
   }
-  persistHomeLayout();
+  persistRouteLayout(route);
 }
-function resetHomeLayout() {
+function resetRouteLayout(routeInput) {
   var _a;
-  homeLayout.value = createDefaultHomeLayout();
-  selectedHomeBlockId.value = ((_a = homeLayout.value.blocks[0]) == null ? void 0 : _a.id) || "";
-  persistHomeLayout();
+  const route = ensureRouteLayout(routeInput);
+  const nextLayout = createDefaultLayout(route);
+  layoutsByRoute.value = {
+    ...layoutsByRoute.value,
+    [route]: nextLayout
+  };
+  setSelectedRouteBlock(route, ((_a = nextLayout.blocks[0]) == null ? void 0 : _a.id) || "");
+  persistRouteLayout(route);
 }
-const orderedHomeBlocks = computed(
-  () => [...homeLayout.value.blocks].sort((a, b) => a.z - b.z)
-);
-const selectedHomeBlock = computed(
-  () => homeLayout.value.blocks.find((block) => block.id === selectedHomeBlockId.value) || null
-);
 const _hoisted_1$1 = { class: "home-editor-canvas__blocks" };
 const _hoisted_2 = ["onPointerdown", "onClick", "onDblclick"];
 const _hoisted_3 = { class: "home-editor-block__kicker" };
@@ -4263,36 +4390,43 @@ const _hoisted_9 = {
   key: 1,
   class: "home-editor-panel"
 };
-const _hoisted_10 = { class: "home-editor-field" };
-const _hoisted_11 = ["value"];
-const _hoisted_12 = { class: "home-editor-field" };
-const _hoisted_13 = ["value"];
-const _hoisted_14 = { class: "home-editor-field" };
-const _hoisted_15 = ["value"];
-const _hoisted_16 = { class: "home-editor-grid" };
-const _hoisted_17 = { class: "home-editor-field" };
-const _hoisted_18 = ["value"];
-const _hoisted_19 = { class: "home-editor-field" };
-const _hoisted_20 = ["value"];
-const _hoisted_21 = { class: "home-editor-grid" };
-const _hoisted_22 = { class: "home-editor-field" };
-const _hoisted_23 = ["value"];
-const _hoisted_24 = { class: "home-editor-field" };
-const _hoisted_25 = ["value"];
-const _hoisted_26 = { class: "home-editor-grid" };
-const _hoisted_27 = { class: "home-editor-field" };
-const _hoisted_28 = ["value"];
-const _hoisted_29 = { class: "home-editor-field" };
-const _hoisted_30 = ["value"];
-const _hoisted_31 = { class: "home-editor-field" };
-const _hoisted_32 = ["value"];
+const _hoisted_10 = { class: "home-editor-panel__route" };
+const _hoisted_11 = { class: "home-editor-field" };
+const _hoisted_12 = ["value"];
+const _hoisted_13 = { class: "home-editor-field" };
+const _hoisted_14 = ["value"];
+const _hoisted_15 = { class: "home-editor-field" };
+const _hoisted_16 = ["value"];
+const _hoisted_17 = { class: "home-editor-grid" };
+const _hoisted_18 = { class: "home-editor-field" };
+const _hoisted_19 = ["value"];
+const _hoisted_20 = { class: "home-editor-field" };
+const _hoisted_21 = ["value"];
+const _hoisted_22 = { class: "home-editor-grid" };
+const _hoisted_23 = { class: "home-editor-field" };
+const _hoisted_24 = ["value"];
+const _hoisted_25 = { class: "home-editor-field" };
+const _hoisted_26 = ["value"];
+const _hoisted_27 = { class: "home-editor-grid" };
+const _hoisted_28 = { class: "home-editor-field" };
+const _hoisted_29 = ["value"];
+const _hoisted_30 = { class: "home-editor-field" };
+const _hoisted_31 = ["value"];
+const _hoisted_32 = { class: "home-editor-field" };
+const _hoisted_33 = ["value"];
 const _sfc_main$1 = {
   __name: "EditableHomeCanvas",
   setup(__props) {
     const route = useRoute();
-    const isHome = computed(() => route.path === "/");
-    const showCanvas = computed(() => isHome.value && isEditorMode.value);
+    const currentRoute = ref("/");
     const dragState = ref(null);
+    let dragRafId = 0;
+    let pendingPointer = null;
+    const showCanvas = computed(() => isEditorMode.value);
+    const isDragging = computed(() => Boolean(dragState.value));
+    const orderedBlocks = computed(() => getOrderedRouteBlocks(currentRoute.value));
+    const selectedBlockId = computed(() => getSelectedRouteBlockId(currentRoute.value));
+    const selectedBlock = computed(() => getSelectedRouteBlock(currentRoute.value));
     function clamp2(value, min, max) {
       return Math.min(max, Math.max(min, value));
     }
@@ -4300,6 +4434,9 @@ const _sfc_main$1 = {
       if (typeof value !== "string") return fallback;
       const text = value.trim();
       return /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(text) ? text : fallback;
+    }
+    function syncRoute(nextPath) {
+      currentRoute.value = ensureRouteLayout(nextPath);
     }
     function blockStyle(block) {
       return {
@@ -4314,10 +4451,30 @@ const _sfc_main$1 = {
         backdropFilter: block.blur > 0 ? `blur(${block.blur}px) saturate(135%)` : "none"
       };
     }
+    function applyDragPosition(clientX, clientY) {
+      if (!dragState.value) return;
+      const dx = clientX - dragState.value.startX;
+      const dy = clientY - dragState.value.startY;
+      patchRouteBlock(
+        currentRoute.value,
+        dragState.value.id,
+        {
+          x: clamp2(Math.round(dragState.value.initialX + dx), 0, 5e3),
+          y: clamp2(Math.round(dragState.value.initialY + dy), 0, 5e3)
+        },
+        { persist: false }
+      );
+    }
+    function flushDragFrame() {
+      dragRafId = 0;
+      if (!dragState.value || !pendingPointer) return;
+      applyDragPosition(pendingPointer.x, pendingPointer.y);
+      pendingPointer = null;
+    }
     function onBlockPointerDown(event, block) {
       if (!isEditorMode.value) return;
-      if (event.button !== 0) return;
-      setSelectedHomeBlock(block.id);
+      if (event.pointerType === "mouse" && event.button !== 0) return;
+      setSelectedRouteBlock(currentRoute.value, block.id);
       dragState.value = {
         id: block.id,
         pointerId: event.pointerId,
@@ -4329,43 +4486,45 @@ const _sfc_main$1 = {
       window.addEventListener("pointermove", onDragging);
       window.addEventListener("pointerup", stopDragging);
       window.addEventListener("pointercancel", stopDragging);
+      event.preventDefault();
     }
     function onDragging(event) {
       if (!dragState.value) return;
-      const dx = event.clientX - dragState.value.startX;
-      const dy = event.clientY - dragState.value.startY;
-      patchHomeBlock(
-        dragState.value.id,
-        {
-          x: clamp2(Math.round(dragState.value.initialX + dx), 0, 5e3),
-          y: clamp2(Math.round(dragState.value.initialY + dy), 0, 5e3)
-        },
-        { persist: false }
-      );
+      pendingPointer = { x: event.clientX, y: event.clientY };
+      if (dragRafId) return;
+      dragRafId = window.requestAnimationFrame(flushDragFrame);
     }
     function stopDragging(event) {
       if (!dragState.value) return;
       if (event && event.pointerId && event.pointerId !== dragState.value.pointerId) return;
+      if (dragRafId) {
+        window.cancelAnimationFrame(dragRafId);
+        dragRafId = 0;
+      }
+      if (pendingPointer) {
+        applyDragPosition(pendingPointer.x, pendingPointer.y);
+        pendingPointer = null;
+      }
       dragState.value = null;
       window.removeEventListener("pointermove", onDragging);
       window.removeEventListener("pointerup", stopDragging);
       window.removeEventListener("pointercancel", stopDragging);
-      persistHomeLayout();
+      persistRouteLayout(currentRoute.value);
     }
     function selectBlock(blockId) {
-      setSelectedHomeBlock(blockId);
+      setSelectedRouteBlock(currentRoute.value, blockId);
     }
     function bringToFront(blockId) {
-      const currentMax = Math.max(...homeLayout.value.blocks.map((item) => item.z), 0);
-      patchHomeBlock(blockId, { z: currentMax + 1 });
+      const currentMax = Math.max(...getRouteBlocks(currentRoute.value).map((item) => item.z), 0);
+      patchRouteBlock(currentRoute.value, blockId, { z: currentMax + 1 });
     }
     function removeCurrentBlock() {
-      if (!selectedHomeBlock.value) return;
-      removeHomeBlock(selectedHomeBlock.value.id);
+      if (!selectedBlock.value) return;
+      removeRouteBlock(currentRoute.value, selectedBlock.value.id);
     }
     function updateSelectedField(field, value) {
-      if (!selectedHomeBlock.value) return;
-      patchHomeBlock(selectedHomeBlock.value.id, { [field]: value });
+      if (!selectedBlock.value) return;
+      patchRouteBlock(currentRoute.value, selectedBlock.value.id, { [field]: value });
     }
     function updateSelectedNumberField(field, value, min, max) {
       const parsed = Number(value);
@@ -4378,21 +4537,29 @@ const _sfc_main$1 = {
     }
     onMounted(() => {
       initEditorState();
+      syncRoute(route.path);
     });
+    watch(
+      () => route.path,
+      (nextPath) => {
+        stopDragging();
+        syncRoute(nextPath);
+      }
+    );
     onBeforeUnmount(() => {
       stopDragging();
     });
     return (_ctx, _cache) => {
       return showCanvas.value ? (openBlock(), createElementBlock("div", {
         key: 0,
-        class: normalizeClass(["home-editor-canvas", { "is-editing": unref(isEditorMode) }]),
-        "aria-label": "Home editor canvas"
+        class: normalizeClass(["home-editor-canvas", { "is-editing": unref(isEditorMode), "is-dragging": isDragging.value }]),
+        "aria-label": "Page editor canvas"
       }, [
         createBaseVNode("div", _hoisted_1$1, [
-          (openBlock(true), createElementBlock(Fragment, null, renderList(unref(orderedHomeBlocks), (block) => {
+          (openBlock(true), createElementBlock(Fragment, null, renderList(orderedBlocks.value, (block) => {
             return openBlock(), createElementBlock("article", {
               key: block.id,
-              class: normalizeClass(["home-editor-block", { "is-selected": unref(selectedHomeBlockId) === block.id }]),
+              class: normalizeClass(["home-editor-block", { "is-selected": selectedBlockId.value === block.id }]),
               style: normalizeStyle(blockStyle(block)),
               onPointerdown: ($event) => onBlockPointerDown($event, block),
               onClick: withModifiers(($event) => selectBlock(block.id), ["stop"]),
@@ -4409,50 +4576,51 @@ const _sfc_main$1 = {
           createBaseVNode("button", {
             type: "button",
             class: "home-editor-btn",
-            onClick: _cache[0] || (_cache[0] = (...args) => unref(addHomeTextBlock) && unref(addHomeTextBlock)(...args))
+            onClick: _cache[0] || (_cache[0] = ($event) => unref(addRouteTextBlock)(currentRoute.value))
           }, " Add "),
           createBaseVNode("button", {
             type: "button",
             class: "home-editor-btn",
-            disabled: !unref(selectedHomeBlock),
+            disabled: !selectedBlock.value,
             onClick: removeCurrentBlock
           }, " Delete ", 8, _hoisted_8),
           createBaseVNode("button", {
             type: "button",
             class: "home-editor-btn",
-            onClick: _cache[1] || (_cache[1] = (...args) => unref(resetHomeLayout) && unref(resetHomeLayout)(...args))
+            onClick: _cache[1] || (_cache[1] = ($event) => unref(resetRouteLayout)(currentRoute.value))
           }, " Reset ")
         ])) : createCommentVNode("", true),
-        unref(isEditorMode) && unref(selectedHomeBlock) ? (openBlock(), createElementBlock("aside", _hoisted_9, [
+        unref(isEditorMode) && selectedBlock.value ? (openBlock(), createElementBlock("aside", _hoisted_9, [
           _cache[21] || (_cache[21] = createBaseVNode("h3", { class: "home-editor-panel__title" }, "Block Editor", -1)),
-          createBaseVNode("label", _hoisted_10, [
+          createBaseVNode("p", _hoisted_10, toDisplayString(currentRoute.value), 1),
+          createBaseVNode("label", _hoisted_11, [
             _cache[11] || (_cache[11] = createBaseVNode("span", null, "Kicker", -1)),
             createBaseVNode("input", {
               class: "home-editor-input",
               type: "text",
-              value: unref(selectedHomeBlock).kicker,
+              value: selectedBlock.value.kicker,
               onInput: _cache[2] || (_cache[2] = ($event) => updateSelectedField("kicker", $event.target.value))
-            }, null, 40, _hoisted_11)
+            }, null, 40, _hoisted_12)
           ]),
-          createBaseVNode("label", _hoisted_12, [
+          createBaseVNode("label", _hoisted_13, [
             _cache[12] || (_cache[12] = createBaseVNode("span", null, "Title", -1)),
             createBaseVNode("input", {
               class: "home-editor-input",
               type: "text",
-              value: unref(selectedHomeBlock).title,
+              value: selectedBlock.value.title,
               onInput: _cache[3] || (_cache[3] = ($event) => updateSelectedField("title", $event.target.value))
-            }, null, 40, _hoisted_13)
+            }, null, 40, _hoisted_14)
           ]),
-          createBaseVNode("label", _hoisted_14, [
+          createBaseVNode("label", _hoisted_15, [
             _cache[13] || (_cache[13] = createBaseVNode("span", null, "Body", -1)),
             createBaseVNode("textarea", {
               class: "home-editor-input home-editor-input--textarea",
-              value: unref(selectedHomeBlock).body,
+              value: selectedBlock.value.body,
               onInput: _cache[4] || (_cache[4] = ($event) => updateSelectedField("body", $event.target.value))
-            }, null, 40, _hoisted_15)
+            }, null, 40, _hoisted_16)
           ]),
-          createBaseVNode("div", _hoisted_16, [
-            createBaseVNode("label", _hoisted_17, [
+          createBaseVNode("div", _hoisted_17, [
+            createBaseVNode("label", _hoisted_18, [
               _cache[14] || (_cache[14] = createBaseVNode("span", null, "Width", -1)),
               createBaseVNode("input", {
                 class: "home-editor-range",
@@ -4460,11 +4628,11 @@ const _sfc_main$1 = {
                 min: "180",
                 max: "1200",
                 step: "1",
-                value: unref(selectedHomeBlock).w,
+                value: selectedBlock.value.w,
                 onInput: _cache[5] || (_cache[5] = ($event) => updateSelectedNumberField("w", $event.target.value, 180, 1200))
-              }, null, 40, _hoisted_18)
+              }, null, 40, _hoisted_19)
             ]),
-            createBaseVNode("label", _hoisted_19, [
+            createBaseVNode("label", _hoisted_20, [
               _cache[15] || (_cache[15] = createBaseVNode("span", null, "Height", -1)),
               createBaseVNode("input", {
                 class: "home-editor-range",
@@ -4472,13 +4640,13 @@ const _sfc_main$1 = {
                 min: "90",
                 max: "900",
                 step: "1",
-                value: unref(selectedHomeBlock).h,
+                value: selectedBlock.value.h,
                 onInput: _cache[6] || (_cache[6] = ($event) => updateSelectedNumberField("h", $event.target.value, 90, 900))
-              }, null, 40, _hoisted_20)
+              }, null, 40, _hoisted_21)
             ])
           ]),
-          createBaseVNode("div", _hoisted_21, [
-            createBaseVNode("label", _hoisted_22, [
+          createBaseVNode("div", _hoisted_22, [
+            createBaseVNode("label", _hoisted_23, [
               _cache[16] || (_cache[16] = createBaseVNode("span", null, "Opacity", -1)),
               createBaseVNode("input", {
                 class: "home-editor-range",
@@ -4486,11 +4654,11 @@ const _sfc_main$1 = {
                 min: "0.05",
                 max: "1",
                 step: "0.01",
-                value: unref(selectedHomeBlock).opacity,
+                value: selectedBlock.value.opacity,
                 onInput: _cache[7] || (_cache[7] = ($event) => updateSelectedNumberField("opacity", $event.target.value, 0.05, 1))
-              }, null, 40, _hoisted_23)
+              }, null, 40, _hoisted_24)
             ]),
-            createBaseVNode("label", _hoisted_24, [
+            createBaseVNode("label", _hoisted_25, [
               _cache[17] || (_cache[17] = createBaseVNode("span", null, "Radius", -1)),
               createBaseVNode("input", {
                 class: "home-editor-range",
@@ -4498,13 +4666,13 @@ const _sfc_main$1 = {
                 min: "0",
                 max: "60",
                 step: "1",
-                value: unref(selectedHomeBlock).radius,
+                value: selectedBlock.value.radius,
                 onInput: _cache[8] || (_cache[8] = ($event) => updateSelectedNumberField("radius", $event.target.value, 0, 60))
-              }, null, 40, _hoisted_25)
+              }, null, 40, _hoisted_26)
             ])
           ]),
-          createBaseVNode("div", _hoisted_26, [
-            createBaseVNode("label", _hoisted_27, [
+          createBaseVNode("div", _hoisted_27, [
+            createBaseVNode("label", _hoisted_28, [
               _cache[18] || (_cache[18] = createBaseVNode("span", null, "Blur", -1)),
               createBaseVNode("input", {
                 class: "home-editor-range",
@@ -4512,40 +4680,38 @@ const _sfc_main$1 = {
                 min: "0",
                 max: "24",
                 step: "1",
-                value: unref(selectedHomeBlock).blur,
+                value: selectedBlock.value.blur,
                 onInput: _cache[9] || (_cache[9] = ($event) => updateSelectedNumberField("blur", $event.target.value, 0, 24))
-              }, null, 40, _hoisted_28)
+              }, null, 40, _hoisted_29)
             ]),
-            createBaseVNode("label", _hoisted_29, [
+            createBaseVNode("label", _hoisted_30, [
               _cache[19] || (_cache[19] = createBaseVNode("span", null, "Text Color", -1)),
               createBaseVNode("input", {
                 class: "home-editor-color",
                 type: "color",
-                value: normalizeColorHex(unref(selectedHomeBlock).color),
+                value: normalizeColorHex(selectedBlock.value.color),
                 onInput: updateTextColor
-              }, null, 40, _hoisted_30)
+              }, null, 40, _hoisted_31)
             ])
           ]),
-          createBaseVNode("label", _hoisted_31, [
+          createBaseVNode("label", _hoisted_32, [
             _cache[20] || (_cache[20] = createBaseVNode("span", null, "Background", -1)),
             createBaseVNode("input", {
               class: "home-editor-input",
               type: "text",
-              value: unref(selectedHomeBlock).bg,
+              value: selectedBlock.value.bg,
               onInput: _cache[10] || (_cache[10] = ($event) => updateSelectedField("bg", $event.target.value))
-            }, null, 40, _hoisted_32)
+            }, null, 40, _hoisted_33)
           ])
         ])) : createCommentVNode("", true)
       ], 2)) : createCommentVNode("", true);
     };
   }
 };
-const _hoisted_1 = ["aria-label", "title"];
+const _hoisted_1 = ["aria-label"];
 const _sfc_main = {
   __name: "PageEditorToggle",
   setup(__props) {
-    const route = useRoute();
-    const isHome = computed(() => route.path === "/");
     onMounted(() => {
       initEditorState();
     });
@@ -4554,7 +4720,7 @@ const _sfc_main = {
         type: "button",
         class: normalizeClass(["page-editor-toggle", { "is-active": unref(isEditorMode) }]),
         "aria-label": unref(isEditorMode) ? "Disable page editor mode" : "Enable page editor mode",
-        title: isHome.value ? "Page editor mode" : "Page editor mode (Home fully supported in current version)",
+        title: "Page editor mode",
         onClick: _cache[0] || (_cache[0] = (...args) => unref(toggleEditorMode) && unref(toggleEditorMode)(...args))
       }, [..._cache[1] || (_cache[1] = [
         createBaseVNode("span", {

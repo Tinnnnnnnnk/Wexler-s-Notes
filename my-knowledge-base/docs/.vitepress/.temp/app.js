@@ -3102,7 +3102,7 @@ const _sfc_main$x = /* @__PURE__ */ defineComponent({
   __name: "VPNavBarSearch",
   __ssrInlineRender: true,
   setup(__props) {
-    const VPLocalSearchBox = defineAsyncComponent(() => import("./VPLocalSearchBox.B3SguEJf.js"));
+    const VPLocalSearchBox = defineAsyncComponent(() => import("./VPLocalSearchBox.C6Go5szN.js"));
     const VPAlgoliaSearchBox = () => null;
     const { theme: theme2 } = useData();
     const loaded = ref(false);
@@ -5099,10 +5099,14 @@ function safeReadStorage$1() {
     return "0";
   }
 }
+function normalizeMode(mode) {
+  return mode === "glass" || mode === "liquid" ? mode : "default";
+}
 function initHomeFxState() {
   if (initialized$1) return;
   const savedMode = safeReadStorage$1();
-  homeFxMode.value = savedMode === "glass" || savedMode === "liquid" ? savedMode : "default";
+  homeFxMode.value = normalizeMode(savedMode);
+  homeFxMode.value;
   initialized$1 = true;
 }
 const IMAGE_SRC = "";
@@ -5279,6 +5283,9 @@ const _sfc_main$2 = {
     const isDark = ref(false);
     const isTransitioning = ref(false);
     const transitionOrigin = ref({ x: "100%", y: "0%" });
+    let mediaQuery = null;
+    let mutationObserver = null;
+    let transitionTimer = null;
     function getEventPosition(event, buttonEl) {
       const button = buttonEl ?? (event == null ? void 0 : event.currentTarget);
       if (!(button == null ? void 0 : button.getBoundingClientRect)) return { x: "100%", y: "0%" };
@@ -5300,9 +5307,11 @@ const _sfc_main$2 = {
       if (isTransitioning.value) return;
       isTransitioning.value = true;
       transitionOrigin.value = getEventPosition(event, switchButton);
-      setTimeout(() => {
+      if (transitionTimer) window.clearTimeout(transitionTimer);
+      transitionTimer = window.setTimeout(() => {
         isTransitioning.value = false;
-      }, 600);
+        transitionTimer = null;
+      }, 520);
     }
     function onAppearanceSwitchClickCapture(e) {
       var _a, _b;
@@ -5314,19 +5323,31 @@ const _sfc_main$2 = {
     onMounted(() => {
       initHomeFxState();
       isDark.value = document.documentElement.classList.contains("dark");
-      const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+      mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
       mediaQuery.addEventListener("change", handleSystemDarkModeChange);
-      const observer = new MutationObserver((mutations) => {
+      mutationObserver = new MutationObserver((mutations) => {
         mutations.forEach((mutation) => {
           if (mutation.attributeName === "class") {
             isDark.value = document.documentElement.classList.contains("dark");
           }
         });
       });
-      observer.observe(document.documentElement, { attributes: true });
+      mutationObserver.observe(document.documentElement, { attributes: true });
       document.addEventListener("click", onAppearanceSwitchClickCapture, true);
     });
     onUnmounted(() => {
+      if (mediaQuery) {
+        mediaQuery.removeEventListener("change", handleSystemDarkModeChange);
+        mediaQuery = null;
+      }
+      if (mutationObserver) {
+        mutationObserver.disconnect();
+        mutationObserver = null;
+      }
+      if (transitionTimer) {
+        window.clearTimeout(transitionTimer);
+        transitionTimer = null;
+      }
       document.removeEventListener("click", onAppearanceSwitchClickCapture, true);
     });
     return (_ctx, _push, _parent, _attrs) => {
@@ -5352,50 +5373,82 @@ _sfc_main$2.setup = (props, ctx) => {
   return _sfc_setup$2 ? _sfc_setup$2(props, ctx) : void 0;
 };
 const EDIT_MODE_KEY = "wexler.editor.mode";
-const HOME_LAYOUT_KEY = "wexler.editor.layout.home.v1";
+const ROUTE_LAYOUT_KEY_PREFIX = "wexler.editor.layout.route.v1.";
 const isEditorMode = ref(false);
-const homeLayout = ref(createDefaultHomeLayout());
-const selectedHomeBlockId = ref("");
+const layoutsByRoute = ref({});
+const selectedByRoute = ref({});
 let initialized = false;
-function createDefaultHomeLayout() {
+function normalizeRoute(routeInput) {
+  const raw = typeof routeInput === "string" && routeInput.trim() ? routeInput.trim() : "/";
+  const route = raw.split(/[?#]/)[0] || "/";
+  if (route === "/") return "/";
+  return route.startsWith("/") ? route : `/${route}`;
+}
+function createDefaultBlockSeed() {
+  return {
+    id: "block-1",
+    kind: "text",
+    x: 96,
+    y: 140,
+    w: 420,
+    h: 180,
+    z: 10,
+    opacity: 0.9,
+    radius: 16,
+    blur: 12,
+    bg: "rgba(16, 28, 40, 0.3)",
+    color: "#f3f7fc",
+    kicker: "Module",
+    title: "Untitled",
+    body: "Editable content block"
+  };
+}
+function createDefaultLayout(routeInput) {
+  const route = normalizeRoute(routeInput);
+  if (route === "/") {
+    return {
+      version: 1,
+      blocks: [
+        {
+          ...createDefaultBlockSeed(),
+          id: "hero-intro",
+          x: 76,
+          y: 128,
+          w: 560,
+          h: 220,
+          z: 10,
+          opacity: 0.95,
+          radius: 18,
+          blur: 14,
+          bg: "rgba(16, 28, 40, 0.36)",
+          color: "#f3f7fc",
+          kicker: "Digital Garden",
+          title: "Wexler's Notes",
+          body: "全栈开发与运维知识库"
+        },
+        {
+          ...createDefaultBlockSeed(),
+          id: "quick-link",
+          x: 76,
+          y: 372,
+          w: 360,
+          h: 136,
+          z: 11,
+          opacity: 0.92,
+          radius: 16,
+          blur: 12,
+          bg: "rgba(12, 20, 30, 0.28)",
+          color: "#e6eff8",
+          kicker: "Launch",
+          title: "Core Notes",
+          body: "/Sky-Take-Out/00-后端开发知识大本营"
+        }
+      ]
+    };
+  }
   return {
     version: 1,
-    blocks: [
-      {
-        id: "hero-intro",
-        kind: "text",
-        x: 76,
-        y: 128,
-        w: 560,
-        h: 220,
-        z: 10,
-        opacity: 0.95,
-        radius: 18,
-        blur: 14,
-        bg: "rgba(16, 28, 40, 0.36)",
-        color: "#f3f7fc",
-        kicker: "Digital Garden",
-        title: "Wexler's Notes",
-        body: "全栈开发与运维知识库"
-      },
-      {
-        id: "quick-link",
-        kind: "text",
-        x: 76,
-        y: 372,
-        w: 360,
-        h: 136,
-        z: 11,
-        opacity: 0.92,
-        radius: 16,
-        blur: 12,
-        bg: "rgba(12, 20, 30, 0.28)",
-        color: "#e6eff8",
-        kicker: "Launch",
-        title: "Core Notes",
-        body: "/Sky-Take-Out/00-后端开发知识大本营"
-      }
-    ]
+    blocks: []
   };
 }
 function clone(value) {
@@ -5410,7 +5463,7 @@ function toSafeNumber(value, fallback) {
   return num;
 }
 function normalizeBlock(raw, index) {
-  const fallback = createDefaultHomeLayout().blocks[0];
+  const fallback = createDefaultBlockSeed();
   return {
     id: typeof (raw == null ? void 0 : raw.id) === "string" && raw.id.trim() ? raw.id : `block-${index + 1}`,
     kind: "text",
@@ -5429,8 +5482,8 @@ function normalizeBlock(raw, index) {
     body: typeof (raw == null ? void 0 : raw.body) === "string" ? raw.body : ""
   };
 }
-function normalizeLayout(raw) {
-  const fallback = createDefaultHomeLayout();
+function normalizeLayout(routeInput, raw) {
+  const fallback = createDefaultLayout(routeInput);
   if (!raw || typeof raw !== "object") return fallback;
   const blocks = Array.isArray(raw.blocks) ? raw.blocks.map((block, index) => normalizeBlock(block, index)) : fallback.blocks;
   return {
@@ -5453,53 +5506,103 @@ function safeWriteStorage(key, value) {
   } catch (error) {
   }
 }
-function persistHomeLayout() {
-  safeWriteStorage(HOME_LAYOUT_KEY, JSON.stringify(homeLayout.value));
+function routeStorageKey(routeInput) {
+  const route = normalizeRoute(routeInput);
+  return `${ROUTE_LAYOUT_KEY_PREFIX}${encodeURIComponent(route)}`;
+}
+function persistRouteLayout(routeInput) {
+  const route = ensureRouteLayout(routeInput);
+  safeWriteStorage(routeStorageKey(route), JSON.stringify(layoutsByRoute.value[route]));
+}
+function loadRouteLayout(routeInput) {
+  var _a;
+  const route = normalizeRoute(routeInput);
+  const savedLayout = safeReadStorage(routeStorageKey(route));
+  let resolvedLayout;
+  if (savedLayout) {
+    try {
+      resolvedLayout = normalizeLayout(route, JSON.parse(savedLayout));
+    } catch (error) {
+      resolvedLayout = createDefaultLayout(route);
+    }
+  } else {
+    resolvedLayout = createDefaultLayout(route);
+  }
+  layoutsByRoute.value = {
+    ...layoutsByRoute.value,
+    [route]: resolvedLayout
+  };
+  if (!selectedByRoute.value[route]) {
+    selectedByRoute.value = {
+      ...selectedByRoute.value,
+      [route]: ((_a = resolvedLayout.blocks[0]) == null ? void 0 : _a.id) || ""
+    };
+  }
+}
+function ensureRouteLayout(routeInput) {
+  const route = normalizeRoute(routeInput);
+  if (!layoutsByRoute.value[route]) {
+    loadRouteLayout(route);
+  }
+  return route;
 }
 function initEditorState() {
-  var _a;
   if (initialized) return;
   const savedMode = safeReadStorage(EDIT_MODE_KEY);
   isEditorMode.value = savedMode === "1";
-  const savedLayout = safeReadStorage(HOME_LAYOUT_KEY);
-  if (savedLayout) {
-    try {
-      const parsed = JSON.parse(savedLayout);
-      homeLayout.value = normalizeLayout(parsed);
-    } catch (error) {
-      homeLayout.value = createDefaultHomeLayout();
-    }
-  } else {
-    homeLayout.value = createDefaultHomeLayout();
-  }
-  selectedHomeBlockId.value = ((_a = homeLayout.value.blocks[0]) == null ? void 0 : _a.id) || "";
   initialized = true;
 }
-function patchHomeBlock(blockId, patch, options = {}) {
-  const persist = options.persist !== false;
-  const layout = clone(homeLayout.value);
-  const targetIndex = layout.blocks.findIndex((block) => block.id === blockId);
-  if (targetIndex < 0) return;
-  const current = layout.blocks[targetIndex];
-  const merged = normalizeBlock({ ...current, ...patch }, targetIndex);
-  layout.blocks[targetIndex] = merged;
-  homeLayout.value = layout;
-  if (persist) persistHomeLayout();
+function getRouteBlocks(routeInput) {
+  var _a;
+  const route = ensureRouteLayout(routeInput);
+  return ((_a = layoutsByRoute.value[route]) == null ? void 0 : _a.blocks) || [];
 }
-const orderedHomeBlocks = computed(
-  () => [...homeLayout.value.blocks].sort((a, b) => a.z - b.z)
-);
-const selectedHomeBlock = computed(
-  () => homeLayout.value.blocks.find((block) => block.id === selectedHomeBlockId.value) || null
-);
+function getOrderedRouteBlocks(routeInput) {
+  return [...getRouteBlocks(routeInput)].sort((a, b) => a.z - b.z);
+}
+function getSelectedRouteBlockId(routeInput) {
+  const route = ensureRouteLayout(routeInput);
+  return selectedByRoute.value[route] || "";
+}
+function getSelectedRouteBlock(routeInput) {
+  const route = ensureRouteLayout(routeInput);
+  const selectedId = selectedByRoute.value[route] || "";
+  const blocks = getRouteBlocks(route);
+  return blocks.find((block) => block.id === selectedId) || null;
+}
+function patchRouteBlock(routeInput, blockId, patch, options = {}) {
+  const route = ensureRouteLayout(routeInput);
+  const persist = options.persist !== false;
+  const blocks = getRouteBlocks(route);
+  const targetIndex = blocks.findIndex((block) => block.id === blockId);
+  if (targetIndex < 0) return;
+  const nextLayout = clone(layoutsByRoute.value[route]);
+  nextLayout.blocks[targetIndex] = normalizeBlock(
+    { ...nextLayout.blocks[targetIndex], ...patch },
+    targetIndex
+  );
+  layoutsByRoute.value = {
+    ...layoutsByRoute.value,
+    [route]: nextLayout
+  };
+  if (persist) {
+    persistRouteLayout(route);
+  }
+}
 const _sfc_main$1 = {
   __name: "EditableHomeCanvas",
   __ssrInlineRender: true,
   setup(__props) {
     const route = useRoute();
-    const isHome = computed(() => route.path === "/");
-    const showCanvas = computed(() => isHome.value && isEditorMode.value);
+    const currentRoute = ref("/");
     const dragState = ref(null);
+    let dragRafId = 0;
+    let pendingPointer = null;
+    const showCanvas = computed(() => isEditorMode.value);
+    const isDragging = computed(() => Boolean(dragState.value));
+    const orderedBlocks = computed(() => getOrderedRouteBlocks(currentRoute.value));
+    const selectedBlockId = computed(() => getSelectedRouteBlockId(currentRoute.value));
+    const selectedBlock = computed(() => getSelectedRouteBlock(currentRoute.value));
     function clamp2(value, min, max) {
       return Math.min(max, Math.max(min, value));
     }
@@ -5507,6 +5610,9 @@ const _sfc_main$1 = {
       if (typeof value !== "string") return fallback;
       const text = value.trim();
       return /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(text) ? text : fallback;
+    }
+    function syncRoute(nextPath) {
+      currentRoute.value = ensureRouteLayout(nextPath);
     }
     function blockStyle(block) {
       return {
@@ -5521,11 +5627,12 @@ const _sfc_main$1 = {
         backdropFilter: block.blur > 0 ? `blur(${block.blur}px) saturate(135%)` : "none"
       };
     }
-    function onDragging(event) {
+    function applyDragPosition(clientX, clientY) {
       if (!dragState.value) return;
-      const dx = event.clientX - dragState.value.startX;
-      const dy = event.clientY - dragState.value.startY;
-      patchHomeBlock(
+      const dx = clientX - dragState.value.startX;
+      const dy = clientY - dragState.value.startY;
+      patchRouteBlock(
+        currentRoute.value,
         dragState.value.id,
         {
           x: clamp2(Math.round(dragState.value.initialX + dx), 0, 5e3),
@@ -5534,29 +5641,57 @@ const _sfc_main$1 = {
         { persist: false }
       );
     }
+    function flushDragFrame() {
+      dragRafId = 0;
+      if (!dragState.value || !pendingPointer) return;
+      applyDragPosition(pendingPointer.x, pendingPointer.y);
+      pendingPointer = null;
+    }
+    function onDragging(event) {
+      if (!dragState.value) return;
+      pendingPointer = { x: event.clientX, y: event.clientY };
+      if (dragRafId) return;
+      dragRafId = window.requestAnimationFrame(flushDragFrame);
+    }
     function stopDragging(event) {
       if (!dragState.value) return;
       if (event && event.pointerId && event.pointerId !== dragState.value.pointerId) return;
+      if (dragRafId) {
+        window.cancelAnimationFrame(dragRafId);
+        dragRafId = 0;
+      }
+      if (pendingPointer) {
+        applyDragPosition(pendingPointer.x, pendingPointer.y);
+        pendingPointer = null;
+      }
       dragState.value = null;
       window.removeEventListener("pointermove", onDragging);
       window.removeEventListener("pointerup", stopDragging);
       window.removeEventListener("pointercancel", stopDragging);
-      persistHomeLayout();
+      persistRouteLayout(currentRoute.value);
     }
     onMounted(() => {
       initEditorState();
+      syncRoute(route.path);
     });
+    watch(
+      () => route.path,
+      (nextPath) => {
+        stopDragging();
+        syncRoute(nextPath);
+      }
+    );
     onBeforeUnmount(() => {
       stopDragging();
     });
     return (_ctx, _push, _parent, _attrs) => {
       if (showCanvas.value) {
         _push(`<div${ssrRenderAttrs(mergeProps({
-          class: ["home-editor-canvas", { "is-editing": unref(isEditorMode) }],
-          "aria-label": "Home editor canvas"
+          class: ["home-editor-canvas", { "is-editing": unref(isEditorMode), "is-dragging": isDragging.value }],
+          "aria-label": "Page editor canvas"
         }, _attrs))}><div class="home-editor-canvas__blocks"><!--[-->`);
-        ssrRenderList(unref(orderedHomeBlocks), (block) => {
-          _push(`<article class="${ssrRenderClass([{ "is-selected": unref(selectedHomeBlockId) === block.id }, "home-editor-block"])}" style="${ssrRenderStyle(blockStyle(block))}"><p class="home-editor-block__kicker">${ssrInterpolate(block.kicker)}</p><h2 class="home-editor-block__title">${ssrInterpolate(block.title)}</h2><p class="home-editor-block__body">${ssrInterpolate(block.body)}</p>`);
+        ssrRenderList(orderedBlocks.value, (block) => {
+          _push(`<article class="${ssrRenderClass([{ "is-selected": selectedBlockId.value === block.id }, "home-editor-block"])}" style="${ssrRenderStyle(blockStyle(block))}"><p class="home-editor-block__kicker">${ssrInterpolate(block.kicker)}</p><h2 class="home-editor-block__title">${ssrInterpolate(block.title)}</h2><p class="home-editor-block__body">${ssrInterpolate(block.body)}</p>`);
           if (unref(isEditorMode)) {
             _push(`<span class="home-editor-block__hint">drag</span>`);
           } else {
@@ -5566,12 +5701,12 @@ const _sfc_main$1 = {
         });
         _push(`<!--]--></div>`);
         if (unref(isEditorMode)) {
-          _push(`<div class="home-editor-toolbar"><button type="button" class="home-editor-btn"> Add </button><button type="button" class="home-editor-btn"${ssrIncludeBooleanAttr(!unref(selectedHomeBlock)) ? " disabled" : ""}> Delete </button><button type="button" class="home-editor-btn"> Reset </button></div>`);
+          _push(`<div class="home-editor-toolbar"><button type="button" class="home-editor-btn"> Add </button><button type="button" class="home-editor-btn"${ssrIncludeBooleanAttr(!selectedBlock.value) ? " disabled" : ""}> Delete </button><button type="button" class="home-editor-btn"> Reset </button></div>`);
         } else {
           _push(`<!---->`);
         }
-        if (unref(isEditorMode) && unref(selectedHomeBlock)) {
-          _push(`<aside class="home-editor-panel"><h3 class="home-editor-panel__title">Block Editor</h3><label class="home-editor-field"><span>Kicker</span><input class="home-editor-input" type="text"${ssrRenderAttr("value", unref(selectedHomeBlock).kicker)}></label><label class="home-editor-field"><span>Title</span><input class="home-editor-input" type="text"${ssrRenderAttr("value", unref(selectedHomeBlock).title)}></label><label class="home-editor-field"><span>Body</span><textarea class="home-editor-input home-editor-input--textarea">${ssrInterpolate(unref(selectedHomeBlock).body)}</textarea></label><div class="home-editor-grid"><label class="home-editor-field"><span>Width</span><input class="home-editor-range" type="range" min="180" max="1200" step="1"${ssrRenderAttr("value", unref(selectedHomeBlock).w)}></label><label class="home-editor-field"><span>Height</span><input class="home-editor-range" type="range" min="90" max="900" step="1"${ssrRenderAttr("value", unref(selectedHomeBlock).h)}></label></div><div class="home-editor-grid"><label class="home-editor-field"><span>Opacity</span><input class="home-editor-range" type="range" min="0.05" max="1" step="0.01"${ssrRenderAttr("value", unref(selectedHomeBlock).opacity)}></label><label class="home-editor-field"><span>Radius</span><input class="home-editor-range" type="range" min="0" max="60" step="1"${ssrRenderAttr("value", unref(selectedHomeBlock).radius)}></label></div><div class="home-editor-grid"><label class="home-editor-field"><span>Blur</span><input class="home-editor-range" type="range" min="0" max="24" step="1"${ssrRenderAttr("value", unref(selectedHomeBlock).blur)}></label><label class="home-editor-field"><span>Text Color</span><input class="home-editor-color" type="color"${ssrRenderAttr("value", normalizeColorHex(unref(selectedHomeBlock).color))}></label></div><label class="home-editor-field"><span>Background</span><input class="home-editor-input" type="text"${ssrRenderAttr("value", unref(selectedHomeBlock).bg)}></label></aside>`);
+        if (unref(isEditorMode) && selectedBlock.value) {
+          _push(`<aside class="home-editor-panel"><h3 class="home-editor-panel__title">Block Editor</h3><p class="home-editor-panel__route">${ssrInterpolate(currentRoute.value)}</p><label class="home-editor-field"><span>Kicker</span><input class="home-editor-input" type="text"${ssrRenderAttr("value", selectedBlock.value.kicker)}></label><label class="home-editor-field"><span>Title</span><input class="home-editor-input" type="text"${ssrRenderAttr("value", selectedBlock.value.title)}></label><label class="home-editor-field"><span>Body</span><textarea class="home-editor-input home-editor-input--textarea">${ssrInterpolate(selectedBlock.value.body)}</textarea></label><div class="home-editor-grid"><label class="home-editor-field"><span>Width</span><input class="home-editor-range" type="range" min="180" max="1200" step="1"${ssrRenderAttr("value", selectedBlock.value.w)}></label><label class="home-editor-field"><span>Height</span><input class="home-editor-range" type="range" min="90" max="900" step="1"${ssrRenderAttr("value", selectedBlock.value.h)}></label></div><div class="home-editor-grid"><label class="home-editor-field"><span>Opacity</span><input class="home-editor-range" type="range" min="0.05" max="1" step="0.01"${ssrRenderAttr("value", selectedBlock.value.opacity)}></label><label class="home-editor-field"><span>Radius</span><input class="home-editor-range" type="range" min="0" max="60" step="1"${ssrRenderAttr("value", selectedBlock.value.radius)}></label></div><div class="home-editor-grid"><label class="home-editor-field"><span>Blur</span><input class="home-editor-range" type="range" min="0" max="24" step="1"${ssrRenderAttr("value", selectedBlock.value.blur)}></label><label class="home-editor-field"><span>Text Color</span><input class="home-editor-color" type="color"${ssrRenderAttr("value", normalizeColorHex(selectedBlock.value.color))}></label></div><label class="home-editor-field"><span>Background</span><input class="home-editor-input" type="text"${ssrRenderAttr("value", selectedBlock.value.bg)}></label></aside>`);
         } else {
           _push(`<!---->`);
         }
@@ -5592,8 +5727,6 @@ const _sfc_main = {
   __name: "PageEditorToggle",
   __ssrInlineRender: true,
   setup(__props) {
-    const route = useRoute();
-    const isHome = computed(() => route.path === "/");
     onMounted(() => {
       initEditorState();
     });
@@ -5602,7 +5735,7 @@ const _sfc_main = {
         type: "button",
         class: ["page-editor-toggle", { "is-active": unref(isEditorMode) }],
         "aria-label": unref(isEditorMode) ? "Disable page editor mode" : "Enable page editor mode",
-        title: isHome.value ? "Page editor mode" : "Page editor mode (Home fully supported in current version)"
+        title: "Page editor mode"
       }, _attrs))}><span class="page-editor-toggle__icon" aria-hidden="true"></span><span class="page-editor-toggle__state"></span></button>`);
     };
   }

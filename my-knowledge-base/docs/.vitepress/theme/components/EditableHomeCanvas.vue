@@ -3,10 +3,14 @@ import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useData, useRoute } from 'vitepress'
 import {
   addRouteTextBlock,
+  appendRouteAuditLog,
+  clearRouteAuditLog,
   duplicateRouteBlock,
   ensureRouteLayout,
+  getAllRoutesAuditBundle,
   getAllEditorRoutes,
   getOrderedRouteBlocks,
+  getRouteAuditLog,
   getRouteDraftLayout,
   getRoutePublishedHistory,
   getRouteBlocks,
@@ -74,6 +78,8 @@ const canvasStyle = computed(() => ({
   height: `${canvasMetrics.value.height}px`
 }))
 const allEditedRoutes = computed(() => getAllEditorRoutes())
+const routeAuditLogs = computed(() => getRouteAuditLog(currentRoute.value))
+const auditPreviewLogs = computed(() => routeAuditLogs.value.slice(0, 8))
 
 const SNAP_GRID = 12
 const SNAP_THRESHOLD = 8
@@ -463,6 +469,77 @@ function formatSnapshotTime(value) {
   }).format(date)
 }
 
+function formatAuditTime(value) {
+  if (!value) return '--:--'
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return '--:--'
+  return new Intl.DateTimeFormat('zh-CN', {
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit'
+  }).format(date)
+}
+
+function appendAudit(action, detail = {}) {
+  appendRouteAuditLog(currentRoute.value, action, detail)
+}
+
+const AUDIT_ACTION_LABELS = {
+  add_block: '新增模块',
+  remove_block: '删除模块',
+  duplicate_block: '复制模块',
+  move_block: '拖拽模块',
+  resize_block: '缩放模块',
+  nudge_block: '微调位置',
+  layer_move: '调整图层',
+  bring_front: '置顶模块',
+  save_draft: '保存草稿',
+  publish: '发布页面',
+  validate: '校验草稿',
+  revert_draft: '回退草稿',
+  rollback_published: '回滚发布',
+  export_route: '导出当前页',
+  export_all: '导出全站布局',
+  export_audit: '导出操作记录',
+  import_bundle: '导入布局',
+  generate_template: '生成页面模板',
+  reset_layout: '重置布局',
+  undo: '撤销',
+  redo: '重做'
+}
+
+function getAuditActionLabel(entry) {
+  const action = String(entry?.action || '').trim()
+  return AUDIT_ACTION_LABELS[action] || action || '编辑操作'
+}
+
+function getAuditDetailText(entry) {
+  const detail = entry?.detail && typeof entry.detail === 'object' ? entry.detail : null
+  if (!detail) return ''
+  const blockId = typeof detail.blockId === 'string' && detail.blockId ? ` #${detail.blockId}` : ''
+
+  if (Number.isFinite(detail.dx) || Number.isFinite(detail.dy)) {
+    const dx = Number.isFinite(detail.dx) ? detail.dx : 0
+    const dy = Number.isFinite(detail.dy) ? detail.dy : 0
+    return `位移 ${dx}, ${dy}${blockId}`
+  }
+  if (Number.isFinite(detail.dw) || Number.isFinite(detail.dh)) {
+    const dw = Number.isFinite(detail.dw) ? detail.dw : 0
+    const dh = Number.isFinite(detail.dh) ? detail.dh : 0
+    return `尺寸变化 ${dw}, ${dh}${blockId}`
+  }
+  if (typeof detail.message === 'string' && detail.message.trim()) {
+    return detail.message.trim()
+  }
+  if (typeof detail.route === 'string' && detail.route) {
+    return detail.route
+  }
+  if (typeof detail.summary === 'string' && detail.summary.trim()) {
+    return detail.summary.trim()
+  }
+  return blockId ? `目标${blockId}` : ''
+}
+
 function blockStyle(block) {
   return {
     transform: `translate3d(${block.x}px, ${block.y}px, 0)`,
@@ -511,6 +588,7 @@ function beginInteraction(mode, event, block, extra = {}) {
     mode,
     id: block.id,
     pointerId: event.pointerId,
+    startedAt: Date.now(),
     startX: event.clientX,
     startY: event.clientY,
     initialX: block.x,
@@ -559,6 +637,34 @@ function stopInteraction(event) {
     pendingPointer = null
   }
 
+  const currentBlock = getRouteBlocks(currentRoute.value).find((item) => item.id === state.id)
+  if (currentBlock) {
+    if (state.mode === 'move') {
+      const dx = Math.round(currentBlock.x - state.initialX)
+      const dy = Math.round(currentBlock.y - state.initialY)
+      if (dx !== 0 || dy !== 0) {
+        appendAudit('move_block', {
+          blockId: state.id,
+          dx,
+          dy,
+          spentMs: Math.max(0, Date.now() - Number(state.startedAt || Date.now()))
+        })
+      }
+    } else if (state.mode === 'resize') {
+      const dw = Math.round(currentBlock.w - state.initialW)
+      const dh = Math.round(currentBlock.h - state.initialH)
+      if (dw !== 0 || dh !== 0) {
+        appendAudit('resize_block', {
+          blockId: state.id,
+          dw,
+          dh,
+          handle: state.handle || '',
+          spentMs: Math.max(0, Date.now() - Number(state.startedAt || Date.now()))
+        })
+      }
+    }
+  }
+
   interactionState.value = null
   guideLines.value = { vertical: [], horizontal: [] }
   window.removeEventListener('pointermove', onInteracting)
@@ -575,12 +681,15 @@ function bringToFront(blockId) {
   pushUndoSnapshot(currentRoute.value, '置顶模块')
   const currentMax = Math.max(...getRouteBlocks(currentRoute.value).map((item) => item.z), 0)
   patchRouteBlock(currentRoute.value, blockId, { z: currentMax + 1 })
+  appendAudit('bring_front', { blockId, z: currentMax + 1 })
 }
 
 function removeCurrentBlock() {
   if (!selectedBlock.value) return
+  const targetId = selectedBlock.value.id
   pushUndoSnapshot(currentRoute.value, '删除模块')
-  removeRouteBlock(currentRoute.value, selectedBlock.value.id)
+  removeRouteBlock(currentRoute.value, targetId)
+  appendAudit('remove_block', { blockId: targetId })
 }
 
 function updateSelectedField(field, value) {
@@ -601,12 +710,16 @@ function updateTextColor(event) {
 
 function handleAddBlock() {
   pushUndoSnapshot(currentRoute.value, '新增模块')
+  const beforeIds = getRouteBlocks(currentRoute.value).map((item) => item.id)
   addRouteTextBlock(currentRoute.value)
+  const nextBlock = getRouteBlocks(currentRoute.value).find((item) => !beforeIds.includes(item.id))
+  appendAudit('add_block', { blockId: nextBlock?.id || '' })
 }
 
 function handleResetLayout() {
   pushUndoSnapshot(currentRoute.value, '重置布局')
   resetRouteLayout(currentRoute.value)
+  appendAudit('reset_layout', { route: currentRoute.value })
 }
 
 function handleGenerateRouteTemplate() {

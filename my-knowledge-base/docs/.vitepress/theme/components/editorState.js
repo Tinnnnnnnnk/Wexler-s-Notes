@@ -4,6 +4,7 @@ const EDIT_MODE_KEY = 'wexler.editor.mode'
 const ROUTE_DRAFT_KEY_PREFIX = 'wexler.editor.layout.route.draft.v2.'
 const ROUTE_PUBLISHED_KEY_PREFIX = 'wexler.editor.layout.route.published.v2.'
 const ROUTE_PUBLISHED_HISTORY_KEY_PREFIX = 'wexler.editor.layout.route.published.history.v3.'
+const ROUTE_AUDIT_KEY_PREFIX = 'wexler.editor.audit.route.v1.'
 const LEGACY_ROUTE_LAYOUT_KEY_PREFIX = 'wexler.editor.layout.route.v1.'
 
 const EXPORT_SCHEMA = 'wexler.editor.layout.bundle'
@@ -12,6 +13,9 @@ const LAYOUT_SCHEMA_VERSION = 2
 const IMPORT_CONFLICT_CODE = 'IMPORT_CONFLICT'
 const UNSUPPORTED_BUNDLE_VERSION_CODE = 'UNSUPPORTED_BUNDLE_VERSION'
 const MAX_PUBLISHED_HISTORY = 12
+const AUDIT_SCHEMA = 'wexler.editor.audit.bundle'
+const AUDIT_VERSION = 1
+const MAX_ROUTE_AUDIT_LOGS = 160
 const EDIT_ACCESS_KEY = 'wexler.editor.auth'
 
 const isEditorMode = ref(false)
@@ -31,6 +35,7 @@ const editorGuardState = ref({
 const draftLayoutsByRoute = ref({})
 const publishedLayoutsByRoute = ref({})
 const publishedHistoryByRoute = ref({})
+const auditLogsByRoute = ref({})
 const selectedByRoute = ref({})
 let initialized = false
 
@@ -576,6 +581,34 @@ function normalizeHistoryList(routeInput, rawList) {
     .slice(0, MAX_PUBLISHED_HISTORY)
 }
 
+function normalizeAuditEntry(raw, index = 0) {
+  if (!raw || typeof raw !== 'object') return null
+
+  const detail =
+    raw.detail && typeof raw.detail === 'object' && !Array.isArray(raw.detail)
+      ? raw.detail
+      : {}
+
+  return {
+    id:
+      typeof raw.id === 'string' && raw.id.trim()
+        ? raw.id.trim()
+        : `audit-${Date.now()}-${index}-${Math.random().toString(36).slice(2, 7)}`,
+    at: typeof raw.at === 'string' && raw.at.trim() ? raw.at.trim() : new Date().toISOString(),
+    action: typeof raw.action === 'string' && raw.action.trim() ? raw.action.trim() : 'update',
+    detail
+  }
+}
+
+function normalizeAuditLog(routeInput, rawList) {
+  if (!Array.isArray(rawList)) return []
+
+  return rawList
+    .map((item, index) => normalizeAuditEntry(item, index))
+    .filter(Boolean)
+    .slice(0, MAX_ROUTE_AUDIT_LOGS)
+}
+
 function routeDraftKey(routeInput) {
   return `${ROUTE_DRAFT_KEY_PREFIX}${encodeURIComponent(normalizeRoute(routeInput))}`
 }
@@ -590,6 +623,10 @@ function routePublishedHistoryKey(routeInput) {
 
 function routeLegacyKey(routeInput) {
   return `${LEGACY_ROUTE_LAYOUT_KEY_PREFIX}${encodeURIComponent(normalizeRoute(routeInput))}`
+}
+
+function routeAuditKey(routeInput) {
+  return `${ROUTE_AUDIT_KEY_PREFIX}${encodeURIComponent(normalizeRoute(routeInput))}`
 }
 
 function safeReadStorage(key) {
@@ -639,6 +676,83 @@ function persistPublishedRouteHistory(routeInput) {
     routePublishedHistoryKey(route),
     JSON.stringify(publishedHistoryByRoute.value[route] || [])
   )
+}
+
+function persistRouteAuditLog(routeInput) {
+  const route = ensureRouteLayout(routeInput)
+  safeWriteStorage(routeAuditKey(route), JSON.stringify(auditLogsByRoute.value[route] || []))
+}
+
+function loadRouteAuditLog(routeInput) {
+  const route = normalizeRoute(routeInput)
+  const raw = safeReadStorage(routeAuditKey(route))
+  let logs = []
+
+  if (raw) {
+    try {
+      logs = normalizeAuditLog(route, JSON.parse(raw))
+    } catch (error) {
+      logs = []
+    }
+  }
+
+  auditLogsByRoute.value = {
+    ...auditLogsByRoute.value,
+    [route]: logs
+  }
+}
+
+function ensureRouteAuditLog(routeInput) {
+  const route = ensureRouteLayout(routeInput)
+  if (!auditLogsByRoute.value[route]) {
+    loadRouteAuditLog(route)
+  }
+  return route
+}
+
+function getRouteAuditLog(routeInput) {
+  const route = ensureRouteAuditLog(routeInput)
+  return auditLogsByRoute.value[route] || []
+}
+
+function appendRouteAuditLog(routeInput, action, detail = {}, options = {}) {
+  const route = ensureRouteAuditLog(routeInput)
+  const persist = options.persist !== false
+  const safeDetail =
+    detail && typeof detail === 'object' && !Array.isArray(detail) ? detail : {}
+  const entry = normalizeAuditEntry({
+    id: `audit-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+    at: new Date().toISOString(),
+    action,
+    detail: safeDetail
+  })
+  if (!entry) return null
+
+  auditLogsByRoute.value = {
+    ...auditLogsByRoute.value,
+    [route]: [entry, ...getRouteAuditLog(route)].slice(0, MAX_ROUTE_AUDIT_LOGS)
+  }
+
+  if (persist) {
+    persistRouteAuditLog(route)
+  }
+  return entry
+}
+
+function clearRouteAuditLog(routeInput, options = {}) {
+  const route = ensureRouteAuditLog(routeInput)
+  const persist = options.persist !== false
+  auditLogsByRoute.value = {
+    ...auditLogsByRoute.value,
+    [route]: []
+  }
+  if (persist) {
+    persistRouteAuditLog(route)
+  }
+  return {
+    ok: true,
+    route
+  }
 }
 
 function ensureSelectedValid(routeInput) {
@@ -813,6 +927,8 @@ function collectStoredRoutes() {
         result.add(decodeURIComponent(key.slice(ROUTE_PUBLISHED_KEY_PREFIX.length)))
       } else if (key.startsWith(ROUTE_PUBLISHED_HISTORY_KEY_PREFIX)) {
         result.add(decodeURIComponent(key.slice(ROUTE_PUBLISHED_HISTORY_KEY_PREFIX.length)))
+      } else if (key.startsWith(ROUTE_AUDIT_KEY_PREFIX)) {
+        result.add(decodeURIComponent(key.slice(ROUTE_AUDIT_KEY_PREFIX.length)))
       } else if (key.startsWith(LEGACY_ROUTE_LAYOUT_KEY_PREFIX)) {
         result.add(decodeURIComponent(key.slice(LEGACY_ROUTE_LAYOUT_KEY_PREFIX.length)))
       }
@@ -1342,6 +1458,26 @@ function getAllRoutesExportBundle() {
   }
 }
 
+function getAllRoutesAuditBundle() {
+  const routes = collectStoredRoutes()
+  const payload = {}
+
+  routes.forEach((rawRoute) => {
+    const route = ensureRouteAuditLog(rawRoute)
+    payload[route] = clone(getRouteAuditLog(route))
+  })
+
+  return {
+    schema: AUDIT_SCHEMA,
+    version: AUDIT_VERSION,
+    exportedAt: new Date().toISOString(),
+    meta: {
+      maxRouteLogs: MAX_ROUTE_AUDIT_LOGS
+    },
+    routes: payload
+  }
+}
+
 function detectRouteImportConflict(routeInput, incomingDraft, options = {}) {
   if (options.force === true) return null
   const route = ensureRouteLayout(routeInput)
@@ -1483,6 +1619,7 @@ export {
   draftLayoutsByRoute,
   publishedLayoutsByRoute,
   publishedHistoryByRoute,
+  auditLogsByRoute,
   selectedByRoute,
   initEditorState,
   normalizeRoute,
@@ -1519,7 +1656,11 @@ export {
   persistDraftRouteLayout,
   persistPublishedRouteLayout,
   persistPublishedRouteHistory,
+  getRouteAuditLog,
+  appendRouteAuditLog,
+  clearRouteAuditLog,
   getRouteExportBundle,
   getAllRoutesExportBundle,
+  getAllRoutesAuditBundle,
   importEditorBundle
 }

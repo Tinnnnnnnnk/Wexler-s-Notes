@@ -3102,7 +3102,7 @@ const _sfc_main$x = /* @__PURE__ */ defineComponent({
   __name: "VPNavBarSearch",
   __ssrInlineRender: true,
   setup(__props) {
-    const VPLocalSearchBox = defineAsyncComponent(() => import("./VPLocalSearchBox.DIFR9FUV.js"));
+    const VPLocalSearchBox = defineAsyncComponent(() => import("./VPLocalSearchBox.jnkCcW6j.js"));
     const VPAlgoliaSearchBox = () => null;
     const { theme: theme2 } = useData();
     const loaded = ref(false);
@@ -5783,12 +5783,12 @@ const _sfc_main$1 = {
       if (showCanvas.value) {
         _push(`<div${ssrRenderAttrs(mergeProps({
           class: ["home-editor-canvas", { "is-editing": unref(isEditorMode), "is-dragging": isDragging.value }],
-          "aria-label": "Page editor canvas"
+          "aria-label": "页面编辑画布"
         }, _attrs))}><div class="home-editor-canvas__blocks"><!--[-->`);
         ssrRenderList(orderedBlocks.value, (block) => {
           _push(`<article class="${ssrRenderClass([{ "is-selected": selectedBlockId.value === block.id }, "home-editor-block"])}" style="${ssrRenderStyle(blockStyle(block))}"><p class="home-editor-block__kicker">${ssrInterpolate(block.kicker)}</p><h2 class="home-editor-block__title">${ssrInterpolate(block.title)}</h2><p class="home-editor-block__body">${ssrInterpolate(block.body)}</p>`);
           if (unref(isEditorMode)) {
-            _push(`<span class="home-editor-block__hint">drag</span>`);
+            _push(`<span class="home-editor-block__hint">拖拽</span>`);
           } else {
             _push(`<!---->`);
           }
@@ -5796,21 +5796,21 @@ const _sfc_main$1 = {
         });
         _push(`<!--]--></div>`);
         if (unref(isEditorMode)) {
-          _push(`<div class="home-editor-toolbar"><button type="button" class="home-editor-btn"> Add </button><button type="button" class="home-editor-btn"${ssrIncludeBooleanAttr(!selectedBlock.value) ? " disabled" : ""}> Delete </button><button type="button" class="home-editor-btn"> Reset </button></div>`);
+          _push(`<div class="home-editor-toolbar"><button type="button" class="home-editor-btn"> 新增 </button><button type="button" class="home-editor-btn"${ssrIncludeBooleanAttr(!selectedBlock.value) ? " disabled" : ""}> 删除 </button><button type="button" class="home-editor-btn"> 重置 </button></div>`);
         } else {
           _push(`<!---->`);
         }
         if (unref(isEditorMode)) {
-          _push(`<aside class="home-editor-panel"><h3 class="home-editor-panel__title">Block Editor</h3><p class="home-editor-panel__route">${ssrInterpolate(currentRoute.value)}</p><div class="home-editor-status"><span class="home-editor-chip home-editor-chip--draft">Draft</span><span class="${ssrRenderClass([routeStatus.value.dirty ? "is-dirty" : "is-clean", "home-editor-chip"])}">${ssrInterpolate(routeStatus.value.dirty ? "Unpublished Changes" : "Synced With Published")}</span><span class="home-editor-chip home-editor-chip--count">D/P ${ssrInterpolate(blockCountSummary.value)}</span></div><div class="home-editor-actions"><button type="button" class="home-editor-btn"> Save Draft </button><button type="button" class="home-editor-btn"> Publish </button><button type="button" class="home-editor-btn"> Revert </button></div><div class="home-editor-actions"><button type="button" class="home-editor-btn"> Export Route </button><button type="button" class="home-editor-btn"> Export All </button><button type="button" class="home-editor-btn"> Import JSON </button></div><input class="home-editor-import-input" type="file" accept="application/json,.json">`);
+          _push(`<aside class="home-editor-panel"><h3 class="home-editor-panel__title">页面编辑器</h3><p class="home-editor-panel__route">${ssrInterpolate(currentRoute.value)}</p><div class="home-editor-status"><span class="home-editor-chip home-editor-chip--draft">草稿</span><span class="${ssrRenderClass([routeStatus.value.dirty ? "is-dirty" : "is-clean", "home-editor-chip"])}">${ssrInterpolate(routeStatus.value.dirty ? "有未发布改动" : "已与发布版同步")}</span><span class="home-editor-chip home-editor-chip--count">草稿/发布 ${ssrInterpolate(blockCountSummary.value)}</span></div><div class="home-editor-actions"><button type="button" class="home-editor-btn"> 保存草稿 </button><button type="button" class="home-editor-btn"> 立即发布 </button><button type="button" class="home-editor-btn"> 回滚草稿 </button></div><div class="home-editor-actions"><button type="button" class="home-editor-btn home-editor-btn--export"><span class="home-editor-export-icon" aria-hidden="true"></span><span>导出当前页</span></button><button type="button" class="home-editor-btn home-editor-btn--export"><span class="home-editor-export-icon" aria-hidden="true"></span><span>导出全站</span></button><button type="button" class="home-editor-btn"> 导入 JSON </button></div><input class="home-editor-import-input" type="file" accept="application/json,.json">`);
           if (ioMessage.value) {
             _push(`<p class="${ssrRenderClass([`is-${ioMessageType.value}`, "home-editor-message"])}">${ssrInterpolate(ioMessage.value)}</p>`);
           } else {
             _push(`<!---->`);
           }
           if (selectedBlock.value) {
-            _push(`<!--[--><label class="home-editor-field"><span>Kicker</span><input class="home-editor-input" type="text"${ssrRenderAttr("value", selectedBlock.value.kicker)}></label><label class="home-editor-field"><span>Title</span><input class="home-editor-input" type="text"${ssrRenderAttr("value", selectedBlock.value.title)}></label><label class="home-editor-field"><span>Body</span><textarea class="home-editor-input home-editor-input--textarea">${ssrInterpolate(selectedBlock.value.body)}</textarea></label><div class="home-editor-grid"><label class="home-editor-field"><span>Width</span><input class="home-editor-range" type="range" min="180" max="1200" step="1"${ssrRenderAttr("value", selectedBlock.value.w)}></label><label class="home-editor-field"><span>Height</span><input class="home-editor-range" type="range" min="90" max="900" step="1"${ssrRenderAttr("value", selectedBlock.value.h)}></label></div><div class="home-editor-grid"><label class="home-editor-field"><span>Opacity</span><input class="home-editor-range" type="range" min="0.05" max="1" step="0.01"${ssrRenderAttr("value", selectedBlock.value.opacity)}></label><label class="home-editor-field"><span>Radius</span><input class="home-editor-range" type="range" min="0" max="60" step="1"${ssrRenderAttr("value", selectedBlock.value.radius)}></label></div><div class="home-editor-grid"><label class="home-editor-field"><span>Blur</span><input class="home-editor-range" type="range" min="0" max="24" step="1"${ssrRenderAttr("value", selectedBlock.value.blur)}></label><label class="home-editor-field"><span>Text Color</span><input class="home-editor-color" type="color"${ssrRenderAttr("value", normalizeColorHex(selectedBlock.value.color))}></label></div><label class="home-editor-field"><span>Background</span><input class="home-editor-input" type="text"${ssrRenderAttr("value", selectedBlock.value.bg)}></label><!--]-->`);
+            _push(`<!--[--><label class="home-editor-field"><span>前缀文案</span><input class="home-editor-input" type="text"${ssrRenderAttr("value", selectedBlock.value.kicker)}></label><label class="home-editor-field"><span>标题</span><input class="home-editor-input" type="text"${ssrRenderAttr("value", selectedBlock.value.title)}></label><label class="home-editor-field"><span>正文</span><textarea class="home-editor-input home-editor-input--textarea">${ssrInterpolate(selectedBlock.value.body)}</textarea></label><div class="home-editor-grid"><label class="home-editor-field"><span>宽度</span><input class="home-editor-range" type="range" min="180" max="1200" step="1"${ssrRenderAttr("value", selectedBlock.value.w)}></label><label class="home-editor-field"><span>高度</span><input class="home-editor-range" type="range" min="90" max="900" step="1"${ssrRenderAttr("value", selectedBlock.value.h)}></label></div><div class="home-editor-grid"><label class="home-editor-field"><span>透明度</span><input class="home-editor-range" type="range" min="0.05" max="1" step="0.01"${ssrRenderAttr("value", selectedBlock.value.opacity)}></label><label class="home-editor-field"><span>圆角</span><input class="home-editor-range" type="range" min="0" max="60" step="1"${ssrRenderAttr("value", selectedBlock.value.radius)}></label></div><div class="home-editor-grid"><label class="home-editor-field"><span>模糊度</span><input class="home-editor-range" type="range" min="0" max="24" step="1"${ssrRenderAttr("value", selectedBlock.value.blur)}></label><label class="home-editor-field"><span>文字颜色</span><input class="home-editor-color" type="color"${ssrRenderAttr("value", normalizeColorHex(selectedBlock.value.color))}></label></div><label class="home-editor-field"><span>背景样式</span><input class="home-editor-input" type="text"${ssrRenderAttr("value", selectedBlock.value.bg)}></label><!--]-->`);
           } else {
-            _push(`<p class="home-editor-empty-hint"> No block selected. Click a block on canvas, or press Add to create one. </p>`);
+            _push(`<p class="home-editor-empty-hint"> 当前未选中模块。请点击画布中的模块，或先点击“新增”创建模块。 </p>`);
           }
           _push(`</aside>`);
         } else {

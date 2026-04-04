@@ -4419,6 +4419,48 @@ html.sky-default-mode.dark .VPDoc .content:hover {
   text-align: center;
 }
 
+.home-editor-btn--export {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+.home-editor-export-icon {
+  position: relative;
+  width: 12px;
+  height: 12px;
+  display: inline-block;
+}
+
+.home-editor-export-icon::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 2px;
+  height: 8px;
+  transform: translateX(-50%);
+  background: currentColor;
+  border-radius: 999px;
+}
+
+.home-editor-export-icon::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 6px;
+  height: 6px;
+  transform: translateX(-50%) rotate(45deg);
+  border-top: 2px solid currentColor;
+  border-left: 2px solid currentColor;
+}
+
+.home-editor-btn--export span:last-child {
+  letter-spacing: 0;
+}
+
 .home-editor-import-input {
   display: none;
 }

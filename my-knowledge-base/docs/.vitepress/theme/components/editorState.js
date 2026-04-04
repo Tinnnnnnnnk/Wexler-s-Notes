@@ -3,14 +3,17 @@ import { ref } from 'vue'
 const EDIT_MODE_KEY = 'wexler.editor.mode'
 const ROUTE_DRAFT_KEY_PREFIX = 'wexler.editor.layout.route.draft.v2.'
 const ROUTE_PUBLISHED_KEY_PREFIX = 'wexler.editor.layout.route.published.v2.'
+const ROUTE_PUBLISHED_HISTORY_KEY_PREFIX = 'wexler.editor.layout.route.published.history.v3.'
 const LEGACY_ROUTE_LAYOUT_KEY_PREFIX = 'wexler.editor.layout.route.v1.'
 
 const EXPORT_SCHEMA = 'wexler.editor.layout.bundle'
 const EXPORT_VERSION = 2
+const MAX_PUBLISHED_HISTORY = 12
 
 const isEditorMode = ref(false)
 const draftLayoutsByRoute = ref({})
 const publishedLayoutsByRoute = ref({})
+const publishedHistoryByRoute = ref({})
 const selectedByRoute = ref({})
 let initialized = false
 

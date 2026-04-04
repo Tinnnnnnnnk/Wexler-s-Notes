@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/chunks/VPLocalSearchBox.BoaAsTTe.js","assets/chunks/framework.ul-4IeKD.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/chunks/VPLocalSearchBox.BKJHR7X2.js","assets/chunks/framework.ul-4IeKD.js"])))=>i.map(i=>d[i]);
 import { d as defineComponent, c as createElementBlock, r as renderSlot, n as normalizeClass, o as openBlock, a as createTextVNode, t as toDisplayString, b as createBlock, w as withCtx, T as Transition, e as createCommentVNode, _ as _export_sfc, u as useData$1, i as isExternal, f as treatAsHtml, g as withBase, h as computed, j as createBaseVNode, k as unref, l as isActive, m as useMediaQuery, p as ref, q as watch, s as watchEffect, v as onMounted, x as onUnmounted, y as watchPostEffect, z as onUpdated, A as getScrollOffset, F as Fragment, B as renderList, C as resolveComponent, D as onContentUpdated, E as createVNode, G as shallowRef, H as resolveDynamicComponent, I as EXTERNAL_URL_RE, J as useRoute, K as mergeProps, L as inject, M as useWindowSize, N as normalizeStyle, O as onKeyStroke, P as nextTick, Q as useWindowScroll, R as inBrowser, S as readonly, U as defineAsyncComponent, V as __vitePreload, W as useScrollLock, X as provide, Y as toHandlers, Z as withKeys, $ as onBeforeUnmount, a0 as withModifiers, a1 as useSlots, a2 as withDirectives, a3 as vShow, a4 as Teleport, a5 as h } from "./framework.ul-4IeKD.js";
 const _sfc_main$10 = /* @__PURE__ */ defineComponent({
   __name: "VPBadge",
@@ -2230,7 +2230,7 @@ const _hoisted_3$6 = {
 const _sfc_main$o = /* @__PURE__ */ defineComponent({
   __name: "VPNavBarSearch",
   setup(__props) {
-    const VPLocalSearchBox = defineAsyncComponent(() => __vitePreload(() => import("./VPLocalSearchBox.BoaAsTTe.js"), true ? __vite__mapDeps([0,1]) : void 0));
+    const VPLocalSearchBox = defineAsyncComponent(() => __vitePreload(() => import("./VPLocalSearchBox.BKJHR7X2.js"), true ? __vite__mapDeps([0,1]) : void 0));
     const VPAlgoliaSearchBox = () => null;
     const { theme: theme2 } = useData();
     const loaded = ref(false);
@@ -4848,36 +4848,36 @@ const _sfc_main$1 = {
     function handleSaveDraft() {
       saveDraftRoute(currentRoute.value);
       {
-        setMessage("success", "Draft saved.");
+        setMessage("success", "草稿已保存。");
       }
     }
     function handlePublish() {
       publishDraftRoute(currentRoute.value);
       {
-        setMessage("success", "Published current route layout.");
+        setMessage("success", "当前页面布局已发布。");
       }
     }
     function handleRevertDraft() {
       if (routeStatus.value.dirty) {
-        const confirmed = window.confirm("Discard current draft changes and restore published layout?");
+        const confirmed = window.confirm("将放弃当前草稿改动，并恢复为已发布版本，是否继续？");
         if (!confirmed) return;
       }
       revertRouteDraft(currentRoute.value);
       {
-        setMessage("success", "Draft restored from published version.");
+        setMessage("success", "草稿已恢复到已发布版本。");
       }
     }
     function handleExportCurrent() {
       const bundle = getRouteExportBundle(currentRoute.value);
       const filename = `editor-layout-${toRouteSlug(currentRoute.value)}-${Date.now()}.json`;
       downloadJson(filename, bundle);
-      setMessage("success", "Current route layout exported.");
+      setMessage("success", "当前页面布局已导出。");
     }
     function handleExportAll() {
       const bundle = getAllRoutesExportBundle();
       const filename = `editor-layout-all-routes-${Date.now()}.json`;
       downloadJson(filename, bundle);
-      setMessage("success", "All route layouts exported.");
+      setMessage("success", "全站页面布局已导出。");
     }
     function triggerImport() {
       var _a;
@@ -4891,12 +4891,12 @@ const _sfc_main$1 = {
         const text = await file.text();
         const result = importEditorBundle(text, currentRoute.value);
         if (result.ok) {
-          setMessage("success", result.message || "Import completed.");
+          setMessage("success", result.message || "导入完成。");
         } else {
-          setMessage("error", result.message || "Import failed.", 3600);
+          setMessage("error", result.message || "导入失败。", 3600);
         }
       } catch (error) {
-        setMessage("error", "Failed to read import file.", 3600);
+        setMessage("error", "读取导入文件失败。", 3600);
       } finally {
         event.target.value = "";
       }
@@ -4920,7 +4920,7 @@ const _sfc_main$1 = {
       return showCanvas.value ? (openBlock(), createElementBlock("div", {
         key: 0,
         class: normalizeClass(["home-editor-canvas", { "is-editing": unref(isEditorMode), "is-dragging": isDragging.value }]),
-        "aria-label": "Page editor canvas"
+        "aria-label": "页面编辑画布"
       }, [
         createBaseVNode("div", _hoisted_1$1, [
           (openBlock(true), createElementBlock(Fragment, null, renderList(orderedBlocks.value, (block) => {
@@ -4935,7 +4935,7 @@ const _sfc_main$1 = {
               createBaseVNode("p", _hoisted_3, toDisplayString(block.kicker), 1),
               createBaseVNode("h2", _hoisted_4, toDisplayString(block.title), 1),
               createBaseVNode("p", _hoisted_5, toDisplayString(block.body), 1),
-              unref(isEditorMode) ? (openBlock(), createElementBlock("span", _hoisted_6, "drag")) : createCommentVNode("", true)
+              unref(isEditorMode) ? (openBlock(), createElementBlock("span", _hoisted_6, "拖拽")) : createCommentVNode("", true)
             ], 46, _hoisted_2);
           }), 128))
         ]),
@@ -4944,62 +4944,74 @@ const _sfc_main$1 = {
             type: "button",
             class: "home-editor-btn",
             onClick: _cache[0] || (_cache[0] = ($event) => unref(addRouteTextBlock)(currentRoute.value))
-          }, " Add "),
+          }, " 新增 "),
           createBaseVNode("button", {
             type: "button",
             class: "home-editor-btn",
             disabled: !selectedBlock.value,
             onClick: removeCurrentBlock
-          }, " Delete ", 8, _hoisted_8),
+          }, " 删除 ", 8, _hoisted_8),
           createBaseVNode("button", {
             type: "button",
             class: "home-editor-btn",
             onClick: _cache[1] || (_cache[1] = ($event) => unref(resetRouteLayout)(currentRoute.value))
-          }, " Reset ")
+          }, " 重置 ")
         ])) : createCommentVNode("", true),
         unref(isEditorMode) ? (openBlock(), createElementBlock("aside", _hoisted_9, [
-          _cache[22] || (_cache[22] = createBaseVNode("h3", { class: "home-editor-panel__title" }, "Block Editor", -1)),
+          _cache[24] || (_cache[24] = createBaseVNode("h3", { class: "home-editor-panel__title" }, "页面编辑器", -1)),
           createBaseVNode("p", _hoisted_10, toDisplayString(currentRoute.value), 1),
           createBaseVNode("div", _hoisted_11, [
-            _cache[11] || (_cache[11] = createBaseVNode("span", { class: "home-editor-chip home-editor-chip--draft" }, "Draft", -1)),
+            _cache[11] || (_cache[11] = createBaseVNode("span", { class: "home-editor-chip home-editor-chip--draft" }, "草稿", -1)),
             createBaseVNode("span", {
               class: normalizeClass(["home-editor-chip", routeStatus.value.dirty ? "is-dirty" : "is-clean"])
-            }, toDisplayString(routeStatus.value.dirty ? "Unpublished Changes" : "Synced With Published"), 3),
-            createBaseVNode("span", _hoisted_12, "D/P " + toDisplayString(blockCountSummary.value), 1)
+            }, toDisplayString(routeStatus.value.dirty ? "有未发布改动" : "已与发布版同步"), 3),
+            createBaseVNode("span", _hoisted_12, "草稿/发布 " + toDisplayString(blockCountSummary.value), 1)
           ]),
           createBaseVNode("div", { class: "home-editor-actions" }, [
             createBaseVNode("button", {
               type: "button",
               class: "home-editor-btn",
               onClick: handleSaveDraft
-            }, " Save Draft "),
+            }, " 保存草稿 "),
             createBaseVNode("button", {
               type: "button",
               class: "home-editor-btn",
               onClick: handlePublish
-            }, " Publish "),
+            }, " 立即发布 "),
             createBaseVNode("button", {
               type: "button",
               class: "home-editor-btn",
               onClick: handleRevertDraft
-            }, " Revert ")
+            }, " 回滚草稿 ")
           ]),
           createBaseVNode("div", { class: "home-editor-actions" }, [
             createBaseVNode("button", {
               type: "button",
-              class: "home-editor-btn",
+              class: "home-editor-btn home-editor-btn--export",
               onClick: handleExportCurrent
-            }, " Export Route "),
+            }, [..._cache[12] || (_cache[12] = [
+              createBaseVNode("span", {
+                class: "home-editor-export-icon",
+                "aria-hidden": "true"
+              }, null, -1),
+              createBaseVNode("span", null, "导出当前页", -1)
+            ])]),
             createBaseVNode("button", {
               type: "button",
-              class: "home-editor-btn",
+              class: "home-editor-btn home-editor-btn--export",
               onClick: handleExportAll
-            }, " Export All "),
+            }, [..._cache[13] || (_cache[13] = [
+              createBaseVNode("span", {
+                class: "home-editor-export-icon",
+                "aria-hidden": "true"
+              }, null, -1),
+              createBaseVNode("span", null, "导出全站", -1)
+            ])]),
             createBaseVNode("button", {
               type: "button",
               class: "home-editor-btn",
               onClick: triggerImport
-            }, " Import JSON ")
+            }, " 导入 JSON ")
           ]),
           createBaseVNode("input", {
             ref_key: "importInputRef",
@@ -5015,7 +5027,7 @@ const _sfc_main$1 = {
           }, toDisplayString(ioMessage.value), 3)) : createCommentVNode("", true),
           selectedBlock.value ? (openBlock(), createElementBlock(Fragment, { key: 1 }, [
             createBaseVNode("label", _hoisted_13, [
-              _cache[12] || (_cache[12] = createBaseVNode("span", null, "Kicker", -1)),
+              _cache[14] || (_cache[14] = createBaseVNode("span", null, "前缀文案", -1)),
               createBaseVNode("input", {
                 class: "home-editor-input",
                 type: "text",
@@ -5024,7 +5036,7 @@ const _sfc_main$1 = {
               }, null, 40, _hoisted_14)
             ]),
             createBaseVNode("label", _hoisted_15, [
-              _cache[13] || (_cache[13] = createBaseVNode("span", null, "Title", -1)),
+              _cache[15] || (_cache[15] = createBaseVNode("span", null, "标题", -1)),
               createBaseVNode("input", {
                 class: "home-editor-input",
                 type: "text",
@@ -5033,7 +5045,7 @@ const _sfc_main$1 = {
               }, null, 40, _hoisted_16)
             ]),
             createBaseVNode("label", _hoisted_17, [
-              _cache[14] || (_cache[14] = createBaseVNode("span", null, "Body", -1)),
+              _cache[16] || (_cache[16] = createBaseVNode("span", null, "正文", -1)),
               createBaseVNode("textarea", {
                 class: "home-editor-input home-editor-input--textarea",
                 value: selectedBlock.value.body,
@@ -5042,7 +5054,7 @@ const _sfc_main$1 = {
             ]),
             createBaseVNode("div", _hoisted_19, [
               createBaseVNode("label", _hoisted_20, [
-                _cache[15] || (_cache[15] = createBaseVNode("span", null, "Width", -1)),
+                _cache[17] || (_cache[17] = createBaseVNode("span", null, "宽度", -1)),
                 createBaseVNode("input", {
                   class: "home-editor-range",
                   type: "range",
@@ -5054,7 +5066,7 @@ const _sfc_main$1 = {
                 }, null, 40, _hoisted_21)
               ]),
               createBaseVNode("label", _hoisted_22, [
-                _cache[16] || (_cache[16] = createBaseVNode("span", null, "Height", -1)),
+                _cache[18] || (_cache[18] = createBaseVNode("span", null, "高度", -1)),
                 createBaseVNode("input", {
                   class: "home-editor-range",
                   type: "range",
@@ -5068,7 +5080,7 @@ const _sfc_main$1 = {
             ]),
             createBaseVNode("div", _hoisted_24, [
               createBaseVNode("label", _hoisted_25, [
-                _cache[17] || (_cache[17] = createBaseVNode("span", null, "Opacity", -1)),
+                _cache[19] || (_cache[19] = createBaseVNode("span", null, "透明度", -1)),
                 createBaseVNode("input", {
                   class: "home-editor-range",
                   type: "range",
@@ -5080,7 +5092,7 @@ const _sfc_main$1 = {
                 }, null, 40, _hoisted_26)
               ]),
               createBaseVNode("label", _hoisted_27, [
-                _cache[18] || (_cache[18] = createBaseVNode("span", null, "Radius", -1)),
+                _cache[20] || (_cache[20] = createBaseVNode("span", null, "圆角", -1)),
                 createBaseVNode("input", {
                   class: "home-editor-range",
                   type: "range",
@@ -5094,7 +5106,7 @@ const _sfc_main$1 = {
             ]),
             createBaseVNode("div", _hoisted_29, [
               createBaseVNode("label", _hoisted_30, [
-                _cache[19] || (_cache[19] = createBaseVNode("span", null, "Blur", -1)),
+                _cache[21] || (_cache[21] = createBaseVNode("span", null, "模糊度", -1)),
                 createBaseVNode("input", {
                   class: "home-editor-range",
                   type: "range",
@@ -5106,7 +5118,7 @@ const _sfc_main$1 = {
                 }, null, 40, _hoisted_31)
               ]),
               createBaseVNode("label", _hoisted_32, [
-                _cache[20] || (_cache[20] = createBaseVNode("span", null, "Text Color", -1)),
+                _cache[22] || (_cache[22] = createBaseVNode("span", null, "文字颜色", -1)),
                 createBaseVNode("input", {
                   class: "home-editor-color",
                   type: "color",
@@ -5116,7 +5128,7 @@ const _sfc_main$1 = {
               ])
             ]),
             createBaseVNode("label", _hoisted_34, [
-              _cache[21] || (_cache[21] = createBaseVNode("span", null, "Background", -1)),
+              _cache[23] || (_cache[23] = createBaseVNode("span", null, "背景样式", -1)),
               createBaseVNode("input", {
                 class: "home-editor-input",
                 type: "text",
@@ -5124,7 +5136,7 @@ const _sfc_main$1 = {
                 onInput: _cache[10] || (_cache[10] = ($event) => updateSelectedField("bg", $event.target.value))
               }, null, 40, _hoisted_35)
             ])
-          ], 64)) : (openBlock(), createElementBlock("p", _hoisted_36, " No block selected. Click a block on canvas, or press Add to create one. "))
+          ], 64)) : (openBlock(), createElementBlock("p", _hoisted_36, " 当前未选中模块。请点击画布中的模块，或先点击“新增”创建模块。 "))
         ])) : createCommentVNode("", true)
       ], 2)) : createCommentVNode("", true);
     };

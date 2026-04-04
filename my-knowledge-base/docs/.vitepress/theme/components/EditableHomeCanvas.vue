@@ -214,25 +214,25 @@ function downloadJson(filename, data) {
 function handleSaveDraft() {
   const result = saveDraftRoute(currentRoute.value)
   if (result.ok) {
-    setMessage('success', 'Draft saved.')
+    setMessage('success', '草稿已保存。')
   }
 }
 
 function handlePublish() {
   const result = publishDraftRoute(currentRoute.value)
   if (result.ok) {
-    setMessage('success', 'Published current route layout.')
+    setMessage('success', '当前页面布局已发布。')
   }
 }
 
 function handleRevertDraft() {
   if (routeStatus.value.dirty) {
-    const confirmed = window.confirm('Discard current draft changes and restore published layout?')
+    const confirmed = window.confirm('将放弃当前草稿改动，并恢复为已发布版本，是否继续？')
     if (!confirmed) return
   }
   const result = revertRouteDraft(currentRoute.value)
   if (result.ok) {
-    setMessage('success', 'Draft restored from published version.')
+    setMessage('success', '草稿已恢复到已发布版本。')
   }
 }
 
@@ -240,14 +240,14 @@ function handleExportCurrent() {
   const bundle = getRouteExportBundle(currentRoute.value)
   const filename = `editor-layout-${toRouteSlug(currentRoute.value)}-${Date.now()}.json`
   downloadJson(filename, bundle)
-  setMessage('success', 'Current route layout exported.')
+  setMessage('success', '当前页面布局已导出。')
 }
 
 function handleExportAll() {
   const bundle = getAllRoutesExportBundle()
   const filename = `editor-layout-all-routes-${Date.now()}.json`
   downloadJson(filename, bundle)
-  setMessage('success', 'All route layouts exported.')
+  setMessage('success', '全站页面布局已导出。')
 }
 
 function triggerImport() {
@@ -262,12 +262,12 @@ async function handleImportFile(event) {
     const text = await file.text()
     const result = importEditorBundle(text, currentRoute.value)
     if (result.ok) {
-      setMessage('success', result.message || 'Import completed.')
+      setMessage('success', result.message || '导入完成。')
     } else {
-      setMessage('error', result.message || 'Import failed.', 3600)
+      setMessage('error', result.message || '导入失败。', 3600)
     }
   } catch (error) {
-    setMessage('error', 'Failed to read import file.', 3600)
+    setMessage('error', '读取导入文件失败。', 3600)
   } finally {
     event.target.value = ''
   }
@@ -297,7 +297,7 @@ onBeforeUnmount(() => {
     v-if="showCanvas"
     class="home-editor-canvas"
     :class="{ 'is-editing': isEditorMode, 'is-dragging': isDragging }"
-    aria-label="Page editor canvas"
+    aria-label="页面编辑画布"
   >
     <div class="home-editor-canvas__blocks">
       <article
@@ -313,13 +313,13 @@ onBeforeUnmount(() => {
         <p class="home-editor-block__kicker">{{ block.kicker }}</p>
         <h2 class="home-editor-block__title">{{ block.title }}</h2>
         <p class="home-editor-block__body">{{ block.body }}</p>
-        <span v-if="isEditorMode" class="home-editor-block__hint">drag</span>
+        <span v-if="isEditorMode" class="home-editor-block__hint">拖拽</span>
       </article>
     </div>
 
     <div v-if="isEditorMode" class="home-editor-toolbar">
       <button type="button" class="home-editor-btn" @click="addRouteTextBlock(currentRoute)">
-        Add
+        新增
       </button>
       <button
         type="button"
@@ -327,46 +327,48 @@ onBeforeUnmount(() => {
         :disabled="!selectedBlock"
         @click="removeCurrentBlock"
       >
-        Delete
+        删除
       </button>
       <button type="button" class="home-editor-btn" @click="resetRouteLayout(currentRoute)">
-        Reset
+        重置
       </button>
     </div>
 
     <aside v-if="isEditorMode" class="home-editor-panel">
-      <h3 class="home-editor-panel__title">Block Editor</h3>
+      <h3 class="home-editor-panel__title">页面编辑器</h3>
       <p class="home-editor-panel__route">{{ currentRoute }}</p>
 
       <div class="home-editor-status">
-        <span class="home-editor-chip home-editor-chip--draft">Draft</span>
+        <span class="home-editor-chip home-editor-chip--draft">草稿</span>
         <span class="home-editor-chip" :class="routeStatus.dirty ? 'is-dirty' : 'is-clean'">
-          {{ routeStatus.dirty ? 'Unpublished Changes' : 'Synced With Published' }}
+          {{ routeStatus.dirty ? '有未发布改动' : '已与发布版同步' }}
         </span>
-        <span class="home-editor-chip home-editor-chip--count">D/P {{ blockCountSummary }}</span>
+        <span class="home-editor-chip home-editor-chip--count">草稿/发布 {{ blockCountSummary }}</span>
       </div>
 
       <div class="home-editor-actions">
         <button type="button" class="home-editor-btn" @click="handleSaveDraft">
-          Save Draft
+          保存草稿
         </button>
         <button type="button" class="home-editor-btn" @click="handlePublish">
-          Publish
+          立即发布
         </button>
         <button type="button" class="home-editor-btn" @click="handleRevertDraft">
-          Revert
+          回滚草稿
         </button>
       </div>
 
       <div class="home-editor-actions">
-        <button type="button" class="home-editor-btn" @click="handleExportCurrent">
-          Export Route
+        <button type="button" class="home-editor-btn home-editor-btn--export" @click="handleExportCurrent">
+          <span class="home-editor-export-icon" aria-hidden="true" />
+          <span>导出当前页</span>
         </button>
-        <button type="button" class="home-editor-btn" @click="handleExportAll">
-          Export All
+        <button type="button" class="home-editor-btn home-editor-btn--export" @click="handleExportAll">
+          <span class="home-editor-export-icon" aria-hidden="true" />
+          <span>导出全站</span>
         </button>
         <button type="button" class="home-editor-btn" @click="triggerImport">
-          Import JSON
+          导入 JSON
         </button>
       </div>
 
@@ -384,7 +386,7 @@ onBeforeUnmount(() => {
 
       <template v-if="selectedBlock">
         <label class="home-editor-field">
-          <span>Kicker</span>
+          <span>前缀文案</span>
           <input
             class="home-editor-input"
             type="text"
@@ -394,7 +396,7 @@ onBeforeUnmount(() => {
         </label>
 
         <label class="home-editor-field">
-          <span>Title</span>
+          <span>标题</span>
           <input
             class="home-editor-input"
             type="text"
@@ -404,7 +406,7 @@ onBeforeUnmount(() => {
         </label>
 
         <label class="home-editor-field">
-          <span>Body</span>
+          <span>正文</span>
           <textarea
             class="home-editor-input home-editor-input--textarea"
             :value="selectedBlock.body"
@@ -414,7 +416,7 @@ onBeforeUnmount(() => {
 
         <div class="home-editor-grid">
           <label class="home-editor-field">
-            <span>Width</span>
+            <span>宽度</span>
             <input
               class="home-editor-range"
               type="range"
@@ -426,7 +428,7 @@ onBeforeUnmount(() => {
             />
           </label>
           <label class="home-editor-field">
-            <span>Height</span>
+            <span>高度</span>
             <input
               class="home-editor-range"
               type="range"
@@ -441,7 +443,7 @@ onBeforeUnmount(() => {
 
         <div class="home-editor-grid">
           <label class="home-editor-field">
-            <span>Opacity</span>
+            <span>透明度</span>
             <input
               class="home-editor-range"
               type="range"
@@ -453,7 +455,7 @@ onBeforeUnmount(() => {
             />
           </label>
           <label class="home-editor-field">
-            <span>Radius</span>
+            <span>圆角</span>
             <input
               class="home-editor-range"
               type="range"
@@ -468,7 +470,7 @@ onBeforeUnmount(() => {
 
         <div class="home-editor-grid">
           <label class="home-editor-field">
-            <span>Blur</span>
+            <span>模糊度</span>
             <input
               class="home-editor-range"
               type="range"
@@ -480,7 +482,7 @@ onBeforeUnmount(() => {
             />
           </label>
           <label class="home-editor-field">
-            <span>Text Color</span>
+            <span>文字颜色</span>
             <input
               class="home-editor-color"
               type="color"
@@ -491,7 +493,7 @@ onBeforeUnmount(() => {
         </div>
 
         <label class="home-editor-field">
-          <span>Background</span>
+          <span>背景样式</span>
           <input
             class="home-editor-input"
             type="text"
@@ -501,7 +503,7 @@ onBeforeUnmount(() => {
         </label>
       </template>
       <p v-else class="home-editor-empty-hint">
-        No block selected. Click a block on canvas, or press Add to create one.
+        当前未选中模块。请点击画布中的模块，或先点击“新增”创建模块。
       </p>
     </aside>
   </div>

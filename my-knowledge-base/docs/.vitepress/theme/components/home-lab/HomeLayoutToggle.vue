@@ -1,7 +1,7 @@
 <script setup>
 import { computed, onMounted, watch } from 'vue'
 import { useRoute } from 'vitepress'
-import { layoutMode, initUiModeState, setLayoutMode, syncAllClasses } from '../stores/uiModeState'
+import { layoutMode, initUiModeState, setLayoutMode, syncAllClasses } from '../../stores/uiModeState'
 
 const route = useRoute()
 

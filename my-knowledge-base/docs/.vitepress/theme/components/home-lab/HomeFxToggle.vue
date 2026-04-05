@@ -1,6 +1,6 @@
 <script setup>
 import { onMounted, onUnmounted, ref } from 'vue'
-import { fxMode, initUiModeState, setFxMode, toggleFxMode } from '../stores/uiModeState'
+import { fxMode, initUiModeState, setFxMode, toggleFxMode } from '../../stores/uiModeState'
 
 const isDark = ref(false)
 const isTransitioning = ref(false)

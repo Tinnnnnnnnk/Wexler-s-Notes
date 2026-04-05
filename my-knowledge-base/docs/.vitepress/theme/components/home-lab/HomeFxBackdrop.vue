@@ -1,7 +1,7 @@
 <script setup>
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vitepress'
-import { fxMode, initUiModeState, evaluatePerformanceProfile, perfMode, setPerfMode, clearAllModeClasses, setRoutePath } from '../stores/uiModeState'
+import { fxMode, initUiModeState, evaluatePerformanceProfile, perfMode, setPerfMode, clearAllModeClasses, setRoutePath } from '../../stores/uiModeState'
 
 const route = useRoute()
 

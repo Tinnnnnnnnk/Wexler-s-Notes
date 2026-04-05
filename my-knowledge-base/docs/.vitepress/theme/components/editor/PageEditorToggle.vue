@@ -8,7 +8,7 @@ import {
   lockEditorAccess,
   toggleEditorMode,
   unlockEditorAccess
-} from '../stores/editorState'
+} from '../../stores/editorState'
 
 onMounted(() => {
   initEditorState()

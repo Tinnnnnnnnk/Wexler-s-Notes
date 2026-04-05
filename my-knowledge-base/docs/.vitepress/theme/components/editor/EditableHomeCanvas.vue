@@ -36,7 +36,7 @@ import {
   saveDraftRoute,
   setSelectedRouteBlock,
   validateDraftRoute
-} from '../stores/editorState'
+} from '../../stores/editorState'
 
 const route = useRoute()
 const { page } = useData()

@@ -14,7 +14,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: '22'
           cache: npm
 
       - name: Install dependencies
@@ -32,7 +32,7 @@ jobs:
         run: npm run docs:build
 
       - name: Rsync deploy
-        uses: burnett01/rsync-deployments@7.0.2
+        uses: burnett01/rsync-deployments@8
         with:
           switches: -avzr --delete --omit-dir-times --no-perms --no-owner --no-group
           path: my-knowledge-base/docs/.vitepress/dist/

@@ -21,7 +21,9 @@ const IGNORED_LIST = [
   'jpg',
   'png',
   'img',
-  'assets'
+  'assets',
+  // Next.js 重构阶段文档，不参与 VitePress 构建
+  'MyWeb'
 ]
 
 // 🎸 核心黑魔法 1: 递归扫描子目录

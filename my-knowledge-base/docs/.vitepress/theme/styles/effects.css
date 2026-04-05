@@ -1,0 +1,144 @@
+/* =============================================================================
+   Effects - 全局动效规范
+   统一动画时长、缓动曲线、进场效果
+   ============================================================================= */
+
+/* 三档时长规范 */
+:root {
+  --motion-fast: 120ms;
+  --motion-mid: 240ms;
+  --motion-slow: 420ms;
+  --ease-smooth: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-soft: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* =============================================
+   主题切换动画 - Theme Transition Animation
+   从点击位置向右下角扩散的渐变效果
+   ============================================= */
+.theme-transition-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  pointer-events: none;
+  background: radial-gradient(
+    circle at var(--transition-origin-x, 100%) var(--transition-origin-y, 0%),
+    var(--oil-bg) 0%,
+    transparent 70%
+  );
+  animation: theme-reveal var(--motion-slow) var(--motion-ease-smooth) forwards;
+}
+
+@keyframes theme-reveal {
+  0% {
+    clip-path: circle(0% at var(--transition-origin-x, 100%) var(--transition-origin-y, 0%));
+  }
+  100% {
+    clip-path: circle(150% at var(--transition-origin-x, 100%) var(--transition-origin-y, 0%));
+  }
+}
+
+/* =============================================
+   进场动画 - Reveal Animations
+   ============================================= */
+.reveal-oil {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: revealOil 0.72s cubic-bezier(0.2, 0.8, 0.24, 1) forwards;
+}
+
+.oilhome-grid .oilhome-card:nth-child(1) {
+  animation-delay: 0.08s;
+}
+
+.oilhome-grid .oilhome-card:nth-child(2) {
+  animation-delay: 0.14s;
+}
+
+.oilhome-grid .oilhome-card:nth-child(3) {
+  animation-delay: 0.2s;
+}
+
+.oilhome-grid .oilhome-card:nth-child(4) {
+  animation-delay: 0.26s;
+}
+
+.reveal-oil {
+  transform: translate3d(0, 20px, 0);
+  animation: revealOil var(--oil-home-reveal-duration) var(--oil-home-ease) forwards;
+  will-change: transform, opacity;
+}
+
+@keyframes revealOil {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* =============================================
+   浮动动画 - Float Animations
+   ============================================= */
+@keyframes oilFloat {
+  0%,
+  100% {
+    transform: rotate(-1.4deg) translateY(0);
+  }
+
+  50% {
+    transform: rotate(-0.7deg) translateY(-8px);
+  }
+}
+
+@keyframes homeFxDrift {
+  0% {
+    transform: scale(1.05) translate3d(0, 0, 0);
+  }
+
+  50% {
+    transform: scale(1.09) translate3d(-1.2%, -1.2%, 0);
+  }
+
+  100% {
+    transform: scale(1.07) translate3d(1.2%, 0.9%, 0);
+  }
+}
+
+@keyframes homeFxBlobFloat {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate3d(2.6%, -2.2%, 0) scale(1.06);
+  }
+}
+
+/* =============================================
+   场景进场动画 - Scene Enter Animation
+   ============================================= */
+@keyframes home-scene-enter {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 10px, 0) scale(0.992);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+/* =============================================
+   无障碍：减少动画
+   ============================================= */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

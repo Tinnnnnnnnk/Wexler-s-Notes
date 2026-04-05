@@ -1,0 +1,127 @@
+/* Wexler oil paint cool theme */
+
+:root {
+  --oil-bg: #d8dee6;
+  --oil-bg-deep: #ccd4de;
+  --oil-surface: #edf1f6;
+  --oil-surface-2: #e5ebf1;
+  --oil-ink: #1f2a38;
+  --oil-muted: #556272;
+  --oil-accent: #4a6d86;
+  --oil-accent-2: #6a8aa0;
+  --oil-line: rgba(31, 42, 56, 0.17);
+  --oil-shadow: 0 16px 34px rgba(16, 24, 35, 0.15);
+
+  /* 浅色模式背景渐变 - 冷色调油画风 */
+  --oil-bg-gradient-1: rgba(106, 138, 160, 0.28);
+  --oil-bg-gradient-2: rgba(74, 109, 134, 0.22);
+  --oil-bg-gradient-3: rgba(126, 151, 173, 0.2);
+  --oil-bg-pattern: rgba(25, 36, 50, 0.035);
+
+  --vp-c-brand-1: var(--oil-accent);
+  --vp-c-brand-2: #3f5d74;
+  --vp-c-brand-3: #334e64;
+  --vp-c-text-1: var(--oil-ink);
+  --vp-c-text-2: var(--oil-muted);
+  --vp-c-bg: var(--oil-bg);
+  --vp-c-bg-soft: var(--oil-surface);
+  --vp-c-bg-elv: var(--oil-surface);
+  --vp-c-divider: var(--oil-line);
+
+  --vp-button-brand-bg: var(--oil-accent);
+  --vp-button-brand-hover-bg: #3f5d74;
+  --vp-button-brand-text: #edf4f9;
+  --vp-button-brand-border: transparent;
+
+  --vp-font-family-base: "Avenir Next", "Segoe UI", "PingFang SC",
+    "Hiragino Sans GB", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+  --vp-font-family-mono: "JetBrains Mono", "Cascadia Code", "Fira Code",
+    "Consolas", monospace;
+
+  --motion-ease-smooth: cubic-bezier(0.22, 1, 0.36, 1);
+  --motion-ease-soft: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --motion-fast: 0.18s;
+  --motion-mid: 0.28s;
+  --motion-slow: 0.42s;
+
+  /* Home P1 tokens: hierarchy + glass + motion */
+  --oil-home-layer-border: rgba(31, 42, 56, 0.11);
+  --oil-home-layer-bg: linear-gradient(
+    140deg,
+    rgba(247, 252, 255, 0.42) 0%,
+    rgba(228, 238, 246, 0.28) 100%
+  );
+  --oil-home-layer-shadow: 0 10px 22px rgba(16, 24, 35, 0.08);
+
+  --oil-home-panel-border: rgba(31, 42, 56, 0.18);
+  --oil-home-panel-border-strong: rgba(74, 109, 134, 0.44);
+  --oil-home-panel-bg-hero:
+    radial-gradient(circle at 8% 14%, rgba(142, 173, 196, 0.2), transparent 34%),
+    radial-gradient(circle at 84% 16%, rgba(106, 139, 165, 0.18), transparent 34%),
+    linear-gradient(140deg, rgba(240, 245, 249, 0.92) 0%, rgba(230, 237, 243, 0.94) 100%);
+  --oil-home-panel-bg-surface:
+    linear-gradient(140deg, rgba(244, 250, 255, 0.74) 0%, rgba(229, 239, 247, 0.72) 100%);
+  --oil-home-panel-bg-card:
+    linear-gradient(138deg, rgba(255, 255, 255, 0.6) 0%, rgba(229, 239, 247, 0.66) 100%);
+  --oil-home-panel-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.48);
+  --oil-home-panel-shadow: 0 10px 20px rgba(16, 24, 35, 0.11);
+  --oil-home-panel-shadow-hover: 0 16px 28px rgba(16, 24, 35, 0.18);
+  --oil-home-panel-blur: 10px;
+
+  --oil-home-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --oil-home-ease-soft: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --oil-home-fast: 0.16s;
+  --oil-home-mid: 0.26s;
+  --oil-home-lift: -4px;
+  --oil-home-lift-soft: -2px;
+  --oil-home-reveal-duration: 0.72s;
+}
+
+.dark {
+  --oil-bg: #0f1620;
+  --oil-bg-deep: #0a1119;
+  --oil-surface: #172332;
+  --oil-surface-2: #1c2b3d;
+  --oil-ink: #e6edf5;
+  --oil-muted: #b2c0cf;
+  --oil-accent: #88a8c0;
+  --oil-accent-2: #9cb9cd;
+  --oil-line: rgba(229, 237, 247, 0.18);
+  --oil-shadow: 0 20px 44px rgba(1, 7, 12, 0.46);
+
+  /* 深色模式背景渐变 - 星空深邃风 */
+  --oil-bg-gradient-1: rgba(136, 168, 192, 0.22);
+  --oil-bg-gradient-2: rgba(106, 138, 160, 0.18);
+  --oil-bg-gradient-3: rgba(76, 108, 130, 0.17);
+  --oil-bg-pattern: rgba(224, 235, 246, 0.035);
+
+  --vp-c-brand-1: var(--oil-accent);
+  --vp-c-brand-2: #7f9eb6;
+  --vp-c-brand-3: #7392aa;
+  --vp-button-brand-bg: var(--oil-accent);
+  --vp-button-brand-hover-bg: #7a99b1;
+  --vp-button-brand-text: #12202d;
+
+  --oil-home-layer-border: rgba(229, 237, 247, 0.16);
+  --oil-home-layer-bg: linear-gradient(
+    140deg,
+    rgba(24, 37, 50, 0.42) 0%,
+    rgba(16, 28, 40, 0.32) 100%
+  );
+  --oil-home-layer-shadow: 0 14px 30px rgba(1, 7, 12, 0.28);
+
+  --oil-home-panel-border: rgba(229, 237, 247, 0.2);
+  --oil-home-panel-border-strong: rgba(156, 185, 205, 0.5);
+  --oil-home-panel-bg-hero:
+    radial-gradient(circle at 8% 14%, rgba(156, 185, 205, 0.2), transparent 36%),
+    radial-gradient(circle at 84% 16%, rgba(136, 168, 192, 0.17), transparent 36%),
+    linear-gradient(140deg, rgba(24, 37, 50, 0.9) 0%, rgba(19, 31, 42, 0.92) 100%);
+  --oil-home-panel-bg-surface:
+    linear-gradient(140deg, rgba(26, 40, 54, 0.74) 0%, rgba(19, 31, 42, 0.76) 100%);
+  --oil-home-panel-bg-card:
+    linear-gradient(138deg, rgba(30, 45, 60, 0.66) 0%, rgba(22, 35, 48, 0.72) 100%);
+  --oil-home-panel-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  --oil-home-panel-shadow: 0 12px 22px rgba(1, 7, 12, 0.34);
+  --oil-home-panel-shadow-hover: 0 18px 30px rgba(1, 7, 12, 0.48);
+  --oil-home-panel-blur: 10px;
+}

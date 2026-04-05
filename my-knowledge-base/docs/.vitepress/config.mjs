@@ -93,8 +93,8 @@ function getRootSidebarGroups() {
 // --- 配置开始 ---
 export default defineConfig({
   ignoreDeadLinks: true,
-  // 删除了所有重复的 title 和 description
-  // 删除了导致 SSR 崩溃的 vite external 错误配置
+  // 排除 Next.js 重构架构文档，不参与 VitePress 构建
+  srcExclude: ['**/MyWeb/**/*.md'],
   title: "Wexler's Notes",
   description: "全栈开发与运维知识库",
   lastUpdated: true,

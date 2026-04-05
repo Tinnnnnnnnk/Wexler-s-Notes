@@ -1,0 +1,13 @@
+import { _ as _export_sfc, o as openBlock, c as createElementBlock, al as createStaticVNode } from "./chunks/framework.SODGKGda.js";
+const __pageData = JSON.parse('{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"PaiSmart/面试/各类杂项问题.md","filePath":"PaiSmart/面试/各类杂项问题.md","lastUpdated":1772359645000}');
+const _sfc_main = { name: "PaiSmart/面试/各类杂项问题.md" };
+function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
+  return openBlock(), createElementBlock("div", null, [..._cache[0] || (_cache[0] = [
+    createStaticVNode('<h2 id="配置环境时遇到的问题" tabindex="-1">配置环境时遇到的问题 <a class="header-anchor" href="#配置环境时遇到的问题" aria-label="Permalink to &quot;配置环境时遇到的问题&quot;">​</a></h2><ul><li>“在本地搭建环境时，我遇到了 Windows 环境下 Kafka 独特的 <strong>mmap 文件句柄锁死问题</strong>。由于非正常关闭（如强杀进程），导致 Kafka 无法执行 Graceful Shutdown，底层 LogCleaner 线程在清理 <code>__consumer_offsets</code> 内部状态时报 <code>FileSystemException</code>。 我通过排查源码和日志，发现不仅是文件锁，Zookeeper 中的 Session 也存在假死（Ephemeral Node 残留）导致 <code>NodeExistsException</code>。 最终我通过清理 <code>.lock</code> 锁文件、重置 <code>meta.properties</code> 以及配置调整解决了问题。这也让我深刻理解了中间件环境一致性的重要性，所以在部署阶段，我立刻主导将所有中间件（Kafka/Redis/ES/MinIO）全部切换为 <strong>Docker Compose 容器化部署</strong>，彻底根除了跨平台文件系统差异带来的隐患。”</li></ul><h2 id="rag-文件分片合并与-minio-底层容量阈值陷阱" tabindex="-1">RAG--文件分片合并与 MinIO 底层容量阈值陷阱 <a class="header-anchor" href="#rag-文件分片合并与-minio-底层容量阈值陷阱" aria-label="Permalink to &quot;RAG--文件分片合并与 MinIO 底层容量阈值陷阱&quot;">​</a></h2><ul><li><p>“在本地物理机调试 Pai-RAG 大文件分片上传与合并链路时，我遇到了一个极具迷惑性的 <strong>MinIO 磁盘自我保护全局锁死问题</strong>。当时我上传一个仅有几 KB 的测试文件，<code>/chunk</code> 分片上传接口顺利返回 200 成功，但在触发 <code>/merge</code> 合并接口时，后端却抛出 500 异常，查看日志发现底层 MinIO 抛出了 <code>Storage backend has reached its minimum free drive threshold</code>。 我第一时间排查了物理机的实际存储，发现目标盘明明还有 15GB 的绝对剩余空间，理论上足够存放成千上万个小文件。通过深挖系统链路与 MinIO 的底层机制，我定位到了两个关键的工程细节鸿沟：</p><ol><li><p><strong>Redis 幂等缓存带来的“绕过假象”</strong>：<code>/chunk</code> 接口之所以没报错，是因为我之前测试时使用了相同的 <code>fileMd5</code>，触发了后端上传链路中的 Redis Bitmap 幂等校验机制。系统发现该分片对应的 bit 已经是 1，就直接返回成功了，<strong>完全没有去执行真实的 <code>putObject</code> 写盘动作</strong>。但 <code>/merge</code> 接口的 <code>composeObject</code> 是真正的物理层合并，必须写盘。</p></li><li><p><strong>绝对容量与相对百分比的判定差异</strong>：MinIO 评估磁盘是否健康的依据并不是剩余空间的“绝对大小”，而是“<strong>可用百分比</strong>”。我的目标盘总容量高达 1.8TB，15GB 的剩余空间占比不足 1%，直接触碰了 MinIO 默认的物理防线（通常低于 1%~2% 会锁死以防止数据损坏），从而触发了全局写保护。 最终，我通过清理物理磁盘，将剩余空间提升至 130GB，恢复了健康的存储水位百分比，彻底解决了合并报错。这次排障不仅让我深刻认识到了<strong>对象存储中间件底层的自我保护机制</strong>，更在真实场景中反向印证了<strong>上传链路中引入 Redis Bitmap 幂等校验的价值——它不仅实现了断点续传，还有效挡住了大量重复的底层磁盘 I/O 穿透</strong>。”</p></li></ol></li></ul>', 4)
+  ])]);
+}
+const ______ = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render]]);
+export {
+  __pageData,
+  ______ as default
+};

@@ -7,7 +7,7 @@ const route = useRoute()
 
 // Place custom backgrounds in: my-knowledge-base/docs/public/media/home-bg/
 // Place custom BGM in: my-knowledge-base/docs/public/media/home-bgm/
-const IMAGE_SRC = ''
+const IMAGE_SRC = '/media/home-bg/test1.jpg'
 const VIDEO_SRC = '/media/home-bg/楼梯不变云动视频.mp4'
 const LIQUID_BGM_SRC = '/media/home-bgm/liquid-bgm.flac'
 const LIQUID_BGM_TITLE = '60% Reverie'
@@ -24,6 +24,10 @@ const isSeeking = ref(false)
 const volume = ref(0.45)
 const isMiniPlayer = ref(false)
 const isVolumePanelVisible = ref(false)
+const performanceSafe = ref(false)
+
+let fpsProbeRaf = 0
+let fpsProbeTimer = 0
 
 const isHome = computed(() => route.path === '/')
 const isSkyTakeOut = computed(() => route.path.startsWith('/Sky-Take-Out/'))
@@ -40,6 +44,7 @@ const isLiquidHomeStage = computed(() => isHome.value && homeFxMode.value === 'l
 const isLiquidHomeBgm = computed(() => isHome.value && homeFxMode.value === 'liquid')
 const isMuted = computed(() => volume.value <= 0.001)
 const volumePercent = computed(() => Math.round(volume.value * 100))
+const shouldUseVideo = computed(() => Boolean(VIDEO_SRC) && !performanceSafe.value)
 
 const layerStyle = computed(() => ({
   '--home-fx-image': `url("${IMAGE_SRC}")`
@@ -59,6 +64,66 @@ function syncHtmlClass() {
   document.documentElement.classList.toggle('sky-default-mode', sky && mode === 'default')
   document.documentElement.classList.toggle('sky-glass-mode', sky && mode === 'glass')
   document.documentElement.classList.toggle('sky-liquid-mode', sky && mode === 'liquid')
+}
+
+function evaluatePerformanceProfile() {
+  if (typeof window === 'undefined') return false
+
+  const prefersReducedMotion =
+    window.matchMedia?.('(prefers-reduced-motion: reduce)').matches === true
+  const saveData = navigator.connection?.saveData === true
+  const cpuCores = Number(navigator.hardwareConcurrency || 0)
+  const memorySize = Number(navigator.deviceMemory || 0)
+  const lowHardware =
+    (Number.isFinite(cpuCores) && cpuCores > 0 && cpuCores <= 4) ||
+    (Number.isFinite(memorySize) && memorySize > 0 && memorySize <= 4)
+
+  return prefersReducedMotion || saveData || lowHardware
+}
+
+function syncPerformanceClass() {
+  if (typeof document === 'undefined') return
+  document.documentElement.classList.toggle('home-fx-performance-safe', performanceSafe.value)
+}
+
+function stopFpsProbe() {
+  if (fpsProbeRaf) {
+    window.cancelAnimationFrame(fpsProbeRaf)
+    fpsProbeRaf = 0
+  }
+  if (fpsProbeTimer) {
+    window.clearTimeout(fpsProbeTimer)
+    fpsProbeTimer = 0
+  }
+}
+
+function runFpsProbe() {
+  stopFpsProbe()
+  if (typeof window === 'undefined') return
+  if (performanceSafe.value || !isActive.value) return
+
+  const start = performance.now()
+  let frames = 0
+
+  const probe = (now) => {
+    frames += 1
+    const elapsed = now - start
+    if (elapsed >= 1800) {
+      const fps = (frames * 1000) / elapsed
+      if (fps < 44) {
+        performanceSafe.value = true
+        syncPerformanceClass()
+      }
+      stopFpsProbe()
+      return
+    }
+    fpsProbeRaf = window.requestAnimationFrame(probe)
+  }
+
+  fpsProbeTimer = window.setTimeout(() => {
+    stopFpsProbe()
+  }, 2600)
+  fpsProbeRaf = window.requestAnimationFrame(probe)
 }
 
 function formatDuration(seconds) {
@@ -169,19 +234,32 @@ function seekBy(deltaSeconds) {
 
 onMounted(async () => {
   initHomeFxState()
+  performanceSafe.value = evaluatePerformanceProfile()
   syncHtmlClass()
+  syncPerformanceClass()
   setVolume(volume.value)
   await nextTick()
   syncBgm()
+  if (isActive.value) {
+    runFpsProbe()
+  }
 })
 
 watch([() => homeFxMode.value, () => route.path], async () => {
+  performanceSafe.value = performanceSafe.value || evaluatePerformanceProfile()
   syncHtmlClass()
+  syncPerformanceClass()
   await nextTick()
   syncBgm()
+  if (isActive.value) {
+    runFpsProbe()
+  } else {
+    stopFpsProbe()
+  }
 })
 
 onBeforeUnmount(() => {
+  stopFpsProbe()
   const audio = bgmRef.value
   if (audio) {
     audio.pause()
@@ -193,6 +271,7 @@ onBeforeUnmount(() => {
     document.documentElement.classList.remove('home-default-mode')
     document.documentElement.classList.remove('home-glass-mode')
     document.documentElement.classList.remove('home-liquid-mode')
+    document.documentElement.classList.remove('home-fx-performance-safe')
     document.documentElement.classList.remove('sky-default-mode')
     document.documentElement.classList.remove('sky-glass-mode')
     document.documentElement.classList.remove('sky-liquid-mode')
@@ -209,7 +288,7 @@ onBeforeUnmount(() => {
     aria-hidden="true"
   >
     <video
-      v-if="VIDEO_SRC"
+      v-if="shouldUseVideo"
       class="home-fx-layer__video"
       autoplay
       muted

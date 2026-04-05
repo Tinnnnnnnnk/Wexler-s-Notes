@@ -20,6 +20,13 @@ function getEventPosition(event, buttonEl) {
 }
 
 function applyModeTransition(event, applyMode) {
+  if (
+    typeof document !== 'undefined' &&
+    document.documentElement.classList.contains('home-fx-performance-safe')
+  ) {
+    applyMode()
+    return
+  }
   if (isTransitioning.value) return
   triggerThemeTransition(event, event?.currentTarget)
   applyMode()

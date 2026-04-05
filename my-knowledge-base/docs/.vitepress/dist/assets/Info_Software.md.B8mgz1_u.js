@@ -1,0 +1,13 @@
+import { _ as _export_sfc, o as openBlock, c as createElementBlock, al as createStaticVNode } from "./chunks/framework.SODGKGda.js";
+const __pageData = JSON.parse('{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"Info/Software.md","filePath":"Info/Software.md","lastUpdated":1772161575000}');
+const _sfc_main = { name: "Info/Software.md" };
+function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
+  return openBlock(), createElementBlock("div", null, [..._cache[0] || (_cache[0] = [
+    createStaticVNode('<h2 id="elasticsearch" tabindex="-1">Elasticsearch <a class="header-anchor" href="#elasticsearch" aria-label="Permalink to &quot;Elasticsearch&quot;">​</a></h2><ul><li>配置项 用户名：elastic 密码：Kasumi1234</li><li>怎么用 进入链接 <code>https://localhost:9201</code> 即可使用</li></ul><h2 id="redis" tabindex="-1">Redis <a class="header-anchor" href="#redis" aria-label="Permalink to &quot;Redis&quot;">​</a></h2><ul><li>配置项 密码：toyamakasumi 端口号：6379</li><li>怎么启动 在 D:\\develop\\Redis-x64-3.2.100 中启动cmd 输入redis-server.exe redis.windows.conf</li></ul><h2 id="mysql" tabindex="-1">MySQL <a class="header-anchor" href="#mysql" aria-label="Permalink to &quot;MySQL&quot;">​</a></h2><ul><li>配置项 用户名：root 密码：toyamakasumi 端口号：3306</li></ul><h2 id="gitcode" tabindex="-1">GitCode <a class="header-anchor" href="#gitcode" aria-label="Permalink to &quot;GitCode&quot;">​</a></h2><ul><li>令牌 名称：PaiSmart 密码：ifaG-hGfHomvDgvm2H6PWb5K</li></ul><h2 id="minio" tabindex="-1">MinIO <a class="header-anchor" href="#minio" aria-label="Permalink to &quot;MinIO&quot;">​</a></h2><ul><li>怎么启动 在其命令行界面会直接告诉启动的网址以及用户名密码</li></ul><h2 id="阿里云" tabindex="-1">阿里云 <a class="header-anchor" href="#阿里云" aria-label="Permalink to &quot;阿里云&quot;">​</a></h2><ul><li>相关配置 密码：PrimeRadian@</li><li>相关指令 打包数据：npm run docs:build 上传数据：scp -r docs/.vitepress/dist/* <a href="mailto:root@8.135.49.76" target="_blank" rel="noreferrer">root@8.135.49.76</a>:/root/html 本地测试：npm run docs:dev 上传数据大清洗版：ssh <a href="mailto:root@8.135.49.76" target="_blank" rel="noreferrer">root@8.135.49.76</a> &quot;rm -rf /root/html/<em>&quot; &amp;&amp; scp -r docs/.vitepress/dist/</em> <a href="mailto:root@8.135.49.76" target="_blank" rel="noreferrer">root@8.135.49.76</a>:/root/html</li><li>更新流程 <ul><li>修改目录，也就是config.mjs中的目录</li><li>在vscode中全局搜索，将public/images/替换成 /images/（有图片的插入就这样换）</li><li>打包数据：npm run docs:build</li><li>上传数据：scp -r docs/.vitepress/dist/* <a href="mailto:root@8.135.49.76" target="_blank" rel="noreferrer">root@8.135.49.76</a>:/root/html</li></ul></li></ul>', 12)
+  ])]);
+}
+const Software = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render]]);
+export {
+  __pageData,
+  Software as default
+};

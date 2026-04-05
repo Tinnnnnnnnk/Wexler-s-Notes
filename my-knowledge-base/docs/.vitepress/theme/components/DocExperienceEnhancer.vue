@@ -419,13 +419,6 @@ onBeforeUnmount(() => {
             >
           </div>
 
-          <p class="doc-lightbox__caption">
-            {{ activeLightboxItem.alt }}
-            <span v-if="lightboxItems.length > 1" class="doc-lightbox__counter">
-              {{ lightboxIndex + 1 }} / {{ lightboxItems.length }}
-            </span>
-          </p>
-
           <button
             v-if="hasMultipleImages"
             type="button"

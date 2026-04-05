@@ -3102,7 +3102,7 @@ const _sfc_main$y = /* @__PURE__ */ defineComponent({
   __name: "VPNavBarSearch",
   __ssrInlineRender: true,
   setup(__props) {
-    const VPLocalSearchBox = defineAsyncComponent(() => import("./VPLocalSearchBox.BIz-6bHW.js"));
+    const VPLocalSearchBox = defineAsyncComponent(() => import("./VPLocalSearchBox.C02Y0-sN.js"));
     const VPAlgoliaSearchBox = () => null;
     const { theme: theme2 } = useData();
     const loaded = ref(false);
@@ -7246,13 +7246,7 @@ const _sfc_main = {
     return (_ctx, _push, _parent, _attrs) => {
       ssrRenderTeleport(_push, (_push2) => {
         if (isDocPage.value && lightboxOpen.value && activeLightboxItem.value) {
-          _push2(`<div class="doc-lightbox" role="dialog" aria-modal="true" aria-label="图片预览"><div class="doc-lightbox__panel"><button type="button" class="doc-lightbox__close" aria-label="关闭预览"> × </button><div class="doc-lightbox__frame"><img class="doc-lightbox__img"${ssrRenderAttr("src", activeLightboxItem.value.src)}${ssrRenderAttr("alt", activeLightboxItem.value.alt)}></div><p class="doc-lightbox__caption">${ssrInterpolate(activeLightboxItem.value.alt)} `);
-          if (lightboxItems.value.length > 1) {
-            _push2(`<span class="doc-lightbox__counter">${ssrInterpolate(lightboxIndex.value + 1)} / ${ssrInterpolate(lightboxItems.value.length)}</span>`);
-          } else {
-            _push2(`<!---->`);
-          }
-          _push2(`</p>`);
+          _push2(`<div class="doc-lightbox" role="dialog" aria-modal="true" aria-label="图片预览"><div class="doc-lightbox__panel"><button type="button" class="doc-lightbox__close" aria-label="关闭预览"> × </button><div class="doc-lightbox__frame"><img class="doc-lightbox__img"${ssrRenderAttr("src", activeLightboxItem.value.src)}${ssrRenderAttr("alt", activeLightboxItem.value.alt)}></div>`);
           if (hasMultipleImages.value) {
             _push2(`<button type="button" class="doc-lightbox__nav doc-lightbox__nav--prev" aria-label="上一张"> ‹ </button>`);
           } else {

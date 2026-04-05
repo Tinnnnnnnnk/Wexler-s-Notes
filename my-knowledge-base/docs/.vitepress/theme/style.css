@@ -3334,29 +3334,13 @@ html.has-doc-lightbox body {
   display: grid;
   place-items: center;
   padding: 14px;
-  max-height: calc(100vh - 130px);
+  max-height: calc(100vh - 60px);
 }
 
 .doc-lightbox__img {
   max-width: 100%;
-  max-height: calc(100vh - 170px);
+  max-height: calc(100vh - 100px);
   object-fit: contain;
-}
-
-.doc-lightbox__caption {
-  margin: 0;
-  padding: 0 14px 12px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  font-size: 0.82rem;
-  color: rgba(231, 240, 248, 0.94);
-}
-
-.doc-lightbox__counter {
-  font-size: 0.72rem;
-  color: rgba(199, 221, 236, 0.86);
 }
 
 .doc-lightbox__close,

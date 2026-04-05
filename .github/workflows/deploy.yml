@@ -32,7 +32,7 @@ jobs:
         run: npm run docs:build
 
       - name: Rsync deploy
-        uses: burnett01/rsync-deployments@8
+        uses: burnett01/rsync-deployments@8.0.2
         with:
           switches: -avzr --delete --omit-dir-times --no-perms --no-owner --no-group
           path: my-knowledge-base/docs/.vitepress/dist/

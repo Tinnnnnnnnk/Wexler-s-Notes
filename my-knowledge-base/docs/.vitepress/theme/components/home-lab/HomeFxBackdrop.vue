@@ -32,18 +32,16 @@ let fpsProbeTimer = 0
 const isHome = computed(() => route.path === '/')
 const isSkyTakeOut = computed(() => route.path.startsWith('/Sky-Take-Out/'))
 
-/** 全站：晶透背景层（液态模式不渲染背景层） */
+/** 全站：晶透或液态背景层（液态保留背景视频，但无 blob 动画） */
 const isGlassActive = computed(() => fxMode.value === 'glass')
-const isActive = computed(() => isGlassActive.value)
-
-/** 仅首页液态：介绍文案（本次已隐藏） */
-const isLiquidHomeStage = computed(() => false)
+const isLiquidActive = computed(() => fxMode.value === 'liquid')
+const isActive = computed(() => isGlassActive.value || isLiquidActive.value)
 
 /** 仅首页液态：背景音乐播放器（独立显示，不依赖背景层） */
 const isLiquidPlayerOnly = computed(() => isHome.value && fxMode.value === 'liquid')
-
-const shouldUseVideo = computed(() => volume.value <= 0.001)
+const isMuted = computed(() => volume.value <= 0.001)
 const volumePercent = computed(() => Math.round(volume.value * 100))
+
 const shouldUseVideo = computed(() => Boolean(VIDEO_SRC) && perfMode.value !== 'safe')
 
 const layerStyle = computed(() => ({
@@ -252,11 +250,11 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <!-- 晶透模式背景层（液态模式无背景层） -->
+  <!-- 晶透或液态背景层（液态仅 video，无 blob） -->
   <div
     v-if="isActive"
     class="home-fx-layer"
-    :class="{ 'is-glass': isGlassActive }"
+    :class="{ 'is-glass': isGlassActive, 'is-liquid': isLiquidActive }"
     :style="layerStyle"
     aria-hidden="true"
   >
@@ -270,6 +268,8 @@ onBeforeUnmount(() => {
       :src="VIDEO_SRC"
     />
     <div v-else class="home-fx-layer__image" />
+
+    <div v-if="isLiquidActive" class="home-fx-layer__liquid-aura" />
   </div>
 
   <!-- 液态模式：仅音乐播放器（无背景层、无介绍卡片） -->

@@ -1,9 +1,9 @@
 <script setup>
 import { computed, onMounted } from 'vue'
-import { layoutMode } from '../../stores/uiModeState'
-import { initUiModeState } from '../../stores/uiModeState'
+import { fxMode, layoutMode, initUiModeState } from '../../stores/uiModeState'
 
 const activeMode = computed(() => layoutMode.value)
+const isLiquid = computed(() => fxMode.value === 'liquid')
 
 onMounted(() => {
   initUiModeState()
@@ -13,6 +13,7 @@ onMounted(() => {
 <template>
   <div class="home-lab">
     <section
+      v-if="!isLiquid"
       class="home-scene home-scene--apple"
       :class="{ 'is-active': activeMode === 'minimal' }"
       :style="{ display: activeMode === 'minimal' ? 'block' : 'none' }"
@@ -73,6 +74,7 @@ onMounted(() => {
     </section>
 
     <section
+      v-if="!isLiquid"
       class="home-scene home-scene--dashboard"
       :class="{ 'is-active': activeMode === 'dashboard' }"
       :style="{ display: activeMode === 'dashboard' ? 'block' : 'none' }"
@@ -141,6 +143,7 @@ onMounted(() => {
     </section>
 
     <section
+      v-if="!isLiquid"
       class="home-scene home-scene--media"
       :class="{ 'is-active': activeMode === 'editorial' }"
       :style="{ display: activeMode === 'editorial' ? 'block' : 'none' }"

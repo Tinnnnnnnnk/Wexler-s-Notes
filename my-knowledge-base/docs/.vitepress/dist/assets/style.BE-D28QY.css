@@ -10861,6 +10861,573 @@ html.home-fx-performance-safe .site-command-trigger {
   }
 }
 
+/* =============================================
+   P3 High Impact Visual Rebuild (Default Mode)
+   ============================================= */
+html:not(.home-glass-mode):not(.home-liquid-mode) .VPContent.is-home .VPHome .VPHero {
+  position: relative;
+  padding: clamp(42px, 7vw, 82px) 0 clamp(20px, 4vw, 36px);
+}
+
+html:not(.home-glass-mode):not(.home-liquid-mode) .VPContent.is-home .VPHome .VPHero::before {
+  content: "";
+  position: absolute;
+  inset: 14px 20px auto;
+  height: clamp(270px, 33vw, 430px);
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 12% 18%, rgba(172, 203, 224, 0.35), transparent 42%),
+    radial-gradient(circle at 86% 16%, rgba(130, 167, 194, 0.24), transparent 44%),
+    linear-gradient(135deg, rgba(248, 252, 255, 0.88) 0%, rgba(230, 240, 248, 0.75) 100%);
+  border: 1px solid rgba(112, 150, 178, 0.24);
+  box-shadow: 0 28px 48px rgba(14, 22, 34, 0.12);
+  pointer-events: none;
+}
+
+html:not(.home-glass-mode):not(.home-liquid-mode) .VPContent.is-home .VPHero .container {
+  position: relative;
+  z-index: 1;
+}
+
+html:not(.home-glass-mode):not(.home-liquid-mode) .VPContent.is-home .VPHero .name {
+  font-family: "Georgia", "Times New Roman", "Source Han Serif SC", "Songti SC", serif;
+  font-size: clamp(2.3rem, 5.5vw, 5rem);
+  letter-spacing: -0.03em;
+  line-height: 0.94;
+  text-shadow: 0 10px 24px rgba(22, 35, 48, 0.12);
+}
+
+html:not(.home-glass-mode):not(.home-liquid-mode) .VPContent.is-home .VPHero .text {
+  font-size: clamp(1rem, 1.2rem + 0.55vw, 1.7rem);
+  letter-spacing: 0.02em;
+  color: rgba(43, 67, 87, 0.92);
+}
+
+html:not(.home-glass-mode):not(.home-liquid-mode) .VPContent.is-home .VPHero .tagline {
+  max-width: 64ch;
+  font-size: clamp(0.96rem, 0.92rem + 0.25vw, 1.12rem);
+  line-height: 1.88;
+  color: rgba(43, 66, 84, 0.82);
+}
+
+html:not(.home-glass-mode):not(.home-liquid-mode) .VPContent.is-home .VPHero .actions .VPButton {
+  min-height: 44px;
+  border-radius: 999px;
+  padding: 0 18px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.impact-mast {
+  position: relative;
+  margin: 0 0 18px;
+  border-radius: 24px;
+  padding: clamp(20px, 3.6vw, 34px);
+  border: 1px solid rgba(112, 150, 178, 0.26);
+  background:
+    radial-gradient(circle at 8% 12%, rgba(150, 188, 214, 0.28), transparent 38%),
+    radial-gradient(circle at 86% 18%, rgba(120, 163, 192, 0.18), transparent 42%),
+    linear-gradient(132deg, rgba(245, 251, 255, 0.88) 0%, rgba(230, 241, 249, 0.76) 100%);
+  box-shadow: 0 16px 34px rgba(14, 22, 34, 0.12);
+  overflow: hidden;
+}
+
+.impact-mast::after {
+  content: "";
+  position: absolute;
+  inset: auto -52px -74px auto;
+  width: 210px;
+  height: 210px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(96, 140, 173, 0.25) 0%, rgba(96, 140, 173, 0) 68%);
+  pointer-events: none;
+}
+
+.impact-mast__kicker {
+  margin: 0;
+  font-size: 0.72rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(55, 86, 108, 0.86);
+}
+
+.impact-mast h2 {
+  margin: 10px 0 0;
+  font-family: "Georgia", "Times New Roman", "Source Han Serif SC", "Songti SC", serif;
+  font-size: clamp(1.9rem, 4vw, 3.2rem);
+  line-height: 1.04;
+  letter-spacing: -0.02em;
+}
+
+.impact-mast__lead {
+  margin: 12px 0 0;
+  max-width: 68ch;
+  line-height: 1.82;
+  color: rgba(45, 67, 86, 0.84);
+}
+
+.impact-mast__stats {
+  margin-top: 16px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.impact-mast__stats article {
+  border: 1px solid rgba(112, 150, 178, 0.2);
+  border-radius: 14px;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.56);
+}
+
+.impact-mast__stats strong {
+  display: block;
+  font-size: clamp(1.15rem, 1.45rem + 0.45vw, 1.85rem);
+  line-height: 1;
+}
+
+.impact-mast__stats span {
+  display: block;
+  margin-top: 5px;
+  font-size: 0.76rem;
+  color: rgba(60, 91, 114, 0.86);
+}
+
+@media (min-width: 980px) {
+  .oilhome-layer--hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    gap: 16px;
+    align-items: stretch;
+  }
+
+  .oilhome-layer--hero .oilhome-signal {
+    margin-top: 0;
+    align-content: start;
+  }
+
+  .oilhome-layer--hero .oilhome-signal__item {
+    grid-column: span 12;
+    min-height: 0;
+  }
+
+  .oilhome-layer--system {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 14px;
+    align-items: start;
+  }
+
+  .oilhome-layer--system .oilhome-lab,
+  .oilhome-layer--system .oilhome-route {
+    margin-top: 0;
+    height: 100%;
+  }
+}
+
+.oilhome-shell {
+  max-width: 1220px;
+  margin: 30px auto 100px;
+  padding: 0 20px 26px;
+}
+
+.oilhome-intro h2 {
+  font-size: clamp(1.55rem, 2.35vw, 2.45rem);
+  line-height: 1.22;
+}
+
+.oilhome-lead {
+  font-size: 1.01rem;
+  line-height: 1.9;
+}
+
+.oilhome-card h3 {
+  font-size: clamp(1.18rem, 1.7vw, 1.52rem);
+  line-height: 1.3;
+}
+
+.oilhome-card > p {
+  line-height: 1.8;
+}
+
+.oilhome-footer h3 {
+  max-width: 64ch;
+  line-height: 1.55;
+}
+
+/* Note pages: tighter rhythm, stronger hierarchy, cleaner reading lane */
+html:not(.home-glass-mode):not(.home-liquid-mode) .VPDoc .content-container {
+  max-width: min(1380px, calc(100vw - 26px));
+}
+
+html:not(.home-glass-mode):not(.home-liquid-mode) .VPDoc:not(.has-aside) .content-container {
+  max-width: min(980px, calc(100vw - 26px));
+}
+
+html:not(.home-glass-mode):not(.home-liquid-mode) .VPDoc .content {
+  border-radius: 26px;
+  border: 1px solid rgba(93, 130, 156, 0.22);
+  background:
+    radial-gradient(circle at 8% 8%, rgba(162, 196, 220, 0.16), transparent 34%),
+    linear-gradient(145deg, rgba(248, 253, 255, 0.92), rgba(236, 246, 252, 0.88));
+  padding: clamp(24px, 3vw, 44px);
+  box-shadow: 0 22px 38px rgba(14, 22, 34, 0.13);
+}
+
+html:not(.home-glass-mode):not(.home-liquid-mode) .VPDoc .main .vp-doc {
+  max-width: 860px;
+  margin: 0 auto;
+  font-size: clamp(15.8px, 0.95rem + 0.17vw, 17.4px);
+  line-height: 1.92;
+}
+
+html:not(.home-glass-mode):not(.home-liquid-mode) .VPDoc .vp-doc > h1:first-child {
+  margin-top: 0.1em;
+  margin-bottom: 1.35rem;
+  padding-bottom: 0.7rem;
+  border-bottom: 1px solid rgba(93, 130, 156, 0.24);
+  letter-spacing: -0.02em;
+}
+
+html:not(.home-glass-mode):not(.home-liquid-mode) .vp-doc h2,
+html:not(.home-glass-mode):not(.home-liquid-mode) .vp-doc h3 {
+  border: none;
+  margin-top: 2rem;
+  padding: 10px 14px 10px 16px;
+  background: rgba(150, 188, 214, 0.12);
+  border-left: 4px solid rgba(85, 123, 148, 0.85);
+  border-radius: 11px;
+}
+
+html:not(.home-glass-mode):not(.home-liquid-mode) .vp-doc h2 {
+  font-size: clamp(1.28rem, 1.12rem + 0.72vw, 1.85rem);
+}
+
+html:not(.home-glass-mode):not(.home-liquid-mode) .vp-doc h3 {
+  font-size: clamp(1.06rem, 1.01rem + 0.38vw, 1.34rem);
+}
+
+html:not(.home-glass-mode):not(.home-liquid-mode) .vp-doc h2::before,
+html:not(.home-glass-mode):not(.home-liquid-mode) .vp-doc h3::before {
+  content: none !important;
+}
+
+html:not(.home-glass-mode):not(.home-liquid-mode) .vp-doc h2 + p,
+html:not(.home-glass-mode):not(.home-liquid-mode) .vp-doc h3 + p {
+  margin-top: 0.88rem;
+}
+
+html:not(.home-glass-mode):not(.home-liquid-mode) .vp-doc p {
+  margin: 1.05em 0;
+}
+
+html:not(.home-glass-mode):not(.home-liquid-mode) .vp-doc ul,
+html:not(.home-glass-mode):not(.home-liquid-mode) .vp-doc ol {
+  margin: 1rem 0 1.22rem;
+  padding-left: 1.42rem;
+}
+
+html:not(.home-glass-mode):not(.home-liquid-mode) .vp-doc li {
+  margin: 0.45rem 0;
+}
+
+html:not(.home-glass-mode):not(.home-liquid-mode) .vp-doc blockquote {
+  border-left: 4px solid rgba(85, 123, 148, 0.88);
+  border-radius: 0 12px 12px 0;
+  padding: 12px 14px 12px 16px;
+  background: rgba(150, 188, 214, 0.14);
+}
+
+html:not(.home-glass-mode):not(.home-liquid-mode) .vp-doc div[class*="language-"] {
+  border-radius: 16px;
+  border: 1px solid rgba(95, 132, 157, 0.28);
+  background: rgba(16, 28, 40, 0.9);
+  box-shadow: 0 14px 30px rgba(11, 19, 28, 0.24);
+}
+
+html:not(.home-glass-mode):not(.home-liquid-mode) .vp-doc div[class*="language-"]::before {
+  border-bottom-color: rgba(95, 132, 157, 0.32);
+  background: linear-gradient(90deg, rgba(95, 132, 157, 0.22), rgba(126, 163, 186, 0.2));
+}
+
+html:not(.home-glass-mode):not(.home-liquid-mode) .vp-doc table {
+  border-radius: 14px;
+}
+
+html:not(.home-glass-mode):not(.home-liquid-mode) .VPDocAsideOutline .content {
+  border-radius: 14px;
+  border: 1px solid rgba(93, 130, 156, 0.24);
+  background: rgba(247, 252, 255, 0.8);
+  box-shadow: 0 10px 22px rgba(14, 22, 34, 0.1);
+}
+
+html:not(.home-glass-mode):not(.home-liquid-mode) .VPDocAsideOutline .outline-link {
+  border-left: 0;
+  border-radius: 8px;
+  padding: 6px 8px;
+}
+
+html:not(.home-glass-mode):not(.home-liquid-mode) .VPDocAsideOutline .outline-link.active {
+  color: rgba(47, 79, 101, 0.98);
+  background: rgba(150, 188, 214, 0.2);
+}
+
+html.dark:not(.home-glass-mode):not(.home-liquid-mode) .VPContent.is-home .VPHome .VPHero::before {
+  border-color: rgba(142, 177, 201, 0.28);
+  background:
+    radial-gradient(circle at 12% 18%, rgba(129, 166, 193, 0.25), transparent 44%),
+    radial-gradient(circle at 86% 16%, rgba(104, 141, 168, 0.2), transparent 46%),
+    linear-gradient(135deg, rgba(24, 38, 52, 0.88) 0%, rgba(18, 31, 43, 0.76) 100%);
+  box-shadow: 0 28px 48px rgba(1, 7, 12, 0.38);
+}
+
+html.dark:not(.home-glass-mode):not(.home-liquid-mode) .VPContent.is-home .VPHero .text {
+  color: rgba(198, 219, 235, 0.9);
+}
+
+html.dark:not(.home-glass-mode):not(.home-liquid-mode) .VPContent.is-home .VPHero .tagline {
+  color: rgba(188, 212, 231, 0.8);
+}
+
+html.dark .impact-mast {
+  border-color: rgba(134, 172, 198, 0.28);
+  background:
+    radial-gradient(circle at 8% 12%, rgba(113, 153, 181, 0.3), transparent 40%),
+    radial-gradient(circle at 86% 18%, rgba(94, 136, 164, 0.24), transparent 44%),
+    linear-gradient(132deg, rgba(20, 34, 47, 0.9) 0%, rgba(17, 30, 42, 0.84) 100%);
+  box-shadow: 0 16px 34px rgba(1, 7, 12, 0.32);
+}
+
+html.dark .impact-mast__kicker {
+  color: rgba(182, 207, 225, 0.85);
+}
+
+html.dark .impact-mast__lead {
+  color: rgba(186, 210, 228, 0.82);
+}
+
+html.dark .impact-mast__stats article {
+  border-color: rgba(134, 172, 198, 0.22);
+  background: rgba(21, 35, 48, 0.64);
+}
+
+html.dark .impact-mast__stats span {
+  color: rgba(176, 203, 224, 0.86);
+}
+
+html.dark:not(.home-glass-mode):not(.home-liquid-mode) .VPDoc .content {
+  border-color: rgba(120, 158, 184, 0.28);
+  background:
+    radial-gradient(circle at 8% 8%, rgba(118, 156, 182, 0.18), transparent 34%),
+    linear-gradient(145deg, rgba(18, 31, 42, 0.92), rgba(14, 25, 36, 0.9));
+  box-shadow: 0 22px 38px rgba(1, 7, 12, 0.44);
+}
+
+html.dark:not(.home-glass-mode):not(.home-liquid-mode) .VPDoc .vp-doc > h1:first-child {
+  border-bottom-color: rgba(120, 158, 184, 0.3);
+}
+
+html.dark:not(.home-glass-mode):not(.home-liquid-mode) .vp-doc h2,
+html.dark:not(.home-glass-mode):not(.home-liquid-mode) .vp-doc h3 {
+  background: rgba(118, 156, 182, 0.16);
+  border-left-color: rgba(155, 188, 210, 0.9);
+}
+
+html.dark:not(.home-glass-mode):not(.home-liquid-mode) .vp-doc blockquote {
+  border-left-color: rgba(155, 188, 210, 0.9);
+  background: rgba(118, 156, 182, 0.16);
+}
+
+html.dark:not(.home-glass-mode):not(.home-liquid-mode) .VPDocAsideOutline .content {
+  border-color: rgba(120, 158, 184, 0.3);
+  background: rgba(18, 31, 42, 0.82);
+  box-shadow: 0 10px 22px rgba(1, 7, 12, 0.3);
+}
+
+html.dark:not(.home-glass-mode):not(.home-liquid-mode) .VPDocAsideOutline .outline-link.active {
+  color: rgba(220, 235, 246, 0.96);
+  background: rgba(118, 156, 182, 0.26);
+}
+
+@media (max-width: 960px) {
+  .impact-mast {
+    border-radius: 18px;
+    padding: 18px;
+  }
+
+  .impact-mast__stats {
+    grid-template-columns: 1fr;
+  }
+
+  .oilhome-shell {
+    margin-top: 18px;
+    padding: 0 12px 18px;
+  }
+
+  html:not(.home-glass-mode):not(.home-liquid-mode) .VPContent.is-home .VPHome .VPHero::before {
+    inset: 10px 12px auto;
+    border-radius: 20px;
+    height: clamp(220px, 48vw, 300px);
+  }
+
+  html:not(.home-glass-mode):not(.home-liquid-mode) .VPDoc .content {
+    border-radius: 18px;
+    padding: 18px 15px;
+  }
+
+  html:not(.home-glass-mode):not(.home-liquid-mode) .VPDoc .main .vp-doc {
+    font-size: 15.7px;
+    line-height: 1.84;
+  }
+}
+
+/* =============================================
+   P3 Home Fullscreen Hero (v2)
+   ============================================= */
+html:not(.home-liquid-mode) .VPContent.is-home .VPHome .VPHero {
+  position: relative;
+  isolation: isolate;
+  margin: 0;
+  min-height: calc(100vh - var(--vp-nav-height, 64px));
+  display: grid;
+  align-items: center;
+  padding: clamp(34px, 6.2vw, 86px) 0 clamp(30px, 8vh, 74px);
+  overflow: hidden;
+}
+
+html:not(.home-liquid-mode) .VPContent.is-home .VPHome .VPHero::before {
+  content: "";
+  position: absolute;
+  inset: 18px 16px 12px;
+  border-radius: 34px;
+  border: 1px solid rgba(110, 148, 176, 0.26);
+  background:
+    radial-gradient(circle at 12% 18%, rgba(176, 207, 228, 0.34), transparent 42%),
+    radial-gradient(circle at 86% 14%, rgba(126, 167, 194, 0.22), transparent 44%),
+    linear-gradient(142deg, rgba(248, 252, 255, 0.9) 0%, rgba(232, 242, 250, 0.74) 100%);
+  box-shadow: 0 30px 52px rgba(12, 20, 30, 0.12);
+  pointer-events: none;
+}
+
+html:not(.home-liquid-mode) .VPContent.is-home .VPHome .VPHero::after {
+  content: "";
+  position: absolute;
+  inset: auto -90px -122px auto;
+  width: 340px;
+  height: 340px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(110, 150, 180, 0.26) 0%, rgba(110, 150, 180, 0) 68%);
+  pointer-events: none;
+}
+
+html:not(.home-liquid-mode) .VPContent.is-home .VPHome .VPHero .container {
+  position: relative;
+  z-index: 1;
+  width: min(1240px, calc(100vw - 42px));
+}
+
+html:not(.home-liquid-mode) .VPContent.is-home .VPHome .VPHero .main {
+  max-width: 860px;
+}
+
+html:not(.home-liquid-mode) .VPContent.is-home .VPHome .VPHero .image,
+html:not(.home-liquid-mode) .VPContent.is-home .VPHome .VPHero .image-container {
+  display: none !important;
+}
+
+html:not(.home-liquid-mode) .VPContent.is-home .VPHome .VPHero .name {
+  font-family: "Georgia", "Times New Roman", "Source Han Serif SC", "Songti SC", serif;
+  font-size: clamp(2.4rem, 6.2vw, 5.6rem);
+  line-height: 0.92;
+  letter-spacing: -0.03em;
+  text-shadow: 0 12px 28px rgba(16, 24, 35, 0.14);
+}
+
+html:not(.home-liquid-mode) .VPContent.is-home .VPHome .VPHero .text {
+  margin-top: 14px;
+  font-size: clamp(1.08rem, 1.1rem + 0.55vw, 1.84rem);
+  letter-spacing: 0.03em;
+  color: rgba(46, 72, 92, 0.94);
+}
+
+html:not(.home-liquid-mode) .VPContent.is-home .VPHome .VPHero .tagline {
+  margin-top: 16px;
+  max-width: 68ch;
+  font-size: clamp(0.98rem, 0.92rem + 0.26vw, 1.16rem);
+  line-height: 1.92;
+  color: rgba(44, 68, 87, 0.84);
+}
+
+html:not(.home-liquid-mode) .VPContent.is-home .VPHome .VPHero .actions {
+  margin-top: 22px;
+  gap: 11px;
+}
+
+html:not(.home-liquid-mode) .VPContent.is-home .VPHome .VPHero .actions .VPButton {
+  min-height: 46px;
+  border-radius: 999px;
+  padding: 0 20px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+html:not(.home-liquid-mode) .VPContent.is-home .VPHome .VPHero .actions .VPButton.brand {
+  box-shadow: 0 12px 20px rgba(74, 109, 134, 0.3);
+}
+
+html:not(.home-liquid-mode) .VPContent.is-home .VPHome .VPHero + .oilhome-shell {
+  margin-top: 8px;
+}
+
+html.dark:not(.home-liquid-mode) .VPContent.is-home .VPHome .VPHero::before {
+  border-color: rgba(133, 170, 196, 0.3);
+  background:
+    radial-gradient(circle at 12% 18%, rgba(121, 157, 184, 0.3), transparent 44%),
+    radial-gradient(circle at 86% 14%, rgba(96, 134, 162, 0.22), transparent 46%),
+    linear-gradient(142deg, rgba(21, 35, 48, 0.9) 0%, rgba(16, 29, 40, 0.76) 100%);
+  box-shadow: 0 30px 54px rgba(1, 7, 12, 0.42);
+}
+
+html.dark:not(.home-liquid-mode) .VPContent.is-home .VPHome .VPHero .text {
+  color: rgba(204, 223, 238, 0.92);
+}
+
+html.dark:not(.home-liquid-mode) .VPContent.is-home .VPHome .VPHero .tagline {
+  color: rgba(190, 213, 230, 0.84);
+}
+
+@media (max-width: 960px) {
+  html:not(.home-liquid-mode) .VPContent.is-home .VPHome .VPHero {
+    min-height: auto;
+    padding: 24px 0 20px;
+  }
+
+  html:not(.home-liquid-mode) .VPContent.is-home .VPHome .VPHero::before {
+    inset: 8px 8px 8px;
+    border-radius: 20px;
+  }
+
+  html:not(.home-liquid-mode) .VPContent.is-home .VPHome .VPHero::after {
+    width: 200px;
+    height: 200px;
+    right: -62px;
+    bottom: -82px;
+  }
+
+  html:not(.home-liquid-mode) .VPContent.is-home .VPHome .VPHero .container {
+    width: min(100%, calc(100vw - 20px));
+  }
+
+  html:not(.home-liquid-mode) .VPContent.is-home .VPHome .VPHero .main {
+    max-width: 100%;
+  }
+
+  html:not(.home-liquid-mode) .VPContent.is-home .VPHome .VPHero .actions .VPButton {
+    min-height: 42px;
+    padding: 0 16px;
+  }
+}
+
 .style-lab-grid {
   margin-top: 22px;
   display: grid;

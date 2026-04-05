@@ -5,9 +5,6 @@ hero:
   name: "Wexler."
   text: "油画肌理，冷色叙事。"
   tagline: "把算法、项目和部署经验沉淀成一份可长期复用的工程作品集。"
-  image:
-    src: /images/hero-abstract.jpg
-    alt: Wexler Oil Style
   actions:
     - theme: brand
       text: 进入核心内容

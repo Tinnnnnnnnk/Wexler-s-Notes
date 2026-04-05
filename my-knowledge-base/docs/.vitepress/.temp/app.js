@@ -3102,7 +3102,7 @@ const _sfc_main$x = /* @__PURE__ */ defineComponent({
   __name: "VPNavBarSearch",
   __ssrInlineRender: true,
   setup(__props) {
-    const VPLocalSearchBox = defineAsyncComponent(() => import("./VPLocalSearchBox.rXnGTITf.js"));
+    const VPLocalSearchBox = defineAsyncComponent(() => import("./VPLocalSearchBox.ByYv2M9a.js"));
     const VPAlgoliaSearchBox = () => null;
     const { theme: theme2 } = useData();
     const loaded = ref(false);
@@ -5110,7 +5110,7 @@ function initHomeFxState() {
   initialized$1 = true;
 }
 const IMAGE_SRC = "";
-const VIDEO_SRC = "/media/home-bg/Bg1.mp4";
+const VIDEO_SRC = "/media/home-bg/楼梯不变云动视频.mp4";
 const LIQUID_BGM_SRC = "/media/home-bgm/liquid-bgm.flac";
 const LIQUID_BGM_TITLE = "60% Reverie";
 const LIQUID_BGM_ARTIST = "ZZ-STUDIO x HOYO-MiX";

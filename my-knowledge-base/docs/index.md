@@ -18,6 +18,7 @@ hero:
 ---
 
 <div class="oilhome-shell">
+<div class="oilhome-layer oilhome-layer--hero">
 <section class="oilhome-intro reveal-oil">
 <p class="oilhome-kicker">WEXLER NOTES · OIL PAINT EDITION</p>
 <h2>每一页笔记都不只是记录，而是下一次交付的底稿。</h2>
@@ -44,7 +45,9 @@ hero:
 <span>Docs · Workflow · Review</span>
 </article>
 </section>
+</div>
 
+<div class="oilhome-layer oilhome-layer--system">
 <section class="oilhome-lab reveal-oil">
 <div class="oilhome-lab__head">
 <p class="oilhome-kicker">SYSTEM STATUS</p>
@@ -105,7 +108,9 @@ hero:
 </a>
 </div>
 </section>
+</div>
 
+<div class="oilhome-layer oilhome-layer--content">
 <section class="oilhome-grid">
 <a class="oilhome-card oilhome-card--feature reveal-oil" href="/Code/DS/DFS">
 <p class="oilhome-card__tag">基础训练</p>
@@ -143,4 +148,5 @@ hero:
 </div>
 <a class="oilhome-footer__cta" href="/Resume/简历V3.0">查看阶段总结</a>
 </section>
+</div>
 </div>

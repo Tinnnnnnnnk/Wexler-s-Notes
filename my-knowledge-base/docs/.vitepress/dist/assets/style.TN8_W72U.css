@@ -4891,6 +4891,38 @@ html:not(.dark) .VPImage.dark[data-v-35a7d0b8] {
   --motion-fast: 0.18s;
   --motion-mid: 0.28s;
   --motion-slow: 0.42s;
+
+  /* Home P1 tokens: hierarchy + glass + motion */
+  --oil-home-layer-border: rgba(31, 42, 56, 0.11);
+  --oil-home-layer-bg: linear-gradient(
+    140deg,
+    rgba(247, 252, 255, 0.42) 0%,
+    rgba(228, 238, 246, 0.28) 100%
+  );
+  --oil-home-layer-shadow: 0 10px 22px rgba(16, 24, 35, 0.08);
+
+  --oil-home-panel-border: rgba(31, 42, 56, 0.18);
+  --oil-home-panel-border-strong: rgba(74, 109, 134, 0.44);
+  --oil-home-panel-bg-hero:
+    radial-gradient(circle at 8% 14%, rgba(142, 173, 196, 0.2), transparent 34%),
+    radial-gradient(circle at 84% 16%, rgba(106, 139, 165, 0.18), transparent 34%),
+    linear-gradient(140deg, rgba(240, 245, 249, 0.92) 0%, rgba(230, 237, 243, 0.94) 100%);
+  --oil-home-panel-bg-surface:
+    linear-gradient(140deg, rgba(244, 250, 255, 0.74) 0%, rgba(229, 239, 247, 0.72) 100%);
+  --oil-home-panel-bg-card:
+    linear-gradient(138deg, rgba(255, 255, 255, 0.6) 0%, rgba(229, 239, 247, 0.66) 100%);
+  --oil-home-panel-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.48);
+  --oil-home-panel-shadow: 0 10px 20px rgba(16, 24, 35, 0.11);
+  --oil-home-panel-shadow-hover: 0 16px 28px rgba(16, 24, 35, 0.18);
+  --oil-home-panel-blur: 10px;
+
+  --oil-home-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --oil-home-ease-soft: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --oil-home-fast: 0.16s;
+  --oil-home-mid: 0.26s;
+  --oil-home-lift: -4px;
+  --oil-home-lift-soft: -2px;
+  --oil-home-reveal-duration: 0.72s;
 }
 
 .dark {
@@ -4917,6 +4949,29 @@ html:not(.dark) .VPImage.dark[data-v-35a7d0b8] {
   --vp-button-brand-bg: var(--oil-accent);
   --vp-button-brand-hover-bg: #7a99b1;
   --vp-button-brand-text: #12202d;
+
+  --oil-home-layer-border: rgba(229, 237, 247, 0.16);
+  --oil-home-layer-bg: linear-gradient(
+    140deg,
+    rgba(24, 37, 50, 0.42) 0%,
+    rgba(16, 28, 40, 0.32) 100%
+  );
+  --oil-home-layer-shadow: 0 14px 30px rgba(1, 7, 12, 0.28);
+
+  --oil-home-panel-border: rgba(229, 237, 247, 0.2);
+  --oil-home-panel-border-strong: rgba(156, 185, 205, 0.5);
+  --oil-home-panel-bg-hero:
+    radial-gradient(circle at 8% 14%, rgba(156, 185, 205, 0.2), transparent 36%),
+    radial-gradient(circle at 84% 16%, rgba(136, 168, 192, 0.17), transparent 36%),
+    linear-gradient(140deg, rgba(24, 37, 50, 0.9) 0%, rgba(19, 31, 42, 0.92) 100%);
+  --oil-home-panel-bg-surface:
+    linear-gradient(140deg, rgba(26, 40, 54, 0.74) 0%, rgba(19, 31, 42, 0.76) 100%);
+  --oil-home-panel-bg-card:
+    linear-gradient(138deg, rgba(30, 45, 60, 0.66) 0%, rgba(22, 35, 48, 0.72) 100%);
+  --oil-home-panel-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  --oil-home-panel-shadow: 0 12px 22px rgba(1, 7, 12, 0.34);
+  --oil-home-panel-shadow-hover: 0 18px 30px rgba(1, 7, 12, 0.48);
+  --oil-home-panel-blur: 10px;
 }
 
 /* =============================================
@@ -6971,6 +7026,183 @@ html.sky-liquid-mode.dark .VPLocalSearchBox .search-keyboard-shortcuts kbd {
   }
 }
 
+/* =====================================================
+   Home P1 Upgrade: hierarchy + unified glass + motion
+   ===================================================== */
+.oilhome-shell {
+  position: relative;
+  isolation: isolate;
+}
+
+.oilhome-shell::before {
+  content: "";
+  position: absolute;
+  inset: 8px 6px 0;
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 0% 0%, rgba(106, 138, 160, 0.12), transparent 42%),
+    radial-gradient(circle at 100% 100%, rgba(74, 109, 134, 0.1), transparent 46%);
+  pointer-events: none;
+  opacity: 0.55;
+  z-index: 0;
+}
+
+.oilhome-layer {
+  position: relative;
+  z-index: 1;
+  border: 1px solid var(--oil-home-layer-border);
+  border-radius: 24px;
+  padding: 12px;
+  background: var(--oil-home-layer-bg);
+  box-shadow: var(--oil-home-layer-shadow);
+}
+
+.oilhome-layer + .oilhome-layer {
+  margin-top: 18px;
+}
+
+.oilhome-layer::before {
+  content: "";
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  top: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.55) 18%,
+    rgba(255, 255, 255, 0.7) 50%,
+    rgba(255, 255, 255, 0.55) 82%,
+    transparent 100%
+  );
+  pointer-events: none;
+  opacity: 0.72;
+}
+
+.dark .oilhome-layer::before {
+  opacity: 0.32;
+}
+
+.oilhome-layer--hero {
+  z-index: 3;
+}
+
+.oilhome-layer--system {
+  z-index: 2;
+}
+
+.oilhome-layer--content {
+  z-index: 1;
+}
+
+.oilhome-intro,
+.oilhome-lab,
+.oilhome-route,
+.oilhome-footer,
+.oilhome-signal__item,
+.oilhome-lab__item,
+.oilhome-route__node,
+.oilhome-card {
+  border-color: var(--oil-home-panel-border);
+  box-shadow: var(--oil-home-panel-shadow), var(--oil-home-panel-highlight);
+  transition:
+    transform var(--oil-home-mid) var(--oil-home-ease),
+    border-color var(--oil-home-mid) var(--oil-home-ease-soft),
+    box-shadow var(--oil-home-mid) var(--oil-home-ease-soft),
+    background var(--oil-home-mid) var(--oil-home-ease-soft),
+    background-color var(--oil-home-mid) var(--oil-home-ease-soft);
+}
+
+.oilhome-intro {
+  background: var(--oil-home-panel-bg-hero);
+  backdrop-filter: blur(var(--oil-home-panel-blur)) saturate(118%);
+  -webkit-backdrop-filter: blur(var(--oil-home-panel-blur)) saturate(118%);
+}
+
+.oilhome-lab,
+.oilhome-route,
+.oilhome-footer {
+  background: var(--oil-home-panel-bg-surface);
+  backdrop-filter: blur(calc(var(--oil-home-panel-blur) * 0.8)) saturate(116%);
+  -webkit-backdrop-filter: blur(calc(var(--oil-home-panel-blur) * 0.8)) saturate(116%);
+}
+
+.oilhome-signal__item,
+.oilhome-lab__item,
+.oilhome-route__node,
+.oilhome-card {
+  background: var(--oil-home-panel-bg-card);
+}
+
+.oilhome-signal__item:hover,
+.oilhome-lab__item:hover,
+.oilhome-card:hover {
+  transform: translate3d(0, var(--oil-home-lift), 0);
+  border-color: var(--oil-home-panel-border-strong);
+  box-shadow: var(--oil-home-panel-shadow-hover), var(--oil-home-panel-highlight);
+}
+
+.oilhome-route__node:hover {
+  transform: translate3d(2px, var(--oil-home-lift-soft), 0);
+  border-color: var(--oil-home-panel-border-strong);
+  box-shadow: var(--oil-home-panel-shadow-hover), var(--oil-home-panel-highlight);
+}
+
+.oilhome-card:focus-visible,
+.oilhome-route__node:focus-visible,
+.oilhome-footer__cta:focus-visible {
+  outline: none;
+  border-color: var(--oil-home-panel-border-strong);
+  box-shadow: var(--oil-home-panel-shadow-hover), var(--oil-home-panel-highlight);
+}
+
+.oilhome-footer__cta {
+  transition:
+    transform var(--oil-home-mid) var(--oil-home-ease),
+    box-shadow var(--oil-home-mid) var(--oil-home-ease-soft);
+}
+
+.oilhome-footer__cta:hover {
+  transform: translate3d(0, var(--oil-home-lift-soft), 0);
+}
+
+.reveal-oil {
+  transform: translate3d(0, 20px, 0);
+  animation: revealOil var(--oil-home-reveal-duration) var(--oil-home-ease) forwards;
+  will-change: transform, opacity;
+}
+
+@media (max-width: 960px) {
+  .oilhome-layer {
+    border-radius: 18px;
+    padding: 10px;
+  }
+
+  .oilhome-layer + .oilhome-layer {
+    margin-top: 14px;
+  }
+
+  .oilhome-intro,
+  .oilhome-lab,
+  .oilhome-route,
+  .oilhome-footer {
+    backdrop-filter: blur(7px) saturate(112%);
+    -webkit-backdrop-filter: blur(7px) saturate(112%);
+  }
+}
+
+@media (max-width: 640px) {
+  .oilhome-layer {
+    border-radius: 14px;
+    padding: 8px;
+  }
+
+  .oilhome-layer + .oilhome-layer {
+    margin-top: 12px;
+  }
+}
+
 @keyframes oilFloat {
   0%,
   100% {
@@ -8969,6 +9201,20 @@ html.sky-default-mode.dark .VPDoc .content:hover {
   .home-fx-blob,
   .oilhome-grid .oilhome-card {
     animation: none !important;
+  }
+
+  .reveal-oil {
+    opacity: 1 !important;
+    transform: none !important;
+    will-change: auto !important;
+  }
+
+  .oilhome-intro,
+  .oilhome-lab,
+  .oilhome-route,
+  .oilhome-footer {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
   }
 
   :where(html.home-liquid-mode, html.sky-liquid-mode) .VPDoc .content,

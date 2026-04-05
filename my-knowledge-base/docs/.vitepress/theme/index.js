@@ -7,6 +7,7 @@ import EditableHomeCanvas from './components/EditableHomeCanvas.vue'
 import PageEditorToggle from './components/PageEditorToggle.vue'
 import DocExperienceEnhancer from './components/DocExperienceEnhancer.vue'
 import CommandPalette from './components/CommandPalette.vue'
+import HomeLayoutToggle from './components/HomeLayoutToggle.vue'
 import './style.css' // 引入刚才写的 CSS
 
 export default {
@@ -20,7 +21,7 @@ export default {
         h(DocExperienceEnhancer),
         h(CommandPalette)
       ],
-      'nav-bar-content-after': () => [h(HomeFxToggle), h(PageEditorToggle)]
+      'nav-bar-content-after': () => [h(HomeFxToggle), h(HomeLayoutToggle), h(PageEditorToggle)]
     })
   }
 }

@@ -1,15 +1,9 @@
 <script setup>
 import { computed, onMounted, watch } from 'vue'
 import { useRoute } from 'vitepress'
-import { homeLayoutMode, initHomeLayoutState, setLayoutMode } from '../stores/uiModeState'
+import { layoutMode, initUiModeState, setLayoutMode, syncAllClasses } from '../stores/uiModeState'
 
 const route = useRoute()
-
-const HOME_LAYOUT_CLASSES = [
-  'home-layout-minimal',
-  'home-layout-dashboard',
-  'home-layout-editorial'
-]
 
 const isHome = computed(() => route.path === '/')
 
@@ -17,30 +11,16 @@ function applyMode(mode) {
   setLayoutMode(mode)
 }
 
-function syncHtmlClass() {
-  if (typeof document === 'undefined') return
-
-  HOME_LAYOUT_CLASSES.forEach((name) => {
-    document.documentElement.classList.remove(name)
-  })
-
-  if (!isHome.value) return
-
-  const modeClass = `home-layout-${homeLayoutMode.value}`
-  document.documentElement.classList.add(modeClass)
-}
-
 watch(
-  [() => route.path, () => homeLayoutMode.value],
+  [() => route.path],
   () => {
-    syncHtmlClass()
+    syncAllClasses()
   },
   { immediate: true }
 )
 
 onMounted(() => {
-  initHomeLayoutState()
-  syncHtmlClass()
+  initUiModeState()
 })
 </script>
 
@@ -49,7 +29,7 @@ onMounted(() => {
     <button
       type="button"
       class="home-layout-toggle home-layout-toggle--minimal"
-      :class="{ 'is-active': homeLayoutMode === 'minimal' }"
+      :class="{ 'is-active': layoutMode === 'minimal' }"
       aria-label="Switch to Keynote layout"
       title="Keynote / 发布会"
       @click="applyMode('minimal')"
@@ -61,7 +41,7 @@ onMounted(() => {
     <button
       type="button"
       class="home-layout-toggle home-layout-toggle--dashboard"
-      :class="{ 'is-active': homeLayoutMode === 'dashboard' }"
+      :class="{ 'is-active': layoutMode === 'dashboard' }"
       aria-label="Switch to Workbench layout"
       title="Workbench / 工作台"
       @click="applyMode('dashboard')"
@@ -73,7 +53,7 @@ onMounted(() => {
     <button
       type="button"
       class="home-layout-toggle home-layout-toggle--editorial"
-      :class="{ 'is-active': homeLayoutMode === 'editorial' }"
+      :class="{ 'is-active': layoutMode === 'editorial' }"
       aria-label="Switch to Media layout"
       title="Media / 媒体流"
       @click="applyMode('editorial')"

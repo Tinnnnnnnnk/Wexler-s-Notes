@@ -1,7 +1,7 @@
 <script setup>
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vitepress'
-import { fxMode, initUiModeState } from '../stores/uiModeState'
+import { fxMode, initUiModeState, evaluatePerformanceProfile, perfMode, setPerfMode, clearAllModeClasses, setRoutePath } from '../stores/uiModeState'
 
 const route = useRoute()
 
@@ -24,7 +24,7 @@ const isSeeking = ref(false)
 const volume = ref(0.45)
 const isMiniPlayer = ref(false)
 const isVolumePanelVisible = ref(false)
-const performanceSafe = ref(false)
+const performanceSafe = computed(() => perfMode.value === 'safe')
 
 let fpsProbeRaf = 0
 let fpsProbeTimer = 0
@@ -44,7 +44,7 @@ const isLiquidHomeStage = computed(() => isHome.value && fxMode.value === 'liqui
 const isLiquidHomeBgm = computed(() => isHome.value && fxMode.value === 'liquid')
 const isMuted = computed(() => volume.value <= 0.001)
 const volumePercent = computed(() => Math.round(volume.value * 100))
-const shouldUseVideo = computed(() => Boolean(VIDEO_SRC) && !performanceSafe.value)
+const shouldUseVideo = computed(() => Boolean(VIDEO_SRC) && perfMode.value !== 'safe')
 
 const layerStyle = computed(() => ({
   '--home-fx-image': `url("${IMAGE_SRC}")`
@@ -66,26 +66,6 @@ function syncHtmlClass() {
   document.documentElement.classList.toggle('sky-liquid-mode', sky && mode === 'liquid')
 }
 
-function evaluatePerformanceProfile() {
-  if (typeof window === 'undefined') return false
-
-  const prefersReducedMotion =
-    window.matchMedia?.('(prefers-reduced-motion: reduce)').matches === true
-  const saveData = navigator.connection?.saveData === true
-  const cpuCores = Number(navigator.hardwareConcurrency || 0)
-  const memorySize = Number(navigator.deviceMemory || 0)
-  const lowHardware =
-    (Number.isFinite(cpuCores) && cpuCores > 0 && cpuCores <= 4) ||
-    (Number.isFinite(memorySize) && memorySize > 0 && memorySize <= 4)
-
-  return prefersReducedMotion || saveData || lowHardware
-}
-
-function syncPerformanceClass() {
-  if (typeof document === 'undefined') return
-  document.documentElement.classList.toggle('home-fx-performance-safe', performanceSafe.value)
-}
-
 function stopFpsProbe() {
   if (fpsProbeRaf) {
     window.cancelAnimationFrame(fpsProbeRaf)
@@ -100,7 +80,7 @@ function stopFpsProbe() {
 function runFpsProbe() {
   stopFpsProbe()
   if (typeof window === 'undefined') return
-  if (performanceSafe.value || !isActive.value) return
+  if (perfMode.value === 'safe' || !isActive.value) return
 
   const start = performance.now()
   let frames = 0
@@ -111,8 +91,7 @@ function runFpsProbe() {
     if (elapsed >= 1800) {
       const fps = (frames * 1000) / elapsed
       if (fps < 44) {
-        performanceSafe.value = true
-        syncPerformanceClass()
+        setPerfMode('safe')
       }
       stopFpsProbe()
       return
@@ -234,9 +213,9 @@ function seekBy(deltaSeconds) {
 
 onMounted(async () => {
   initUiModeState()
-  performanceSafe.value = evaluatePerformanceProfile()
+  setRoutePath(route.path)
+  setPerfMode(evaluatePerformanceProfile() ? 'safe' : 'normal')
   syncHtmlClass()
-  syncPerformanceClass()
   setVolume(volume.value)
   await nextTick()
   syncBgm()
@@ -245,10 +224,11 @@ onMounted(async () => {
   }
 })
 
-watch([() => fxMode.value, () => route.path], async () => {
-  performanceSafe.value = performanceSafe.value || evaluatePerformanceProfile()
+watch([() => fxMode.value, () => route.path], async (vals) => {
+  setRoutePath(vals[1])
+  setPerfMode(perfMode.value === 'safe' ? 'safe' : (evaluatePerformanceProfile() ? 'safe' : 'normal'))
   syncHtmlClass()
-  syncPerformanceClass()
+  setPerfMode(evaluatePerformanceProfile() ? 'safe' : 'normal')
   await nextTick()
   syncBgm()
   if (isActive.value) {
@@ -267,15 +247,7 @@ onBeforeUnmount(() => {
   }
   isVolumePanelVisible.value = false
 
-  if (typeof document !== 'undefined') {
-    document.documentElement.classList.remove('home-default-mode')
-    document.documentElement.classList.remove('home-glass-mode')
-    document.documentElement.classList.remove('home-liquid-mode')
-    document.documentElement.classList.remove('home-fx-performance-safe')
-    document.documentElement.classList.remove('sky-default-mode')
-    document.documentElement.classList.remove('sky-glass-mode')
-    document.documentElement.classList.remove('sky-liquid-mode')
-  }
+  clearAllModeClasses()
 })
 </script>
 

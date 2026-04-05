@@ -1,9 +1,9 @@
 <script setup>
 import { computed, onMounted } from 'vue'
-import { homeLayoutMode } from '../stores/uiModeState'
+import { layoutMode } from '../stores/uiModeState'
 import { initUiModeState } from '../stores/uiModeState'
 
-const activeMode = computed(() => homeLayoutMode.value)
+const activeMode = computed(() => layoutMode.value)
 
 onMounted(() => {
   initUiModeState()

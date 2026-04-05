@@ -1,4 +1,4 @@
-﻿<script setup>
+<script setup>
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useData, useRoute } from 'vitepress'
 import {
@@ -36,7 +36,7 @@ import {
   saveDraftRoute,
   setSelectedRouteBlock,
   validateDraftRoute
-} from './editorState'
+} from '../stores/editorState'
 
 const route = useRoute()
 const { page } = useData()

@@ -22,8 +22,7 @@ const IGNORED_LIST = [
   'png',
   'img',
   'assets',
-  // Next.js 重构阶段文档，不参与 VitePress 构建
-  'MyWeb'
+  // Next.js 重构阶段文档（已移至 my-knowledge-base/MyWeb/，不在 docs 下）
 ]
 
 // 🎸 核心黑魔法 1: 递归扫描子目录
@@ -93,8 +92,6 @@ function getRootSidebarGroups() {
 // --- 配置开始 ---
 export default defineConfig({
   ignoreDeadLinks: true,
-  // 排除 Next.js 重构架构文档，不参与 VitePress 构建
-  srcExclude: ['**/MyWeb/**/*.md'],
   title: "Wexler's Notes",
   description: "全栈开发与运维知识库",
   lastUpdated: true,

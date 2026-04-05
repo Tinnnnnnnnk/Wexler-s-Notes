@@ -1,7 +1,7 @@
 import { resolveComponent, useSSRContext } from "vue";
 import { ssrRenderAttrs, ssrRenderComponent } from "vue/server-renderer";
 import { _ as _export_sfc } from "./plugin-vue_export-helper.1tPrXgE0.js";
-const __pageData = JSON.parse('{"title":"","description":"","frontmatter":{"layout":"home"},"headers":[],"relativePath":"index.md","filePath":"index.md","lastUpdated":1775378870000}');
+const __pageData = JSON.parse('{"title":"","description":"","frontmatter":{"layout":"home"},"headers":[],"relativePath":"index.md","filePath":"index.md","lastUpdated":1775379481000}');
 const _sfc_main = { name: "index.md" };
 function _sfc_ssrRender(_ctx, _push, _parent, _attrs, $props, $setup, $data, $options) {
   const _component_HomeLayoutScenes = resolveComponent("HomeLayoutScenes");

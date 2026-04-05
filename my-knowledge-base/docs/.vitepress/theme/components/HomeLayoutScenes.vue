@@ -1,6 +1,21 @@
+<script setup>
+import { computed, onMounted } from 'vue'
+import { homeLayoutMode, initHomeLayoutState } from './homeLayoutState'
+
+const activeMode = computed(() => homeLayoutMode.value)
+
+onMounted(() => {
+  initHomeLayoutState()
+})
+</script>
+
 <template>
   <div class="home-lab">
-    <section class="home-scene home-scene--apple reveal-oil">
+    <section
+      class="home-scene home-scene--apple reveal-oil"
+      :class="{ 'is-active': activeMode === 'minimal' }"
+      :style="{ display: activeMode === 'minimal' ? 'block' : 'none' }"
+    >
       <header class="scene-apple__hero">
         <p class="scene-apple__eyebrow">WEXLER'S NOTES · DIGITAL GARDEN</p>
         <h1>Build Once, Compound Forever</h1>
@@ -56,7 +71,11 @@
       </div>
     </section>
 
-    <section class="home-scene home-scene--dashboard reveal-oil">
+    <section
+      class="home-scene home-scene--dashboard reveal-oil"
+      :class="{ 'is-active': activeMode === 'dashboard' }"
+      :style="{ display: activeMode === 'dashboard' ? 'block' : 'none' }"
+    >
       <div class="scene-dash__layout">
         <aside class="scene-dash__side">
           <p class="scene-dash__label">Workspace</p>
@@ -120,7 +139,11 @@
       </div>
     </section>
 
-    <section class="home-scene home-scene--media reveal-oil">
+    <section
+      class="home-scene home-scene--media reveal-oil"
+      :class="{ 'is-active': activeMode === 'editorial' }"
+      :style="{ display: activeMode === 'editorial' ? 'block' : 'none' }"
+    >
       <header class="scene-media__hero">
         <p class="scene-media__tag">DIGITAL GARDEN</p>
         <h1>Wexler's Notes</h1>

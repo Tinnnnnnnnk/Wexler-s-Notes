@@ -1,4 +1,4 @@
-﻿<script setup>
+<script setup>
 import { computed, onMounted, watch } from 'vue'
 import { useRoute } from 'vitepress'
 import { homeLayoutMode, initHomeLayoutState, setHomeLayoutMode } from './homeLayoutState'

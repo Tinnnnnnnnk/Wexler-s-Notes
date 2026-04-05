@@ -1,0 +1,30 @@
+/* src/components/home/HomePage.module.css */
+.root {
+  min-height: 100vh;
+  position: relative;
+}
+
+.content {
+  position: relative;
+  z-index: var(--z-content);
+  min-height: 100vh;
+}
+
+.controls {
+  position: fixed;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: var(--z-nav);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.scenes {
+  animation: home-scene-enter 0.48s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.enter {
+  animation: home-scene-enter 0.48s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}

@@ -1,0 +1,1062 @@
+/* =============================================================================
+   Editor & Core - Editor & Core Interaction Component Styles
+   Migrated from .vitepress/theme/styles/editor.css
+   ============================================================================= */
+
+/* =============================================
+   Reading Progress Bar
+   ============================================= */
+.readingProgress {
+  position: fixed;
+  top: 64px;
+  left: 0;
+  right: 0;
+  height: 4px;
+  z-index: 55;
+  pointer-events: none;
+  background: rgba(74, 109, 134, 0.11);
+}
+
+.readingProgressBar {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-origin: left center;
+  background: linear-gradient(90deg, #3f5d74 0%, #6a8aa0 52%, #9cb9cd 100%);
+  box-shadow: 0 4px 12px rgba(63, 93, 116, 0.28);
+}
+
+.dark .readingProgress {
+  background: rgba(136, 168, 192, 0.18);
+}
+
+.dark .readingProgressBar {
+  background: linear-gradient(90deg, #7392aa 0%, #9cb9cd 58%, #c4d8e8 100%);
+}
+
+/* =============================================
+   Back-to-Top Button
+   ============================================= */
+.backToTopBtn {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  z-index: var(--z-overlay);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid rgba(174, 203, 225, 0.5);
+  background: rgba(216, 228, 239, 0.72);
+  backdrop-filter: blur(10px);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 16px rgba(16, 24, 35, 0.14);
+  transition: all var(--motion-fast) var(--motion-ease-soft);
+  color: var(--oil-accent);
+}
+
+.backToTopBtn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(16, 24, 35, 0.2);
+  background: rgba(228, 238, 247, 0.88);
+}
+
+.dark .backToTopBtn {
+  background: rgba(16, 27, 38, 0.82);
+  border-color: rgba(136, 168, 192, 0.4);
+  color: var(--oil-accent-2);
+}
+
+.dark .backToTopBtn:hover {
+  background: rgba(26, 40, 54, 0.9);
+}
+
+.backToTopEnter {
+  transition: opacity 0.28s ease, transform 0.28s ease;
+}
+
+.backToTopEnterFrom {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+/* =============================================
+   Chapter Spotlight — Chapter Navigation
+   ============================================= */
+.chapterSpotlight {
+  position: fixed;
+  top: 142px;
+  left: max(10px, calc((100vw - 1280px) / 2));
+  z-index: 42;
+  width: 216px;
+  max-height: calc(100vh - 190px);
+  overflow: auto;
+  border: 1px solid var(--oil-line);
+  border-radius: 16px;
+  padding: 12px 10px;
+  background: rgba(236, 243, 248, 0.8);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 10px 20px rgba(16, 24, 35, 0.12);
+}
+
+.chapterSpotlightDragging {
+  box-shadow: 0 14px 26px rgba(16, 24, 35, 0.18);
+}
+
+.chapterSpotlightCollapsed {
+  width: 172px;
+  max-height: none;
+  overflow: hidden;
+}
+
+.dark .chapterSpotlight {
+  background: rgba(16, 27, 38, 0.82);
+  box-shadow: 0 14px 26px rgba(1, 7, 12, 0.4);
+}
+
+.chapterSpotlightDragHandle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 0 0 8px;
+  padding: 1px 2px 8px;
+  border-bottom: 1px dashed var(--oil-line);
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+}
+
+.chapterSpotlightDragging .chapterSpotlightDragHandle {
+  cursor: grabbing;
+}
+
+.chapterSpotlightCollapsed .chapterSpotlightDragHandle {
+  margin-bottom: 0;
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.chapterSpotlightTitle {
+  margin: 0;
+  padding-left: 1px;
+  font-size: 0.72rem;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--oil-accent);
+}
+
+.chapterSpotlightToggle {
+  width: 24px;
+  height: 24px;
+  border-radius: 8px;
+  border: 1px solid rgba(74, 109, 134, 0.35);
+  background: rgba(255, 255, 255, 0.52);
+  cursor: pointer;
+  position: relative;
+  flex-shrink: 0;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.chapterSpotlightToggle::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 7px;
+  height: 7px;
+  border-right: 2px solid var(--vp-c-text-1);
+  border-bottom: 2px solid var(--vp-c-text-1);
+  transform: translate(-58%, -50%) rotate(-45deg);
+}
+
+.chapterSpotlightToggle:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 10px rgba(16, 24, 35, 0.14);
+}
+
+.chapterSpotlightToggleCollapsed::before {
+  transform: translate(-42%, -50%) rotate(135deg);
+}
+
+.dark .chapterSpotlightToggle {
+  border-color: rgba(136, 168, 192, 0.45);
+  background: rgba(30, 46, 62, 0.72);
+}
+
+.chapterSpotlightBody {
+  display: block;
+}
+
+.chapterSpotlightLink {
+  display: block;
+  margin: 2px 0;
+  border-radius: 9px;
+  padding: 7px 8px;
+  line-height: 1.36;
+  font-size: 0.8rem;
+  text-decoration: none;
+  color: var(--vp-c-text-2);
+  border: 1px solid transparent;
+  transition: background-color 0.2s ease, border-color 0.2s ease,
+    color 0.2s ease, transform 0.2s ease;
+}
+
+.chapterSpotlightLinkH3 {
+  margin-left: 12px;
+  font-size: 0.76rem;
+}
+
+.chapterSpotlightLink:hover {
+  transform: translateX(1px);
+  color: var(--vp-c-text-1);
+  background: rgba(74, 109, 134, 0.1);
+}
+
+.chapterSpotlightLinkActive {
+  color: var(--vp-c-text-1);
+  border-color: rgba(74, 109, 134, 0.38);
+  background: linear-gradient(
+    110deg,
+    rgba(74, 109, 134, 0.2) 0%,
+    rgba(106, 138, 160, 0.12) 100%
+  );
+  box-shadow: 0 8px 14px rgba(16, 24, 35, 0.12);
+}
+
+.dark .chapterSpotlightLinkActive {
+  border-color: rgba(136, 168, 192, 0.46);
+  background: linear-gradient(
+    110deg,
+    rgba(136, 168, 192, 0.28) 0%,
+    rgba(106, 138, 160, 0.14) 100%
+  );
+}
+
+/* =============================================
+   Site Command Palette
+   ============================================= */
+.commandTrigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(174, 203, 225, 0.45);
+  background: rgba(255, 255, 255, 0.48);
+  backdrop-filter: blur(8px);
+  cursor: pointer;
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--oil-muted);
+  transition: all var(--motion-fast) var(--motion-ease-soft);
+  font-family: inherit;
+}
+
+.commandTrigger:hover {
+  color: var(--oil-ink);
+  background: rgba(255, 255, 255, 0.68);
+  border-color: rgba(174, 203, 225, 0.7);
+}
+
+.dark .commandTrigger {
+  background: rgba(16, 27, 38, 0.6);
+  border-color: rgba(136, 168, 192, 0.38);
+  color: var(--oil-muted);
+}
+
+.dark .commandTrigger:hover {
+  color: var(--oil-ink);
+  background: rgba(26, 40, 54, 0.78);
+  border-color: rgba(136, 168, 192, 0.6);
+}
+
+.commandTriggerIcon {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  border: 1.5px solid currentColor;
+  position: relative;
+}
+
+.commandTriggerIcon::after {
+  content: "";
+  position: absolute;
+  right: 1px;
+  top: 1px;
+  width: 5px;
+  height: 5px;
+  background: currentColor;
+  border-radius: 1px;
+}
+
+.commandHotkey {
+  font-size: 0.64rem;
+  color: var(--oil-muted);
+  opacity: 0.7;
+  padding: 1px 5px;
+  border-radius: 4px;
+  border: 1px solid rgba(174, 203, 225, 0.4);
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.dark .commandHotkey {
+  background: rgba(16, 27, 38, 0.5);
+  border-color: rgba(136, 168, 192, 0.3);
+}
+
+.commandPaletteOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  background: rgba(15, 22, 32, 0.36);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 15vh;
+}
+
+.dark .commandPaletteOverlay {
+  background: rgba(1, 7, 12, 0.52);
+}
+
+.commandPalette {
+  width: 100%;
+  max-width: 580px;
+  background: rgba(240, 245, 250, 0.94);
+  border: 1px solid rgba(174, 203, 225, 0.55);
+  border-radius: 18px;
+  box-shadow: 0 24px 60px rgba(16, 24, 35, 0.28);
+  overflow: hidden;
+}
+
+.dark .commandPalette {
+  background: rgba(16, 27, 38, 0.94);
+  border-color: rgba(136, 168, 192, 0.4);
+  box-shadow: 0 24px 60px rgba(1, 7, 12, 0.56);
+}
+
+.commandPaletteHeader {
+  padding: 14px 16px 10px;
+  border-bottom: 1px solid rgba(174, 203, 225, 0.35);
+}
+
+.dark .commandPaletteHeader {
+  border-bottom-color: rgba(136, 168, 192, 0.2);
+}
+
+.commandSearchWrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(174, 203, 225, 0.4);
+  border-radius: 12px;
+  padding: 8px 12px;
+}
+
+.dark .commandSearchWrap {
+  background: rgba(22, 35, 50, 0.6);
+  border-color: rgba(136, 168, 192, 0.3);
+}
+
+.commandSearchIcon {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid var(--oil-muted);
+  position: relative;
+  flex-shrink: 0;
+}
+
+.commandSearchIcon::after {
+  content: "";
+  position: absolute;
+  right: -3px;
+  bottom: -3px;
+  width: 6px;
+  height: 2px;
+  background: var(--oil-muted);
+  transform: rotate(45deg);
+  border-radius: 1px;
+}
+
+.commandSearchInput {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 0.9rem;
+  color: var(--oil-ink);
+  font-family: inherit;
+}
+
+.commandSearchInput::placeholder {
+  color: var(--oil-muted);
+}
+
+.dark .commandSearchInput {
+  color: #e6edf5;
+}
+
+.commandHint {
+  font-size: 0.7rem;
+  color: var(--oil-muted);
+  margin-top: 8px;
+  opacity: 0.7;
+}
+
+.commandList {
+  list-style: none;
+  padding: 8px 0;
+  margin: 0;
+  max-height: 360px;
+  overflow-y: auto;
+}
+
+.commandItem {
+  width: 100%;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  font-family: inherit;
+  text-align: left;
+}
+
+.commandItemMain {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 9px 16px;
+  border-radius: 0;
+  transition: background-color var(--motion-fast);
+}
+
+.commandItem:hover .commandItemMain,
+.commandItemActive .commandItemMain {
+  background: rgba(74, 109, 134, 0.12);
+}
+
+.dark .commandItem:hover .commandItemMain,
+.dark .commandItemActive .commandItemMain {
+  background: rgba(136, 168, 192, 0.15);
+}
+
+.commandBadge {
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: rgba(74, 109, 134, 0.18);
+  color: var(--oil-accent);
+  white-space: nowrap;
+  flex-shrink: 0;
+  text-transform: uppercase;
+}
+
+.dark .commandBadge {
+  background: rgba(136, 168, 192, 0.2);
+  color: var(--oil-accent-2);
+}
+
+.commandItemText {
+  flex: 1;
+  min-width: 0;
+}
+
+.commandItemTitle {
+  display: block;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--oil-ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dark .commandItemTitle {
+  color: #e6edf5;
+}
+
+.commandItemMeta {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--oil-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 2px;
+}
+
+.commandEmpty {
+  padding: 20px 16px;
+  text-align: center;
+  font-size: 0.84rem;
+  color: var(--oil-muted);
+}
+
+.commandPaletteFadeEnter {
+  opacity: 0;
+}
+
+.commandPaletteFadeEnterActive {
+  opacity: 1;
+  transition: opacity 0.18s ease;
+}
+
+.commandPaletteFadeExit {
+  opacity: 1;
+}
+
+.commandPaletteFadeExitActive {
+  opacity: 0;
+  transition: opacity 0.18s ease;
+}
+
+/* =============================================
+   Page Editor Canvas
+   ============================================= */
+.editorCanvas {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-editor);
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.editorCanvasActive {
+  pointer-events: auto;
+}
+
+.editorToolbar {
+  position: absolute;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(236, 243, 248, 0.88);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(174, 203, 225, 0.5);
+  border-radius: 14px;
+  padding: 6px 10px;
+  box-shadow: 0 10px 24px rgba(16, 24, 35, 0.16);
+}
+
+.dark .editorToolbar {
+  background: rgba(16, 27, 38, 0.9);
+  border-color: rgba(136, 168, 192, 0.4);
+}
+
+.editorToolbarBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: var(--oil-muted);
+  transition: all var(--motion-fast);
+  font-size: 0.8rem;
+  font-family: inherit;
+}
+
+.editorToolbarBtn:hover {
+  background: rgba(74, 109, 134, 0.15);
+  color: var(--oil-ink);
+}
+
+.dark .editorToolbarBtn:hover {
+  background: rgba(136, 168, 192, 0.2);
+  color: #e6edf5;
+}
+
+.editorToolbarBtn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.editorToolbarSep {
+  width: 1px;
+  height: 20px;
+  background: rgba(174, 203, 225, 0.45);
+  margin: 0 2px;
+}
+
+.dark .editorToolbarSep {
+  background: rgba(136, 168, 192, 0.3);
+}
+
+.editorPanel {
+  position: absolute;
+  top: 80px;
+  right: 16px;
+  width: 280px;
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
+  z-index: 2;
+  background: rgba(236, 243, 248, 0.9);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(174, 203, 225, 0.5);
+  border-radius: 16px;
+  padding: 14px 12px;
+  box-shadow: 0 12px 28px rgba(16, 24, 35, 0.18);
+}
+
+.dark .editorPanel {
+  background: rgba(16, 27, 38, 0.92);
+  border-color: rgba(136, 168, 192, 0.4);
+  box-shadow: 0 12px 28px rgba(1, 7, 12, 0.42);
+}
+
+.editorPanelSection {
+  margin-bottom: 14px;
+}
+
+.editorPanelLabel {
+  display: block;
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--oil-accent);
+  margin-bottom: 6px;
+}
+
+.editorPanelInput {
+  width: 100%;
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(174, 203, 225, 0.45);
+  background: rgba(255, 255, 255, 0.6);
+  font-size: 0.84rem;
+  color: var(--oil-ink);
+  font-family: inherit;
+  outline: none;
+  transition: border-color var(--motion-fast);
+  box-sizing: border-box;
+}
+
+.editorPanelInput:focus {
+  border-color: var(--oil-accent);
+}
+
+.dark .editorPanelInput {
+  background: rgba(22, 35, 50, 0.6);
+  border-color: rgba(136, 168, 192, 0.35);
+  color: #e6edf5;
+}
+
+.editorPanelSlider {
+  width: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(174, 203, 225, 0.4);
+  outline: none;
+  cursor: pointer;
+}
+
+.editorPanelSlider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--oil-accent);
+  cursor: pointer;
+}
+
+.editorPanelColor {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1px solid rgba(174, 203, 225, 0.5);
+  cursor: pointer;
+  padding: 2px;
+  background: transparent;
+}
+
+.editorLayerList {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.editorLayerItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all var(--motion-fast);
+  font-size: 0.8rem;
+  color: var(--oil-muted);
+  font-family: inherit;
+  background: transparent;
+  width: 100%;
+  text-align: left;
+}
+
+.editorLayerItem:hover {
+  background: rgba(74, 109, 134, 0.1);
+  color: var(--oil-ink);
+}
+
+.editorLayerItemActive {
+  border-color: rgba(74, 109, 134, 0.45);
+  background: rgba(74, 109, 134, 0.15);
+  color: var(--oil-ink);
+}
+
+.dark .editorLayerItem:hover,
+.dark .editorLayerItemActive {
+  background: rgba(136, 168, 192, 0.15);
+  color: #e6edf5;
+}
+
+/* =============================================
+   Editor Toggle (Nav bar)
+   ============================================= */
+.editorToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(174, 203, 225, 0.5);
+  background: rgba(255, 255, 255, 0.48);
+  backdrop-filter: blur(8px);
+  cursor: pointer;
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--oil-muted);
+  transition: all var(--motion-fast);
+  font-family: inherit;
+}
+
+.editorToggle:hover {
+  color: var(--oil-ink);
+  background: rgba(255, 255, 255, 0.68);
+}
+
+.editorToggleActive {
+  color: var(--oil-accent);
+  background: rgba(74, 109, 134, 0.15);
+  border-color: rgba(74, 109, 134, 0.5);
+}
+
+.editorToggleLocked {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* =============================================
+   Editor Block (on canvas)
+   ============================================= */
+.editorBlock {
+  position: absolute;
+  cursor: move;
+  border-radius: 16px;
+  border: 2px solid transparent;
+  transition: border-color var(--motion-fast), box-shadow var(--motion-fast);
+  user-select: none;
+  touch-action: none;
+}
+
+.editorBlock:hover {
+  border-color: rgba(74, 109, 134, 0.5);
+}
+
+.editorBlockSelected {
+  border-color: var(--oil-accent) !important;
+  box-shadow: 0 0 0 3px rgba(74, 109, 134, 0.25);
+}
+
+.editorBlockContent {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.editorBlockKicker {
+  font-size: 0.64rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 700;
+  opacity: 0.7;
+  margin-bottom: 4px;
+}
+
+.editorBlockTitle {
+  font-size: 0.9rem;
+  font-weight: 700;
+  line-height: 1.3;
+  margin-bottom: 6px;
+}
+
+.editorBlockBody {
+  font-size: 0.78rem;
+  line-height: 1.5;
+  opacity: 0.85;
+  flex: 1;
+  overflow: hidden;
+}
+
+.editorResizeHandle {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: var(--oil-accent);
+  border-radius: 2px;
+  opacity: 0;
+  transition: opacity var(--motion-fast);
+}
+
+.editorBlock:hover .editorResizeHandle,
+.editorBlockSelected .editorResizeHandle {
+  opacity: 1;
+}
+
+.editorResizeSE {
+  right: -5px;
+  bottom: -5px;
+  cursor: se-resize;
+}
+
+.editorResizeSW {
+  left: -5px;
+  bottom: -5px;
+  cursor: sw-resize;
+}
+
+.editorSnapGuide {
+  position: absolute;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.editorSnapGuideH {
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: rgba(74, 109, 134, 0.6);
+}
+
+.editorSnapGuideV {
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: rgba(74, 109, 134, 0.6);
+}
+
+/* =============================================
+   Editor Validation Report
+   ============================================= */
+.editorValidation {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(236, 243, 248, 0.92);
+  border: 1px solid rgba(174, 203, 225, 0.5);
+  border-radius: 12px;
+  padding: 10px 14px;
+  max-width: 360px;
+  font-size: 0.78rem;
+  box-shadow: 0 8px 20px rgba(16, 24, 35, 0.14);
+  z-index: 3;
+}
+
+.dark .editorValidation {
+  background: rgba(16, 27, 38, 0.94);
+  border-color: rgba(136, 168, 192, 0.4);
+}
+
+.editorValidationError {
+  color: #c0392b;
+  font-weight: 600;
+}
+
+.editorValidationWarning {
+  color: #e67e22;
+}
+
+.dark .editorValidationError {
+  color: #e74c3c;
+}
+
+.dark .editorValidationWarning {
+  color: #f39c12;
+}
+
+/* =============================================
+   Editor Publish / History
+   ============================================= */
+.editorPublishBtn {
+  display: block;
+  width: 100%;
+  padding: 8px;
+  border-radius: 10px;
+  border: none;
+  background: var(--oil-accent);
+  color: #edf4f9;
+  font-size: 0.84rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all var(--motion-fast);
+}
+
+.editorPublishBtn:hover {
+  background: #3f5d74;
+  transform: translateY(-1px);
+}
+
+.editorPublishBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* =============================================
+   Doc Experience Enhancer
+   ============================================= */
+.docMetaStrip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: -0.25rem 0 1rem;
+}
+
+.docMetaItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.72rem;
+  color: var(--oil-muted);
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(74, 109, 134, 0.08);
+  border: 1px solid rgba(74, 109, 134, 0.18);
+}
+
+.dark .docMetaItem {
+  background: rgba(136, 168, 192, 0.1);
+  border-color: rgba(136, 168, 192, 0.2);
+}
+
+/* =============================================
+   Code Block Enhancements
+   ============================================= */
+.codeBlockWrapper {
+  position: relative;
+  margin: 1.5rem 0;
+}
+
+.codeBlockLang {
+  position: absolute;
+  top: 8px;
+  right: 48px;
+  font-size: 0.68rem;
+  color: var(--oil-muted);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.codeCopyBtn {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(174, 203, 225, 0.4);
+  background: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  font-size: 0.7rem;
+  color: var(--oil-muted);
+  font-family: inherit;
+  transition: all var(--motion-fast);
+}
+
+.codeCopyBtn:hover {
+  background: rgba(74, 109, 134, 0.15);
+  color: var(--oil-ink);
+}
+
+.dark .codeCopyBtn {
+  background: rgba(22, 35, 50, 0.6);
+  border-color: rgba(136, 168, 192, 0.3);
+  color: var(--oil-muted);
+}
+
+/* =============================================
+   Image Lightbox
+   ============================================= */
+.lightboxOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  background: rgba(1, 7, 12, 0.82);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: zoom-out;
+  backdrop-filter: blur(6px);
+}
+
+.lightboxImg {
+  max-width: 90vw;
+  max-height: 90vh;
+  border-radius: 12px;
+  box-shadow: 0 24px 60px rgba(1, 7, 12, 0.6);
+  object-fit: contain;
+}
+
+.lightboxNav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(174, 203, 225, 0.4);
+  background: rgba(16, 27, 38, 0.7);
+  color: #e6edf5;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  transition: all var(--motion-fast);
+}
+
+.lightboxNav:hover {
+  background: rgba(74, 109, 134, 0.4);
+}
+
+.lightboxPrev {
+  left: 20px;
+}
+
+.lightboxNext {
+  right: 20px;
+}

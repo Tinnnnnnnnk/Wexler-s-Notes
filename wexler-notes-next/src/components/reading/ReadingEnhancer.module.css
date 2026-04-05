@@ -1,0 +1,196 @@
+/* src/components/reading/ReadingEnhancer.module.css */
+.progress {
+  position: fixed;
+  top: 64px;
+  left: 0;
+  right: 0;
+  height: 4px;
+  z-index: 55;
+  pointer-events: none;
+  background: rgba(74, 109, 134, 0.11);
+}
+
+.dark .progress {
+  background: rgba(136, 168, 192, 0.18);
+}
+
+.progressBar {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-origin: left center;
+  background: linear-gradient(90deg, #3f5d74 0%, #6a8aa0 52%, #9cb9cd 100%);
+  box-shadow: 0 4px 12px rgba(63, 93, 116, 0.28);
+  transform: scaleX(0);
+  transition: transform 0.1s linear;
+}
+
+.dark .progressBar {
+  background: linear-gradient(90deg, #7392aa 0%, #9cb9cd 58%, #c4d8e8 100%);
+}
+
+.backTop {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  z-index: var(--z-overlay);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid rgba(174, 203, 225, 0.5);
+  background: rgba(216, 228, 239, 0.72);
+  backdrop-filter: blur(10px);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 16px rgba(16, 24, 35, 0.14);
+  transition: all var(--motion-fast);
+  color: var(--oil-accent);
+}
+
+.backTop:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(16, 24, 35, 0.2);
+  background: rgba(228, 238, 247, 0.88);
+}
+
+.dark .backTop {
+  background: rgba(16, 27, 38, 0.82);
+  border-color: rgba(136, 168, 192, 0.4);
+  color: var(--oil-accent-2);
+}
+
+.dark .backTop:hover {
+  background: rgba(26, 40, 54, 0.9);
+}
+
+.spotlight {
+  position: fixed;
+  top: 142px;
+  z-index: 42;
+  width: 216px;
+  max-height: calc(100vh - 190px);
+  overflow: hidden;
+  border: 1px solid var(--oil-line);
+  border-radius: 16px;
+  padding: 12px 10px;
+  background: rgba(236, 243, 248, 0.8);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 10px 20px rgba(16, 24, 35, 0.12);
+}
+
+.dragging {
+  box-shadow: 0 14px 26px rgba(16, 24, 35, 0.18);
+}
+
+.dark .spotlight {
+  background: rgba(16, 27, 38, 0.82);
+  box-shadow: 0 14px 26px rgba(1, 7, 12, 0.4);
+}
+
+.collapsed {
+  width: 172px;
+}
+
+.dragHandle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 0 0 8px;
+  padding: 1px 2px 8px;
+  border-bottom: 1px dashed var(--oil-line);
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+}
+
+.dragging .dragHandle {
+  cursor: grabbing;
+}
+
+.spotlightTitle {
+  margin: 0;
+  font-size: 0.72rem;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--oil-accent);
+}
+
+.toggleBtn {
+  width: 24px;
+  height: 24px;
+  border-radius: 8px;
+  border: 1px solid rgba(74, 109, 134, 0.35);
+  background: rgba(255, 255, 255, 0.52);
+  cursor: pointer;
+  position: relative;
+  flex-shrink: 0;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.toggleBtn::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 7px;
+  height: 7px;
+  border-right: 2px solid var(--vp-c-text-1);
+  border-bottom: 2px solid var(--vp-c-text-1);
+  transform: translate(-58%, -50%) rotate(-45deg);
+}
+
+.toggleCollapsed::before {
+  transform: translate(-42%, -50%) rotate(135deg);
+}
+
+.dark .toggleBtn {
+  border-color: rgba(136, 168, 192, 0.45);
+  background: rgba(30, 46, 62, 0.72);
+}
+
+.spotlightBody {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.navLink {
+  display: block;
+  padding: 7px 8px;
+  line-height: 1.36;
+  font-size: 0.8rem;
+  text-decoration: none;
+  color: var(--vp-c-text-2);
+  border: 1px solid transparent;
+  border-radius: 9px;
+  transition: all 0.2s ease;
+}
+
+.navLink:hover {
+  transform: translateX(1px);
+  color: var(--vp-c-text-1);
+  background: rgba(74, 109, 134, 0.1);
+}
+
+.navLinkH3 {
+  margin-left: 12px;
+  font-size: 0.76rem;
+}
+
+.navLinkActive {
+  color: var(--vp-c-text-1);
+  border-color: rgba(74, 109, 134, 0.38);
+  background: linear-gradient(110deg, rgba(74, 109, 134, 0.2) 0%, rgba(106, 138, 160, 0.12) 100%);
+  box-shadow: 0 8px 14px rgba(16, 24, 35, 0.12);
+}
+
+.dark .navLinkActive {
+  border-color: rgba(136, 168, 192, 0.46);
+  background: linear-gradient(110deg, rgba(136, 168, 192, 0.28) 0%, rgba(106, 138, 160, 0.14) 100%);
+}

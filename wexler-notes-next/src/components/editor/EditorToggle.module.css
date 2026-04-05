@@ -1,0 +1,40 @@
+/* src/components/editor/EditorToggle.module.css */
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(174, 203, 225, 0.5);
+  background: rgba(255, 255, 255, 0.48);
+  backdrop-filter: blur(8px);
+  cursor: pointer;
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--oil-muted);
+  transition: all var(--motion-fast);
+  font-family: inherit;
+}
+
+.toggle:hover {
+  color: var(--oil-ink);
+  background: rgba(255, 255, 255, 0.68);
+}
+
+.active {
+  color: var(--oil-accent);
+  background: rgba(74, 109, 134, 0.15);
+  border-color: rgba(74, 109, 134, 0.5);
+}
+
+.dark .toggle {
+  background: rgba(16, 27, 38, 0.6);
+  border-color: rgba(136, 168, 192, 0.38);
+  color: var(--oil-muted);
+}
+
+.dark .toggle:hover {
+  color: var(--oil-ink);
+  background: rgba(26, 40, 54, 0.78);
+  border-color: rgba(136, 168, 192, 0.6);
+}

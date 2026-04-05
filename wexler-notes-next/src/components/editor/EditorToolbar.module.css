@@ -1,0 +1,82 @@
+/* src/components/editor/EditorToolbar.module.css */
+.toolbar {
+  position: absolute;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(236, 243, 248, 0.88);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(174, 203, 225, 0.5);
+  border-radius: 14px;
+  padding: 6px 10px;
+  box-shadow: 0 10px 24px rgba(16, 24, 35, 0.16);
+}
+
+.dark .toolbar {
+  background: rgba(16, 27, 38, 0.9);
+  border-color: rgba(136, 168, 192, 0.4);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: var(--oil-muted);
+  transition: all var(--motion-fast);
+  font-size: 0.78rem;
+  font-family: inherit;
+  padding: 0;
+}
+
+.btn:hover {
+  background: rgba(74, 109, 134, 0.15);
+  color: var(--oil-ink);
+}
+
+.dark .btn:hover {
+  background: rgba(136, 168, 192, 0.2);
+  color: #e6edf5;
+}
+
+.btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.sep {
+  width: 1px;
+  height: 20px;
+  background: rgba(174, 203, 225, 0.45);
+  margin: 0 2px;
+}
+
+.dark .sep {
+  background: rgba(136, 168, 192, 0.3);
+}
+
+.publishBtn {
+  width: auto;
+  padding: 0 12px;
+  height: 28px;
+  background: var(--oil-accent);
+  color: #edf4f9;
+  font-weight: 700;
+  font-size: 0.78rem;
+  border-radius: 999px;
+}
+
+.publishBtn:hover {
+  background: #3f5d74;
+  color: #edf4f9;
+  transform: translateY(-1px);
+}

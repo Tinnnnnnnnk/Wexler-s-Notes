@@ -1,0 +1,66 @@
+/* src/components/layout/Sidebar.module.css */
+.sidebar {
+  padding: 1.2rem 0.8rem;
+}
+
+.group {
+  margin-bottom: 1.6rem;
+}
+
+.groupTitle {
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--oil-accent);
+  padding: 0 10px;
+  margin-bottom: 0.6rem;
+}
+
+.dark .groupTitle {
+  color: var(--oil-accent-2);
+}
+
+.list,
+.sublist {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.link {
+  display: block;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 0.84rem;
+  color: var(--oil-muted);
+  text-decoration: none;
+  transition: all var(--motion-fast);
+  line-height: 1.4;
+}
+
+.link:hover {
+  color: var(--oil-ink);
+  background: rgba(74, 109, 134, 0.1);
+}
+
+.link.active {
+  color: var(--oil-ink);
+  background: rgba(74, 109, 134, 0.15);
+  font-weight: 600;
+}
+
+.dark .link:hover {
+  color: #e6edf5;
+  background: rgba(136, 168, 192, 0.12);
+}
+
+.dark .link.active {
+  color: #e6edf5;
+  background: rgba(136, 168, 192, 0.18);
+}
+
+.sublink {
+  font-size: 0.8rem;
+  padding-left: 20px;
+}

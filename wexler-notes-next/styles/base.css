@@ -1,0 +1,254 @@
+/* =============================================================================
+   Base - Global Reset & Typography
+   Migrated from .vitepress/theme/styles/base.css
+   ============================================================================= */
+
+body {
+  text-rendering: optimizeLegibility;
+  font-feature-settings: "liga" 1, "calt" 1;
+}
+
+.rootLayout {
+  position: relative;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 10% -8%, var(--oil-bg-gradient-1), transparent 32%),
+    radial-gradient(circle at 88% 16%, var(--oil-bg-gradient-2), transparent 30%),
+    radial-gradient(circle at 72% 86%, var(--oil-bg-gradient-3), transparent 30%),
+    linear-gradient(180deg, var(--oil-bg) 0%, var(--oil-bg-deep) 100%);
+  transition: background var(--motion-slow) var(--motion-ease-smooth);
+}
+
+.dark .rootLayout {
+  background:
+    radial-gradient(circle at 10% -8%, var(--oil-bg-gradient-1), transparent 36%),
+    radial-gradient(circle at 88% 16%, var(--oil-bg-gradient-2), transparent 34%),
+    radial-gradient(circle at 72% 86%, var(--oil-bg-gradient-3), transparent 34%),
+    linear-gradient(180deg, var(--oil-bg) 0%, var(--oil-bg-deep) 100%);
+}
+
+.rootLayout::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(
+      25deg,
+      var(--oil-bg-pattern) 0 6px,
+      transparent 6px 24px
+    ),
+    repeating-linear-gradient(
+      -18deg,
+      var(--oil-bg-pattern) 0 4px,
+      transparent 4px 22px
+    );
+  opacity: 0.35;
+  z-index: var(--z-bg);
+  transition:
+    background var(--motion-mid) var(--motion-ease-soft),
+    opacity var(--motion-mid) var(--motion-ease-soft);
+}
+
+.dark .rootLayout::before {
+  opacity: 0.25;
+}
+
+/* Navigation bar — glass morphism */
+.navBar {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-nav);
+  background: rgba(216, 228, 239, 0.55);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(14px) saturate(140%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    0 8px 20px rgba(16, 24, 35, 0.06);
+}
+
+.dark .navBar {
+  background: rgba(10, 17, 25, 0.55);
+  border-bottom-color: rgba(198, 220, 236, 0.25);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 8px 20px rgba(1, 7, 12, 0.2);
+}
+
+.navTitle {
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  background: linear-gradient(135deg, var(--oil-ink) 0%, var(--oil-accent) 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.8));
+}
+
+.dark .navTitle {
+  background: linear-gradient(135deg, #e6edf5 0%, #b2c0cf 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.3));
+}
+
+/* Home hero */
+.homeHero {
+  padding-top: 72px;
+  padding-bottom: 36px;
+}
+
+.homeHero .container {
+  gap: clamp(1.6rem, 4vw, 4.1rem);
+}
+
+.heroTitle {
+  font-family: "Palatino Linotype", "Source Han Serif SC", "Songti SC", serif;
+  font-size: clamp(2.5rem, 8vw, 5.35rem);
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+  color: transparent;
+  background: linear-gradient(120deg, #1d2836 0%, #3c556d 56%, #607f96 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.dark .heroTitle {
+  background: linear-gradient(120deg, #eaf0f6 0%, #c0d1de 52%, #a3bfd2 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.heroText {
+  font-size: clamp(1.3rem, 2.7vw, 2.04rem);
+  font-weight: 700;
+  line-height: 1.28;
+}
+
+.heroTagline {
+  max-width: 620px;
+  line-height: 1.82;
+  font-size: 1.03rem;
+}
+
+/* Pill button */
+.pillBtn {
+  border-radius: 999px;
+  font-weight: 650;
+  letter-spacing: 0.01em;
+  transition: transform 0.24s ease, box-shadow 0.24s ease;
+}
+
+.pillBtnBrand {
+  box-shadow: 0 9px 18px rgba(74, 109, 134, 0.24);
+}
+
+.pillBtnBrand:hover {
+  transform: translateY(-2px);
+}
+
+.pillBtnAlt {
+  border-color: var(--oil-line);
+  background: rgba(255, 255, 255, 0.44);
+}
+
+.dark .pillBtnAlt {
+  background: rgba(22, 35, 50, 0.54);
+}
+
+.heroImageContainer {
+  position: relative;
+  border-radius: 30px;
+  padding: 12px;
+  background:
+    linear-gradient(135deg, rgba(106, 138, 160, 0.28) 0%, rgba(74, 109, 134, 0.26) 100%);
+  box-shadow: var(--oil-shadow);
+  transform: rotate(-1.4deg);
+  animation: oilFloat 6.5s ease-in-out infinite;
+}
+
+.dark .heroImageContainer {
+  background:
+    linear-gradient(135deg, rgba(156, 185, 205, 0.28) 0%, rgba(136, 168, 192, 0.24) 100%);
+}
+
+/* Doc page layout */
+.docContainer {
+  position: relative;
+  z-index: var(--z-content);
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem 2.5rem;
+  border-radius: 20px;
+  background: var(--oil-surface);
+  box-shadow: var(--oil-shadow);
+}
+
+.dark .docContainer {
+  background: var(--oil-surface);
+}
+
+.docContent {
+  line-height: 1.84;
+}
+
+/* Code blocks */
+.codeBlock {
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+  margin: 1.5rem 0;
+  box-shadow: 0 4px 12px rgba(16, 24, 35, 0.1);
+}
+
+.dark .codeBlock {
+  box-shadow: 0 4px 12px rgba(1, 7, 12, 0.3);
+}
+
+/* Note cards / first H1 style */
+.noteCard {
+  border-radius: 16px;
+  padding: 2rem 2.5rem;
+  background:
+    linear-gradient(135deg, rgba(106, 138, 160, 0.14) 0%, rgba(74, 109, 134, 0.1) 100%);
+  border: 1px solid var(--oil-line);
+  position: relative;
+  overflow: hidden;
+}
+
+.dark .noteCard {
+  background:
+    linear-gradient(135deg, rgba(136, 168, 192, 0.12) 0%, rgba(106, 138, 160, 0.08) 100%);
+}
+
+/* Section h2 counters */
+.docContent h2 {
+  counter-increment: section;
+}
+
+/* Feature image */
+.featureImage {
+  max-height: 430px;
+  border-radius: 22px;
+  object-fit: cover;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+}
+
+.dark .featureImage {
+  border-color: rgba(231, 241, 251, 0.2);
+}
+
+/* Sidebar glass */
+.sidebar {
+  background: rgba(216, 228, 239, 0.45);
+  backdrop-filter: blur(10px) saturate(130%);
+  border-right: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+.dark .sidebar {
+  background: rgba(10, 17, 25, 0.45);
+  border-right-color: rgba(198, 220, 236, 0.2);
+}

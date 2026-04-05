@@ -1203,10 +1203,11 @@ html.home-layout-editorial .home-scene--dashboard {
    ============================================= */
 .home-liquid-player-wrapper {
   position: fixed;
-  bottom: clamp(18px, 3vh, 32px);
+  top: 50%;
   left: 50%;
-  transform: translateX(-50%);
-  z-index: var(--z-content);
+  bottom: auto;
+  transform: translate(-50%, -50%);
+  z-index: 35;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1496,6 +1497,41 @@ html.sky-glass-mode.dark .VPNav {
   border-bottom-color: rgba(198, 220, 236, 0.2) !important;
 }
 
+html.home-glass-mode .VPNavBar,
+html.sky-glass-mode .VPNavBar {
+  background: transparent;
+  border-bottom: none;
+}
+
+html.home-glass-mode .VPNavBar .content-body,
+html.sky-glass-mode .VPNavBar .content-body {
+  background: transparent !important;
+  background-color: transparent !important;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+@media (min-width: 960px) {
+  html.home-glass-mode .VPNavBar:not(.home.top) .content-body,
+  html.sky-glass-mode .VPNavBar:not(.home.top) .content-body {
+    background: transparent !important;
+    background-color: transparent !important;
+  }
+}
+
+html.home-glass-mode .VPNavBarTitle,
+html.sky-glass-mode .VPNavBarTitle {
+  background: transparent;
+}
+
+html.home-glass-mode .VPNavBar .divider-line,
+html.sky-glass-mode .VPNavBar .divider-line {
+  display: none;
+}
+
 html.home-glass-mode .VPNavBarTitle .title,
 html.sky-glass-mode .VPNavBarTitle .title {
   background: linear-gradient(135deg, var(--oil-ink) 0%, var(--oil-accent) 100%);
@@ -1653,47 +1689,25 @@ html.sky-liquid-mode .Layout::before {
 
 html.home-liquid-mode .VPNav,
 html.sky-liquid-mode .VPNav {
-  background: rgba(216, 228, 239, 0.35) !important;
-  border-bottom-color: rgba(255, 255, 255, 0.3) !important;
+  background: transparent !important;
+  border-bottom-color: transparent !important;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: none;
 }
 
 html.home-liquid-mode .VPNav::before,
 html.home-liquid-mode .VPNav::after,
 html.sky-liquid-mode .VPNav::before,
 html.sky-liquid-mode .VPNav::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
-}
-
-html.home-liquid-mode .VPNav::before,
-html.sky-liquid-mode .VPNav::before {
-  top: 0;
-}
-
-html.home-liquid-mode .VPNav::after,
-html.sky-liquid-mode .VPNav::after {
-  bottom: 0;
-  background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.06), transparent);
+  display: none;
 }
 
 html.home-liquid-mode.dark .VPNav,
 html.sky-liquid-mode.dark .VPNav {
-  background: rgba(10, 17, 25, 0.35) !important;
-  border-bottom-color: rgba(198, 220, 236, 0.12) !important;
-}
-
-html.home-liquid-mode.dark .VPNav::before,
-html.sky-liquid-mode.dark .VPNav::before {
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-}
-
-html.home-liquid-mode.dark .VPNav::after,
-html.sky-liquid-mode.dark .VPNav::after {
-  background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.2), transparent);
+  background: transparent !important;
+  border-bottom-color: transparent !important;
+  box-shadow: none;
 }
 
 html.home-liquid-mode .VPContent.is-home .VPHome {
@@ -1711,10 +1725,11 @@ html.home-liquid-mode .VPContent.is-home {
 }
 
 html.home-liquid-mode .Layout:has(.VPContent.is-home) .VPFooter {
-  background: transparent;
-  backdrop-filter: blur(12px) saturate(1.15);
-  -webkit-backdrop-filter: blur(12px) saturate(1.15);
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: none !important;
+}
+
+html.home-liquid-mode .Layout:has(.VPContent.is-home) .site-command-trigger {
+  display: none !important;
 }
 
 html.home-liquid-mode .VPNavBar,
@@ -1725,11 +1740,21 @@ html.sky-liquid-mode .VPNavBar {
 
 html.home-liquid-mode .VPNavBar .content-body,
 html.sky-liquid-mode .VPNavBar .content-body {
-  background: rgba(216, 228, 239, 0.35);
-  backdrop-filter: blur(16px) saturate(1.2);
-  border-radius: 0 0 18px 18px;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-top: none;
+  background: transparent !important;
+  background-color: transparent !important;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+@media (min-width: 960px) {
+  html.home-liquid-mode .VPNavBar:not(.home.top) .content-body,
+  html.sky-liquid-mode .VPNavBar:not(.home.top) .content-body {
+    background: transparent !important;
+    background-color: transparent !important;
+  }
 }
 
 html.home-liquid-mode .VPNavBar .container > .title,
@@ -1787,17 +1812,6 @@ html.sky-liquid-mode .VPNavBarSearch .DocSearch-Button-Key {
   color: rgba(74, 109, 134, 0.8);
 }
 
-html.home-liquid-mode .VPNavBarSearch .DocSearch-Button-Key:first-child::after,
-html.sky-liquid-mode .VPNavBarSearch .DocSearch-Button-Key:first-child::after {
-  content: "K";
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 10px;
-}
-
 html.home-liquid-mode.dark .VPNavBarSearch .DocSearch-Search-Icon,
 html.sky-liquid-mode.dark .VPNavBarSearch .DocSearch-Search-Icon {
   color: rgba(136, 168, 192, 0.9);
@@ -1813,17 +1827,6 @@ html.sky-liquid-mode.dark .VPNavBarSearch .DocSearch-Button-Key {
   border-color: rgba(136, 168, 192, 0.3);
   background: rgba(15, 25, 38, 0.5);
   color: rgba(136, 168, 192, 0.8);
-}
-
-html.home-liquid-mode.dark .VPNavBarSearch .DocSearch-Button-Key:first-child::after,
-html.sky-liquid-mode.dark .VPNavBarSearch .DocSearch-Button-Key:first-child::after {
-  content: "K";
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 10px;
 }
 
 html.home-liquid-mode .VPLocalSearchBox,

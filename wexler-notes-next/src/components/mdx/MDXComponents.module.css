@@ -1,0 +1,191 @@
+/* src/components/mdx/MDXComponents.module.css */
+
+.callout {
+  border-radius: 8px;
+  padding: 0.875rem 1rem;
+  margin: 1.25rem 0;
+  border-left: 4px solid;
+  background: rgba(0, 0, 0, 0.03);
+}
+
+.dark .callout {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.calloutNote {
+  border-left-color: #4a9eff;
+  background: rgba(74, 158, 255, 0.06);
+}
+
+.dark .calloutNote {
+  background: rgba(74, 158, 255, 0.08);
+}
+
+.calloutTip {
+  border-left-color: #3ecf8e;
+  background: rgba(62, 207, 142, 0.06);
+}
+
+.dark .calloutTip {
+  background: rgba(62, 207, 142, 0.08);
+}
+
+.calloutWarning {
+  border-left-color: #f5a623;
+  background: rgba(245, 166, 35, 0.06);
+}
+
+.dark .calloutWarning {
+  background: rgba(245, 166, 35, 0.08);
+}
+
+.calloutDanger {
+  border-left-color: #ff4d4f;
+  background: rgba(255, 77, 79, 0.06);
+}
+
+.dark .calloutDanger {
+  background: rgba(255, 77, 79, 0.08);
+}
+
+.calloutTitle {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 0.4rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.calloutNote .calloutTitle {
+  color: #4a9eff;
+}
+
+.calloutTip .calloutTitle {
+  color: #3ecf8e;
+}
+
+.calloutWarning .calloutTitle {
+  color: #f5a623;
+}
+
+.calloutDanger .calloutTitle {
+  color: #ff4d4f;
+}
+
+.calloutBody {
+  font-size: 0.9rem;
+  line-height: 1.65;
+  color: inherit;
+}
+
+.calloutBody p {
+  margin: 0;
+}
+
+.codeBlock {
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 1.25rem 0;
+  border: 1px solid rgba(128, 128, 128, 0.15);
+  position: relative;
+}
+
+.dark .codeBlock {
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.codeLang {
+  position: absolute;
+  top: 0;
+  right: 2.5rem;
+  font-size: 0.65rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(128, 128, 128, 0.6);
+  padding: 0.4rem 0.6rem;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.copyBtn {
+  position: absolute;
+  top: 0.3rem;
+  right: 0.4rem;
+  background: rgba(128, 128, 128, 0.1);
+  border: 1px solid rgba(128, 128, 128, 0.15);
+  border-radius: 5px;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.65rem;
+  cursor: pointer;
+  color: rgba(128, 128, 128, 0.7);
+  transition: all 0.15s ease;
+  line-height: 1;
+}
+
+.copyBtn:hover {
+  background: rgba(128, 128, 128, 0.18);
+  color: rgba(64, 64, 64, 0.9);
+}
+
+.dark .copyBtn {
+  color: rgba(180, 180, 180, 0.7);
+}
+
+.dark .copyBtn:hover {
+  background: rgba(180, 180, 180, 0.12);
+  color: rgba(220, 220, 220, 0.9);
+}
+
+.copySuccess {
+  color: #3ecf8e !important;
+}
+
+.tableWrapper {
+  overflow-x: auto;
+  margin: 1.25rem 0;
+  border-radius: 8px;
+  border: 1px solid rgba(128, 128, 128, 0.15);
+}
+
+.dark .tableWrapper {
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.table th,
+.table td {
+  padding: 0.6rem 0.9rem;
+  text-align: left;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.1);
+}
+
+.dark .table th,
+.dark .table td {
+  border-bottom-color: rgba(255, 255, 255, 0.06);
+}
+
+.table th {
+  font-weight: 600;
+  background: rgba(0, 0, 0, 0.02);
+  color: var(--oil-accent, #4a6d86);
+}
+
+.dark .table th {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.table tr:last-child td {
+  border-bottom: none;
+}
+
+.table tr:hover td {
+  background: rgba(74, 109, 134, 0.05);
+}

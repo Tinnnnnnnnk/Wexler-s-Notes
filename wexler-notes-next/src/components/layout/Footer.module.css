@@ -1,0 +1,20 @@
+/* src/components/layout/Footer.module.css */
+.footer {
+  position: relative;
+  z-index: 1;
+  padding: 1.5rem 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.6);
+  background: rgba(216, 228, 239, 0.3);
+  text-align: center;
+}
+
+.dark .footer {
+  border-top-color: rgba(198, 220, 236, 0.15);
+  background: rgba(10, 17, 25, 0.3);
+}
+
+.footer p {
+  font-size: 0.74rem;
+  color: var(--oil-muted);
+  margin: 0;
+}

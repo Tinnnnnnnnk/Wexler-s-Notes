@@ -1,0 +1,50 @@
+/* src/components/home/LayoutToggle.module.css */
+.toggle {
+  display: inline-flex;
+  border: 1px solid rgba(174, 203, 225, 0.5);
+  border-radius: 999px;
+  padding: 4px;
+  background: rgba(216, 228, 239, 0.45);
+  backdrop-filter: blur(10px);
+  gap: 2px;
+}
+
+.dark .toggle {
+  border-color: rgba(130, 170, 198, 0.4);
+  background: rgba(16, 28, 40, 0.5);
+}
+
+.btn {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: var(--oil-muted);
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  font-family: inherit;
+  transition: all var(--motion-fast) var(--motion-ease-soft);
+}
+
+.btn:hover {
+  color: var(--oil-ink);
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.dark .btn:hover {
+  color: var(--oil-ink);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.active {
+  background: rgba(255, 255, 255, 0.7);
+  color: var(--oil-ink);
+  box-shadow: 0 2px 6px rgba(16, 24, 35, 0.12);
+}
+
+.dark .active {
+  background: rgba(136, 168, 192, 0.3);
+  color: var(--oil-ink);
+}

@@ -486,7 +486,7 @@ html.has-doc-lightbox body {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  z-index: 40;
+  z-index: var(--z-nav);
 }
 
 .home-editor-guide {

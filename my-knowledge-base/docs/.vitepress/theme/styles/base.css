@@ -44,7 +44,7 @@ body {
       transparent 4px 22px
     );
   opacity: 0.35;
-  z-index: 0;
+  z-index: var(--z-bg);
   transition:
     background var(--motion-mid) var(--motion-ease-soft),
     opacity var(--motion-mid) var(--motion-ease-soft);

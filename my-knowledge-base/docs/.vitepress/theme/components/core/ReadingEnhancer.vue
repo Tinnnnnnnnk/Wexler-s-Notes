@@ -261,6 +261,7 @@ function handleScrollOrResize() {
     updateActiveHeading()
     paintActiveHeading()
     showBackToTop.value = window.scrollY > 400
+    setWideScreen()
     rafId = 0
   })
 }
@@ -280,7 +281,6 @@ onMounted(() => {
   reinitializeForRoute()
   window.addEventListener('scroll', handleScrollOrResize, { passive: true })
   window.addEventListener('resize', handleScrollOrResize, { passive: true })
-  window.addEventListener('resize', setWideScreen, { passive: true })
 })
 
 watch(
@@ -301,7 +301,6 @@ onBeforeUnmount(() => {
   stopDragging()
   window.removeEventListener('scroll', handleScrollOrResize)
   window.removeEventListener('resize', handleScrollOrResize)
-  window.removeEventListener('resize', setWideScreen)
 })
 </script>
 

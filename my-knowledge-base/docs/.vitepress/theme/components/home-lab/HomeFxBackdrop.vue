@@ -32,17 +32,17 @@ let fpsProbeTimer = 0
 const isHome = computed(() => route.path === '/')
 const isSkyTakeOut = computed(() => route.path.startsWith('/Sky-Take-Out/'))
 
-/** 全站：晶透或液态背景层（由 localStorage 模式决定） */
+/** 全站：晶透背景层（液态模式不渲染背景层） */
 const isGlassActive = computed(() => fxMode.value === 'glass')
-const isLiquidActive = computed(() => fxMode.value === 'liquid')
-const isActive = computed(() => isGlassActive.value || isLiquidActive.value)
+const isActive = computed(() => isGlassActive.value)
 
-/** 仅首页液态：介绍文案与音乐播放器 */
-const isLiquidHomeStage = computed(() => isHome.value && fxMode.value === 'liquid')
+/** 仅首页液态：介绍文案（本次已隐藏） */
+const isLiquidHomeStage = computed(() => false)
 
-/** 仅首页液态：背景音乐逻辑与 <audio> */
-const isLiquidHomeBgm = computed(() => isHome.value && fxMode.value === 'liquid')
-const isMuted = computed(() => volume.value <= 0.001)
+/** 仅首页液态：背景音乐播放器（独立显示，不依赖背景层） */
+const isLiquidPlayerOnly = computed(() => isHome.value && fxMode.value === 'liquid')
+
+const shouldUseVideo = computed(() => volume.value <= 0.001)
 const volumePercent = computed(() => Math.round(volume.value * 100))
 const shouldUseVideo = computed(() => Boolean(VIDEO_SRC) && perfMode.value !== 'safe')
 
@@ -142,7 +142,7 @@ function syncBgm() {
   const audio = bgmRef.value
   if (!audio) return
 
-  if (isLiquidHomeBgm.value) {
+  if (isLiquidPlayerOnly.value) {
     setVolume(volume.value)
     syncPlaybackState()
     return
@@ -252,10 +252,11 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
+  <!-- 晶透模式背景层（液态模式无背景层） -->
   <div
     v-if="isActive"
     class="home-fx-layer"
-    :class="{ 'is-liquid': isLiquidActive, 'is-glass': isGlassActive }"
+    :class="{ 'is-glass': isGlassActive }"
     :style="layerStyle"
     aria-hidden="true"
   >
@@ -269,20 +270,10 @@ onBeforeUnmount(() => {
       :src="VIDEO_SRC"
     />
     <div v-else class="home-fx-layer__image" />
-
-    <div v-if="isLiquidActive" class="home-fx-layer__liquid-aura" />
-    <span v-if="isLiquidActive" class="home-fx-blob home-fx-blob--one" />
-    <span v-if="isLiquidActive" class="home-fx-blob home-fx-blob--two" />
-    <span v-if="isLiquidActive" class="home-fx-blob home-fx-blob--three" />
   </div>
 
-  <div v-if="isLiquidHomeStage" class="home-liquid-stage">
-    <section class="home-liquid-intro-card" aria-label="Site introduction">
-      <p class="home-liquid-intro-card__kicker">{{ LIQUID_HERO_LABEL }}</p>
-      <h1 class="home-liquid-intro-card__title">{{ LIQUID_HERO_TITLE }}</h1>
-      <p class="home-liquid-intro-card__lead">{{ LIQUID_HERO_SUBTITLE }}</p>
-    </section>
-
+  <!-- 液态模式：仅音乐播放器（无背景层、无介绍卡片） -->
+  <div v-if="isLiquidPlayerOnly" class="home-liquid-player-wrapper">
     <div
       class="home-liquid-player"
       :class="{ 'is-mini': isMiniPlayer }"
@@ -376,7 +367,7 @@ onBeforeUnmount(() => {
   </div>
 
   <audio
-    v-if="isLiquidHomeBgm"
+    v-if="isLiquidPlayerOnly"
     ref="bgmRef"
     preload="metadata"
     loop

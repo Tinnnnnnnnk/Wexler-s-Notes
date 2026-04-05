@@ -144,7 +144,7 @@
 .home-fx-layer {
   position: fixed;
   inset: 0;
-  z-index: 0;
+    z-index: var(--z-bg);
   pointer-events: none;
   overflow: hidden;
   contain: paint;
@@ -1205,7 +1205,7 @@ html.home-layout-editorial .home-scene--dashboard {
     radial-gradient(circle at 100% 100%, rgba(74, 109, 134, 0.1), transparent 46%);
   pointer-events: none;
   opacity: 0.55;
-  z-index: 0;
+    z-index: var(--z-bg);
 }
 
 .oilhome-intro,

@@ -19,7 +19,7 @@
 .theme-transition-overlay {
   position: fixed;
   inset: 0;
-  z-index: 99999;
+    z-index: var(--z-transition);
   pointer-events: none;
   background: radial-gradient(
     circle at var(--transition-origin-x, 100%) var(--transition-origin-y, 0%),

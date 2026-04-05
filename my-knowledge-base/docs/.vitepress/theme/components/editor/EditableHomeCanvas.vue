@@ -58,6 +58,7 @@ const canvasMetrics = ref({
 let ioTimer = null
 let interactionRafId = 0
 let pendingPointer = null
+let resizeRafId = 0
 
 const showCanvas = computed(() => isEditorMode.value)
 const isInteracting = computed(() => Boolean(interactionState.value))
@@ -291,6 +292,14 @@ function refreshCanvasMetrics() {
   )
 
   canvasMetrics.value = { width, height }
+}
+
+function onResizeThrottled() {
+  if (resizeRafId) return
+  resizeRafId = window.requestAnimationFrame(() => {
+    refreshCanvasMetrics()
+    resizeRafId = 0
+  })
 }
 
 function createPageTemplateLayout() {
@@ -1167,7 +1176,7 @@ onMounted(() => {
   performanceMode.value = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches === true
   syncRoute(route.path)
   window.addEventListener('keydown', handleEditorHotkeys)
-  window.addEventListener('resize', refreshCanvasMetrics)
+  window.addEventListener('resize', onResizeThrottled)
   window.addEventListener('load', refreshCanvasMetrics)
   window.addEventListener('beforeunload', handleBeforeUnload)
 })
@@ -1190,9 +1199,13 @@ watch(
 onBeforeUnmount(() => {
   stopInteraction()
   window.removeEventListener('keydown', handleEditorHotkeys)
-  window.removeEventListener('resize', refreshCanvasMetrics)
+  window.removeEventListener('resize', onResizeThrottled)
   window.removeEventListener('load', refreshCanvasMetrics)
   window.removeEventListener('beforeunload', handleBeforeUnload)
+  if (resizeRafId) {
+    window.cancelAnimationFrame(resizeRafId)
+    resizeRafId = 0
+  }
   clearMessage()
 })
 </script>

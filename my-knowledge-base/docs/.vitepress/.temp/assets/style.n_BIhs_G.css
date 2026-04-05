@@ -12287,6 +12287,8 @@ html.dark.home-layout-editorial .nova-card > p {
 .home-lab {
   width: min(1360px, calc(100vw - 32px));
   margin: clamp(14px, 2vw, 24px) auto clamp(28px, 3vw, 44px);
+  position: relative;
+  z-index: 6;
 }
 
 .home-scene {
@@ -12295,6 +12297,13 @@ html.dark.home-layout-editorial .nova-card > p {
   border-radius: 30px;
   border: 1px solid rgba(105, 125, 155, 0.22);
   overflow: hidden;
+}
+
+/* Isolate from legacy reveal animation system to avoid flicker/disappear */
+.home-scene.reveal-oil {
+  opacity: 1 !important;
+  transform: none !important;
+  animation: none !important;
 }
 
 .home-scene--apple {

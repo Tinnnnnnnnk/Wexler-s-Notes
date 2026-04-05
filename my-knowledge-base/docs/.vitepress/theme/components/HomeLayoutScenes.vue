@@ -12,7 +12,7 @@ onMounted(() => {
 <template>
   <div class="home-lab">
     <section
-      class="home-scene home-scene--apple reveal-oil"
+      class="home-scene home-scene--apple"
       :class="{ 'is-active': activeMode === 'minimal' }"
       :style="{ display: activeMode === 'minimal' ? 'block' : 'none' }"
     >
@@ -72,7 +72,7 @@ onMounted(() => {
     </section>
 
     <section
-      class="home-scene home-scene--dashboard reveal-oil"
+      class="home-scene home-scene--dashboard"
       :class="{ 'is-active': activeMode === 'dashboard' }"
       :style="{ display: activeMode === 'dashboard' ? 'block' : 'none' }"
     >
@@ -140,7 +140,7 @@ onMounted(() => {
     </section>
 
     <section
-      class="home-scene home-scene--media reveal-oil"
+      class="home-scene home-scene--media"
       :class="{ 'is-active': activeMode === 'editorial' }"
       :style="{ display: activeMode === 'editorial' ? 'block' : 'none' }"
     >

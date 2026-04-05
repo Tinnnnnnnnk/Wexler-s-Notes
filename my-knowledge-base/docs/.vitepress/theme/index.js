@@ -8,10 +8,14 @@ import PageEditorToggle from './components/PageEditorToggle.vue'
 import DocExperienceEnhancer from './components/DocExperienceEnhancer.vue'
 import CommandPalette from './components/CommandPalette.vue'
 import HomeLayoutToggle from './components/HomeLayoutToggle.vue'
-import './style.css' // 引入刚才写的 CSS
+import HomeLayoutScenes from './components/HomeLayoutScenes.vue'
+import './style.css'
 
 export default {
   extends: DefaultTheme,
+  enhanceApp({ app }) {
+    app.component('HomeLayoutScenes', HomeLayoutScenes)
+  },
   Layout: () => {
     return h(DefaultTheme.Layout, null, {
       'layout-top': () => [

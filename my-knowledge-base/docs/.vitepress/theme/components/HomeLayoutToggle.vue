@@ -1,5 +1,5 @@
 ﻿<script setup>
-import { computed, onBeforeUnmount, onMounted, watch } from 'vue'
+import { computed, onMounted, watch } from 'vue'
 import { useRoute } from 'vitepress'
 import { homeLayoutMode, initHomeLayoutState, setHomeLayoutMode } from './homeLayoutState'
 
@@ -30,21 +30,17 @@ function syncHtmlClass() {
   document.documentElement.classList.add(modeClass)
 }
 
-watch([() => route.path, () => homeLayoutMode.value], () => {
-  syncHtmlClass()
-})
+watch(
+  [() => route.path, () => homeLayoutMode.value],
+  () => {
+    syncHtmlClass()
+  },
+  { immediate: true }
+)
 
 onMounted(() => {
   initHomeLayoutState()
   syncHtmlClass()
-})
-
-onBeforeUnmount(() => {
-  if (typeof document === 'undefined') return
-
-  HOME_LAYOUT_CLASSES.forEach((name) => {
-    document.documentElement.classList.remove(name)
-  })
 })
 </script>
 

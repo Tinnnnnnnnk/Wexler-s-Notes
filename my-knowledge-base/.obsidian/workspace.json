@@ -49,8 +49,7 @@
               "title": "细节部分"
             }
           }
-        ],
-        "currentTab": 2
+        ]
       }
     ],
     "direction": "vertical"
@@ -236,8 +235,9 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "4541114d123dd0c2",
+  "active": "dca74a61d38130bd",
   "lastOpenFiles": [
+    "docs/Code/DS/细节部分.md",
     "docs/图像处理和信息安全/security-basics-compact-guide-zh.md",
     "docs/面试笔记/JavaSe/并发编程.md",
     "MyWeb/Style-Lab/02-油画质感风.md",
@@ -276,7 +276,6 @@
     "docs/public/images/Pasted image 20260209165728.png",
     "docs/Info/Software.md",
     "docs/Info/HowToUseObsidian.md",
-    "docs/index.md",
     "docs/图像处理和信息安全",
     "docs/MyWeb",
     "docs/public/media/home-bg/Bg1.mp4",

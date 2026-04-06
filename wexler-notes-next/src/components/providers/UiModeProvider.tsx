@@ -1,10 +1,8 @@
-// src/hooks/useUiMode.ts
-// Unified UI mode hook — tries context first, falls back to isolated state.
-// Navbar uses this so it works on both home (UiModeProvider) and docs pages.
+// src/components/providers/UiModeProvider.tsx
+// Provides shared fxMode + layoutMode state to Navbar and HomePage
 'use client'
-import { useState, useCallback, useEffect } from 'react'
+import { createContext, useContext, useState, useCallback, useEffect, useMemo } from 'react'
 import type { FxMode, LayoutMode, PerfMode } from '@/types/uiMode'
-import { useUiModeContext } from '@/components/providers/UiModeProvider'
 
 const FX_STORAGE_KEY = 'wexler.homeFx.mode'
 const LAYOUT_STORAGE_KEY = 'wexler.homeLayout.mode'
@@ -60,8 +58,31 @@ function evaluatePerformanceProfile(): boolean {
   return prefersReduced || saveData || (cpuCores > 0 && cpuCores <= 4) || (memorySize > 0 && memorySize <= 4)
 }
 
-// Isolated state for use outside UiModeProvider (e.g. Navbar on docs pages)
-function useIsolatedUiMode(isHome = false) {
+interface UiModeContextValue {
+  fxMode: FxMode
+  layoutMode: LayoutMode
+  perfMode: PerfMode
+  setFxMode: (mode: FxMode) => void
+  toggleFxMode: (target: 'glass' | 'liquid') => void
+  setLayoutMode: (mode: LayoutMode) => void
+  setPerfMode: (mode: PerfMode) => void
+}
+
+export const UiModeContext = createContext<UiModeContextValue>({
+  fxMode: 'default',
+  layoutMode: 'minimal',
+  perfMode: 'normal',
+  setFxMode: () => {},
+  toggleFxMode: () => {},
+  setLayoutMode: () => {},
+  setPerfMode: () => {},
+})
+
+export function useUiModeContext(): UiModeContextValue {
+  return useContext(UiModeContext)
+}
+
+export function UiModeProvider({ children, isHome = false }: { children: React.ReactNode; isHome?: boolean }) {
   const [fxMode, setFxModeState] = useState<FxMode>('default')
   const [layoutMode, setLayoutModeState] = useState<LayoutMode>('minimal')
   const [perfMode, setPerfModeState] = useState<PerfMode>('normal')
@@ -75,6 +96,7 @@ function useIsolatedUiMode(isHome = false) {
     setPerfModeState(perf)
   }, [])
 
+  // Sync HTML classes
   useEffect(() => {
     if (typeof document === 'undefined') return
     ;(Object.keys(FX_CLASSES) as FxMode[]).forEach((m) => {
@@ -112,37 +134,23 @@ function useIsolatedUiMode(isHome = false) {
     })
   }, [])
 
-  return {
+  const setPerfMode = useCallback((mode: PerfMode) => {
+    setPerfModeState(mode)
+  }, [])
+
+  const value = useMemo(() => ({
     fxMode,
     layoutMode,
     perfMode,
     setFxMode,
     toggleFxMode,
     setLayoutMode,
-    setPerfMode: (mode: PerfMode) => setPerfModeState(mode),
-  }
-}
+    setPerfMode,
+  }), [fxMode, layoutMode, perfMode, setFxMode, toggleFxMode, setLayoutMode, setPerfMode])
 
-export interface UseUiModeReturn {
-  fxMode: FxMode
-  layoutMode: LayoutMode
-  perfMode: PerfMode
-  setFxMode: (mode: FxMode) => void
-  toggleFxMode: (target: 'glass' | 'liquid') => void
-  setLayoutMode: (mode: LayoutMode) => void
-  setPerfMode: (mode: PerfMode) => void
-}
-
-/**
- * Returns shared UI mode state from UiModeProvider if available (home page),
- * otherwise falls back to isolated local state (docs pages / Navbar).
- * isHome=true additionally applies layout class to document root.
- */
-export function useUiMode(isHome = false): UseUiModeReturn {
-  try {
-    const ctx = useUiModeContext()
-    return ctx
-  } catch {
-    return useIsolatedUiMode(isHome)
-  }
+  return (
+    <UiModeContext.Provider value={value}>
+      {children}
+    </UiModeContext.Provider>
+  )
 }

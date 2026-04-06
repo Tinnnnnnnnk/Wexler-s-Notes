@@ -10,8 +10,10 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  experimental: {
-    mdxRs: false,
+  output: 'export',
+  outputFileTracingRoot: __dirname,
+  env: {
+    // Accessible in browser via process.env.NEXT_PUBLIC_*
   },
 }
 

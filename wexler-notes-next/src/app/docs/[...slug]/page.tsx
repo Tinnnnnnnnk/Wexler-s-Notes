@@ -93,7 +93,7 @@ export default async function DocsPage({ params }: { params: Promise<{ slug: str
       }
     >
       <div className={styles.wrapper}>
-        <article className={styles.article}>
+        <article className={`${styles.article} docContent`}>
           {content}
         </article>
         <aside className={styles.tocAside}>

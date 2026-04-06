@@ -24,6 +24,10 @@ interface PaletteItem {
   action?: string
 }
 
+interface CommandPaletteProps {
+  onClose?: () => void
+}
+
 function formatPercent(value: number): string {
   const pct = Math.round(Math.min(1, Math.max(0, value)) * 100)
   return `${pct}%`
@@ -36,10 +40,10 @@ function formatTime(ts: number): string {
   }).format(date)
 }
 
-export default function CommandPalette() {
+export default function CommandPalette({ onClose }: CommandPaletteProps) {
   const router = useRouter()
   const { trail, upsertSnapshot, restorePosition } = useReadingTrail()
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(true)
   const [query, setQuery] = useState('')
   const [activeIndex, setActiveIndex] = useState(0)
   const [items, setItems] = useState<PaletteItem[]>([])
@@ -115,14 +119,14 @@ export default function CommandPalette() {
         setIsOpen((prev) => !prev)
       }
       if (!isOpen) return
-      if (e.key === 'Escape') { e.preventDefault(); setIsOpen(false) }
+      if (e.key === 'Escape') { e.preventDefault(); setIsOpen(false); onClose?.() }
       if (e.key === 'ArrowDown') { e.preventDefault(); setActiveIndex((i) => (i + 1) % Math.max(1, filteredItems.length)) }
       if (e.key === 'ArrowUp') { e.preventDefault(); setActiveIndex((i) => (i - 1 + filteredItems.length) % Math.max(1, filteredItems.length)) }
       if (e.key === 'Enter') { e.preventDefault(); executeItem(filteredItems[activeIndex]) }
     }
     window.addEventListener('keydown', handler)
     return () => window.removeEventListener('keydown', handler)
-  }, [isOpen, activeIndex])
+  }, [isOpen, activeIndex, onClose])
 
   useEffect(() => {
     if (isOpen) {
@@ -141,6 +145,7 @@ export default function CommandPalette() {
   function executeItem(item?: PaletteItem) {
     if (!item) return
     setIsOpen(false)
+    onClose?.()
     if (item.kind === 'continue' || item.kind === 'recent') {
       if (item.snapshot?.path) {
         router.push(item.snapshot.path)
@@ -163,64 +168,49 @@ export default function CommandPalette() {
   }
 
   return (
-    <>
-      <button
-        type="button"
-        className={styles.trigger}
-        onClick={() => setIsOpen(true)}
-        aria-label="打开快捷面板"
-      >
-        <span className={styles.triggerIcon} />
-        <span className={styles.triggerText}>快捷面板</span>
-        <span className={styles.hotkey}>Ctrl+K</span>
-      </button>
+    <div className={styles.overlay} onClick={() => { setIsOpen(false); onClose?.() }}>
+      <section className={styles.palette} onClick={(e) => e.stopPropagation()}>
+        <header className={styles.header}>
+          <div className={styles.searchWrap}>
+            <span className={styles.searchIcon} />
+            <input
+              ref={inputRef}
+              className={styles.searchInput}
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="输入关键词：页面、章节、风格、搜索..."
+              autoComplete="off"
+              spellCheck={false}
+            />
+          </div>
+          <p className={styles.hint}>↑/↓ 选择 · Enter 执行 · Esc 关闭</p>
+        </header>
 
-      {isOpen && (
-        <div className={styles.overlay} onClick={() => setIsOpen(false)}>
-          <section className={styles.palette} onClick={(e) => e.stopPropagation()}>
-            <header className={styles.header}>
-              <div className={styles.searchWrap}>
-                <span className={styles.searchIcon} />
-                <input
-                  ref={inputRef}
-                  className={styles.searchInput}
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  placeholder="输入关键词：页面、章节、风格、搜索..."
-                  autoComplete="off"
-                  spellCheck={false}
-                />
-              </div>
-              <p className={styles.hint}>↑/↓ 选择 · Enter 执行 · Esc 关闭</p>
-            </header>
-
-            {filteredItems.length > 0 ? (
-              <ul className={styles.list}>
-                {filteredItems.map((item, i) => (
-                  <li key={item.id}>
-                    <button
-                      type="button"
-                      className={`${styles.item} ${i === activeIndex ? styles.itemActive : ''}`}
-                      onMouseEnter={() => setActiveIndex(i)}
-                      onClick={() => executeItem(item)}
-                    >
-                      <span className={styles.badge}>{KIND_LABELS[item.kind] || '操作'}</span>
-                      <span className={styles.itemText}>
-                        <strong className={styles.itemTitle}>{item.title}</strong>
-                        <small className={styles.itemMeta}>{item.meta}</small>
-                      </span>
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className={styles.empty}>
-                {query.trim() ? '没有匹配结果，试试输入"章节""液态""搜索"等关键词。' : '当前没有可执行项。'}
-              </p>
-            )}
-          </section>
-        </div>
-      )}
-    </>
+        {filteredItems.length > 0 ? (
+          <ul className={styles.list}>
+            {filteredItems.map((item, i) => (
+              <li key={item.id}>
+                <button
+                  type="button"
+                  className={`${styles.item} ${i === activeIndex ? styles.itemActive : ''}`}
+                  onMouseEnter={() => setActiveIndex(i)}
+                  onClick={() => executeItem(item)}
+                >
+                  <span className={styles.badge}>{KIND_LABELS[item.kind] || '操作'}</span>
+                  <span className={styles.itemText}>
+                    <strong className={styles.itemTitle}>{item.title}</strong>
+                    <small className={styles.itemMeta}>{item.meta}</small>
+                  </span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className={styles.empty}>
+            {query.trim() ? '没有匹配结果，试试输入"章节""液态""搜索"等关键词。' : '当前没有可执行项。'}
+          </p>
+        )}
+      </section>
+    </div>
   )
 }

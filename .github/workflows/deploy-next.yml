@@ -1,9 +1,8 @@
-name: Deploy
+name: Deploy Next
 
 on:
   push:
-    branches:
-      - feat/next-cutover
+    branches: [feat/next-cutover]
   workflow_dispatch:
 
 concurrency:
@@ -12,7 +11,7 @@ concurrency:
 
 jobs:
   build:
-    name: Build & Package
+    name: Build Next
     runs-on: ubuntu-latest
 
     steps:
@@ -24,43 +23,47 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
-          cache-dependency-path: package-lock.json
+          cache-dependency-path: wexler-notes-next/package-lock.json
 
       - name: Install dependencies
+        working-directory: wexler-notes-next
         run: npm ci
 
       - name: Migrate content
+        working-directory: wexler-notes-next
         run: npm run migrate
 
       - name: Build
+        working-directory: wexler-notes-next
         run: npm run build
         env:
           NODE_OPTIONS: '--max-old-space-size=3072'
+          NEXT_PUBLIC_SITE_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL }}
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: wexler-notes-dist
+          name: wexler-next-dist
           path: |
-            out/
-            package.json
-            package-lock.json
+            wexler-notes-next/out/
+            wexler-notes-next/package.json
+            wexler-notes-next/package-lock.json
           retention-days: 3
 
   deploy:
     name: Deploy to Server
     runs-on: ubuntu-latest
     needs: build
-    if: github.ref == 'refs/heads/feat/next-cutover' || github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/feat/next-cutover'
 
     steps:
       - name: Download artifact
         uses: actions/download-artifact@v4
         with:
-          name: wexler-notes-dist
+          name: wexler-next-dist
           path: dist
 
-      - name: Setup rsync
+      - name: Setup SSH
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.DEPLOY_HOST_KEY }}" > ~/.ssh/known_hosts

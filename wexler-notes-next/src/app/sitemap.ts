@@ -3,6 +3,8 @@ import fs from 'fs'
 import path from 'path'
 import { buildSidebar } from '@/lib/sidebar'
 
+export const dynamic = 'force-static'
+
 const CONTENT_DIR = path.join(process.cwd(), 'src', 'content')
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://wexler.dev'
 

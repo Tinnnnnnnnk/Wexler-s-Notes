@@ -58,10 +58,11 @@ export default function BgmPlayer() {
     setIsSeeking(true)
   }
 
-  const handleSeekCommit = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSeekCommit = (e: React.ChangeEvent<HTMLInputElement> | React.MouseEvent<HTMLInputElement> | React.TouchEvent<HTMLInputElement>) => {
     const audio = audioRef.current
     if (!audio) return
-    audio.currentTime = Number(e.target.value)
+    const target = e.currentTarget as HTMLInputElement
+    audio.currentTime = Number(target.value)
     setCurrentTime(audio.currentTime)
     setIsSeeking(false)
   }

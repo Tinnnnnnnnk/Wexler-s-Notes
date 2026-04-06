@@ -8,68 +8,70 @@ const DEST_DIR = path.join(process.cwd(), 'src', 'content')
 
 const SKIP_DIRS = ['.vitepress', '.obsidian', 'public', 'node_modules', '.git']
 
-const CALLOUT_PATTERN = /\[!(note|tip|warning|danger)\]/gi
-
 interface Stats {
   copied: number
-  calloutsConverted: number
   skipped: number
 }
 
-const stats: Stats = { copied: 0, calloutsConverted: 0, skipped: 0 }
+const stats: Stats = { copied: 0, skipped: 0 }
 
-function convertCallouts(content: string): { content: string; count: number } {
-  let count = 0
+/**
+ * Strip the [!note] callout marker from blockquote lines.
+ * MDXComponents.tsx overrides `blockquote` to render as <Callout type="...">,
+ * so we just need to normalize the blockquote body text.
+ */
+function stripCalloutMarkers(content: string): string {
+  return content
+    .replace(/^(\s*)>\s*\[!(note|tip|warning|danger)\]\s*/gim, '$1> ')
+    .replace(/^(\s*)>\s*/g, '$1> ')
+}
+
+/**
+ * Escape curly braces that MDX treats as JSX expression delimiters.
+ * In MDX, { starts an expression and } closes it. In plain text content
+ * (especially in lists, tables, or indented blocks), curly braces
+ * must be escaped to avoid "is not defined" ReferenceErrors.
+ *
+ * Strategy: escape all { that are NOT inside fenced code blocks.
+ * We check each { to ensure it's not immediately preceded by a backslash.
+ */
+function escapeMdxExpressions(content: string): string {
   const lines = content.split('\n')
   const result: string[] = []
-  let inCallout = false
-  let calloutType = ''
-  let calloutLines: string[] = []
-  let calloutIndent = ''
+  let inCodeBlock = false
+  let codeBlockMarker = ''
 
   for (const line of lines) {
-    const calloutMatch = line.match(/^(\s*)>\s*\[!(note|tip|warning|danger)\]/i)
-    if (calloutMatch && !inCallout) {
-      inCallout = true
-      calloutType = calloutMatch[2].toLowerCase()
-      calloutIndent = calloutMatch[1]
-      const label = calloutMatch[2].charAt(0).toUpperCase() + calloutMatch[2].slice(1).toLowerCase()
-      const bodyText = line.replace(/^(\s*)>\s*\[!(note|tip|warning|danger)\]\s*/i, '').trim()
-      calloutLines = bodyText ? [`<Callout type="${calloutType}">`, '', bodyText] : [`<Callout type="${calloutType}">`]
-      count++
-    } else if (inCallout) {
-      const contentMatch = line.match(/^(\s*)>\s*(.*)/)
-      if (contentMatch) {
-        calloutLines.push(contentMatch[2])
-      } else {
-        result.push(...calloutLines)
-        if (calloutLines.length > 0) result.push('</Callout>')
-        result.push('')
-        inCallout = false
-        calloutLines = []
-        result.push(line)
+    // Track fenced code blocks
+    const codeMatch = line.match(/^(\s*)(```+|~~~)\s*/)
+    if (codeMatch) {
+      if (!inCodeBlock) {
+        inCodeBlock = true
+        codeBlockMarker = codeMatch[2]
+      } else if (line.trim().startsWith(codeBlockMarker)) {
+        inCodeBlock = false
+        codeBlockMarker = ''
       }
+    }
+
+    // Only escape braces outside code blocks
+    if (!inCodeBlock) {
+      result.push(line.replace(/\{/g, '\\{'))
     } else {
-      if (inCallout && calloutLines.length > 0) {
-        result.push(...calloutLines)
-        result.push('</Callout>')
-        result.push('')
-        inCallout = false
-        calloutLines = []
-      }
       result.push(line)
     }
   }
 
-  if (inCallout && calloutLines.length > 0) {
-    result.push(...calloutLines)
-    result.push('</Callout>')
-  }
-
-  return { content: result.join('\n'), count }
+  return result.join('\n')
 }
 
 function processFile(srcPath: string, relativePath: string) {
+  // Skip VitePress-specific files
+  if (relativePath === 'index.md' || relativePath === 'index' || relativePath.endsWith('/index.md')) {
+    stats.skipped++
+    return
+  }
+
   const destRel = relativePath.replace(/\.md$/, '.mdx')
   const destPath = path.join(DEST_DIR, destRel)
 
@@ -78,15 +80,8 @@ function processFile(srcPath: string, relativePath: string) {
   }
 
   let content = fs.readFileSync(srcPath, 'utf-8')
-
-  const hasCallouts = CALLOUT_PATTERN.test(content)
-  if (hasCallouts) {
-    CALLOUT_PATTERN.lastIndex = 0
-    const { content: converted, count } = convertCallouts(content)
-    content = converted
-    stats.calloutsConverted += count
-  }
-
+  content = stripCalloutMarkers(content)
+  content = escapeMdxExpressions(content)
   fs.writeFileSync(destPath, content, 'utf-8')
   stats.copied++
 }
@@ -123,9 +118,6 @@ function main() {
 
   console.log('─'.repeat(50))
   console.log(`✅ Copied:     ${stats.copied} files`)
-  if (stats.calloutsConverted > 0) {
-    console.log(`🔄 Callouts:   ${stats.calloutsConverted} blockquotes converted`)
-  }
   if (stats.skipped > 0) {
     console.log(`⏭  Skipped:    ${stats.skipped} items (.vitepress, .obsidian, etc.)`)
   }

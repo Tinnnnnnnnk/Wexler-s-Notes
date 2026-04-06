@@ -1,7 +1,7 @@
 /* src/app/globals.css */
-@import '../styles/tokens.css';
-@import '../styles/layers.css';
-@import '../styles/effects.css';
-@import '../styles/base.css';
-@import '../styles/home-lab.css';
-@import '../styles/editor.css';
+@import '../../styles/tokens.css';
+@import '../../styles/layers.css';
+@import '../../styles/effects.css';
+@import '../../styles/base.css';
+@import '../../styles/home-lab.css';
+@import '../../styles/editor.css';

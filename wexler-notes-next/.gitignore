@@ -1,0 +1,7 @@
+node_modules/
+.next/
+out/
+src/content/
+*.tsbuildinfo
+next-env.d.ts
+.eslintrc

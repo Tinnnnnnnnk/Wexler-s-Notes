@@ -3,7 +3,7 @@
 import { useRef, useState, useCallback, useEffect } from 'react'
 import styles from './BgmPlayer.module.css'
 
-const BGM_SRC = '/media/home-bgm/liquid-bgm.flac'
+const BGM_SRC = '/media/home-bgm/liquid-bgm.opus'
 const BGM_TITLE = '60% Reverie'
 const BGM_ARTIST = 'ZZ-STUDIO x HOYO-MiX'
 

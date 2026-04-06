@@ -39,3 +39,6 @@
 	- 在vscode中全局搜索，将public/images/替换成 /images/（有图片的插入就这样换）
 	- 打包数据：npm run docs:build
 	- 上传数据：scp -r docs/.vitepress/dist/* root@8.135.49.76:/root/html
+### WSL
+- toyamakasumi
+- 0714

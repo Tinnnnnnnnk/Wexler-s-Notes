@@ -1,9 +1,10 @@
 // src/components/home/FxToggle.tsx
 'use client'
+import type { FxMode } from '@/types/uiMode'
 import styles from './FxToggle.module.css'
 
 interface FxToggleProps {
-  fxMode: 'default' | 'glass' | 'liquid'
+  fxMode: FxMode
   onToggle: (target: 'glass' | 'liquid') => void
 }
 
@@ -13,8 +14,8 @@ export default function FxToggle({ fxMode, onToggle }: FxToggleProps) {
       <button
         type="button"
         className={`${styles.toggle} ${fxMode === 'default' ? styles.activeDefault : ''}`}
-        onClick={() => onToggle('default' as unknown as 'glass')}
-        title="常态模式"
+        onClick={() => onToggle('glass')}
+        title="常态模式（关闭特效背景）"
         aria-label="切换到常态模式"
       >
         <span className={`${styles.icon} ${styles.iconDefault}`} />
@@ -24,7 +25,7 @@ export default function FxToggle({ fxMode, onToggle }: FxToggleProps) {
         type="button"
         className={`${styles.toggle} ${fxMode === 'glass' ? styles.activeGlass : ''}`}
         onClick={() => onToggle('glass')}
-        title="晶透模式"
+        title="晶透模式（静态背景）"
         aria-label="切换到晶透模式"
       >
         <span className={`${styles.icon} ${styles.iconGlass}`} />
@@ -34,7 +35,7 @@ export default function FxToggle({ fxMode, onToggle }: FxToggleProps) {
         type="button"
         className={`${styles.toggle} ${fxMode === 'liquid' ? styles.activeLiquid : ''}`}
         onClick={() => onToggle('liquid')}
-        title="液态模式"
+        title="液态模式（视频背景 + 背景音乐）"
         aria-label="切换到液态模式"
       >
         <span className={`${styles.icon} ${styles.iconLiquid}`} />

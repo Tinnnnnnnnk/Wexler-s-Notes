@@ -14,14 +14,14 @@ const VIDEO_SRC = '/media/home-bg/楼梯不变云动视频.mp4'
 
 export default function Backdrop({ fxMode, perfMode }: BackdropProps) {
   const [isPlaying, setIsPlaying] = useState(false)
+  const [videoFailed, setVideoFailed] = useState(false)
   const rafRef = useRef(0)
   const timerRef = useRef(0)
   const fpsCheckedRef = useRef(false)
 
   const isActive = fxMode === 'glass' || fxMode === 'liquid'
   const isLiquidActive = fxMode === 'liquid'
-  const isLiquidPlayerOnly = fxMode === 'liquid'
-  const shouldUseVideo = Boolean(VIDEO_SRC) && perfMode !== 'safe'
+  const shouldUseVideo = Boolean(VIDEO_SRC) && perfMode !== 'safe' && !videoFailed
 
   function stopFpsProbe() {
     if (rafRef.current) { window.cancelAnimationFrame(rafRef.current); rafRef.current = 0 }
@@ -58,31 +58,32 @@ export default function Backdrop({ fxMode, perfMode }: BackdropProps) {
     return () => stopFpsProbe()
   }, [isActive, perfMode])
 
+  if (!isActive) return null
+
   return (
     <>
-      {isActive && (
-        <div
-          className={`${styles.backdrop} ${isLiquidActive ? styles.liquid : ''}`}
-          aria-hidden="true"
-          style={{ '--home-fx-image': `url("${IMAGE_SRC}")` } as React.CSSProperties}
-        >
-          {shouldUseVideo ? (
-            <video
-              className={styles.video}
-              autoPlay
-              muted
-              loop
-              playsInline
-              src={VIDEO_SRC}
-            />
-          ) : (
-            <div className={styles.image} />
-          )}
-          {isLiquidActive && <div className={styles.aura} />}
-        </div>
-      )}
+      <div
+        className={`${styles.backdrop} ${isLiquidActive ? styles.liquid : ''}`}
+        aria-hidden="true"
+        style={{ '--home-fx-image': `url("${IMAGE_SRC}")` } as React.CSSProperties}
+      >
+        {shouldUseVideo ? (
+          <video
+            className={styles.video}
+            autoPlay
+            muted
+            loop
+            playsInline
+            src={VIDEO_SRC}
+            onError={() => setVideoFailed(true)}
+          />
+        ) : (
+          <div className={styles.image} />
+        )}
+        {isLiquidActive && <div className={styles.aura} />}
+      </div>
 
-      {isLiquidPlayerOnly && <BgmPlayer />}
+      {isLiquidActive && <BgmPlayer />}
     </>
   )
 }

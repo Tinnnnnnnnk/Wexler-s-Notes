@@ -2,6 +2,7 @@
 import type { Metadata } from 'next'
 import './globals.css'
 import { ThemeProvider } from '@/components/providers/ThemeProvider'
+import { UiModeProvider } from '@/components/providers/UiModeProvider'
 
 export const metadata: Metadata = {
   title: "Wexler's Notes",
@@ -13,7 +14,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="zh-CN" suppressHydrationWarning>
       <body>
         <ThemeProvider>
-          {children}
+          <UiModeProvider>
+            {children}
+          </UiModeProvider>
         </ThemeProvider>
       </body>
     </html>

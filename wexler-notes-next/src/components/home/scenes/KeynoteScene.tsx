@@ -13,7 +13,7 @@ export default function KeynoteScene() {
           这不是临时笔记，而是可持续增长的工程资产。
         </p>
         <div className={styles.actions}>
-          <a className={styles.btnSolid} href="/docs/sky-take-out/00-后端开发知识大本营">进入知识库</a>
+          <a className={styles.btnSolid} href="/docs/Sky-Take-Out/00-后端开发知识大本营">进入知识库</a>
           <a className={styles.btnGhost} href="https://github.com/Tinnnnnnnnk/Wexler-s-Notes">查看 GitHub</a>
         </div>
       </header>
@@ -34,9 +34,9 @@ export default function KeynoteScene() {
 
       <div className={styles.triptych}>
         {[
-          { href: '/docs/prompt-learning/day1', cat: 'Prompt 系统', title: '把 AI 协作流程工程化' },
-          { href: '/docs/code/ds/dfs', cat: '算法训练', title: '建立可迁移的解题模式' },
-          { href: '/docs/myweb/网站修改指南', cat: '站点演进', title: '持续优化 UI、性能与交互' },
+          { href: '/docs/PromptLearning/day1', cat: 'Prompt 系统', title: '把 AI 协作流程工程化' },
+          { href: '/docs/Code/DS/DFS', cat: '算法训练', title: '建立可迁移的解题模式' },
+          { href: '/docs/Info/Software', cat: '站点演进', title: '持续优化 UI、性能与交互' },
         ].map((item) => (
           <a key={item.href} href={item.href}>
             <p>{item.cat}</p>
@@ -47,10 +47,10 @@ export default function KeynoteScene() {
 
       <div className={styles.rail}>
         {[
-          { href: '/docs/sky-take-out/04-服务器运维与容器化部署手册', text: 'Docker / 运维' },
-          { href: '/docs/resume/简历V3.0', text: '简历资产' },
-          { href: '/docs/面试笔记/myweb/构建过程end', text: '构建复盘' },
-          { href: '/docs/myweb/00-文档目录', text: '站点文档' },
+          { href: '/docs/Sky-Take-Out/04-服务器运维与容器化部署手册', text: 'Docker / 运维' },
+          { href: '/docs/Resume/简历V3.0', text: '简历资产' },
+          { href: '/docs/面试笔记/MyWeb/构建过程end', text: '构建复盘' },
+          { href: '/docs/Info/Software', text: '站点文档' },
         ].map((item) => (
           <a key={item.href} href={item.href}>{item.text}</a>
         ))}

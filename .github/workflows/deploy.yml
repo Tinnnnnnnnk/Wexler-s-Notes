@@ -1,8 +1,15 @@
-name: Deploy
+# ============================================================
+# ⚠️  DEPRECATED — This workflow is replaced by deploy-next.yml
+#    VitePress site (my-knowledge-base/docs/) is no longer
+#    maintained and will be removed in Phase 8 cleanup.
+#
+#    Active deployment: .github/workflows/deploy-next.yml
+#    (feeds wexler-notes-next/out/ to the same server path)
+# ============================================================
+name: Deploy [DEPRECATED]
 
-on:
-  push:
-    branches: [main]
+# disabled — kept for rollback reference until Phase 8
+on: workflow_dispatch
 
 jobs:
   deploy:

@@ -12,7 +12,6 @@ import { TableOfContents } from '@/components/mdx/TableOfContents'
 import MainLayout from '@/components/layout/MainLayout'
 import Sidebar from '@/components/layout/Sidebar'
 import ReadingEnhancer from '@/components/reading/ReadingEnhancer'
-import CommandPalette from '@/components/command/CommandPalette'
 import styles from './page.module.css'
 
 const CONTENT_DIR = path.join(process.cwd(), 'src', 'content')
@@ -101,7 +100,6 @@ export default async function DocsPage({ params }: { params: Promise<{ slug: str
         </aside>
       </div>
       <ReadingEnhancer />
-      <CommandPalette />
     </MainLayout>
   )
 }

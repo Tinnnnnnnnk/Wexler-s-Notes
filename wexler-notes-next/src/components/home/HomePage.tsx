@@ -9,7 +9,7 @@ import WorkbenchScene from './scenes/WorkbenchScene'
 import MediaScene from './scenes/MediaScene'
 import PageEditor from '@/components/editor/PageEditor'
 import ReadingEnhancer from '@/components/reading/ReadingEnhancer'
-import CommandPalette from '@/components/command/CommandPalette'
+import CommandTrigger from '@/components/command/CommandTrigger'
 import styles from './HomePage.module.css'
 
 export default function HomePage() {
@@ -37,7 +37,9 @@ export default function HomePage() {
 
       {/* Reading tools */}
       <ReadingEnhancer />
-      <CommandPalette />
+      <div className={styles.homeCommandTrigger}>
+        <CommandTrigger />
+      </div>
     </div>
   )
 }

@@ -28,3 +28,10 @@
 .enter {
   animation: home-scene-enter 0.48s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
+
+.homeCommandTrigger {
+  position: fixed;
+  top: 18px;
+  right: 24px;
+  z-index: var(--z-nav);
+}

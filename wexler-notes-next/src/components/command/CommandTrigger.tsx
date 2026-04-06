@@ -3,12 +3,24 @@
 // exists so Navbar can reference a small, isolated trigger without
 // pulling in the entire palette state tree.
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import CommandPalette from './CommandPalette'
 import styles from './CommandPalette.module.css'
 
 export default function CommandTrigger() {
   const [isOpen, setIsOpen] = useState(false)
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault()
+        setIsOpen((o) => !o)
+      }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [])
+
   return (
     <>
       <button
@@ -22,7 +34,7 @@ export default function CommandTrigger() {
         <span className={styles.hotkey}>Ctrl+K</span>
       </button>
       {isOpen && (
-        <CommandPalette onClose={() => setIsOpen(false)} />
+        <CommandPalette defaultOpen onClose={() => setIsOpen(false)} />
       )}
     </>
   )

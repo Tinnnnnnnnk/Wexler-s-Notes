@@ -26,6 +26,8 @@ interface PaletteItem {
 
 interface CommandPaletteProps {
   onClose?: () => void
+  /** 为 true 时首屏即打开（仅在被父组件「按需挂载」时使用，例如 CommandTrigger） */
+  defaultOpen?: boolean
 }
 
 function formatPercent(value: number): string {
@@ -40,10 +42,10 @@ function formatTime(ts: number): string {
   }).format(date)
 }
 
-export default function CommandPalette({ onClose }: CommandPaletteProps) {
+export default function CommandPalette({ onClose, defaultOpen = false }: CommandPaletteProps) {
   const router = useRouter()
   const { trail, upsertSnapshot, restorePosition } = useReadingTrail()
-  const [isOpen, setIsOpen] = useState(true)
+  const [isOpen, setIsOpen] = useState(defaultOpen)
   const [query, setQuery] = useState('')
   const [activeIndex, setActiveIndex] = useState(0)
   const [items, setItems] = useState<PaletteItem[]>([])
@@ -113,11 +115,7 @@ export default function CommandPalette({ onClose }: CommandPaletteProps) {
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
-      const hasMod = e.metaKey || e.ctrlKey
-      if (hasMod && e.key === 'k') {
-        e.preventDefault()
-        setIsOpen((prev) => !prev)
-      }
+      // Ctrl/Cmd+K 由 CommandTrigger 统一处理，避免与父级 open 状态打架
       if (!isOpen) return
       if (e.key === 'Escape') { e.preventDefault(); setIsOpen(false); onClose?.() }
       if (e.key === 'ArrowDown') { e.preventDefault(); setActiveIndex((i) => (i + 1) % Math.max(1, filteredItems.length)) }
@@ -166,6 +164,8 @@ export default function CommandPalette({ onClose }: CommandPaletteProps) {
       document.documentElement.classList.add(`home-${mode}-mode`)
     }
   }
+
+  if (!isOpen) return null
 
   return (
     <div className={styles.overlay} onClick={() => { setIsOpen(false); onClose?.() }}>

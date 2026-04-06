@@ -9,7 +9,7 @@ const route = useRoute()
 // Place custom BGM in: my-knowledge-base/docs/public/media/home-bgm/
 const IMAGE_SRC = '/media/home-bg/test1.jpg'
 const VIDEO_SRC = '/media/home-bg/楼梯不变云动视频.mp4'
-const LIQUID_BGM_SRC = '/media/home-bgm/liquid-bgm.flac'
+const LIQUID_BGM_SRC = '/media/home-bgm/liquid-bgm.opus'
 const LIQUID_BGM_TITLE = '60% Reverie'
 const LIQUID_BGM_ARTIST = 'ZZ-STUDIO x HOYO-MiX'
 const LIQUID_HERO_LABEL = 'Digital Garden'

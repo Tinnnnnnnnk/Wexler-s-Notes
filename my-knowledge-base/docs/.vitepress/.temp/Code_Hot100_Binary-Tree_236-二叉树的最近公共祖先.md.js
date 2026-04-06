@@ -1,0 +1,804 @@
+import { resolveComponent, withCtx, openBlock, createBlock, createVNode, useSSRContext } from "vue";
+import { ssrRenderAttrs, ssrRenderComponent, ssrRenderStyle } from "vue/server-renderer";
+import { _ as _export_sfc } from "./plugin-vue_export-helper.1tPrXgE0.js";
+const __pageData = JSON.parse('{"title":"236. 二叉树的最近公共祖先 (Lowest Common Ancestor of a Binary Tree)","description":"","frontmatter":{"tags":["LeetCode","二叉树","DFS","后序遍历","经典神题"],"difficulty":"Medium","status":"✅ 已解决","date":"2026-02-26T00:00:00.000Z"},"headers":[],"relativePath":"Code/Hot100/Binary-Tree/236-二叉树的最近公共祖先.md","filePath":"Code/Hot100/Binary-Tree/236-二叉树的最近公共祖先.md","lastUpdated":1772161575000}');
+const _sfc_main = { name: "Code/Hot100/Binary-Tree/236-二叉树的最近公共祖先.md" };
+function _sfc_ssrRender(_ctx, _push, _parent, _attrs, $props, $setup, $data, $options) {
+  const _component_mjx_container = resolveComponent("mjx-container");
+  const _component_mjx_assistive_mml = resolveComponent("mjx-assistive-mml");
+  _push(`<div${ssrRenderAttrs(_attrs)}><h1 id="_236-二叉树的最近公共祖先-lowest-common-ancestor-of-a-binary-tree" tabindex="-1">236. 二叉树的最近公共祖先 (Lowest Common Ancestor of a Binary Tree) <a class="header-anchor" href="#_236-二叉树的最近公共祖先-lowest-common-ancestor-of-a-binary-tree" aria-label="Permalink to &quot;236. 二叉树的最近公共祖先 (Lowest Common Ancestor of a Binary Tree)&quot;">​</a></h1><div class="info custom-block github-alert"><p class="custom-block-title">- 题目描述 (点击展开)</p><p></p><blockquote><p>给定一个二叉树, 找到该树中两个指定节点 <code>p</code> 和 <code>q</code> 的最近公共祖先。 <strong>百度百科中最近公共祖先的定义为：</strong>“对于有根树 T 的两个节点 p、q，最近公共祖先表示为一个节点 x，满足 x 是 p、q 的祖先且 x 的深度尽可能大（一个节点也可以是它自己的祖先）。”</p></blockquote></div><hr><h2 id="💡-解题思路-kasumi-s-memo" tabindex="-1">💡 解题思路 (Kasumi&#39;s Memo) <a class="header-anchor" href="#💡-解题思路-kasumi-s-memo" aria-label="Permalink to &quot;💡 解题思路 (Kasumi&#39;s Memo)&quot;">​</a></h2><h3 id="核心策略-底向上汇报-后序遍历" tabindex="-1">核心策略 (底向上汇报 / 后序遍历) <a class="header-anchor" href="#核心策略-底向上汇报-后序遍历" aria-label="Permalink to &quot;核心策略 (底向上汇报 / 后序遍历)&quot;">​</a></h3><p>彻底抛弃“记录路径再比对”的物理思维，转为**“状态向上传递”**的递归思维。</p><ol><li><strong>第一步（定底线 / Base Case）：</strong> 老板亲自出马。如果当前节点 <code>root</code> 是空气（<code>null</code>），直接向上级返回 <code>null</code>。如果当前节点刚好就是我们要找的 <code>p</code> 或者 <code>q</code>，直接向上级汇报：“我找到目标了，就是我本人！”（返回 <code>root</code>）。</li><li><strong>第二步（派任务 / 信任飞跃）：</strong> 老板派分身去左子树找，拿到左边的汇报结果 <code>left</code>；派分身去右子树找，拿到右边的汇报结果 <code>right</code>。</li><li><strong>第三步（做决策 / 后序位置）：</strong> 根据左右分身的汇报，做出终极审判： <ul><li><strong>情况 A (左右开弓)：</strong> 如果 <code>left</code> 和 <code>right</code> 都有人（都不为空），说明 <code>p</code> 和 <code>q</code> 分居在我的两侧，<strong>那我本人绝对就是最近公共祖先！</strong> 向上级返回 <code>root</code>。</li><li><strong>情况 B &amp; C (单传或扑空)：</strong> 如果左右只有一边有人，说明目标全在那一边（或者找到了其中一个），那我就当个传话筒，把有人的那一边直接递给上级 (<code>return left != null ? left : right</code>)。</li></ul></li></ol><h3 id="为什么选择这个解法" tabindex="-1">为什么选择这个解法？ <a class="header-anchor" href="#为什么选择这个解法" aria-label="Permalink to &quot;为什么选择这个解法？&quot;">​</a></h3><ul><li><strong>降维打击：</strong> 这是 LCA 问题的最优解。不需要维护任何 <code>List</code> 路径数组，不需要繁琐的 <code>for</code> 循环比对。空间复杂度从 `);
+  _push(ssrRenderComponent(_component_mjx_container, {
+    class: "MathJax",
+    jax: "SVG",
+    style: { "direction": "ltr", "position": "relative" }
+  }, {
+    default: withCtx((_, _push2, _parent2, _scopeId) => {
+      if (_push2) {
+        _push2(`<svg style="${ssrRenderStyle({ "overflow": "visible", "min-height": "1px", "min-width": "1px", "vertical-align": "-0.566ex" })}" xmlns="http://www.w3.org/2000/svg" width="5.495ex" height="2.262ex" role="img" focusable="false" viewBox="0 -750 2429 1000" aria-hidden="true"${_scopeId}><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"${_scopeId}><g data-mml-node="math"${_scopeId}><g data-mml-node="mi"${_scopeId}><path data-c="1D442" d="M740 435Q740 320 676 213T511 42T304 -22Q207 -22 138 35T51 201Q50 209 50 244Q50 346 98 438T227 601Q351 704 476 704Q514 704 524 703Q621 689 680 617T740 435ZM637 476Q637 565 591 615T476 665Q396 665 322 605Q242 542 200 428T157 216Q157 126 200 73T314 19Q404 19 485 98T608 313Q637 408 637 476Z" style="${ssrRenderStyle({ "stroke-width": "3" })}"${_scopeId}></path></g><g data-mml-node="mo" transform="translate(763,0)"${_scopeId}><path data-c="28" d="M94 250Q94 319 104 381T127 488T164 576T202 643T244 695T277 729T302 750H315H319Q333 750 333 741Q333 738 316 720T275 667T226 581T184 443T167 250T184 58T225 -81T274 -167T316 -220T333 -241Q333 -250 318 -250H315H302L274 -226Q180 -141 137 -14T94 250Z" style="${ssrRenderStyle({ "stroke-width": "3" })}"${_scopeId}></path></g><g data-mml-node="mi" transform="translate(1152,0)"${_scopeId}><path data-c="1D441" d="M234 637Q231 637 226 637Q201 637 196 638T191 649Q191 676 202 682Q204 683 299 683Q376 683 387 683T401 677Q612 181 616 168L670 381Q723 592 723 606Q723 633 659 637Q635 637 635 648Q635 650 637 660Q641 676 643 679T653 683Q656 683 684 682T767 680Q817 680 843 681T873 682Q888 682 888 672Q888 650 880 642Q878 637 858 637Q787 633 769 597L620 7Q618 0 599 0Q585 0 582 2Q579 5 453 305L326 604L261 344Q196 88 196 79Q201 46 268 46H278Q284 41 284 38T282 19Q278 6 272 0H259Q228 2 151 2Q123 2 100 2T63 2T46 1Q31 1 31 10Q31 14 34 26T39 40Q41 46 62 46Q130 49 150 85Q154 91 221 362L289 634Q287 635 234 637Z" style="${ssrRenderStyle({ "stroke-width": "3" })}"${_scopeId}></path></g><g data-mml-node="mo" transform="translate(2040,0)"${_scopeId}><path data-c="29" d="M60 749L64 750Q69 750 74 750H86L114 726Q208 641 251 514T294 250Q294 182 284 119T261 12T224 -76T186 -143T145 -194T113 -227T90 -246Q87 -249 86 -250H74Q66 -250 63 -250T58 -247T55 -238Q56 -237 66 -225Q221 -64 221 250T66 725Q56 737 55 738Q55 746 60 749Z" style="${ssrRenderStyle({ "stroke-width": "3" })}"${_scopeId}></path></g></g></g></svg>`);
+        _push2(ssrRenderComponent(_component_mjx_assistive_mml, {
+          unselectable: "on",
+          display: "inline",
+          style: { "top": "0px", "left": "0px", "clip": "rect(1px, 1px, 1px, 1px)", "-webkit-touch-callout": "none", "-webkit-user-select": "none", "-khtml-user-select": "none", "-moz-user-select": "none", "-ms-user-select": "none", "user-select": "none", "position": "absolute", "padding": "1px 0px 0px 0px", "border": "0px", "display": "block", "width": "auto", "overflow": "hidden" }
+        }, {
+          default: withCtx((_2, _push3, _parent3, _scopeId2) => {
+            if (_push3) {
+              _push3(`<math xmlns="http://www.w3.org/1998/Math/MathML"${_scopeId2}><mi${_scopeId2}>O</mi><mo stretchy="false"${_scopeId2}>(</mo><mi${_scopeId2}>N</mi><mo stretchy="false"${_scopeId2}>)</mo></math>`);
+            } else {
+              return [
+                (openBlock(), createBlock("math", { xmlns: "http://www.w3.org/1998/Math/MathML" }, [
+                  createVNode("mi", null, "O"),
+                  createVNode("mo", { stretchy: "false" }, "("),
+                  createVNode("mi", null, "N"),
+                  createVNode("mo", { stretchy: "false" }, ")")
+                ]))
+              ];
+            }
+          }),
+          _: 1
+        }, _parent2, _scopeId));
+      } else {
+        return [
+          (openBlock(), createBlock("svg", {
+            style: { "overflow": "visible", "min-height": "1px", "min-width": "1px", "vertical-align": "-0.566ex" },
+            xmlns: "http://www.w3.org/2000/svg",
+            width: "5.495ex",
+            height: "2.262ex",
+            role: "img",
+            focusable: "false",
+            viewBox: "0 -750 2429 1000",
+            "aria-hidden": "true"
+          }, [
+            createVNode("g", {
+              stroke: "currentColor",
+              fill: "currentColor",
+              "stroke-width": "0",
+              transform: "scale(1,-1)"
+            }, [
+              createVNode("g", { "data-mml-node": "math" }, [
+                createVNode("g", { "data-mml-node": "mi" }, [
+                  createVNode("path", {
+                    "data-c": "1D442",
+                    d: "M740 435Q740 320 676 213T511 42T304 -22Q207 -22 138 35T51 201Q50 209 50 244Q50 346 98 438T227 601Q351 704 476 704Q514 704 524 703Q621 689 680 617T740 435ZM637 476Q637 565 591 615T476 665Q396 665 322 605Q242 542 200 428T157 216Q157 126 200 73T314 19Q404 19 485 98T608 313Q637 408 637 476Z",
+                    style: { "stroke-width": "3" }
+                  })
+                ]),
+                createVNode("g", {
+                  "data-mml-node": "mo",
+                  transform: "translate(763,0)"
+                }, [
+                  createVNode("path", {
+                    "data-c": "28",
+                    d: "M94 250Q94 319 104 381T127 488T164 576T202 643T244 695T277 729T302 750H315H319Q333 750 333 741Q333 738 316 720T275 667T226 581T184 443T167 250T184 58T225 -81T274 -167T316 -220T333 -241Q333 -250 318 -250H315H302L274 -226Q180 -141 137 -14T94 250Z",
+                    style: { "stroke-width": "3" }
+                  })
+                ]),
+                createVNode("g", {
+                  "data-mml-node": "mi",
+                  transform: "translate(1152,0)"
+                }, [
+                  createVNode("path", {
+                    "data-c": "1D441",
+                    d: "M234 637Q231 637 226 637Q201 637 196 638T191 649Q191 676 202 682Q204 683 299 683Q376 683 387 683T401 677Q612 181 616 168L670 381Q723 592 723 606Q723 633 659 637Q635 637 635 648Q635 650 637 660Q641 676 643 679T653 683Q656 683 684 682T767 680Q817 680 843 681T873 682Q888 682 888 672Q888 650 880 642Q878 637 858 637Q787 633 769 597L620 7Q618 0 599 0Q585 0 582 2Q579 5 453 305L326 604L261 344Q196 88 196 79Q201 46 268 46H278Q284 41 284 38T282 19Q278 6 272 0H259Q228 2 151 2Q123 2 100 2T63 2T46 1Q31 1 31 10Q31 14 34 26T39 40Q41 46 62 46Q130 49 150 85Q154 91 221 362L289 634Q287 635 234 637Z",
+                    style: { "stroke-width": "3" }
+                  })
+                ]),
+                createVNode("g", {
+                  "data-mml-node": "mo",
+                  transform: "translate(2040,0)"
+                }, [
+                  createVNode("path", {
+                    "data-c": "29",
+                    d: "M60 749L64 750Q69 750 74 750H86L114 726Q208 641 251 514T294 250Q294 182 284 119T261 12T224 -76T186 -143T145 -194T113 -227T90 -246Q87 -249 86 -250H74Q66 -250 63 -250T58 -247T55 -238Q56 -237 66 -225Q221 -64 221 250T66 725Q56 737 55 738Q55 746 60 749Z",
+                    style: { "stroke-width": "3" }
+                  })
+                ])
+              ])
+            ])
+          ])),
+          createVNode(_component_mjx_assistive_mml, {
+            unselectable: "on",
+            display: "inline",
+            style: { "top": "0px", "left": "0px", "clip": "rect(1px, 1px, 1px, 1px)", "-webkit-touch-callout": "none", "-webkit-user-select": "none", "-khtml-user-select": "none", "-moz-user-select": "none", "-ms-user-select": "none", "user-select": "none", "position": "absolute", "padding": "1px 0px 0px 0px", "border": "0px", "display": "block", "width": "auto", "overflow": "hidden" }
+          }, {
+            default: withCtx(() => [
+              (openBlock(), createBlock("math", { xmlns: "http://www.w3.org/1998/Math/MathML" }, [
+                createVNode("mi", null, "O"),
+                createVNode("mo", { stretchy: "false" }, "("),
+                createVNode("mi", null, "N"),
+                createVNode("mo", { stretchy: "false" }, ")")
+              ]))
+            ]),
+            _: 1
+          })
+        ];
+      }
+    }),
+    _: 1
+  }, _parent));
+  _push(` 的显式数组降维到了 `);
+  _push(ssrRenderComponent(_component_mjx_container, {
+    class: "MathJax",
+    jax: "SVG",
+    style: { "direction": "ltr", "position": "relative" }
+  }, {
+    default: withCtx((_, _push2, _parent2, _scopeId) => {
+      if (_push2) {
+        _push2(`<svg style="${ssrRenderStyle({ "overflow": "visible", "min-height": "1px", "min-width": "1px", "vertical-align": "-0.566ex" })}" xmlns="http://www.w3.org/2000/svg" width="4.618ex" height="2.262ex" role="img" focusable="false" viewBox="0 -750 2041 1000" aria-hidden="true"${_scopeId}><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"${_scopeId}><g data-mml-node="math"${_scopeId}><g data-mml-node="mi"${_scopeId}><path data-c="1D442" d="M740 435Q740 320 676 213T511 42T304 -22Q207 -22 138 35T51 201Q50 209 50 244Q50 346 98 438T227 601Q351 704 476 704Q514 704 524 703Q621 689 680 617T740 435ZM637 476Q637 565 591 615T476 665Q396 665 322 605Q242 542 200 428T157 216Q157 126 200 73T314 19Q404 19 485 98T608 313Q637 408 637 476Z" style="${ssrRenderStyle({ "stroke-width": "3" })}"${_scopeId}></path></g><g data-mml-node="mo" transform="translate(763,0)"${_scopeId}><path data-c="28" d="M94 250Q94 319 104 381T127 488T164 576T202 643T244 695T277 729T302 750H315H319Q333 750 333 741Q333 738 316 720T275 667T226 581T184 443T167 250T184 58T225 -81T274 -167T316 -220T333 -241Q333 -250 318 -250H315H302L274 -226Q180 -141 137 -14T94 250Z" style="${ssrRenderStyle({ "stroke-width": "3" })}"${_scopeId}></path></g><g data-mml-node="mn" transform="translate(1152,0)"${_scopeId}><path data-c="31" d="M213 578L200 573Q186 568 160 563T102 556H83V602H102Q149 604 189 617T245 641T273 663Q275 666 285 666Q294 666 302 660V361L303 61Q310 54 315 52T339 48T401 46H427V0H416Q395 3 257 3Q121 3 100 0H88V46H114Q136 46 152 46T177 47T193 50T201 52T207 57T213 61V578Z" style="${ssrRenderStyle({ "stroke-width": "3" })}"${_scopeId}></path></g><g data-mml-node="mo" transform="translate(1652,0)"${_scopeId}><path data-c="29" d="M60 749L64 750Q69 750 74 750H86L114 726Q208 641 251 514T294 250Q294 182 284 119T261 12T224 -76T186 -143T145 -194T113 -227T90 -246Q87 -249 86 -250H74Q66 -250 63 -250T58 -247T55 -238Q56 -237 66 -225Q221 -64 221 250T66 725Q56 737 55 738Q55 746 60 749Z" style="${ssrRenderStyle({ "stroke-width": "3" })}"${_scopeId}></path></g></g></g></svg>`);
+        _push2(ssrRenderComponent(_component_mjx_assistive_mml, {
+          unselectable: "on",
+          display: "inline",
+          style: { "top": "0px", "left": "0px", "clip": "rect(1px, 1px, 1px, 1px)", "-webkit-touch-callout": "none", "-webkit-user-select": "none", "-khtml-user-select": "none", "-moz-user-select": "none", "-ms-user-select": "none", "user-select": "none", "position": "absolute", "padding": "1px 0px 0px 0px", "border": "0px", "display": "block", "width": "auto", "overflow": "hidden" }
+        }, {
+          default: withCtx((_2, _push3, _parent3, _scopeId2) => {
+            if (_push3) {
+              _push3(`<math xmlns="http://www.w3.org/1998/Math/MathML"${_scopeId2}><mi${_scopeId2}>O</mi><mo stretchy="false"${_scopeId2}>(</mo><mn${_scopeId2}>1</mn><mo stretchy="false"${_scopeId2}>)</mo></math>`);
+            } else {
+              return [
+                (openBlock(), createBlock("math", { xmlns: "http://www.w3.org/1998/Math/MathML" }, [
+                  createVNode("mi", null, "O"),
+                  createVNode("mo", { stretchy: "false" }, "("),
+                  createVNode("mn", null, "1"),
+                  createVNode("mo", { stretchy: "false" }, ")")
+                ]))
+              ];
+            }
+          }),
+          _: 1
+        }, _parent2, _scopeId));
+      } else {
+        return [
+          (openBlock(), createBlock("svg", {
+            style: { "overflow": "visible", "min-height": "1px", "min-width": "1px", "vertical-align": "-0.566ex" },
+            xmlns: "http://www.w3.org/2000/svg",
+            width: "4.618ex",
+            height: "2.262ex",
+            role: "img",
+            focusable: "false",
+            viewBox: "0 -750 2041 1000",
+            "aria-hidden": "true"
+          }, [
+            createVNode("g", {
+              stroke: "currentColor",
+              fill: "currentColor",
+              "stroke-width": "0",
+              transform: "scale(1,-1)"
+            }, [
+              createVNode("g", { "data-mml-node": "math" }, [
+                createVNode("g", { "data-mml-node": "mi" }, [
+                  createVNode("path", {
+                    "data-c": "1D442",
+                    d: "M740 435Q740 320 676 213T511 42T304 -22Q207 -22 138 35T51 201Q50 209 50 244Q50 346 98 438T227 601Q351 704 476 704Q514 704 524 703Q621 689 680 617T740 435ZM637 476Q637 565 591 615T476 665Q396 665 322 605Q242 542 200 428T157 216Q157 126 200 73T314 19Q404 19 485 98T608 313Q637 408 637 476Z",
+                    style: { "stroke-width": "3" }
+                  })
+                ]),
+                createVNode("g", {
+                  "data-mml-node": "mo",
+                  transform: "translate(763,0)"
+                }, [
+                  createVNode("path", {
+                    "data-c": "28",
+                    d: "M94 250Q94 319 104 381T127 488T164 576T202 643T244 695T277 729T302 750H315H319Q333 750 333 741Q333 738 316 720T275 667T226 581T184 443T167 250T184 58T225 -81T274 -167T316 -220T333 -241Q333 -250 318 -250H315H302L274 -226Q180 -141 137 -14T94 250Z",
+                    style: { "stroke-width": "3" }
+                  })
+                ]),
+                createVNode("g", {
+                  "data-mml-node": "mn",
+                  transform: "translate(1152,0)"
+                }, [
+                  createVNode("path", {
+                    "data-c": "31",
+                    d: "M213 578L200 573Q186 568 160 563T102 556H83V602H102Q149 604 189 617T245 641T273 663Q275 666 285 666Q294 666 302 660V361L303 61Q310 54 315 52T339 48T401 46H427V0H416Q395 3 257 3Q121 3 100 0H88V46H114Q136 46 152 46T177 47T193 50T201 52T207 57T213 61V578Z",
+                    style: { "stroke-width": "3" }
+                  })
+                ]),
+                createVNode("g", {
+                  "data-mml-node": "mo",
+                  transform: "translate(1652,0)"
+                }, [
+                  createVNode("path", {
+                    "data-c": "29",
+                    d: "M60 749L64 750Q69 750 74 750H86L114 726Q208 641 251 514T294 250Q294 182 284 119T261 12T224 -76T186 -143T145 -194T113 -227T90 -246Q87 -249 86 -250H74Q66 -250 63 -250T58 -247T55 -238Q56 -237 66 -225Q221 -64 221 250T66 725Q56 737 55 738Q55 746 60 749Z",
+                    style: { "stroke-width": "3" }
+                  })
+                ])
+              ])
+            ])
+          ])),
+          createVNode(_component_mjx_assistive_mml, {
+            unselectable: "on",
+            display: "inline",
+            style: { "top": "0px", "left": "0px", "clip": "rect(1px, 1px, 1px, 1px)", "-webkit-touch-callout": "none", "-webkit-user-select": "none", "-khtml-user-select": "none", "-moz-user-select": "none", "-ms-user-select": "none", "user-select": "none", "position": "absolute", "padding": "1px 0px 0px 0px", "border": "0px", "display": "block", "width": "auto", "overflow": "hidden" }
+          }, {
+            default: withCtx(() => [
+              (openBlock(), createBlock("math", { xmlns: "http://www.w3.org/1998/Math/MathML" }, [
+                createVNode("mi", null, "O"),
+                createVNode("mo", { stretchy: "false" }, "("),
+                createVNode("mn", null, "1"),
+                createVNode("mo", { stretchy: "false" }, ")")
+              ]))
+            ]),
+            _: 1
+          })
+        ];
+      }
+    }),
+    _: 1
+  }, _parent));
+  _push(`（仅剩系统栈开销），代码极度优雅。</li></ul><hr><h2 id="💻-代码实现-java" tabindex="-1">💻 代码实现 (Java) <a class="header-anchor" href="#💻-代码实现-java" aria-label="Permalink to &quot;💻 代码实现 (Java)&quot;">​</a></h2><div class="language-java vp-adaptive-theme line-numbers-mode"><button title="Copy Code" class="copy"></button><span class="lang">java</span><pre class="shiki shiki-themes github-light github-dark vp-code" tabindex="0"><code><span class="line"><span style="${ssrRenderStyle({ "--shiki-light": "#D73A49", "--shiki-dark": "#F97583" })}">class</span><span style="${ssrRenderStyle({ "--shiki-light": "#6F42C1", "--shiki-dark": "#B392F0" })}"> Solution</span><span style="${ssrRenderStyle({ "--shiki-light": "#24292E", "--shiki-dark": "#E1E4E8" })}"> {</span></span>
+<span class="line"><span style="${ssrRenderStyle({ "--shiki-light": "#D73A49", "--shiki-dark": "#F97583" })}">    public</span><span style="${ssrRenderStyle({ "--shiki-light": "#24292E", "--shiki-dark": "#E1E4E8" })}"> TreeNode </span><span style="${ssrRenderStyle({ "--shiki-light": "#6F42C1", "--shiki-dark": "#B392F0" })}">lowestCommonAncestor</span><span style="${ssrRenderStyle({ "--shiki-light": "#24292E", "--shiki-dark": "#E1E4E8" })}">(TreeNode </span><span style="${ssrRenderStyle({ "--shiki-light": "#E36209", "--shiki-dark": "#FFAB70" })}">root</span><span style="${ssrRenderStyle({ "--shiki-light": "#24292E", "--shiki-dark": "#E1E4E8" })}">, TreeNode </span><span style="${ssrRenderStyle({ "--shiki-light": "#E36209", "--shiki-dark": "#FFAB70" })}">p</span><span style="${ssrRenderStyle({ "--shiki-light": "#24292E", "--shiki-dark": "#E1E4E8" })}">, TreeNode </span><span style="${ssrRenderStyle({ "--shiki-light": "#E36209", "--shiki-dark": "#FFAB70" })}">q</span><span style="${ssrRenderStyle({ "--shiki-light": "#24292E", "--shiki-dark": "#E1E4E8" })}">) {</span></span>
+<span class="line"><span style="${ssrRenderStyle({ "--shiki-light": "#6A737D", "--shiki-dark": "#6A737D" })}">        // 1. 递归的尽头，或者直接命中了目标</span></span>
+<span class="line"><span style="${ssrRenderStyle({ "--shiki-light": "#D73A49", "--shiki-dark": "#F97583" })}">        if</span><span style="${ssrRenderStyle({ "--shiki-light": "#24292E", "--shiki-dark": "#E1E4E8" })}"> (root </span><span style="${ssrRenderStyle({ "--shiki-light": "#D73A49", "--shiki-dark": "#F97583" })}">==</span><span style="${ssrRenderStyle({ "--shiki-light": "#005CC5", "--shiki-dark": "#79B8FF" })}"> null</span><span style="${ssrRenderStyle({ "--shiki-light": "#D73A49", "--shiki-dark": "#F97583" })}"> ||</span><span style="${ssrRenderStyle({ "--shiki-light": "#24292E", "--shiki-dark": "#E1E4E8" })}"> root </span><span style="${ssrRenderStyle({ "--shiki-light": "#D73A49", "--shiki-dark": "#F97583" })}">==</span><span style="${ssrRenderStyle({ "--shiki-light": "#24292E", "--shiki-dark": "#E1E4E8" })}"> p </span><span style="${ssrRenderStyle({ "--shiki-light": "#D73A49", "--shiki-dark": "#F97583" })}">||</span><span style="${ssrRenderStyle({ "--shiki-light": "#24292E", "--shiki-dark": "#E1E4E8" })}"> root </span><span style="${ssrRenderStyle({ "--shiki-light": "#D73A49", "--shiki-dark": "#F97583" })}">==</span><span style="${ssrRenderStyle({ "--shiki-light": "#24292E", "--shiki-dark": "#E1E4E8" })}"> q) {</span></span>
+<span class="line"><span style="${ssrRenderStyle({ "--shiki-light": "#D73A49", "--shiki-dark": "#F97583" })}">            return</span><span style="${ssrRenderStyle({ "--shiki-light": "#24292E", "--shiki-dark": "#E1E4E8" })}"> root;</span></span>
+<span class="line"><span style="${ssrRenderStyle({ "--shiki-light": "#24292E", "--shiki-dark": "#E1E4E8" })}">        }</span></span>
+<span class="line"></span>
+<span class="line"><span style="${ssrRenderStyle({ "--shiki-light": "#6A737D", "--shiki-dark": "#6A737D" })}">        // 2. 无条件信任分身，去左右子树搜寻</span></span>
+<span class="line"><span style="${ssrRenderStyle({ "--shiki-light": "#24292E", "--shiki-dark": "#E1E4E8" })}">        TreeNode left </span><span style="${ssrRenderStyle({ "--shiki-light": "#D73A49", "--shiki-dark": "#F97583" })}">=</span><span style="${ssrRenderStyle({ "--shiki-light": "#6F42C1", "--shiki-dark": "#B392F0" })}"> lowestCommonAncestor</span><span style="${ssrRenderStyle({ "--shiki-light": "#24292E", "--shiki-dark": "#E1E4E8" })}">(root.left, p, q);</span></span>
+<span class="line"><span style="${ssrRenderStyle({ "--shiki-light": "#24292E", "--shiki-dark": "#E1E4E8" })}">        TreeNode right </span><span style="${ssrRenderStyle({ "--shiki-light": "#D73A49", "--shiki-dark": "#F97583" })}">=</span><span style="${ssrRenderStyle({ "--shiki-light": "#6F42C1", "--shiki-dark": "#B392F0" })}"> lowestCommonAncestor</span><span style="${ssrRenderStyle({ "--shiki-light": "#24292E", "--shiki-dark": "#E1E4E8" })}">(root.right, p, q);</span></span>
+<span class="line"></span>
+<span class="line"><span style="${ssrRenderStyle({ "--shiki-light": "#6A737D", "--shiki-dark": "#6A737D" })}">        // 3. 核心决策 (后序遍历：拿着子树的结果做决定)</span></span>
+<span class="line"><span style="${ssrRenderStyle({ "--shiki-light": "#6A737D", "--shiki-dark": "#6A737D" })}">        // 既然左边找到一个，右边找到一个，那我必然是你们的公共祖先！</span></span>
+<span class="line"><span style="${ssrRenderStyle({ "--shiki-light": "#D73A49", "--shiki-dark": "#F97583" })}">        if</span><span style="${ssrRenderStyle({ "--shiki-light": "#24292E", "--shiki-dark": "#E1E4E8" })}"> (left </span><span style="${ssrRenderStyle({ "--shiki-light": "#D73A49", "--shiki-dark": "#F97583" })}">!=</span><span style="${ssrRenderStyle({ "--shiki-light": "#005CC5", "--shiki-dark": "#79B8FF" })}"> null</span><span style="${ssrRenderStyle({ "--shiki-light": "#D73A49", "--shiki-dark": "#F97583" })}"> &amp;&amp;</span><span style="${ssrRenderStyle({ "--shiki-light": "#24292E", "--shiki-dark": "#E1E4E8" })}"> right </span><span style="${ssrRenderStyle({ "--shiki-light": "#D73A49", "--shiki-dark": "#F97583" })}">!=</span><span style="${ssrRenderStyle({ "--shiki-light": "#005CC5", "--shiki-dark": "#79B8FF" })}"> null</span><span style="${ssrRenderStyle({ "--shiki-light": "#24292E", "--shiki-dark": "#E1E4E8" })}">) {</span></span>
+<span class="line"><span style="${ssrRenderStyle({ "--shiki-light": "#D73A49", "--shiki-dark": "#F97583" })}">            return</span><span style="${ssrRenderStyle({ "--shiki-light": "#24292E", "--shiki-dark": "#E1E4E8" })}"> root;</span></span>
+<span class="line"><span style="${ssrRenderStyle({ "--shiki-light": "#24292E", "--shiki-dark": "#E1E4E8" })}">        }</span></span>
+<span class="line"></span>
+<span class="line"><span style="${ssrRenderStyle({ "--shiki-light": "#6A737D", "--shiki-dark": "#6A737D" })}">        // 否则，哪边找到了目标，我就把哪边的结果继续往上传递</span></span>
+<span class="line"><span style="${ssrRenderStyle({ "--shiki-light": "#D73A49", "--shiki-dark": "#F97583" })}">        return</span><span style="${ssrRenderStyle({ "--shiki-light": "#24292E", "--shiki-dark": "#E1E4E8" })}"> left </span><span style="${ssrRenderStyle({ "--shiki-light": "#D73A49", "--shiki-dark": "#F97583" })}">!=</span><span style="${ssrRenderStyle({ "--shiki-light": "#005CC5", "--shiki-dark": "#79B8FF" })}"> null</span><span style="${ssrRenderStyle({ "--shiki-light": "#D73A49", "--shiki-dark": "#F97583" })}"> ?</span><span style="${ssrRenderStyle({ "--shiki-light": "#24292E", "--shiki-dark": "#E1E4E8" })}"> left </span><span style="${ssrRenderStyle({ "--shiki-light": "#D73A49", "--shiki-dark": "#F97583" })}">:</span><span style="${ssrRenderStyle({ "--shiki-light": "#24292E", "--shiki-dark": "#E1E4E8" })}"> right;</span></span>
+<span class="line"><span style="${ssrRenderStyle({ "--shiki-light": "#24292E", "--shiki-dark": "#E1E4E8" })}">    }</span></span>
+<span class="line"><span style="${ssrRenderStyle({ "--shiki-light": "#24292E", "--shiki-dark": "#E1E4E8" })}">}</span></span></code></pre><div class="line-numbers-wrapper" aria-hidden="true"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br></div></div><hr><h2 id="📊-复杂度分析" tabindex="-1">📊 复杂度分析 <a class="header-anchor" href="#📊-复杂度分析" aria-label="Permalink to &quot;📊 复杂度分析&quot;">​</a></h2><ul><li><strong>时间复杂度：</strong> `);
+  _push(ssrRenderComponent(_component_mjx_container, {
+    class: "MathJax",
+    jax: "SVG",
+    style: { "direction": "ltr", "position": "relative" }
+  }, {
+    default: withCtx((_, _push2, _parent2, _scopeId) => {
+      if (_push2) {
+        _push2(`<svg style="${ssrRenderStyle({ "overflow": "visible", "min-height": "1px", "min-width": "1px", "vertical-align": "-0.566ex" })}" xmlns="http://www.w3.org/2000/svg" width="5.495ex" height="2.262ex" role="img" focusable="false" viewBox="0 -750 2429 1000" aria-hidden="true"${_scopeId}><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"${_scopeId}><g data-mml-node="math"${_scopeId}><g data-mml-node="mi"${_scopeId}><path data-c="1D442" d="M740 435Q740 320 676 213T511 42T304 -22Q207 -22 138 35T51 201Q50 209 50 244Q50 346 98 438T227 601Q351 704 476 704Q514 704 524 703Q621 689 680 617T740 435ZM637 476Q637 565 591 615T476 665Q396 665 322 605Q242 542 200 428T157 216Q157 126 200 73T314 19Q404 19 485 98T608 313Q637 408 637 476Z" style="${ssrRenderStyle({ "stroke-width": "3" })}"${_scopeId}></path></g><g data-mml-node="mo" transform="translate(763,0)"${_scopeId}><path data-c="28" d="M94 250Q94 319 104 381T127 488T164 576T202 643T244 695T277 729T302 750H315H319Q333 750 333 741Q333 738 316 720T275 667T226 581T184 443T167 250T184 58T225 -81T274 -167T316 -220T333 -241Q333 -250 318 -250H315H302L274 -226Q180 -141 137 -14T94 250Z" style="${ssrRenderStyle({ "stroke-width": "3" })}"${_scopeId}></path></g><g data-mml-node="mi" transform="translate(1152,0)"${_scopeId}><path data-c="1D441" d="M234 637Q231 637 226 637Q201 637 196 638T191 649Q191 676 202 682Q204 683 299 683Q376 683 387 683T401 677Q612 181 616 168L670 381Q723 592 723 606Q723 633 659 637Q635 637 635 648Q635 650 637 660Q641 676 643 679T653 683Q656 683 684 682T767 680Q817 680 843 681T873 682Q888 682 888 672Q888 650 880 642Q878 637 858 637Q787 633 769 597L620 7Q618 0 599 0Q585 0 582 2Q579 5 453 305L326 604L261 344Q196 88 196 79Q201 46 268 46H278Q284 41 284 38T282 19Q278 6 272 0H259Q228 2 151 2Q123 2 100 2T63 2T46 1Q31 1 31 10Q31 14 34 26T39 40Q41 46 62 46Q130 49 150 85Q154 91 221 362L289 634Q287 635 234 637Z" style="${ssrRenderStyle({ "stroke-width": "3" })}"${_scopeId}></path></g><g data-mml-node="mo" transform="translate(2040,0)"${_scopeId}><path data-c="29" d="M60 749L64 750Q69 750 74 750H86L114 726Q208 641 251 514T294 250Q294 182 284 119T261 12T224 -76T186 -143T145 -194T113 -227T90 -246Q87 -249 86 -250H74Q66 -250 63 -250T58 -247T55 -238Q56 -237 66 -225Q221 -64 221 250T66 725Q56 737 55 738Q55 746 60 749Z" style="${ssrRenderStyle({ "stroke-width": "3" })}"${_scopeId}></path></g></g></g></svg>`);
+        _push2(ssrRenderComponent(_component_mjx_assistive_mml, {
+          unselectable: "on",
+          display: "inline",
+          style: { "top": "0px", "left": "0px", "clip": "rect(1px, 1px, 1px, 1px)", "-webkit-touch-callout": "none", "-webkit-user-select": "none", "-khtml-user-select": "none", "-moz-user-select": "none", "-ms-user-select": "none", "user-select": "none", "position": "absolute", "padding": "1px 0px 0px 0px", "border": "0px", "display": "block", "width": "auto", "overflow": "hidden" }
+        }, {
+          default: withCtx((_2, _push3, _parent3, _scopeId2) => {
+            if (_push3) {
+              _push3(`<math xmlns="http://www.w3.org/1998/Math/MathML"${_scopeId2}><mi${_scopeId2}>O</mi><mo stretchy="false"${_scopeId2}>(</mo><mi${_scopeId2}>N</mi><mo stretchy="false"${_scopeId2}>)</mo></math>`);
+            } else {
+              return [
+                (openBlock(), createBlock("math", { xmlns: "http://www.w3.org/1998/Math/MathML" }, [
+                  createVNode("mi", null, "O"),
+                  createVNode("mo", { stretchy: "false" }, "("),
+                  createVNode("mi", null, "N"),
+                  createVNode("mo", { stretchy: "false" }, ")")
+                ]))
+              ];
+            }
+          }),
+          _: 1
+        }, _parent2, _scopeId));
+      } else {
+        return [
+          (openBlock(), createBlock("svg", {
+            style: { "overflow": "visible", "min-height": "1px", "min-width": "1px", "vertical-align": "-0.566ex" },
+            xmlns: "http://www.w3.org/2000/svg",
+            width: "5.495ex",
+            height: "2.262ex",
+            role: "img",
+            focusable: "false",
+            viewBox: "0 -750 2429 1000",
+            "aria-hidden": "true"
+          }, [
+            createVNode("g", {
+              stroke: "currentColor",
+              fill: "currentColor",
+              "stroke-width": "0",
+              transform: "scale(1,-1)"
+            }, [
+              createVNode("g", { "data-mml-node": "math" }, [
+                createVNode("g", { "data-mml-node": "mi" }, [
+                  createVNode("path", {
+                    "data-c": "1D442",
+                    d: "M740 435Q740 320 676 213T511 42T304 -22Q207 -22 138 35T51 201Q50 209 50 244Q50 346 98 438T227 601Q351 704 476 704Q514 704 524 703Q621 689 680 617T740 435ZM637 476Q637 565 591 615T476 665Q396 665 322 605Q242 542 200 428T157 216Q157 126 200 73T314 19Q404 19 485 98T608 313Q637 408 637 476Z",
+                    style: { "stroke-width": "3" }
+                  })
+                ]),
+                createVNode("g", {
+                  "data-mml-node": "mo",
+                  transform: "translate(763,0)"
+                }, [
+                  createVNode("path", {
+                    "data-c": "28",
+                    d: "M94 250Q94 319 104 381T127 488T164 576T202 643T244 695T277 729T302 750H315H319Q333 750 333 741Q333 738 316 720T275 667T226 581T184 443T167 250T184 58T225 -81T274 -167T316 -220T333 -241Q333 -250 318 -250H315H302L274 -226Q180 -141 137 -14T94 250Z",
+                    style: { "stroke-width": "3" }
+                  })
+                ]),
+                createVNode("g", {
+                  "data-mml-node": "mi",
+                  transform: "translate(1152,0)"
+                }, [
+                  createVNode("path", {
+                    "data-c": "1D441",
+                    d: "M234 637Q231 637 226 637Q201 637 196 638T191 649Q191 676 202 682Q204 683 299 683Q376 683 387 683T401 677Q612 181 616 168L670 381Q723 592 723 606Q723 633 659 637Q635 637 635 648Q635 650 637 660Q641 676 643 679T653 683Q656 683 684 682T767 680Q817 680 843 681T873 682Q888 682 888 672Q888 650 880 642Q878 637 858 637Q787 633 769 597L620 7Q618 0 599 0Q585 0 582 2Q579 5 453 305L326 604L261 344Q196 88 196 79Q201 46 268 46H278Q284 41 284 38T282 19Q278 6 272 0H259Q228 2 151 2Q123 2 100 2T63 2T46 1Q31 1 31 10Q31 14 34 26T39 40Q41 46 62 46Q130 49 150 85Q154 91 221 362L289 634Q287 635 234 637Z",
+                    style: { "stroke-width": "3" }
+                  })
+                ]),
+                createVNode("g", {
+                  "data-mml-node": "mo",
+                  transform: "translate(2040,0)"
+                }, [
+                  createVNode("path", {
+                    "data-c": "29",
+                    d: "M60 749L64 750Q69 750 74 750H86L114 726Q208 641 251 514T294 250Q294 182 284 119T261 12T224 -76T186 -143T145 -194T113 -227T90 -246Q87 -249 86 -250H74Q66 -250 63 -250T58 -247T55 -238Q56 -237 66 -225Q221 -64 221 250T66 725Q56 737 55 738Q55 746 60 749Z",
+                    style: { "stroke-width": "3" }
+                  })
+                ])
+              ])
+            ])
+          ])),
+          createVNode(_component_mjx_assistive_mml, {
+            unselectable: "on",
+            display: "inline",
+            style: { "top": "0px", "left": "0px", "clip": "rect(1px, 1px, 1px, 1px)", "-webkit-touch-callout": "none", "-webkit-user-select": "none", "-khtml-user-select": "none", "-moz-user-select": "none", "-ms-user-select": "none", "user-select": "none", "position": "absolute", "padding": "1px 0px 0px 0px", "border": "0px", "display": "block", "width": "auto", "overflow": "hidden" }
+          }, {
+            default: withCtx(() => [
+              (openBlock(), createBlock("math", { xmlns: "http://www.w3.org/1998/Math/MathML" }, [
+                createVNode("mi", null, "O"),
+                createVNode("mo", { stretchy: "false" }, "("),
+                createVNode("mi", null, "N"),
+                createVNode("mo", { stretchy: "false" }, ")")
+              ]))
+            ]),
+            _: 1
+          })
+        ];
+      }
+    }),
+    _: 1
+  }, _parent));
+  _push(`<ul><li><em>分析：</em> 最坏情况下（树退化成链表，且目标在最底部），我们需要访问树中的所有节点。</li></ul></li><li><strong>空间复杂度：</strong> `);
+  _push(ssrRenderComponent(_component_mjx_container, {
+    class: "MathJax",
+    jax: "SVG",
+    style: { "direction": "ltr", "position": "relative" }
+  }, {
+    default: withCtx((_, _push2, _parent2, _scopeId) => {
+      if (_push2) {
+        _push2(`<svg style="${ssrRenderStyle({ "overflow": "visible", "min-height": "1px", "min-width": "1px", "vertical-align": "-0.566ex" })}" xmlns="http://www.w3.org/2000/svg" width="5.495ex" height="2.262ex" role="img" focusable="false" viewBox="0 -750 2429 1000" aria-hidden="true"${_scopeId}><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"${_scopeId}><g data-mml-node="math"${_scopeId}><g data-mml-node="mi"${_scopeId}><path data-c="1D442" d="M740 435Q740 320 676 213T511 42T304 -22Q207 -22 138 35T51 201Q50 209 50 244Q50 346 98 438T227 601Q351 704 476 704Q514 704 524 703Q621 689 680 617T740 435ZM637 476Q637 565 591 615T476 665Q396 665 322 605Q242 542 200 428T157 216Q157 126 200 73T314 19Q404 19 485 98T608 313Q637 408 637 476Z" style="${ssrRenderStyle({ "stroke-width": "3" })}"${_scopeId}></path></g><g data-mml-node="mo" transform="translate(763,0)"${_scopeId}><path data-c="28" d="M94 250Q94 319 104 381T127 488T164 576T202 643T244 695T277 729T302 750H315H319Q333 750 333 741Q333 738 316 720T275 667T226 581T184 443T167 250T184 58T225 -81T274 -167T316 -220T333 -241Q333 -250 318 -250H315H302L274 -226Q180 -141 137 -14T94 250Z" style="${ssrRenderStyle({ "stroke-width": "3" })}"${_scopeId}></path></g><g data-mml-node="mi" transform="translate(1152,0)"${_scopeId}><path data-c="1D43B" d="M228 637Q194 637 192 641Q191 643 191 649Q191 673 202 682Q204 683 219 683Q260 681 355 681Q389 681 418 681T463 682T483 682Q499 682 499 672Q499 670 497 658Q492 641 487 638H485Q483 638 480 638T473 638T464 637T455 637Q416 636 405 634T387 623Q384 619 355 500Q348 474 340 442T328 395L324 380Q324 378 469 378H614L615 381Q615 384 646 504Q674 619 674 627T617 637Q594 637 587 639T580 648Q580 650 582 660Q586 677 588 679T604 682Q609 682 646 681T740 680Q802 680 835 681T871 682Q888 682 888 672Q888 645 876 638H874Q872 638 869 638T862 638T853 637T844 637Q805 636 794 634T776 623Q773 618 704 340T634 58Q634 51 638 51Q646 48 692 46H723Q729 38 729 37T726 19Q722 6 716 0H701Q664 2 567 2Q533 2 504 2T458 2T437 1Q420 1 420 10Q420 15 423 24Q428 43 433 45Q437 46 448 46H454Q481 46 514 49Q520 50 522 50T528 55T534 64T540 82T547 110T558 153Q565 181 569 198Q602 330 602 331T457 332H312L279 197Q245 63 245 58Q245 51 253 49T303 46H334Q340 38 340 37T337 19Q333 6 327 0H312Q275 2 178 2Q144 2 115 2T69 2T48 1Q31 1 31 10Q31 12 34 24Q39 43 44 45Q48 46 59 46H65Q92 46 125 49Q139 52 144 61Q147 65 216 339T285 628Q285 635 228 637Z" style="${ssrRenderStyle({ "stroke-width": "3" })}"${_scopeId}></path></g><g data-mml-node="mo" transform="translate(2040,0)"${_scopeId}><path data-c="29" d="M60 749L64 750Q69 750 74 750H86L114 726Q208 641 251 514T294 250Q294 182 284 119T261 12T224 -76T186 -143T145 -194T113 -227T90 -246Q87 -249 86 -250H74Q66 -250 63 -250T58 -247T55 -238Q56 -237 66 -225Q221 -64 221 250T66 725Q56 737 55 738Q55 746 60 749Z" style="${ssrRenderStyle({ "stroke-width": "3" })}"${_scopeId}></path></g></g></g></svg>`);
+        _push2(ssrRenderComponent(_component_mjx_assistive_mml, {
+          unselectable: "on",
+          display: "inline",
+          style: { "top": "0px", "left": "0px", "clip": "rect(1px, 1px, 1px, 1px)", "-webkit-touch-callout": "none", "-webkit-user-select": "none", "-khtml-user-select": "none", "-moz-user-select": "none", "-ms-user-select": "none", "user-select": "none", "position": "absolute", "padding": "1px 0px 0px 0px", "border": "0px", "display": "block", "width": "auto", "overflow": "hidden" }
+        }, {
+          default: withCtx((_2, _push3, _parent3, _scopeId2) => {
+            if (_push3) {
+              _push3(`<math xmlns="http://www.w3.org/1998/Math/MathML"${_scopeId2}><mi${_scopeId2}>O</mi><mo stretchy="false"${_scopeId2}>(</mo><mi${_scopeId2}>H</mi><mo stretchy="false"${_scopeId2}>)</mo></math>`);
+            } else {
+              return [
+                (openBlock(), createBlock("math", { xmlns: "http://www.w3.org/1998/Math/MathML" }, [
+                  createVNode("mi", null, "O"),
+                  createVNode("mo", { stretchy: "false" }, "("),
+                  createVNode("mi", null, "H"),
+                  createVNode("mo", { stretchy: "false" }, ")")
+                ]))
+              ];
+            }
+          }),
+          _: 1
+        }, _parent2, _scopeId));
+      } else {
+        return [
+          (openBlock(), createBlock("svg", {
+            style: { "overflow": "visible", "min-height": "1px", "min-width": "1px", "vertical-align": "-0.566ex" },
+            xmlns: "http://www.w3.org/2000/svg",
+            width: "5.495ex",
+            height: "2.262ex",
+            role: "img",
+            focusable: "false",
+            viewBox: "0 -750 2429 1000",
+            "aria-hidden": "true"
+          }, [
+            createVNode("g", {
+              stroke: "currentColor",
+              fill: "currentColor",
+              "stroke-width": "0",
+              transform: "scale(1,-1)"
+            }, [
+              createVNode("g", { "data-mml-node": "math" }, [
+                createVNode("g", { "data-mml-node": "mi" }, [
+                  createVNode("path", {
+                    "data-c": "1D442",
+                    d: "M740 435Q740 320 676 213T511 42T304 -22Q207 -22 138 35T51 201Q50 209 50 244Q50 346 98 438T227 601Q351 704 476 704Q514 704 524 703Q621 689 680 617T740 435ZM637 476Q637 565 591 615T476 665Q396 665 322 605Q242 542 200 428T157 216Q157 126 200 73T314 19Q404 19 485 98T608 313Q637 408 637 476Z",
+                    style: { "stroke-width": "3" }
+                  })
+                ]),
+                createVNode("g", {
+                  "data-mml-node": "mo",
+                  transform: "translate(763,0)"
+                }, [
+                  createVNode("path", {
+                    "data-c": "28",
+                    d: "M94 250Q94 319 104 381T127 488T164 576T202 643T244 695T277 729T302 750H315H319Q333 750 333 741Q333 738 316 720T275 667T226 581T184 443T167 250T184 58T225 -81T274 -167T316 -220T333 -241Q333 -250 318 -250H315H302L274 -226Q180 -141 137 -14T94 250Z",
+                    style: { "stroke-width": "3" }
+                  })
+                ]),
+                createVNode("g", {
+                  "data-mml-node": "mi",
+                  transform: "translate(1152,0)"
+                }, [
+                  createVNode("path", {
+                    "data-c": "1D43B",
+                    d: "M228 637Q194 637 192 641Q191 643 191 649Q191 673 202 682Q204 683 219 683Q260 681 355 681Q389 681 418 681T463 682T483 682Q499 682 499 672Q499 670 497 658Q492 641 487 638H485Q483 638 480 638T473 638T464 637T455 637Q416 636 405 634T387 623Q384 619 355 500Q348 474 340 442T328 395L324 380Q324 378 469 378H614L615 381Q615 384 646 504Q674 619 674 627T617 637Q594 637 587 639T580 648Q580 650 582 660Q586 677 588 679T604 682Q609 682 646 681T740 680Q802 680 835 681T871 682Q888 682 888 672Q888 645 876 638H874Q872 638 869 638T862 638T853 637T844 637Q805 636 794 634T776 623Q773 618 704 340T634 58Q634 51 638 51Q646 48 692 46H723Q729 38 729 37T726 19Q722 6 716 0H701Q664 2 567 2Q533 2 504 2T458 2T437 1Q420 1 420 10Q420 15 423 24Q428 43 433 45Q437 46 448 46H454Q481 46 514 49Q520 50 522 50T528 55T534 64T540 82T547 110T558 153Q565 181 569 198Q602 330 602 331T457 332H312L279 197Q245 63 245 58Q245 51 253 49T303 46H334Q340 38 340 37T337 19Q333 6 327 0H312Q275 2 178 2Q144 2 115 2T69 2T48 1Q31 1 31 10Q31 12 34 24Q39 43 44 45Q48 46 59 46H65Q92 46 125 49Q139 52 144 61Q147 65 216 339T285 628Q285 635 228 637Z",
+                    style: { "stroke-width": "3" }
+                  })
+                ]),
+                createVNode("g", {
+                  "data-mml-node": "mo",
+                  transform: "translate(2040,0)"
+                }, [
+                  createVNode("path", {
+                    "data-c": "29",
+                    d: "M60 749L64 750Q69 750 74 750H86L114 726Q208 641 251 514T294 250Q294 182 284 119T261 12T224 -76T186 -143T145 -194T113 -227T90 -246Q87 -249 86 -250H74Q66 -250 63 -250T58 -247T55 -238Q56 -237 66 -225Q221 -64 221 250T66 725Q56 737 55 738Q55 746 60 749Z",
+                    style: { "stroke-width": "3" }
+                  })
+                ])
+              ])
+            ])
+          ])),
+          createVNode(_component_mjx_assistive_mml, {
+            unselectable: "on",
+            display: "inline",
+            style: { "top": "0px", "left": "0px", "clip": "rect(1px, 1px, 1px, 1px)", "-webkit-touch-callout": "none", "-webkit-user-select": "none", "-khtml-user-select": "none", "-moz-user-select": "none", "-ms-user-select": "none", "user-select": "none", "position": "absolute", "padding": "1px 0px 0px 0px", "border": "0px", "display": "block", "width": "auto", "overflow": "hidden" }
+          }, {
+            default: withCtx(() => [
+              (openBlock(), createBlock("math", { xmlns: "http://www.w3.org/1998/Math/MathML" }, [
+                createVNode("mi", null, "O"),
+                createVNode("mo", { stretchy: "false" }, "("),
+                createVNode("mi", null, "H"),
+                createVNode("mo", { stretchy: "false" }, ")")
+              ]))
+            ]),
+            _: 1
+          })
+        ];
+      }
+    }),
+    _: 1
+  }, _parent));
+  _push(`<ul><li><em>分析：</em> `);
+  _push(ssrRenderComponent(_component_mjx_container, {
+    class: "MathJax",
+    jax: "SVG",
+    style: { "direction": "ltr", "position": "relative" }
+  }, {
+    default: withCtx((_, _push2, _parent2, _scopeId) => {
+      if (_push2) {
+        _push2(`<svg style="${ssrRenderStyle({ "overflow": "visible", "min-height": "1px", "min-width": "1px", "vertical-align": "0" })}" xmlns="http://www.w3.org/2000/svg" width="2.009ex" height="1.545ex" role="img" focusable="false" viewBox="0 -683 888 683" aria-hidden="true"${_scopeId}><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"${_scopeId}><g data-mml-node="math"${_scopeId}><g data-mml-node="mi"${_scopeId}><path data-c="1D43B" d="M228 637Q194 637 192 641Q191 643 191 649Q191 673 202 682Q204 683 219 683Q260 681 355 681Q389 681 418 681T463 682T483 682Q499 682 499 672Q499 670 497 658Q492 641 487 638H485Q483 638 480 638T473 638T464 637T455 637Q416 636 405 634T387 623Q384 619 355 500Q348 474 340 442T328 395L324 380Q324 378 469 378H614L615 381Q615 384 646 504Q674 619 674 627T617 637Q594 637 587 639T580 648Q580 650 582 660Q586 677 588 679T604 682Q609 682 646 681T740 680Q802 680 835 681T871 682Q888 682 888 672Q888 645 876 638H874Q872 638 869 638T862 638T853 637T844 637Q805 636 794 634T776 623Q773 618 704 340T634 58Q634 51 638 51Q646 48 692 46H723Q729 38 729 37T726 19Q722 6 716 0H701Q664 2 567 2Q533 2 504 2T458 2T437 1Q420 1 420 10Q420 15 423 24Q428 43 433 45Q437 46 448 46H454Q481 46 514 49Q520 50 522 50T528 55T534 64T540 82T547 110T558 153Q565 181 569 198Q602 330 602 331T457 332H312L279 197Q245 63 245 58Q245 51 253 49T303 46H334Q340 38 340 37T337 19Q333 6 327 0H312Q275 2 178 2Q144 2 115 2T69 2T48 1Q31 1 31 10Q31 12 34 24Q39 43 44 45Q48 46 59 46H65Q92 46 125 49Q139 52 144 61Q147 65 216 339T285 628Q285 635 228 637Z" style="${ssrRenderStyle({ "stroke-width": "3" })}"${_scopeId}></path></g></g></g></svg>`);
+        _push2(ssrRenderComponent(_component_mjx_assistive_mml, {
+          unselectable: "on",
+          display: "inline",
+          style: { "top": "0px", "left": "0px", "clip": "rect(1px, 1px, 1px, 1px)", "-webkit-touch-callout": "none", "-webkit-user-select": "none", "-khtml-user-select": "none", "-moz-user-select": "none", "-ms-user-select": "none", "user-select": "none", "position": "absolute", "padding": "1px 0px 0px 0px", "border": "0px", "display": "block", "width": "auto", "overflow": "hidden" }
+        }, {
+          default: withCtx((_2, _push3, _parent3, _scopeId2) => {
+            if (_push3) {
+              _push3(`<math xmlns="http://www.w3.org/1998/Math/MathML"${_scopeId2}><mi${_scopeId2}>H</mi></math>`);
+            } else {
+              return [
+                (openBlock(), createBlock("math", { xmlns: "http://www.w3.org/1998/Math/MathML" }, [
+                  createVNode("mi", null, "H")
+                ]))
+              ];
+            }
+          }),
+          _: 1
+        }, _parent2, _scopeId));
+      } else {
+        return [
+          (openBlock(), createBlock("svg", {
+            style: { "overflow": "visible", "min-height": "1px", "min-width": "1px", "vertical-align": "0" },
+            xmlns: "http://www.w3.org/2000/svg",
+            width: "2.009ex",
+            height: "1.545ex",
+            role: "img",
+            focusable: "false",
+            viewBox: "0 -683 888 683",
+            "aria-hidden": "true"
+          }, [
+            createVNode("g", {
+              stroke: "currentColor",
+              fill: "currentColor",
+              "stroke-width": "0",
+              transform: "scale(1,-1)"
+            }, [
+              createVNode("g", { "data-mml-node": "math" }, [
+                createVNode("g", { "data-mml-node": "mi" }, [
+                  createVNode("path", {
+                    "data-c": "1D43B",
+                    d: "M228 637Q194 637 192 641Q191 643 191 649Q191 673 202 682Q204 683 219 683Q260 681 355 681Q389 681 418 681T463 682T483 682Q499 682 499 672Q499 670 497 658Q492 641 487 638H485Q483 638 480 638T473 638T464 637T455 637Q416 636 405 634T387 623Q384 619 355 500Q348 474 340 442T328 395L324 380Q324 378 469 378H614L615 381Q615 384 646 504Q674 619 674 627T617 637Q594 637 587 639T580 648Q580 650 582 660Q586 677 588 679T604 682Q609 682 646 681T740 680Q802 680 835 681T871 682Q888 682 888 672Q888 645 876 638H874Q872 638 869 638T862 638T853 637T844 637Q805 636 794 634T776 623Q773 618 704 340T634 58Q634 51 638 51Q646 48 692 46H723Q729 38 729 37T726 19Q722 6 716 0H701Q664 2 567 2Q533 2 504 2T458 2T437 1Q420 1 420 10Q420 15 423 24Q428 43 433 45Q437 46 448 46H454Q481 46 514 49Q520 50 522 50T528 55T534 64T540 82T547 110T558 153Q565 181 569 198Q602 330 602 331T457 332H312L279 197Q245 63 245 58Q245 51 253 49T303 46H334Q340 38 340 37T337 19Q333 6 327 0H312Q275 2 178 2Q144 2 115 2T69 2T48 1Q31 1 31 10Q31 12 34 24Q39 43 44 45Q48 46 59 46H65Q92 46 125 49Q139 52 144 61Q147 65 216 339T285 628Q285 635 228 637Z",
+                    style: { "stroke-width": "3" }
+                  })
+                ])
+              ])
+            ])
+          ])),
+          createVNode(_component_mjx_assistive_mml, {
+            unselectable: "on",
+            display: "inline",
+            style: { "top": "0px", "left": "0px", "clip": "rect(1px, 1px, 1px, 1px)", "-webkit-touch-callout": "none", "-webkit-user-select": "none", "-khtml-user-select": "none", "-moz-user-select": "none", "-ms-user-select": "none", "user-select": "none", "position": "absolute", "padding": "1px 0px 0px 0px", "border": "0px", "display": "block", "width": "auto", "overflow": "hidden" }
+          }, {
+            default: withCtx(() => [
+              (openBlock(), createBlock("math", { xmlns: "http://www.w3.org/1998/Math/MathML" }, [
+                createVNode("mi", null, "H")
+              ]))
+            ]),
+            _: 1
+          })
+        ];
+      }
+    }),
+    _: 1
+  }, _parent));
+  _push(` 为树的高度。不需要额外的 <code>List</code> 存储路径，空间消耗纯粹来自于递归调用的系统栈。最坏情况 `);
+  _push(ssrRenderComponent(_component_mjx_container, {
+    class: "MathJax",
+    jax: "SVG",
+    style: { "direction": "ltr", "position": "relative" }
+  }, {
+    default: withCtx((_, _push2, _parent2, _scopeId) => {
+      if (_push2) {
+        _push2(`<svg style="${ssrRenderStyle({ "overflow": "visible", "min-height": "1px", "min-width": "1px", "vertical-align": "-0.566ex" })}" xmlns="http://www.w3.org/2000/svg" width="5.495ex" height="2.262ex" role="img" focusable="false" viewBox="0 -750 2429 1000" aria-hidden="true"${_scopeId}><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"${_scopeId}><g data-mml-node="math"${_scopeId}><g data-mml-node="mi"${_scopeId}><path data-c="1D442" d="M740 435Q740 320 676 213T511 42T304 -22Q207 -22 138 35T51 201Q50 209 50 244Q50 346 98 438T227 601Q351 704 476 704Q514 704 524 703Q621 689 680 617T740 435ZM637 476Q637 565 591 615T476 665Q396 665 322 605Q242 542 200 428T157 216Q157 126 200 73T314 19Q404 19 485 98T608 313Q637 408 637 476Z" style="${ssrRenderStyle({ "stroke-width": "3" })}"${_scopeId}></path></g><g data-mml-node="mo" transform="translate(763,0)"${_scopeId}><path data-c="28" d="M94 250Q94 319 104 381T127 488T164 576T202 643T244 695T277 729T302 750H315H319Q333 750 333 741Q333 738 316 720T275 667T226 581T184 443T167 250T184 58T225 -81T274 -167T316 -220T333 -241Q333 -250 318 -250H315H302L274 -226Q180 -141 137 -14T94 250Z" style="${ssrRenderStyle({ "stroke-width": "3" })}"${_scopeId}></path></g><g data-mml-node="mi" transform="translate(1152,0)"${_scopeId}><path data-c="1D441" d="M234 637Q231 637 226 637Q201 637 196 638T191 649Q191 676 202 682Q204 683 299 683Q376 683 387 683T401 677Q612 181 616 168L670 381Q723 592 723 606Q723 633 659 637Q635 637 635 648Q635 650 637 660Q641 676 643 679T653 683Q656 683 684 682T767 680Q817 680 843 681T873 682Q888 682 888 672Q888 650 880 642Q878 637 858 637Q787 633 769 597L620 7Q618 0 599 0Q585 0 582 2Q579 5 453 305L326 604L261 344Q196 88 196 79Q201 46 268 46H278Q284 41 284 38T282 19Q278 6 272 0H259Q228 2 151 2Q123 2 100 2T63 2T46 1Q31 1 31 10Q31 14 34 26T39 40Q41 46 62 46Q130 49 150 85Q154 91 221 362L289 634Q287 635 234 637Z" style="${ssrRenderStyle({ "stroke-width": "3" })}"${_scopeId}></path></g><g data-mml-node="mo" transform="translate(2040,0)"${_scopeId}><path data-c="29" d="M60 749L64 750Q69 750 74 750H86L114 726Q208 641 251 514T294 250Q294 182 284 119T261 12T224 -76T186 -143T145 -194T113 -227T90 -246Q87 -249 86 -250H74Q66 -250 63 -250T58 -247T55 -238Q56 -237 66 -225Q221 -64 221 250T66 725Q56 737 55 738Q55 746 60 749Z" style="${ssrRenderStyle({ "stroke-width": "3" })}"${_scopeId}></path></g></g></g></svg>`);
+        _push2(ssrRenderComponent(_component_mjx_assistive_mml, {
+          unselectable: "on",
+          display: "inline",
+          style: { "top": "0px", "left": "0px", "clip": "rect(1px, 1px, 1px, 1px)", "-webkit-touch-callout": "none", "-webkit-user-select": "none", "-khtml-user-select": "none", "-moz-user-select": "none", "-ms-user-select": "none", "user-select": "none", "position": "absolute", "padding": "1px 0px 0px 0px", "border": "0px", "display": "block", "width": "auto", "overflow": "hidden" }
+        }, {
+          default: withCtx((_2, _push3, _parent3, _scopeId2) => {
+            if (_push3) {
+              _push3(`<math xmlns="http://www.w3.org/1998/Math/MathML"${_scopeId2}><mi${_scopeId2}>O</mi><mo stretchy="false"${_scopeId2}>(</mo><mi${_scopeId2}>N</mi><mo stretchy="false"${_scopeId2}>)</mo></math>`);
+            } else {
+              return [
+                (openBlock(), createBlock("math", { xmlns: "http://www.w3.org/1998/Math/MathML" }, [
+                  createVNode("mi", null, "O"),
+                  createVNode("mo", { stretchy: "false" }, "("),
+                  createVNode("mi", null, "N"),
+                  createVNode("mo", { stretchy: "false" }, ")")
+                ]))
+              ];
+            }
+          }),
+          _: 1
+        }, _parent2, _scopeId));
+      } else {
+        return [
+          (openBlock(), createBlock("svg", {
+            style: { "overflow": "visible", "min-height": "1px", "min-width": "1px", "vertical-align": "-0.566ex" },
+            xmlns: "http://www.w3.org/2000/svg",
+            width: "5.495ex",
+            height: "2.262ex",
+            role: "img",
+            focusable: "false",
+            viewBox: "0 -750 2429 1000",
+            "aria-hidden": "true"
+          }, [
+            createVNode("g", {
+              stroke: "currentColor",
+              fill: "currentColor",
+              "stroke-width": "0",
+              transform: "scale(1,-1)"
+            }, [
+              createVNode("g", { "data-mml-node": "math" }, [
+                createVNode("g", { "data-mml-node": "mi" }, [
+                  createVNode("path", {
+                    "data-c": "1D442",
+                    d: "M740 435Q740 320 676 213T511 42T304 -22Q207 -22 138 35T51 201Q50 209 50 244Q50 346 98 438T227 601Q351 704 476 704Q514 704 524 703Q621 689 680 617T740 435ZM637 476Q637 565 591 615T476 665Q396 665 322 605Q242 542 200 428T157 216Q157 126 200 73T314 19Q404 19 485 98T608 313Q637 408 637 476Z",
+                    style: { "stroke-width": "3" }
+                  })
+                ]),
+                createVNode("g", {
+                  "data-mml-node": "mo",
+                  transform: "translate(763,0)"
+                }, [
+                  createVNode("path", {
+                    "data-c": "28",
+                    d: "M94 250Q94 319 104 381T127 488T164 576T202 643T244 695T277 729T302 750H315H319Q333 750 333 741Q333 738 316 720T275 667T226 581T184 443T167 250T184 58T225 -81T274 -167T316 -220T333 -241Q333 -250 318 -250H315H302L274 -226Q180 -141 137 -14T94 250Z",
+                    style: { "stroke-width": "3" }
+                  })
+                ]),
+                createVNode("g", {
+                  "data-mml-node": "mi",
+                  transform: "translate(1152,0)"
+                }, [
+                  createVNode("path", {
+                    "data-c": "1D441",
+                    d: "M234 637Q231 637 226 637Q201 637 196 638T191 649Q191 676 202 682Q204 683 299 683Q376 683 387 683T401 677Q612 181 616 168L670 381Q723 592 723 606Q723 633 659 637Q635 637 635 648Q635 650 637 660Q641 676 643 679T653 683Q656 683 684 682T767 680Q817 680 843 681T873 682Q888 682 888 672Q888 650 880 642Q878 637 858 637Q787 633 769 597L620 7Q618 0 599 0Q585 0 582 2Q579 5 453 305L326 604L261 344Q196 88 196 79Q201 46 268 46H278Q284 41 284 38T282 19Q278 6 272 0H259Q228 2 151 2Q123 2 100 2T63 2T46 1Q31 1 31 10Q31 14 34 26T39 40Q41 46 62 46Q130 49 150 85Q154 91 221 362L289 634Q287 635 234 637Z",
+                    style: { "stroke-width": "3" }
+                  })
+                ]),
+                createVNode("g", {
+                  "data-mml-node": "mo",
+                  transform: "translate(2040,0)"
+                }, [
+                  createVNode("path", {
+                    "data-c": "29",
+                    d: "M60 749L64 750Q69 750 74 750H86L114 726Q208 641 251 514T294 250Q294 182 284 119T261 12T224 -76T186 -143T145 -194T113 -227T90 -246Q87 -249 86 -250H74Q66 -250 63 -250T58 -247T55 -238Q56 -237 66 -225Q221 -64 221 250T66 725Q56 737 55 738Q55 746 60 749Z",
+                    style: { "stroke-width": "3" }
+                  })
+                ])
+              ])
+            ])
+          ])),
+          createVNode(_component_mjx_assistive_mml, {
+            unselectable: "on",
+            display: "inline",
+            style: { "top": "0px", "left": "0px", "clip": "rect(1px, 1px, 1px, 1px)", "-webkit-touch-callout": "none", "-webkit-user-select": "none", "-khtml-user-select": "none", "-moz-user-select": "none", "-ms-user-select": "none", "user-select": "none", "position": "absolute", "padding": "1px 0px 0px 0px", "border": "0px", "display": "block", "width": "auto", "overflow": "hidden" }
+          }, {
+            default: withCtx(() => [
+              (openBlock(), createBlock("math", { xmlns: "http://www.w3.org/1998/Math/MathML" }, [
+                createVNode("mi", null, "O"),
+                createVNode("mo", { stretchy: "false" }, "("),
+                createVNode("mi", null, "N"),
+                createVNode("mo", { stretchy: "false" }, ")")
+              ]))
+            ]),
+            _: 1
+          })
+        ];
+      }
+    }),
+    _: 1
+  }, _parent));
+  _push(`，平衡树 `);
+  _push(ssrRenderComponent(_component_mjx_container, {
+    class: "MathJax",
+    jax: "SVG",
+    style: { "direction": "ltr", "position": "relative" }
+  }, {
+    default: withCtx((_, _push2, _parent2, _scopeId) => {
+      if (_push2) {
+        _push2(`<svg style="${ssrRenderStyle({ "overflow": "visible", "min-height": "1px", "min-width": "1px", "vertical-align": "-0.566ex" })}" xmlns="http://www.w3.org/2000/svg" width="8.764ex" height="2.262ex" role="img" focusable="false" viewBox="0 -750 3873.7 1000" aria-hidden="true"${_scopeId}><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"${_scopeId}><g data-mml-node="math"${_scopeId}><g data-mml-node="mi"${_scopeId}><path data-c="1D442" d="M740 435Q740 320 676 213T511 42T304 -22Q207 -22 138 35T51 201Q50 209 50 244Q50 346 98 438T227 601Q351 704 476 704Q514 704 524 703Q621 689 680 617T740 435ZM637 476Q637 565 591 615T476 665Q396 665 322 605Q242 542 200 428T157 216Q157 126 200 73T314 19Q404 19 485 98T608 313Q637 408 637 476Z" style="${ssrRenderStyle({ "stroke-width": "3" })}"${_scopeId}></path></g><g data-mml-node="mo" transform="translate(763,0)"${_scopeId}><path data-c="28" d="M94 250Q94 319 104 381T127 488T164 576T202 643T244 695T277 729T302 750H315H319Q333 750 333 741Q333 738 316 720T275 667T226 581T184 443T167 250T184 58T225 -81T274 -167T316 -220T333 -241Q333 -250 318 -250H315H302L274 -226Q180 -141 137 -14T94 250Z" style="${ssrRenderStyle({ "stroke-width": "3" })}"${_scopeId}></path></g><g data-mml-node="mi" transform="translate(1152,0)"${_scopeId}><path data-c="6C" d="M42 46H56Q95 46 103 60V68Q103 77 103 91T103 124T104 167T104 217T104 272T104 329Q104 366 104 407T104 482T104 542T103 586T103 603Q100 622 89 628T44 637H26V660Q26 683 28 683L38 684Q48 685 67 686T104 688Q121 689 141 690T171 693T182 694H185V379Q185 62 186 60Q190 52 198 49Q219 46 247 46H263V0H255L232 1Q209 2 183 2T145 3T107 3T57 1L34 0H26V46H42Z" style="${ssrRenderStyle({ "stroke-width": "3" })}"${_scopeId}></path><path data-c="6F" d="M28 214Q28 309 93 378T250 448Q340 448 405 380T471 215Q471 120 407 55T250 -10Q153 -10 91 57T28 214ZM250 30Q372 30 372 193V225V250Q372 272 371 288T364 326T348 362T317 390T268 410Q263 411 252 411Q222 411 195 399Q152 377 139 338T126 246V226Q126 130 145 91Q177 30 250 30Z" transform="translate(278,0)" style="${ssrRenderStyle({ "stroke-width": "3" })}"${_scopeId}></path><path data-c="67" d="M329 409Q373 453 429 453Q459 453 472 434T485 396Q485 382 476 371T449 360Q416 360 412 390Q410 404 415 411Q415 412 416 414V415Q388 412 363 393Q355 388 355 386Q355 385 359 381T368 369T379 351T388 325T392 292Q392 230 343 187T222 143Q172 143 123 171Q112 153 112 133Q112 98 138 81Q147 75 155 75T227 73Q311 72 335 67Q396 58 431 26Q470 -13 470 -72Q470 -139 392 -175Q332 -206 250 -206Q167 -206 107 -175Q29 -140 29 -75Q29 -39 50 -15T92 18L103 24Q67 55 67 108Q67 155 96 193Q52 237 52 292Q52 355 102 398T223 442Q274 442 318 416L329 409ZM299 343Q294 371 273 387T221 404Q192 404 171 388T145 343Q142 326 142 292Q142 248 149 227T179 192Q196 182 222 182Q244 182 260 189T283 207T294 227T299 242Q302 258 302 292T299 343ZM403 -75Q403 -50 389 -34T348 -11T299 -2T245 0H218Q151 0 138 -6Q118 -15 107 -34T95 -74Q95 -84 101 -97T122 -127T170 -155T250 -167Q319 -167 361 -139T403 -75Z" transform="translate(778,0)" style="${ssrRenderStyle({ "stroke-width": "3" })}"${_scopeId}></path></g><g data-mml-node="mo" transform="translate(2430,0)"${_scopeId}><path data-c="2061" d="" style="${ssrRenderStyle({ "stroke-width": "3" })}"${_scopeId}></path></g><g data-mml-node="mi" transform="translate(2596.7,0)"${_scopeId}><path data-c="1D441" d="M234 637Q231 637 226 637Q201 637 196 638T191 649Q191 676 202 682Q204 683 299 683Q376 683 387 683T401 677Q612 181 616 168L670 381Q723 592 723 606Q723 633 659 637Q635 637 635 648Q635 650 637 660Q641 676 643 679T653 683Q656 683 684 682T767 680Q817 680 843 681T873 682Q888 682 888 672Q888 650 880 642Q878 637 858 637Q787 633 769 597L620 7Q618 0 599 0Q585 0 582 2Q579 5 453 305L326 604L261 344Q196 88 196 79Q201 46 268 46H278Q284 41 284 38T282 19Q278 6 272 0H259Q228 2 151 2Q123 2 100 2T63 2T46 1Q31 1 31 10Q31 14 34 26T39 40Q41 46 62 46Q130 49 150 85Q154 91 221 362L289 634Q287 635 234 637Z" style="${ssrRenderStyle({ "stroke-width": "3" })}"${_scopeId}></path></g><g data-mml-node="mo" transform="translate(3484.7,0)"${_scopeId}><path data-c="29" d="M60 749L64 750Q69 750 74 750H86L114 726Q208 641 251 514T294 250Q294 182 284 119T261 12T224 -76T186 -143T145 -194T113 -227T90 -246Q87 -249 86 -250H74Q66 -250 63 -250T58 -247T55 -238Q56 -237 66 -225Q221 -64 221 250T66 725Q56 737 55 738Q55 746 60 749Z" style="${ssrRenderStyle({ "stroke-width": "3" })}"${_scopeId}></path></g></g></g></svg>`);
+        _push2(ssrRenderComponent(_component_mjx_assistive_mml, {
+          unselectable: "on",
+          display: "inline",
+          style: { "top": "0px", "left": "0px", "clip": "rect(1px, 1px, 1px, 1px)", "-webkit-touch-callout": "none", "-webkit-user-select": "none", "-khtml-user-select": "none", "-moz-user-select": "none", "-ms-user-select": "none", "user-select": "none", "position": "absolute", "padding": "1px 0px 0px 0px", "border": "0px", "display": "block", "width": "auto", "overflow": "hidden" }
+        }, {
+          default: withCtx((_2, _push3, _parent3, _scopeId2) => {
+            if (_push3) {
+              _push3(`<math xmlns="http://www.w3.org/1998/Math/MathML"${_scopeId2}><mi${_scopeId2}>O</mi><mo stretchy="false"${_scopeId2}>(</mo><mi${_scopeId2}>log</mi><mo data-mjx-texclass="NONE"${_scopeId2}>⁡</mo><mi${_scopeId2}>N</mi><mo stretchy="false"${_scopeId2}>)</mo></math>`);
+            } else {
+              return [
+                (openBlock(), createBlock("math", { xmlns: "http://www.w3.org/1998/Math/MathML" }, [
+                  createVNode("mi", null, "O"),
+                  createVNode("mo", { stretchy: "false" }, "("),
+                  createVNode("mi", null, "log"),
+                  createVNode("mo", { "data-mjx-texclass": "NONE" }, "⁡"),
+                  createVNode("mi", null, "N"),
+                  createVNode("mo", { stretchy: "false" }, ")")
+                ]))
+              ];
+            }
+          }),
+          _: 1
+        }, _parent2, _scopeId));
+      } else {
+        return [
+          (openBlock(), createBlock("svg", {
+            style: { "overflow": "visible", "min-height": "1px", "min-width": "1px", "vertical-align": "-0.566ex" },
+            xmlns: "http://www.w3.org/2000/svg",
+            width: "8.764ex",
+            height: "2.262ex",
+            role: "img",
+            focusable: "false",
+            viewBox: "0 -750 3873.7 1000",
+            "aria-hidden": "true"
+          }, [
+            createVNode("g", {
+              stroke: "currentColor",
+              fill: "currentColor",
+              "stroke-width": "0",
+              transform: "scale(1,-1)"
+            }, [
+              createVNode("g", { "data-mml-node": "math" }, [
+                createVNode("g", { "data-mml-node": "mi" }, [
+                  createVNode("path", {
+                    "data-c": "1D442",
+                    d: "M740 435Q740 320 676 213T511 42T304 -22Q207 -22 138 35T51 201Q50 209 50 244Q50 346 98 438T227 601Q351 704 476 704Q514 704 524 703Q621 689 680 617T740 435ZM637 476Q637 565 591 615T476 665Q396 665 322 605Q242 542 200 428T157 216Q157 126 200 73T314 19Q404 19 485 98T608 313Q637 408 637 476Z",
+                    style: { "stroke-width": "3" }
+                  })
+                ]),
+                createVNode("g", {
+                  "data-mml-node": "mo",
+                  transform: "translate(763,0)"
+                }, [
+                  createVNode("path", {
+                    "data-c": "28",
+                    d: "M94 250Q94 319 104 381T127 488T164 576T202 643T244 695T277 729T302 750H315H319Q333 750 333 741Q333 738 316 720T275 667T226 581T184 443T167 250T184 58T225 -81T274 -167T316 -220T333 -241Q333 -250 318 -250H315H302L274 -226Q180 -141 137 -14T94 250Z",
+                    style: { "stroke-width": "3" }
+                  })
+                ]),
+                createVNode("g", {
+                  "data-mml-node": "mi",
+                  transform: "translate(1152,0)"
+                }, [
+                  createVNode("path", {
+                    "data-c": "6C",
+                    d: "M42 46H56Q95 46 103 60V68Q103 77 103 91T103 124T104 167T104 217T104 272T104 329Q104 366 104 407T104 482T104 542T103 586T103 603Q100 622 89 628T44 637H26V660Q26 683 28 683L38 684Q48 685 67 686T104 688Q121 689 141 690T171 693T182 694H185V379Q185 62 186 60Q190 52 198 49Q219 46 247 46H263V0H255L232 1Q209 2 183 2T145 3T107 3T57 1L34 0H26V46H42Z",
+                    style: { "stroke-width": "3" }
+                  }),
+                  createVNode("path", {
+                    "data-c": "6F",
+                    d: "M28 214Q28 309 93 378T250 448Q340 448 405 380T471 215Q471 120 407 55T250 -10Q153 -10 91 57T28 214ZM250 30Q372 30 372 193V225V250Q372 272 371 288T364 326T348 362T317 390T268 410Q263 411 252 411Q222 411 195 399Q152 377 139 338T126 246V226Q126 130 145 91Q177 30 250 30Z",
+                    transform: "translate(278,0)",
+                    style: { "stroke-width": "3" }
+                  }),
+                  createVNode("path", {
+                    "data-c": "67",
+                    d: "M329 409Q373 453 429 453Q459 453 472 434T485 396Q485 382 476 371T449 360Q416 360 412 390Q410 404 415 411Q415 412 416 414V415Q388 412 363 393Q355 388 355 386Q355 385 359 381T368 369T379 351T388 325T392 292Q392 230 343 187T222 143Q172 143 123 171Q112 153 112 133Q112 98 138 81Q147 75 155 75T227 73Q311 72 335 67Q396 58 431 26Q470 -13 470 -72Q470 -139 392 -175Q332 -206 250 -206Q167 -206 107 -175Q29 -140 29 -75Q29 -39 50 -15T92 18L103 24Q67 55 67 108Q67 155 96 193Q52 237 52 292Q52 355 102 398T223 442Q274 442 318 416L329 409ZM299 343Q294 371 273 387T221 404Q192 404 171 388T145 343Q142 326 142 292Q142 248 149 227T179 192Q196 182 222 182Q244 182 260 189T283 207T294 227T299 242Q302 258 302 292T299 343ZM403 -75Q403 -50 389 -34T348 -11T299 -2T245 0H218Q151 0 138 -6Q118 -15 107 -34T95 -74Q95 -84 101 -97T122 -127T170 -155T250 -167Q319 -167 361 -139T403 -75Z",
+                    transform: "translate(778,0)",
+                    style: { "stroke-width": "3" }
+                  })
+                ]),
+                createVNode("g", {
+                  "data-mml-node": "mo",
+                  transform: "translate(2430,0)"
+                }, [
+                  createVNode("path", {
+                    "data-c": "2061",
+                    d: "",
+                    style: { "stroke-width": "3" }
+                  })
+                ]),
+                createVNode("g", {
+                  "data-mml-node": "mi",
+                  transform: "translate(2596.7,0)"
+                }, [
+                  createVNode("path", {
+                    "data-c": "1D441",
+                    d: "M234 637Q231 637 226 637Q201 637 196 638T191 649Q191 676 202 682Q204 683 299 683Q376 683 387 683T401 677Q612 181 616 168L670 381Q723 592 723 606Q723 633 659 637Q635 637 635 648Q635 650 637 660Q641 676 643 679T653 683Q656 683 684 682T767 680Q817 680 843 681T873 682Q888 682 888 672Q888 650 880 642Q878 637 858 637Q787 633 769 597L620 7Q618 0 599 0Q585 0 582 2Q579 5 453 305L326 604L261 344Q196 88 196 79Q201 46 268 46H278Q284 41 284 38T282 19Q278 6 272 0H259Q228 2 151 2Q123 2 100 2T63 2T46 1Q31 1 31 10Q31 14 34 26T39 40Q41 46 62 46Q130 49 150 85Q154 91 221 362L289 634Q287 635 234 637Z",
+                    style: { "stroke-width": "3" }
+                  })
+                ]),
+                createVNode("g", {
+                  "data-mml-node": "mo",
+                  transform: "translate(3484.7,0)"
+                }, [
+                  createVNode("path", {
+                    "data-c": "29",
+                    d: "M60 749L64 750Q69 750 74 750H86L114 726Q208 641 251 514T294 250Q294 182 284 119T261 12T224 -76T186 -143T145 -194T113 -227T90 -246Q87 -249 86 -250H74Q66 -250 63 -250T58 -247T55 -238Q56 -237 66 -225Q221 -64 221 250T66 725Q56 737 55 738Q55 746 60 749Z",
+                    style: { "stroke-width": "3" }
+                  })
+                ])
+              ])
+            ])
+          ])),
+          createVNode(_component_mjx_assistive_mml, {
+            unselectable: "on",
+            display: "inline",
+            style: { "top": "0px", "left": "0px", "clip": "rect(1px, 1px, 1px, 1px)", "-webkit-touch-callout": "none", "-webkit-user-select": "none", "-khtml-user-select": "none", "-moz-user-select": "none", "-ms-user-select": "none", "user-select": "none", "position": "absolute", "padding": "1px 0px 0px 0px", "border": "0px", "display": "block", "width": "auto", "overflow": "hidden" }
+          }, {
+            default: withCtx(() => [
+              (openBlock(), createBlock("math", { xmlns: "http://www.w3.org/1998/Math/MathML" }, [
+                createVNode("mi", null, "O"),
+                createVNode("mo", { stretchy: "false" }, "("),
+                createVNode("mi", null, "log"),
+                createVNode("mo", { "data-mjx-texclass": "NONE" }, "⁡"),
+                createVNode("mi", null, "N"),
+                createVNode("mo", { stretchy: "false" }, ")")
+              ]))
+            ]),
+            _: 1
+          })
+        ];
+      }
+    }),
+    _: 1
+  }, _parent));
+  _push(`。</li></ul></li></ul><hr><h2 id="📝-错题本-复盘" tabindex="-1">📝 错题本 / 复盘 <a class="header-anchor" href="#📝-错题本-复盘" aria-label="Permalink to &quot;📝 错题本 / 复盘&quot;">​</a></h2><blockquote><p>[!failure] 遇到的坑 / 错误点</p><blockquote><ol><li><strong>过度劳累的死脑筋：</strong> 试图用回溯法把 <code>p</code> 和 <code>q</code> 的完整根节点路径全部找出来存进 <code>List</code>。这不仅导致了极其频繁的 <code>ArrayList</code> 扩容和深拷贝开销，而且在已经找到目标后，程序依然会把剩下的无用节点全部遍历完。</li><li><strong>忽略了“包含”关系：</strong> 如果 <code>p</code> 刚好是 <code>q</code> 的父节点，这种自底向上的代码会在碰到 <code>p</code> 的瞬间直接 <code>return p</code>，根本不会再去搜 <code>q</code>。而这恰好是完全正确的！（因为 <code>p</code> 就是最近公共祖先）。</li></ol></blockquote></blockquote><div class="tip custom-block github-alert"><p class="custom-block-title">关键技巧 / 总结</p><p></p><blockquote><p><strong>返回值的一语双关：</strong> 这里的返回值既扮演了 <code>boolean</code> 的角色（返回 null 代表没找到，返回非 null 代表找到了），又携带了“载荷”（返回的具体节点到底是 p、q，还是确立了身份的祖先）。这种设计是神来之笔。</p></blockquote></div><hr><h2 id="🧠-深度思考与感悟-reflections" tabindex="-1">🧠 深度思考与感悟 (Reflections) <a class="header-anchor" href="#🧠-深度思考与感悟-reflections" aria-label="Permalink to &quot;🧠 深度思考与感悟 (Reflections)&quot;">​</a></h2><ul><li><strong>💡 触类旁通：</strong> 凡是需要在二叉树中“收集左右子树的情报，然后在当前节点做汇总”的题目，绝对都是 <strong>后序遍历</strong> 的主场（例如：求二叉树的最大深度、判断平衡二叉树、求最大路径和）。</li><li><strong>🔧 工程思维：</strong> “少即是多”。在设计递归函数时，尽量减少对全局变量（如各种全局 List、总和变量）的依赖，让函数变成一个“纯函数”（输入参数，吐出结果）。这样不仅不易写出 Bug，而且天然支持多线程和并发。</li><li><strong>✨ 瞬间感悟：</strong> 最美的代码，往往不是堆砌数据结构，而是把数学逻辑与控制流（递归的归）完美融合。那个 <code>return left != null ? left : right</code> 就像一个自动升降机，把最底层的真相一路保送到了最顶层。</li></ul></div>`);
+}
+const _sfc_setup = _sfc_main.setup;
+_sfc_main.setup = (props, ctx) => {
+  const ssrContext = useSSRContext();
+  (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("Code/Hot100/Binary-Tree/236-二叉树的最近公共祖先.md");
+  return _sfc_setup ? _sfc_setup(props, ctx) : void 0;
+};
+const _236___________ = /* @__PURE__ */ _export_sfc(_sfc_main, [["ssrRender", _sfc_ssrRender]]);
+export {
+  __pageData,
+  _236___________ as default
+};

@@ -202,8 +202,8 @@ function unlockEditorAccess() {
 }
 
 function lockEditorAccess() {
-  isEditorAccessUnlocked.value = true
-  safeWriteStorage(EDIT_ACCESS_KEY, '1')
+  isEditorAccessUnlocked.value = false
+  safeWriteStorage(EDIT_ACCESS_KEY, '0')
   isEditorMode.value = false
   persistEditorMode()
   const guard = refreshEditorGuardState()

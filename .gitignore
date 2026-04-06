@@ -12,6 +12,9 @@ my-knowledge-base/docs/.vitepress/dist/
 my-knowledge-base/docs/.vitepress/cache/
 my-knowledge-base/docs/.vitepress/.temp/
 
+# Obsidian vault config (local editor state, never commit)
+my-knowledge-base/.obsidian/
+
 # Editor/IDE
 .vscode/settings.json
 *.swp

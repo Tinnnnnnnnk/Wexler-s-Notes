@@ -1,7 +1,7 @@
 <script setup>
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vitepress'
-import { fxMode, initUiModeState, evaluatePerformanceProfile, perfMode, setPerfMode, clearAllModeClasses, setRoutePath } from '../../stores/uiModeState'
+import { fxMode, initUiModeState, evaluatePerformanceProfile, perfMode, setPerfMode, clearAllModeClasses, setRoutePath, syncAllClasses } from '../../stores/uiModeState'
 
 const route = useRoute()
 
@@ -47,22 +47,6 @@ const shouldUseVideo = computed(() => Boolean(VIDEO_SRC) && perfMode.value !== '
 const layerStyle = computed(() => ({
   '--home-fx-image': `url("${IMAGE_SRC}")`
 }))
-
-function syncHtmlClass() {
-  if (typeof document === 'undefined') return
-
-  const mode = fxMode.value
-  const sky = isSkyTakeOut.value
-
-  document.documentElement.classList.toggle('home-default-mode', isHome.value && mode === 'default')
-
-  document.documentElement.classList.toggle('home-glass-mode', mode === 'glass')
-  document.documentElement.classList.toggle('home-liquid-mode', mode === 'liquid')
-
-  document.documentElement.classList.toggle('sky-default-mode', sky && mode === 'default')
-  document.documentElement.classList.toggle('sky-glass-mode', sky && mode === 'glass')
-  document.documentElement.classList.toggle('sky-liquid-mode', sky && mode === 'liquid')
-}
 
 function stopFpsProbe() {
   if (fpsProbeRaf) {
@@ -213,7 +197,7 @@ onMounted(async () => {
   initUiModeState()
   setRoutePath(route.path)
   setPerfMode(evaluatePerformanceProfile() ? 'safe' : 'normal')
-  syncHtmlClass()
+  syncAllClasses()
   setVolume(volume.value)
   await nextTick()
   syncBgm()
@@ -224,9 +208,8 @@ onMounted(async () => {
 
 watch([() => fxMode.value, () => route.path], async (vals) => {
   setRoutePath(vals[1])
-  setPerfMode(perfMode.value === 'safe' ? 'safe' : (evaluatePerformanceProfile() ? 'safe' : 'normal'))
-  syncHtmlClass()
   setPerfMode(evaluatePerformanceProfile() ? 'safe' : 'normal')
+  syncAllClasses()
   await nextTick()
   syncBgm()
   if (isActive.value) {

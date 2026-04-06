@@ -1,5 +1,18 @@
 node_modules/
+.DS_Store
+*.log
+
+# VitePress build output (served statically)
 .vitepress/dist/
 .vitepress/cache/
-*.log
-.DS_Store
+.vitepress/.temp/
+
+# Local VitePress builds (in sub-packages)
+my-knowledge-base/docs/.vitepress/dist/
+my-knowledge-base/docs/.vitepress/cache/
+my-knowledge-base/docs/.vitepress/.temp/
+
+# Editor/IDE
+.vscode/settings.json
+*.swp
+*.swo

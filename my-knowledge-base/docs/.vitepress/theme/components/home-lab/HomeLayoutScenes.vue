@@ -59,7 +59,7 @@ onMounted(() => {
           <p>算法训练</p>
           <h3>建立可迁移的解题模式</h3>
         </a>
-        <a href="/MyWeb/网站修改指南">
+        <a href="/网站修改指南">
           <p>站点演进</p>
           <h3>持续优化 UI、性能与交互</h3>
         </a>
@@ -69,7 +69,7 @@ onMounted(() => {
         <a href="/Sky-Take-Out/04-服务器运维与容器化部署手册">Docker / 运维</a>
         <a href="/Resume/简历V3.0">简历资产</a>
         <a href="/面试笔记/MyWeb/构建过程end">构建复盘</a>
-        <a href="/MyWeb/00-文档目录">站点文档</a>
+        <a href="/网站修改指南">站点文档</a>
       </div>
     </section>
 
@@ -87,7 +87,7 @@ onMounted(() => {
             <li><a href="/Sky-Take-Out/00-后端开发知识大本营">后端主线</a></li>
             <li><a href="/Code/DS/DFS">算法主线</a></li>
             <li><a href="/PromptLearning/day1">Prompt 主线</a></li>
-            <li><a href="/MyWeb/网站修改指南">站点主线</a></li>
+            <li><a href="/网站修改指南">站点主线</a></li>
           </ul>
           <div class="scene-dash__hint">
             <p>目标</p>

@@ -111,7 +111,7 @@ export default defineConfig({
     nav: [
       { text: '🏠 首页', link: '/' },
       { text: '📚 核心知识库', link: '/Sky-Take-Out/00-后端开发知识大本营' },
-      { text: '🎨 风格实验室', link: '/Style-Lab/00-风格入口' },
+      { text: '🎨 风格实验室', link: '/MyWeb/Style-Lab/00-风格入口' },
     ],
 
     sidebar: getRootSidebarGroups(),

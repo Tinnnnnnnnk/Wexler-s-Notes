@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "docs/面试笔记/JavaSe/并发编程.md",
+                "file": "docs/面试笔记/JavaSe/集合框架.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "并发编程"
+              "title": "集合框架"
             }
           },
           {
@@ -237,9 +237,9 @@
   },
   "active": "dca74a61d38130bd",
   "lastOpenFiles": [
+    "docs/面试笔记/JavaSe/并发编程.md",
     "docs/Code/DS/细节部分.md",
     "docs/图像处理和信息安全/security-basics-compact-guide-zh.md",
-    "docs/面试笔记/JavaSe/并发编程.md",
     "MyWeb/Style-Lab/02-油画质感风.md",
     "MyWeb/Style-Lab/01-强烈撞色风.md",
     "MyWeb/Style-Lab/03-水彩轻雾风.md",

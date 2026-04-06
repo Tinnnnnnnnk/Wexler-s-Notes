@@ -34,8 +34,19 @@
               "icon": "lucide-file",
               "title": "security-basics-compact-guide-zh"
             }
+          },
+          {
+            "id": "4541114d123dd0c2",
+            "type": "leaf",
+            "state": {
+              "type": "empty",
+              "state": {},
+              "icon": "lucide-file",
+              "title": "新标签页"
+            }
           }
-        ]
+        ],
+        "currentTab": 2
       }
     ],
     "direction": "vertical"
@@ -221,8 +232,10 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "dca74a61d38130bd",
+  "active": "4541114d123dd0c2",
   "lastOpenFiles": [
+    "docs/图像处理和信息安全/security-basics-compact-guide-zh.md",
+    "docs/面试笔记/JavaSe/并发编程.md",
     "MyWeb/Style-Lab/02-油画质感风.md",
     "MyWeb/Style-Lab/01-强烈撞色风.md",
     "MyWeb/Style-Lab/03-水彩轻雾风.md",
@@ -245,8 +258,6 @@
     "docs/网站修改指南.md",
     "docs/public/media/home-bg/楼梯不变云动视频.mp4",
     "docs/替换入口总表.md",
-    "docs/面试笔记/JavaSe/并发编程.md",
-    "docs/图像处理和信息安全/security-basics-compact-guide-zh.md",
     "docs/图像处理和信息安全/Week4.md",
     "docs/面试笔记/MyWeb/构建过程end.md",
     "docs/public/images/Pasted image 20260209171059.png",

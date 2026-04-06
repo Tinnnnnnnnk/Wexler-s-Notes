@@ -39,10 +39,14 @@
             "id": "4541114d123dd0c2",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {},
+              "type": "markdown",
+              "state": {
+                "file": "docs/Code/DS/细节部分.md",
+                "mode": "source",
+                "source": false
+              },
               "icon": "lucide-file",
-              "title": "新标签页"
+              "title": "细节部分"
             }
           }
         ],

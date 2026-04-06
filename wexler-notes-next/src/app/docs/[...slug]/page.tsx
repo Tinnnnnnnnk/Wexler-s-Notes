@@ -84,7 +84,7 @@ export default async function DocsPage({ params }: { params: Promise<{ slug: str
   const toc = extractTOCFromSource(source)
   const { content } = await serializeMDX(source, MDXComponents as Record<string, React.ComponentType>)
   const sidebarGroups = buildSidebar()
-  const currentPath = `/${slug.join('/')}`
+  const currentPath = `/docs/${slug.join('/')}`
 
   return (
     <MainLayout

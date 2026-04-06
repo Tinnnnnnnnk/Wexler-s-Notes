@@ -34,7 +34,7 @@ function scanDir(dir: string, baseSlug: string = ''): SidebarItem[] {
 
       items.push({
         title,
-        link: `/${slug}`,
+        link: `/docs/${slug}`,
         items: children,
         collapsed: false,
       })
@@ -54,7 +54,7 @@ function scanDir(dir: string, baseSlug: string = ''): SidebarItem[] {
 
       items.push({
         title,
-        link: `/${slug}`,
+        link: `/docs/${slug}`,
       })
     }
   }

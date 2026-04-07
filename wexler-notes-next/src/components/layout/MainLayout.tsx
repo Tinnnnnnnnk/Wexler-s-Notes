@@ -11,11 +11,11 @@ interface MainLayoutProps {
 
 export default function MainLayout({ children, sidebar }: MainLayoutProps) {
   return (
-    <div className={styles.root}>
+    <div className={`${styles.root} main-layout`}>
       <Navbar />
-      <div className={styles.body}>
-        {sidebar && <aside className={styles.sidebar}>{sidebar}</aside>}
-        <main className={styles.main}>{children}</main>
+      <div className={`${styles.body} main-layout-body`}>
+        {sidebar && <aside className={`${styles.sidebar} main-sidebar`}>{sidebar}</aside>}
+        <main className={`${styles.main} main-content`}>{children}</main>
       </div>
       <Footer />
     </div>

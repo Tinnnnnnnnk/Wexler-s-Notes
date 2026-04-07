@@ -14,7 +14,7 @@ export default function Navbar() {
   const { fxMode, layoutMode, setFxMode, setLayoutMode } = useUiModeContext()
 
   return (
-    <nav className={styles.nav}>
+    <nav className={`${styles.nav} main-navbar`}>
       <div className={styles.inner}>
         <Link href="/" className={styles.title}>
           Wexler&apos;s Notes

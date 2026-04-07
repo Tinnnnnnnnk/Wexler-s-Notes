@@ -21,9 +21,9 @@ export default function HomePage() {
 
   if (fxMode === 'liquid') {
     return (
-      <div className={styles.root}>
+      <div className={`${styles.root} home-root`}>
         <Backdrop fxMode={fxMode} perfMode={perfMode} />
-        <div className={styles.content}>
+        <div className={`${styles.content} home-content`}>
           <LiquidScene />
         </div>
         <PageEditor route={pathname} />
@@ -33,10 +33,10 @@ export default function HomePage() {
   }
 
   return (
-    <div className={styles.root}>
+    <div className={`${styles.root} home-root`}>
       <Backdrop fxMode={fxMode} perfMode={perfMode} />
 
-      <div className={styles.content}>
+      <div className={`${styles.content} home-content`}>
         <div className={`${styles.scenes} ${styles.enter}`} key={layoutMode}>
           {layoutMode === 'minimal' && <KeynoteScene />}
           {layoutMode === 'dashboard' && <WorkbenchScene />}

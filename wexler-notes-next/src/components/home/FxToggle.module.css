@@ -98,3 +98,41 @@
   border-radius: 44% 56% 58% 42% / 45% 55% 45% 55%;
   background: linear-gradient(135deg, #bbe3ff 0%, #6fa4ce 48%, #6f8ad1 100%);
 }
+
+.transitionOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  pointer-events: none;
+  background:
+    radial-gradient(
+      circle at var(--transition-origin-x, 100%) var(--transition-origin-y, 0%),
+      rgba(210, 230, 248, 0.4) 0,
+      rgba(210, 230, 248, 0.22) 18%,
+      rgba(210, 230, 248, 0.04) 38%,
+      transparent 62%
+    );
+  animation: fx-switch-reveal 0.52s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.dark .transitionOverlay {
+  background:
+    radial-gradient(
+      circle at var(--transition-origin-x, 100%) var(--transition-origin-y, 0%),
+      rgba(98, 140, 176, 0.34) 0,
+      rgba(98, 140, 176, 0.18) 20%,
+      rgba(98, 140, 176, 0.04) 40%,
+      transparent 62%
+    );
+}
+
+@keyframes fx-switch-reveal {
+  from {
+    opacity: 1;
+    clip-path: circle(0% at var(--transition-origin-x, 100%) var(--transition-origin-y, 0%));
+  }
+  to {
+    opacity: 0;
+    clip-path: circle(130% at var(--transition-origin-x, 100%) var(--transition-origin-y, 0%));
+  }
+}

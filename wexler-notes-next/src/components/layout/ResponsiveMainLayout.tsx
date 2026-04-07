@@ -46,19 +46,21 @@ export default function ResponsiveMainLayout({
     <div className={styles.root}>
       <Navbar onMenuClick={toggleSidebar} />
 
-      <div className={styles.body}>
+      <div className={`${styles.body} app-body`}>
         {/* 移动端侧边栏遮罩 */}
         {isSidebarOpen && isMobile && (
           <div className={styles.overlay} onClick={closeSidebar} />
         )}
 
         {/* 侧边栏 */}
-        <aside className={`${styles.sidebar} ${isSidebarOpen ? styles.sidebarOpen : ''}`}>
+        <aside
+          className={`${styles.sidebar} main-sidebar ${isSidebarOpen ? styles.sidebarOpen : ''}`}
+        >
           {sidebar || (groups && <Sidebar groups={groups} currentPath={currentPath} />)}
         </aside>
 
         {/* 主内容 */}
-        <main className={styles.main}>{children}</main>
+        <main className={`${styles.main} app-main`}>{children}</main>
       </div>
 
       <Footer />

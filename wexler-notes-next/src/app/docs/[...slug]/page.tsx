@@ -321,33 +321,32 @@ export default async function DocsPage({
       groups={sidebarGroups}
       currentPath={currentPath}
     >
-      <article className={styles.article}>
-        {/* 面包屑导航 */}
-        <Breadcrumb />
+      <div className={styles.docShell}>
+        <div className={styles.docMainColumn}>
+          <article className={`${styles.article} docArticle`}>
+            <div className={styles.docTopMeta}>
+              <Breadcrumb />
+            </div>
 
-        {/* 文章头部 */}
-        <ArticleHeader
-          title={title}
-          description={description}
-          tags={tags}
-          difficulty={difficulty}
-          status={status}
-          publishDate={date}
-          wordCount={wordCount}
-        />
+            <ArticleHeader
+              title={title}
+              description={description}
+              tags={tags}
+              difficulty={difficulty}
+              status={status}
+              publishDate={date}
+              wordCount={wordCount}
+            />
 
-        {/* 文章内容 */}
-        <div className={`${styles.content} docContent`}>
-          {content}
+            <div className={`${styles.content} docContent`}>{content}</div>
+          </article>
         </div>
-      </article>
 
-      {/* 右侧目录 */}
-      <aside className={styles.tocAside}>
-        <TableOfContents items={toc} />
-      </aside>
+        <aside className={`${styles.tocAside} doc-toc-panel`} aria-label="页面目录">
+          <TableOfContents items={toc} />
+        </aside>
+      </div>
 
-      {/* 阅读增强组件 */}
       <ReadingEnhancer />
       <EnhancedReadingProgress />
     </ResponsiveMainLayout>

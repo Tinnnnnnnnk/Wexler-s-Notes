@@ -7,6 +7,8 @@ import styles from './Backdrop.module.css'
 interface BackdropProps {
   fxMode: 'default' | 'glass' | 'liquid'
   perfMode: 'normal' | 'safe'
+  /** 文档站等非首页：更轻的遮罩，液态下更突出视频 */
+  site?: boolean
 }
 
 const IMAGE_CANDIDATES = [
@@ -19,7 +21,7 @@ const VIDEO_CANDIDATES = [
   '/media/home-bg/Bg1.mp4',
 ]
 
-export default function Backdrop({ fxMode, perfMode }: BackdropProps) {
+export default function Backdrop({ fxMode, perfMode, site = false }: BackdropProps) {
   const [visible, setVisible] = useState(false)
   const [videoFailed, setVideoFailed] = useState(false)
   const [videoIndex, setVideoIndex] = useState(0)
@@ -94,6 +96,7 @@ export default function Backdrop({ fxMode, perfMode }: BackdropProps) {
       className={[
         styles.backdrop,
         isLiquidActive ? styles.liquid : '',
+        site ? styles.site : '',
         visible ? styles.visible : styles.hidden,
         perfMode === 'safe' ? styles.perfSafe : '',
       ].join(' ')}

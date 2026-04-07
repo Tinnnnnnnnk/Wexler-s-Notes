@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import './globals.css'
 import { ThemeProvider } from '@/components/providers/ThemeProvider'
 import { UiModeProvider } from '@/components/providers/UiModeProvider'
+import GlobalSiteBackdrop from '@/components/layout/GlobalSiteBackdrop'
 
 export const metadata: Metadata = {
   title: "Wexler's Notes",
@@ -15,6 +16,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <ThemeProvider>
           <UiModeProvider>
+            <GlobalSiteBackdrop />
             <div className="rootLayout">{children}</div>
           </UiModeProvider>
         </ThemeProvider>

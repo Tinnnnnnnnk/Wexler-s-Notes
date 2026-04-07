@@ -53,6 +53,21 @@
   mix-blend-mode: screen;
 }
 
+/* 文档站：视频更通透；晶透仍保留轻微压暗以便玻璃层对比 */
+.site::after {
+  background:
+    linear-gradient(180deg, rgba(18, 26, 36, 0.22) 0%, rgba(18, 26, 36, 0.14) 55%, rgba(18, 26, 36, 0.2) 100%),
+    radial-gradient(circle at 22% 18%, rgba(180, 210, 235, 0.14), transparent 42%);
+}
+
+.site.liquid::after {
+  background:
+    linear-gradient(180deg, rgba(12, 18, 28, 0.04) 0%, rgba(12, 18, 28, 0.1) 100%),
+    radial-gradient(circle at 18% 22%, rgba(255, 255, 255, 0.12), transparent 45%),
+    radial-gradient(circle at 82% 12%, rgba(200, 230, 255, 0.1), transparent 40%);
+  mix-blend-mode: screen;
+}
+
 .aura {
   position: absolute;
   inset: 0;

@@ -34,7 +34,7 @@
     background: rgba(255, 255, 255, 0.35);
   }
 
-  .dark :global(.doc-toc-panel) .tocLink {
+  :global(.dark) :global(.doc-toc-panel) .tocLink {
     background: rgba(20, 32, 44, 0.45);
     border-color: rgba(140, 170, 195, 0.2);
   }
@@ -91,11 +91,11 @@
   background: rgba(74, 109, 134, 0.07);
 }
 
-.dark .tocLink {
+:global(.dark) .tocLink {
   color: rgba(160, 180, 195, 0.75);
 }
 
-.dark .tocLink:hover {
+:global(.dark) .tocLink:hover {
   color: #c8d8e4;
   background: rgba(136, 168, 192, 0.1);
 }
@@ -106,7 +106,7 @@
   background: rgba(74, 109, 134, 0.1) !important;
 }
 
-.dark .tocLinkActive {
+:global(.dark) .tocLinkActive {
   color: #a8c8e0 !important;
   border-left-color: #6a9cc0;
   background: rgba(106, 156, 192, 0.12) !important;

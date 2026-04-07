@@ -1,6 +1,4 @@
-/* src/app/docs/[...slug]/page.module.css */
-
-/* -------------------- Doc page grid (article + TOC 横向) -------------------- */
+/* src/app/docs/[...slug]/page.module.css — 博客式长文排版 */
 
 .docShell {
   display: flex;
@@ -18,16 +16,16 @@
 }
 
 .docTopMeta {
-  margin-bottom: var(--space-2);
+  margin-bottom: var(--space-3);
   padding-bottom: var(--space-3);
   border-bottom: 1px solid var(--color-border-muted);
+  max-width: 42rem;
 }
 
-/* -------------------- Article — 模块化主卡片 -------------------- */
-
+/* 文章卡片：外框；正文宽度由内层 prose 控制 */
 .article {
   margin: 0;
-  padding: var(--space-8) var(--space-8);
+  padding: var(--space-8) clamp(var(--space-5), 4vw, var(--space-10));
   animation: fadeIn 0.45s ease;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
@@ -36,9 +34,11 @@
     0 1px 0 rgba(255, 255, 255, 0.65) inset,
     0 18px 40px rgba(15, 23, 42, 0.06),
     0 4px 12px rgba(15, 23, 42, 0.04);
+  font-family: var(--vp-font-family-base);
+  -webkit-font-smoothing: antialiased;
 }
 
-.dark .article {
+:global(.dark) .article {
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 0.04) inset,
     0 20px 48px rgba(0, 0, 0, 0.35),
@@ -56,30 +56,46 @@
   }
 }
 
-/* -------------------- Content -------------------- */
+/* ---------- Prose：正文栏宽约 42rem，行高舒适（类 Medium / 技术博客） ---------- */
 
 .content {
-  font-size: var(--text-base);
-  line-height: var(--leading-relaxed);
-  color: var(--color-text-primary);
+  max-width: 42rem;
   margin-top: var(--space-6);
   padding-top: var(--space-6);
   border-top: 1px solid var(--color-border-muted);
+
+  font-size: var(--text-base);
+  line-height: var(--leading-relaxed);
+  letter-spacing: var(--tracking-normal);
+  color: var(--color-text-primary);
+
+  /* 中英文混排略改善标点与断行 */
+  text-wrap: pretty;
+  word-break: break-word;
 }
 
-/* Heading styles in content */
 .content h1,
 .content h2,
 .content h3,
 .content h4,
 .content h5,
 .content h6 {
-  margin-top: var(--space-8);
-  margin-bottom: var(--space-4);
+  font-family: var(--vp-font-family-base);
   font-weight: var(--font-semibold);
   line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
   color: var(--color-text-primary);
   scroll-margin-top: calc(var(--navbar-height) + var(--space-4));
+}
+
+.content h1,
+.content h2,
+.content h3,
+.content h4,
+.content h5,
+.content h6 {
+  margin-top: 2.25rem;
+  margin-bottom: 0.65rem;
 }
 
 .content h1:first-child,
@@ -88,180 +104,188 @@
   margin-top: 0;
 }
 
+/* 二级标题：下划线分区，而不是整块灰底 */
 .content h2 {
-  font-size: var(--text-2xl);
-  padding: var(--space-3) var(--space-4);
-  margin-left: calc(-1 * var(--space-2));
-  margin-right: calc(-1 * var(--space-2));
-  border-radius: var(--radius-lg);
-  border-bottom: none;
-  background: linear-gradient(
-    135deg,
-    var(--color-surface-elevated) 0%,
-    var(--color-surface-muted) 100%
-  );
-  border: 1px solid var(--color-border-muted);
+  font-size: var(--text-xl);
+  padding-bottom: 0.5rem;
+  margin-top: 2.75rem;
+  border-bottom: 1px solid var(--color-border-muted);
+  background: none;
+  border-radius: 0;
+  border-left: none;
+  border-right: none;
+  border-top: none;
 }
 
 .content h3 {
-  font-size: var(--text-xl);
+  font-size: 1.08rem;
+  margin-top: 2rem;
+  color: var(--color-text-primary);
 }
 
 .content h4 {
-  font-size: var(--text-lg);
+  font-size: var(--text-base);
+  margin-top: 1.5rem;
+  color: var(--color-text-secondary);
 }
 
-/* Paragraph */
 .content p {
-  margin-bottom: var(--space-4);
+  margin-bottom: 1.125rem;
 }
 
 .content > p:last-child {
   margin-bottom: 0;
 }
 
-/* Lists */
+/* 列表：普通博客样式，不要整段灰盒子 */
 .content ul,
 .content ol {
-  margin-bottom: var(--space-4);
-  padding: var(--space-4) var(--space-6);
-  padding-left: var(--space-8);
-  background: var(--color-surface-muted);
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--color-border-muted);
+  margin: 0 0 1.25rem;
+  padding-left: 1.35rem;
+  background: none;
+  border: none;
+  border-radius: 0;
+}
+
+.content ul {
+  list-style-type: disc;
+}
+
+.content ol {
+  list-style-type: decimal;
 }
 
 .content li {
-  margin-bottom: var(--space-2);
+  margin-bottom: 0.45rem;
+  line-height: var(--leading-relaxed);
+}
+
+.content li::marker {
+  color: var(--color-text-tertiary);
 }
 
 .content li > ul,
 .content li > ol {
-  margin-top: var(--space-2);
-  margin-bottom: 0;
-  background: transparent;
-  border: none;
-  padding: var(--space-2) 0 var(--space-2) var(--space-4);
+  margin-top: 0.4rem;
+  margin-bottom: 0.4rem;
 }
 
-/* Blockquote — 独立模块 */
+/* 引用块：克制、可读 */
 .content blockquote {
-  margin: var(--space-6) 0;
-  padding: var(--space-5) var(--space-6);
-  border-left: 4px solid var(--color-primary-500);
-  background: linear-gradient(
-    105deg,
-    var(--color-surface-elevated) 0%,
-    var(--color-surface-muted) 100%
-  );
-  border-radius: 0 var(--radius-xl) var(--radius-xl) 0;
+  margin: 1.75rem 0;
+  padding: 1rem 1.15rem 1rem 1.1rem;
+  border-left: 3px solid var(--color-primary-500);
+  background: var(--color-surface-muted);
+  border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
   color: var(--color-text-secondary);
-  font-style: italic;
-  box-shadow: var(--shadow-sm);
+  font-style: normal;
+  box-shadow: none;
+}
+
+.content blockquote p {
+  margin-bottom: 0.65rem;
 }
 
 .content blockquote p:last-child {
   margin-bottom: 0;
 }
 
-/* Links */
 .content a {
   color: var(--color-primary-600);
-  text-decoration: none;
-  border-bottom: 1px solid transparent;
-  transition: all var(--motion-fast);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  text-decoration-thickness: 1px;
+  text-decoration-color: rgba(49, 119, 156, 0.35);
+  transition: color var(--motion-fast), text-decoration-color var(--motion-fast);
 }
 
 .content a:hover {
   color: var(--color-primary-700);
-  border-bottom-color: var(--color-primary-400);
+  text-decoration-color: var(--color-primary-500);
 }
 
-.dark .content a {
+:global(.dark) .content a {
   color: var(--color-primary-400);
+  text-decoration-color: rgba(136, 168, 192, 0.4);
 }
 
-.dark .content a:hover {
+:global(.dark) .content a:hover {
   color: var(--color-primary-300);
-  border-bottom-color: var(--color-primary-500);
+  text-decoration-color: var(--color-primary-400);
 }
 
-/* Inline code */
-.content code {
+/* 行内代码 */
+.content :not(pre) code {
   font-family: var(--font-mono);
-  font-size: 0.875em;
-  padding: 0.15em 0.45em;
+  font-size: 0.9em;
+  padding: 0.12em 0.4em;
   background: var(--color-surface-muted);
   border-radius: var(--radius-sm);
   color: var(--color-primary-700);
   border: 1px solid var(--color-border-muted);
 }
 
-.dark .content code {
+:global(.dark) .content :not(pre) code {
   color: var(--color-primary-300);
 }
 
-/* Code block — 独立模块 */
-.content pre {
-  margin: var(--space-6) 0;
-  padding: var(--space-5);
-  border-radius: var(--radius-xl);
-  border: 1px solid var(--color-border);
-  background: var(--color-surface-elevated);
-  box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.5) inset,
-    var(--shadow-md);
-  overflow-x: auto;
+/* 代码块由 MDX CodeBlock 负责样式；此处只保留间距 */
+.content :global([class*='codeBlock']) {
+  margin: 1.75rem 0;
 }
 
-.dark .content pre {
-  box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.06) inset,
-    var(--shadow-md);
-}
-
-/* Horizontal rule */
-.content hr {
-  margin: var(--space-8) 0;
+.content pre code {
+  background: transparent;
   border: none;
-  border-top: 1px solid var(--color-border);
-  position: relative;
+  padding: 0;
+  font-size: inherit;
+  color: inherit;
+}
+
+/* 分隔线：简洁 */
+.content hr {
+  margin: 2.5rem 0;
+  border: none;
+  border-top: 1px solid var(--color-border-muted);
 }
 
 .content hr::after {
-  content: '';
-  position: absolute;
-  top: -2px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 60px;
-  height: 2px;
-  background: var(--color-primary-500);
-  border-radius: var(--radius-full);
+  display: none;
 }
 
-/* Images */
 .content img {
   max-width: 100%;
   height: auto;
-  margin: var(--space-6) 0;
+  margin: 1.75rem 0;
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-sm);
   border: 1px solid var(--color-border-muted);
 }
 
-/* Tables */
-.content table {
+/* 非 MDX 组件包裹的裸 table 兜底 */
+.content > table {
   width: 100%;
-  margin: var(--space-6) 0;
+  margin: 1.75rem 0;
   border-collapse: collapse;
+  font-size: var(--text-sm);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   overflow: hidden;
-  border: 1px solid var(--color-border);
-  box-shadow: var(--shadow-sm);
 }
 
-/* -------------------- Table of Contents Aside -------------------- */
+.content > table th,
+.content > table td {
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--color-border-muted);
+  text-align: left;
+}
+
+.content > table th {
+  font-weight: var(--font-semibold);
+  background: var(--color-surface-muted);
+}
+
+/* -------------------- TOC -------------------- */
 
 .tocAside {
   width: 240px;
@@ -281,13 +305,11 @@
     0 12px 28px rgba(15, 23, 42, 0.06);
 }
 
-.dark .tocAside {
+:global(.dark) .tocAside {
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 0.05) inset,
     0 14px 32px rgba(0, 0, 0, 0.25);
 }
-
-/* -------------------- Responsive -------------------- */
 
 @media (max-width: 1100px) {
   .docShell {
@@ -311,18 +333,11 @@
     border-radius: 18px;
   }
 
+  .content {
+    font-size: 1rem;
+  }
+
   .content h2 {
-    font-size: var(--text-xl);
-    padding: var(--space-2) var(--space-3);
-  }
-
-  .content h3 {
-    font-size: var(--text-lg);
-  }
-
-  .content ul,
-  .content ol {
-    padding: var(--space-3) var(--space-5);
-    padding-left: var(--space-7);
+    font-size: 1.15rem;
   }
 }

@@ -13,7 +13,7 @@
   overflow: hidden;
 }
 
-.dark .codeBlock {
+:global(.dark) .codeBlock {
   background: #1e293b;
   border-color: var(--color-border-strong);
 }
@@ -22,12 +22,12 @@
   padding: var(--space-4);
   overflow-x: auto;
   font-family: var(--font-mono);
-  font-size: var(--text-sm);
-  line-height: var(--leading-relaxed);
+  font-size: 0.875rem;
+  line-height: 1.65;
   color: var(--color-text-primary);
 }
 
-.dark .codeBlock pre {
+:global(.dark) .codeBlock pre {
   color: #e2e8f0;
 }
 
@@ -48,7 +48,7 @@
   letter-spacing: 0.05em;
 }
 
-.dark .codeLang {
+:global(.dark) .codeLang {
   color: var(--color-primary-300);
   background: var(--color-primary-900);
   border-color: var(--color-primary-700);
@@ -88,17 +88,17 @@
   background: rgba(34, 197, 94, 0.1);
 }
 
-.dark .copyBtn {
+:global(.dark) .copyBtn {
   background: var(--color-surface-elevated);
 }
 
-.dark .copyBtn:hover {
+:global(.dark) .copyBtn:hover {
   color: var(--color-primary-400);
   border-color: var(--color-primary-500);
   background: var(--color-primary-900);
 }
 
-.dark .copyBtn.copySuccess {
+:global(.dark) .copyBtn.copySuccess {
   color: #4ade80;
   background: rgba(34, 197, 94, 0.15);
 }
@@ -215,6 +215,15 @@
   font-size: var(--text-base);
   line-height: var(--leading-relaxed);
   color: var(--color-text-secondary);
+  max-width: 42rem;
+}
+
+.calloutBody p {
+  margin-bottom: 0.75rem;
+}
+
+.calloutBody p:last-child {
+  margin-bottom: 0;
 }
 
 .calloutBody > *:last-child {
@@ -370,11 +379,11 @@ h4:hover .headingAnchor {
   border-bottom-color: var(--color-primary-400);
 }
 
-.dark .proseLink {
+:global(.dark) .proseLink {
   color: var(--color-primary-400);
 }
 
-.dark .proseLink:hover {
+:global(.dark) .proseLink:hover {
   color: var(--color-primary-300);
   border-bottom-color: var(--color-primary-500);
 }
@@ -473,7 +482,7 @@ h4:hover .headingAnchor {
     inset 0 -1px 0 var(--color-border-muted);
 }
 
-.dark .kbd {
+:global(.dark) .kbd {
   background: var(--color-surface-elevated);
   color: var(--color-text-primary);
 }

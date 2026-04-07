@@ -4,6 +4,8 @@
   margin-bottom: var(--space-8);
   padding-bottom: var(--space-6);
   border-bottom: 1px solid var(--color-border);
+  /* 与正文 prose 同宽，避免标题拉满整卡像 Word */
+  max-width: 42rem;
 }
 
 /* -------------------- Title -------------------- */
@@ -177,13 +179,13 @@
   box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
 }
 
-.dark .tag {
+:global(.dark) .tag {
   color: var(--color-primary-300);
   background: var(--color-primary-900);
   border-color: var(--color-primary-700);
 }
 
-.dark .tag:hover {
+:global(.dark) .tag:hover {
   background: var(--color-primary-800);
   box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
 }

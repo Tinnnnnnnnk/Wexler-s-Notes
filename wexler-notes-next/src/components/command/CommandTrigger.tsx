@@ -1,9 +1,7 @@
-// CommandTrigger — thin wrapper exposing only the trigger button
-// The full CommandPalette lives in CommandPalette.tsx; this component
-// exists so Navbar can reference a small, isolated trigger without
-// pulling in the entire palette state tree.
+// CommandTrigger - thin wrapper exposing only the trigger button
 'use client'
-import { useState, useEffect } from 'react'
+
+import { useEffect, useState } from 'react'
 import CommandPalette from './CommandPalette'
 import styles from './CommandPalette.module.css'
 
@@ -12,11 +10,12 @@ export default function CommandTrigger() {
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
         e.preventDefault()
-        setIsOpen((o) => !o)
+        setIsOpen((prev) => !prev)
       }
     }
+
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
   }, [])
@@ -33,9 +32,7 @@ export default function CommandTrigger() {
         <span className={styles.triggerText}>快捷面板</span>
         <span className={styles.hotkey}>Ctrl+K</span>
       </button>
-      {isOpen && (
-        <CommandPalette defaultOpen onClose={() => setIsOpen(false)} />
-      )}
+      {isOpen && <CommandPalette defaultOpen onClose={() => setIsOpen(false)} />}
     </>
   )
 }

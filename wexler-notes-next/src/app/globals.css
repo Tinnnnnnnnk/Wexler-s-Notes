@@ -1,10 +1,10 @@
 /* src/app/globals.css */
-@import '../styles/tokens.css';
-@import '../styles/layers.css';
-@import '../styles/base.css';
-@import '../styles/effects.css';
-@import '../styles/editor.css';
-@import '../styles/home-lab.css';
+@import '../../styles/tokens.css';
+@import '../../styles/layers.css';
+@import '../../styles/base.css';
+@import '../../styles/effects.css';
+@import '../../styles/editor.css';
+@import '../../styles/home-lab.css';
 
 /* 全局设计系统变量覆盖 */
 :root {

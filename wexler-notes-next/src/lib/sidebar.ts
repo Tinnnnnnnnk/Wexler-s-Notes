@@ -3,10 +3,25 @@
 
 import fs from 'fs'
 import path from 'path'
-import matter from 'gray-matter'
 import type { SidebarGroup, SidebarItem } from '@/types/sidebar'
+import { parseFrontmatter } from '@/lib/frontmatter'
+import { resolveContentDir } from '@/lib/contentPath'
 
-const CONTENT_DIR = path.join(process.cwd(), 'src', 'content')
+const CONTENT_DIR = resolveContentDir()
+const SIDEBAR_CACHE_TTL_MS = 5000
+
+let sidebarCache: { expiresAt: number; groups: SidebarGroup[] } | null = null
+
+function findFirstLeafLink(items: SidebarItem[]): string | undefined {
+  for (const item of items) {
+    if (item.link) return item.link
+    if (item.items?.length) {
+      const child = findFirstLeafLink(item.items)
+      if (child) return child
+    }
+  }
+  return undefined
+}
 
 function scanDir(dir: string, baseSlug: string = ''): SidebarItem[] {
   if (!fs.existsSync(dir)) return []
@@ -34,7 +49,7 @@ function scanDir(dir: string, baseSlug: string = ''): SidebarItem[] {
 
       items.push({
         title,
-        link: `/docs/${slug}`,
+        link: findFirstLeafLink(children),
         items: children,
         collapsed: false,
       })
@@ -46,7 +61,7 @@ function scanDir(dir: string, baseSlug: string = ''): SidebarItem[] {
 
       let title = slug.split('/').pop() || slug
       try {
-        const { data } = matter(fs.readFileSync(filePath, 'utf-8'))
+        const { data } = parseFrontmatter(fs.readFileSync(filePath, 'utf-8'))
         if (data.title) title = data.title
       } catch {
         // ignore
@@ -70,6 +85,11 @@ function scanDir(dir: string, baseSlug: string = ''): SidebarItem[] {
 }
 
 export function buildSidebar(): SidebarGroup[] {
+  const now = Date.now()
+  if (sidebarCache && sidebarCache.expiresAt > now) {
+    return sidebarCache.groups
+  }
+
   if (!fs.existsSync(CONTENT_DIR)) return []
 
   const entries = fs.readdirSync(CONTENT_DIR, { withFileTypes: true })
@@ -94,6 +114,11 @@ export function buildSidebar(): SidebarGroup[] {
     }
 
     groups.push({ text, items })
+  }
+
+  sidebarCache = {
+    expiresAt: now + SIDEBAR_CACHE_TTL_MS,
+    groups,
   }
 
   return groups

@@ -2,10 +2,11 @@
 import fs from 'fs'
 import path from 'path'
 import { buildSidebar } from '@/lib/sidebar'
+import { resolveContentDir } from '@/lib/contentPath'
 
 export const dynamic = 'force-static'
 
-const CONTENT_DIR = path.join(process.cwd(), 'src', 'content')
+const CONTENT_DIR = resolveContentDir()
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://wexler.dev'
 
 interface SitemapEntry {

@@ -6,6 +6,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useReadingTrail } from '@/hooks/useReadingTrail'
 import { useUiModeContext } from '@/components/providers/UiModeProvider'
+import type { ReadingSnapshot } from '@/types/mdx'
 import styles from './CommandPalette.module.css'
 
 const KIND_LABELS: Record<string, string> = {
@@ -21,13 +22,7 @@ interface PaletteItem {
   title: string
   meta: string
   headingId?: string
-  snapshot?: {
-    path: string
-    title: string
-    progress: number
-    updatedAt: number
-    headingId?: string
-  }
+  snapshot?: ReadingSnapshot
   action?: 'open-search' | 'scroll-top' | 'mode-default' | 'mode-glass' | 'mode-liquid'
 }
 

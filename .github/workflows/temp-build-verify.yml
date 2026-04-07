@@ -53,6 +53,12 @@ jobs:
           echo "=== Sample HTML Files ==="
           find out/docs -name "*.html" 2>/dev/null | head -20 || echo "No docs found"
 
+      - name: Run Stage3 Self Check
+        run: |
+          cd wexler-notes-next
+          npx tsx scripts/stage3-self-check.ts
+        continue-on-error: true
+
       - name: Upload Build Artifacts
         if: always()
         uses: actions/upload-artifact@v4

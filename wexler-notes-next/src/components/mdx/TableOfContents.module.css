@@ -1,7 +1,49 @@
 /* src/components/mdx/TableOfContents.module.css */
 
 .toc {
-  padding: 0.8rem 0;
+  padding: 0.35rem 0;
+}
+
+/* 窄屏：目录横排胶囊，置于正文上方 */
+@media (max-width: 1100px) {
+  :global(.doc-toc-panel) .toc {
+    padding: 0;
+  }
+
+  :global(.doc-toc-panel) .tocTitle {
+    margin-bottom: 0.65rem;
+  }
+
+  :global(.doc-toc-panel) .tocList {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+  }
+
+  :global(.doc-toc-panel) .tocItem {
+    margin: 0;
+  }
+
+  :global(.doc-toc-panel) .tocLink {
+    border-left: none;
+    border: 1px solid rgba(120, 150, 175, 0.22);
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    background: rgba(255, 255, 255, 0.35);
+  }
+
+  .dark :global(.doc-toc-panel) .tocLink {
+    background: rgba(20, 32, 44, 0.45);
+    border-color: rgba(140, 170, 195, 0.2);
+  }
+
+  :global(.doc-toc-panel) .tocLinkActive {
+    border-left: none;
+    border-color: var(--oil-accent, #4a6d86);
+    background: rgba(74, 109, 134, 0.14);
+  }
 }
 
 .tocTitle {

@@ -1221,6 +1221,18 @@ html.home-glass-mode.dark .main-sidebar {
   border-right-color: rgba(178, 202, 222, 0.18) !important;
 }
 
+html.home-glass-mode .main-footer {
+  backdrop-filter: blur(18px) saturate(150%);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
+  background: rgba(236, 244, 252, 0.4) !important;
+  border-top-color: rgba(255, 255, 255, 0.5) !important;
+}
+
+html.home-glass-mode.dark .main-footer {
+  background: rgba(12, 20, 30, 0.48) !important;
+  border-top-color: rgba(150, 180, 205, 0.2) !important;
+}
+
 /* 文档主卡片 + 目录：晶透强磨砂 */
 html.home-glass-mode .docArticle,
 html.home-glass-mode .doc-toc-panel {
@@ -1317,8 +1329,10 @@ html.home-liquid-mode .docContent {
 }
 
 html.home-liquid-mode .main-footer {
-  background: transparent !important;
+  background: rgba(255, 255, 255, 0.06) !important;
   border-top-color: rgba(255, 255, 255, 0.35) !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
 /* Liquid mode ambiance */

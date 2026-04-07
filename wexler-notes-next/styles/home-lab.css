@@ -1180,7 +1180,7 @@ html.home-glass-mode .main-footer {
 }
 
 html.home-glass-mode .main-navbar {
-  background: rgba(226, 238, 248, 0.52) !important;
+  background: rgba(226, 238, 248, 0.42) !important;
   border-bottom-color: rgba(255, 255, 255, 0.72) !important;
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.58),
@@ -1193,7 +1193,7 @@ html.home-glass-mode.dark .main-navbar {
 }
 
 html.home-glass-mode .main-sidebar {
-  background: rgba(228, 240, 249, 0.44) !important;
+  background: rgba(228, 240, 249, 0.36) !important;
   border-right-color: rgba(255, 255, 255, 0.62) !important;
 }
 
@@ -1203,7 +1203,7 @@ html.home-glass-mode.dark .main-sidebar {
 }
 
 html.home-glass-mode .docContent {
-  background: rgba(243, 249, 255, 0.42) !important;
+  background: rgba(243, 249, 255, 0.28) !important;
   border: 1px solid rgba(222, 238, 252, 0.58);
   border-radius: 18px;
   padding: 26px 28px;
@@ -1216,7 +1216,7 @@ html.home-glass-mode.dark .docContent {
 }
 
 html.home-liquid-mode .main-navbar {
-  background: rgba(223, 238, 253, 0.34) !important;
+  background: rgba(223, 238, 253, 0.24) !important;
   border-bottom-color: rgba(255, 255, 255, 0.62) !important;
   backdrop-filter: blur(18px) saturate(165%);
   -webkit-backdrop-filter: blur(18px) saturate(165%);
@@ -1229,7 +1229,7 @@ html.home-liquid-mode.dark .main-navbar {
 
 html.home-liquid-mode .main-sidebar,
 html.home-liquid-mode .docContent {
-  background: rgba(236, 247, 255, 0.2) !important;
+  background: rgba(236, 247, 255, 0.14) !important;
   border: 1px solid rgba(255, 255, 255, 0.4);
   backdrop-filter: blur(22px) saturate(170%);
   -webkit-backdrop-filter: blur(22px) saturate(170%);

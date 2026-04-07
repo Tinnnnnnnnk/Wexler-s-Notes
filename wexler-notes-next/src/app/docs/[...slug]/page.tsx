@@ -42,13 +42,22 @@ function slugify(text: string): string {
 
 function extractTOCFromSource(source: string): TOCItem[] {
   const items: TOCItem[] = []
+  const seenIds = new Map<string, number>()
   const headingRegex = /^#{2,4}\s+(.+?)(?:\s*\{#([\w-]+)\})?\s*$/gm
   let match
   while ((match = headingRegex.exec(source)) !== null) {
     const rawLevel = match[0].match(/^(#+)/)?.[1].length ?? 2
     const text = match[1].trim()
-    const id = match[2] ?? slugify(text)
+    let id = match[2] ?? slugify(text)
     if (text) {
+      // 处理重复 id，确保每个 id 都是唯一的
+      if (seenIds.has(id)) {
+        const count = seenIds.get(id)! + 1
+        seenIds.set(id, count)
+        id = `${id}-${count}`
+      } else {
+        seenIds.set(id, 0)
+      }
       items.push({ id, text, level: rawLevel as 2 | 3 | 4 })
     }
   }

@@ -1,5 +1,4 @@
 // src/components/home/scenes/KeynoteScene.tsx
-// Scene A: Apple/Keynote style — migrated from HomeLayoutScenes.vue
 import styles from './KeynoteScene.module.css'
 
 export default function KeynoteScene() {
@@ -23,7 +22,7 @@ export default function KeynoteScene() {
           { stat: '130+', label: '技术笔记' },
           { stat: 'v3', label: '迭代体系' },
           { stat: 'CI', label: '自动部署' },
-          { stat: '24/7', label: '可访问' },
+          { stat: '24/7', label: '持续可用' },
         ].map((item) => (
           <article key={item.label}>
             <strong>{item.stat}</strong>

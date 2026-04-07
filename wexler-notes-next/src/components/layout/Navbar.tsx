@@ -1,5 +1,6 @@
 // src/components/layout/Navbar.tsx
 'use client'
+
 import Link from 'next/link'
 import { useTheme } from '@/components/providers/ThemeProvider'
 import { useUiModeContext } from '@/components/providers/UiModeProvider'
@@ -10,7 +11,7 @@ import styles from './Navbar.module.css'
 
 export default function Navbar() {
   const { isDark, toggle: toggleTheme } = useTheme()
-  const { fxMode, layoutMode, toggleFxMode, setFxMode, setLayoutMode } = useUiModeContext()
+  const { fxMode, layoutMode, setFxMode, setLayoutMode } = useUiModeContext()
 
   return (
     <nav className={styles.nav}>
@@ -27,8 +28,8 @@ export default function Navbar() {
             type="button"
             className={styles.themeBtn}
             onClick={toggleTheme}
-            title={isDark ? '切换到日间模式' : '切换到夜间模式'}
-            aria-label={isDark ? '日间模式' : '夜间模式'}
+            title={isDark ? '切换到浅色模式' : '切换到深色模式'}
+            aria-label={isDark ? '浅色模式' : '深色模式'}
           >
             {isDark ? (
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

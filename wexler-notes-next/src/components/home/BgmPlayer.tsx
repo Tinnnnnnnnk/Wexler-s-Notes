@@ -1,13 +1,21 @@
 // src/components/home/BgmPlayer.tsx
 'use client'
-import { useRef, useState, useCallback, useEffect } from 'react'
+
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import styles from './BgmPlayer.module.css'
+
+type BgmPlayerVariant = 'floating' | 'stage'
+
+interface BgmPlayerProps {
+  variant?: BgmPlayerVariant
+}
 
 const BGM_CANDIDATES = [
   '/media/home-bgm/liquid-bgm.opus',
   '/media/home-bgm/liquid-bgm.flac',
   '/media/home-bgm/liquid-bgm.mp3',
 ]
+
 const BGM_TITLE = '60% Reverie'
 const BGM_ARTIST = 'ZZ-STUDIO x HOYO-MiX'
 
@@ -18,7 +26,11 @@ function formatDuration(seconds: number): string {
   return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`
 }
 
-export default function BgmPlayer() {
+function clamp(value: number, min: number, max: number): number {
+  return Math.min(max, Math.max(min, value))
+}
+
+export default function BgmPlayer({ variant = 'floating' }: BgmPlayerProps) {
   const audioRef = useRef<HTMLAudioElement>(null)
   const [isPlaying, setIsPlaying] = useState(false)
   const [currentTime, setCurrentTime] = useState(0)
@@ -27,18 +39,12 @@ export default function BgmPlayer() {
   const [isMini, setIsMini] = useState(false)
   const [showVolume, setShowVolume] = useState(false)
   const [isSeeking, setIsSeeking] = useState(false)
-  const [bgmSrc, setBgmSrc] = useState('/media/home-bgm/liquid-bgm.opus')
+  const [candidateIndex, setCandidateIndex] = useState(0)
 
-  // Reset audio state when liquid mode is re-entered
-  useEffect(() => {
-    const audio = audioRef.current
-    if (audio) {
-      audio.pause()
-      audio.currentTime = 0
-      setIsPlaying(false)
-      setCurrentTime(0)
-    }
-  }, [])
+  const bgmSrc = useMemo(
+    () => BGM_CANDIDATES[Math.min(candidateIndex, BGM_CANDIDATES.length - 1)],
+    [candidateIndex],
+  )
 
   const syncState = useCallback(() => {
     const audio = audioRef.current
@@ -63,10 +69,10 @@ export default function BgmPlayer() {
   const seekBy = useCallback((delta: number) => {
     const audio = audioRef.current
     if (!audio) return
-    const max = Number.isFinite(audio.duration) ? audio.duration : 0
-    const target = Math.min(Math.max((Number.isFinite(audio.currentTime) ? audio.currentTime : 0) + delta, 0), max)
-    audio.currentTime = target
-    setCurrentTime(target)
+    const maxDuration = Number.isFinite(audio.duration) ? audio.duration : 0
+    const next = clamp((Number.isFinite(audio.currentTime) ? audio.currentTime : 0) + delta, 0, maxDuration)
+    audio.currentTime = next
+    setCurrentTime(next)
   }, [])
 
   const handleSeekInput = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -84,13 +90,12 @@ export default function BgmPlayer() {
   }
 
   const handleVolumeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const v = Number(e.target.value) / 100
-    setVolume(v)
+    const next = clamp(Number(e.target.value) / 100, 0, 1)
+    setVolume(next)
     const audio = audioRef.current
-    if (audio) {
-      audio.volume = v
-      audio.muted = v <= 0.001
-    }
+    if (!audio) return
+    audio.volume = next
+    audio.muted = next <= 0.001
   }
 
   useEffect(() => {
@@ -101,13 +106,12 @@ export default function BgmPlayer() {
   }, [volume])
 
   useEffect(() => {
+    const audio = audioRef.current
     return () => {
-      const audio = audioRef.current
-      if (audio) {
-        audio.pause()
-        audio.currentTime = 0
-        audio.src = ''
-      }
+      if (!audio) return
+      audio.pause()
+      audio.currentTime = 0
+      audio.src = ''
     }
   }, [])
 
@@ -115,26 +119,34 @@ export default function BgmPlayer() {
   const volumePct = Math.round(volume * 100)
 
   return (
-    <div className={styles.wrapper}>
-      <div className={`${styles.player} ${isMini ? styles.mini : ''}`}>
+    <div className={`${styles.wrapper} ${variant === 'stage' ? styles.stageWrapper : ''}`}>
+      <div className={`${styles.player} ${isMini ? styles.mini : ''} ${variant === 'stage' ? styles.stagePlayer : ''}`}>
         <div className={styles.top}>
           <button
             type="button"
             className={styles.miniToggle}
             aria-label={isMini ? '展开播放器' : '最小化播放器'}
-            onClick={() => { setIsMini((p) => !p); if (!isMini) setShowVolume(false) }}
+            onClick={() => {
+              setIsMini((prev) => !prev)
+              if (!isMini) setShowVolume(false)
+            }}
           >
             <span className={`${styles.miniIcon} ${isMini ? styles.miniIconMini : ''}`} />
           </button>
 
           <div className={styles.transport}>
-            <button type="button" className={styles.ctrl} aria-label="后退10秒" onClick={() => seekBy(-10)}>
+            <button type="button" className={styles.ctrl} aria-label="后退 10 秒" onClick={() => seekBy(-10)}>
               <span className={styles.seekBack} />
             </button>
-            <button type="button" className={`${styles.ctrl} ${styles.ctrlMain}`} aria-label={isPlaying ? '暂停' : '播放'} onClick={togglePlay}>
+            <button
+              type="button"
+              className={`${styles.ctrl} ${styles.ctrlMain}`}
+              aria-label={isPlaying ? '暂停' : '播放'}
+              onClick={togglePlay}
+            >
               {isPlaying ? <span className={styles.pauseIcon} /> : <span className={styles.playIcon} />}
             </button>
-            <button type="button" className={styles.ctrl} aria-label="前进10秒" onClick={() => seekBy(10)}>
+            <button type="button" className={styles.ctrl} aria-label="前进 10 秒" onClick={() => seekBy(10)}>
               <span className={styles.seekForward} />
             </button>
           </div>
@@ -143,15 +155,15 @@ export default function BgmPlayer() {
             type="button"
             className={`${styles.volumeToggle} ${showVolume ? styles.volumeActive : ''}`}
             aria-label="音量控制"
-            onClick={() => { if (!isMini) setShowVolume((v) => !v) }}
+            onClick={() => {
+              if (!isMini) setShowVolume((prev) => !prev)
+            }}
           >
             <span className={`${styles.volumeIcon} ${isMuted ? styles.volumeMuted : ''}`} />
           </button>
         </div>
 
-        {!isMini && (
-          <p className={styles.track}>{BGM_TITLE} · {BGM_ARTIST}</p>
-        )}
+        {!isMini && <p className={styles.track}>{BGM_TITLE} · {BGM_ARTIST}</p>}
 
         <div className={styles.timeline}>
           <span className={styles.time}>{formatDuration(currentTime)}</span>
@@ -162,7 +174,7 @@ export default function BgmPlayer() {
             max={Math.max(duration, 0.1)}
             value={currentTime}
             step={0.1}
-            aria-label="进度"
+            aria-label="播放进度"
             onChange={handleSeekInput}
             onMouseUp={handleSeekCommit}
             onTouchEnd={handleSeekCommit}
@@ -198,6 +210,9 @@ export default function BgmPlayer() {
         onTimeUpdate={syncState}
         onLoadedMetadata={syncState}
         onEnded={syncState}
+        onError={() => {
+          setCandidateIndex((prev) => (prev < BGM_CANDIDATES.length - 1 ? prev + 1 : prev))
+        }}
       />
     </div>
   )

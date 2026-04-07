@@ -1,5 +1,4 @@
 // src/components/home/scenes/WorkbenchScene.tsx
-// Scene B: Dashboard/Workbench style — migrated from HomeLayoutScenes.vue
 import styles from './WorkbenchScene.module.css'
 
 export default function WorkbenchScene() {
@@ -21,7 +20,7 @@ export default function WorkbenchScene() {
           </ul>
           <div className={styles.hint}>
             <p>目标</p>
-            <strong>学习、编码、部署、复盘同一套闭环</strong>
+            <strong>学习、编码、部署、复盘形成同一套闭环</strong>
           </div>
         </aside>
 
@@ -48,9 +47,9 @@ export default function WorkbenchScene() {
 
           <div className={styles.matrix}>
             {[
-              { href: '/docs/Sky-Take-Out/01-Web 前端全栈开发手册', title: '前端协作', desc: '页面样式、组件扩展与用户体验优化。' },
+              { href: '/docs/Sky-Take-Out/01-Web 前端全栈开发手册', title: '前端协作', desc: '页面样式、组件扩展与交互体验优化。' },
               { href: '/docs/Sky-Take-Out/02-Java 后端核心与 SpringBoot 实战手册', title: 'Java 后端', desc: '接口、服务层、业务抽象与稳定性治理。' },
-              { href: '/docs/Sky-Take-Out/03-数据持久化与 MyBatis 指南', title: '数据层', desc: 'MyBatis、SQL 设计、数据一致性实践。' },
+              { href: '/docs/Sky-Take-Out/03-数据持久化与 MyBatis 指南', title: '数据层', desc: 'MyBatis、SQL 设计与一致性实践。' },
               { href: '/docs/Sky-Take-Out/04-服务器运维与容器化部署手册', title: '部署运维', desc: '容器化、Nginx 与服务器迁移实操。' },
             ].map((item) => (
               <a key={item.href} href={item.href}>

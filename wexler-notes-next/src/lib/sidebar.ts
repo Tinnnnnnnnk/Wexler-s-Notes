@@ -62,7 +62,7 @@ function scanDir(dir: string, baseSlug: string = ''): SidebarItem[] {
       let title = slug.split('/').pop() || slug
       try {
         const { data } = parseFrontmatter(fs.readFileSync(filePath, 'utf-8'))
-        if (data.title) title = data.title
+        if (typeof data.title === 'string' && data.title) title = data.title
       } catch {
         // ignore
       }

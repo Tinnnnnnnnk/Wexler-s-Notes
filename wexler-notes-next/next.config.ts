@@ -1,5 +1,7 @@
 import type { NextConfig } from 'next'
 
+const isProductionBuild = process.env.NODE_ENV === 'production'
+
 const nextConfig: NextConfig = {
   pageExtensions: ['ts', 'tsx', 'mdx'],
   images: {
@@ -10,7 +12,7 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  output: 'export',
+  ...(isProductionBuild ? { output: 'export' } : {}),
   outputFileTracingRoot: __dirname,
   env: {
     // Accessible in browser via process.env.NEXT_PUBLIC_*

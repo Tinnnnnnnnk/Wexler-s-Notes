@@ -139,10 +139,11 @@ export interface UseUiModeReturn {
  * isHome=true additionally applies layout class to document root.
  */
 export function useUiMode(isHome = false): UseUiModeReturn {
+  const isolated = useIsolatedUiMode(isHome)
   try {
     const ctx = useUiModeContext()
     return ctx
   } catch {
-    return useIsolatedUiMode(isHome)
+    return isolated
   }
 }

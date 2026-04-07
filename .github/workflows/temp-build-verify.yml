@@ -1,0 +1,45 @@
+name: Temporary Build Verification
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - 'temp-build-verify'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: |
+          cd wexler-notes-next
+          npm ci
+
+      - name: Run Lint
+        run: |
+          cd wexler-notes-next
+          npm run lint
+
+      - name: Run Build
+        run: |
+          cd wexler-notes-next
+          npm run build
+
+      - name: Check Export Output
+        run: |
+          cd wexler-notes-next
+          echo "=== Export Directory ==="
+          ls -la out/ 2>/dev/null || echo "No out directory"
+          echo ""
+          echo "=== HTML Files Count ==="
+          find out -name "*.html" 2>/dev/null | wc -l
+          echo ""
+          echo "=== Error Pages Check ==="
+          grep -r "__next_error__" out/ 2>/dev/null | wc -l || echo "0"

@@ -5,7 +5,7 @@
 import { useState, useEffect } from 'react'
 import styles from './ResponsiveMainLayout.module.css'
 import Navbar from './Navbar'
-import Sidebar from './Sidebar'
+import EnhancedSidebar from './EnhancedSidebar'
 import Footer from './Footer'
 import type { SidebarGroup } from '@/types/sidebar'
 
@@ -56,7 +56,7 @@ export default function ResponsiveMainLayout({
         <aside
           className={`${styles.sidebar} main-sidebar ${isSidebarOpen ? styles.sidebarOpen : ''}`}
         >
-          {sidebar || (groups && <Sidebar groups={groups} currentPath={currentPath} />)}
+          {sidebar || (groups && <EnhancedSidebar groups={groups} currentPath={currentPath} />)}
         </aside>
 
         {/* 主内容 */}

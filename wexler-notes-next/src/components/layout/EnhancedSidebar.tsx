@@ -228,7 +228,7 @@ export default function EnhancedSidebar({ groups, currentPath = '' }: EnhancedSi
                   className={`${styles.searchItem} ${index === activeIndex ? styles.searchItemActive : ''}`}
                 >
                   <span className={styles.searchItemDepth}>
-                    {Array(depth + 1).fill('·').join('')}
+                    {Array(item.depth + 1).fill('·').join('')}
                   </span>
                   <span>{item.title}</span>
                 </Link>

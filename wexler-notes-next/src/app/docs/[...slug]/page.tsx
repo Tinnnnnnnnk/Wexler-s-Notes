@@ -7,7 +7,6 @@ import type { TOCItem } from '@/types/mdx'
 import { serializeMDX } from '@/lib/mdx'
 import { buildSidebar } from '@/lib/sidebar'
 import { TableOfContents } from '@/components/mdx/TableOfContents'
-import EnhancedSidebar from '@/components/layout/EnhancedSidebar'
 import ResponsiveMainLayout from '@/components/layout/ResponsiveMainLayout'
 import ReadingEnhancer from '@/components/reading/ReadingEnhancer'
 import EnhancedReadingProgress from '@/components/article/EnhancedReadingProgress'
@@ -62,71 +61,6 @@ function extractTOCFromSource(source: string): TOCItem[] {
     }
   }
   return items
-}
-
-function preprocessDocsSource(source: string): string {
-  let inCodeBlock = false
-  let codeBlockMarker = ''
-
-  function patchOutsideInlineCode(line: string): string {
-    const parts = line.split(/(`[^`]*`)/g)
-    for (let i = 0; i < parts.length; i += 2) {
-      let segment = parts[i]
-      segment = segment
-        .replace(/<=/g, '&lt;=')
-        .replace(/<>/g, '&lt;&gt;')
-        .replace(/([A-Za-z0-9_\])])<([A-Za-z0-9_])/g, '$1&lt;$2')
-      parts[i] = segment
-    }
-    return parts.join('')
-  }
-
-  const lines = source.split('\n')
-  const result: string[] = []
-
-  for (const line of lines) {
-    const codeMatch = line.match(/^(\s*)(```+|~~~)\s*/)
-    if (codeMatch) {
-      if (!inCodeBlock) {
-        inCodeBlock = true
-        codeBlockMarker = codeMatch[2]
-      } else if (line.trim().startsWith(codeBlockMarker)) {
-        inCodeBlock = false
-        codeBlockMarker = ''
-      }
-      result.push(line)
-      continue
-    }
-
-    if (inCodeBlock) {
-      result.push(line)
-      continue
-    }
-
-    let fixed = line
-      .replace(/([^<])\/(p|div|span|strong|a|h[1-6])>/gi, '$1</$2>')
-      .replace(/<([a-z][a-z0-9-]*)\s+class=/gi, '<$1 className=')
-
-    fixed = fixed.replace(
-      /<span\s+className=(["'])math-inline\1>(.*?)<\/span>/gi,
-      (_m, quote: '"' | "'", content: string) =>
-        `<span className=${quote}math-inline${quote}>${content
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')}</span>`,
-    )
-    fixed = fixed.replace(
-      /<div\s+className=(["'])math-block\1>(.*?)<\/div>/gi,
-      (_m, quote: '"' | "'", content: string) =>
-        `<div className=${quote}math-block${quote}>${content
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')}</div>`,
-    )
-
-    fixed = patchOutsideInlineCode(fixed)
-    result.push(fixed)
-  }
-
-  return result.join('\n')
 }
 
 function resolveDocFilePath(slug: string[]): string | null {
@@ -207,9 +141,10 @@ async function renderDoc(filePath: string): Promise<{ content: SerializedContent
 
   const raw = fs.readFileSync(filePath, 'utf-8')
   const { body } = parseFrontmatter(raw)
-  const source = preprocessDocsSource(body)
-  const toc = extractTOCFromSource(source)
-  const result = await serializeMDX(source, MDXComponents)
+  // Extract TOC from raw body before MDX preprocessing
+  const toc = extractTOCFromSource(body)
+  // serializeMDX handles its own preprocessing internally
+  const result = await serializeMDX(body, MDXComponents)
 
   renderCache.set(filePath, {
     mtimeMs,
@@ -230,7 +165,7 @@ function calculateWordCount(text: string): number {
   const textWithoutCode = content.replace(codeBlockRegex, '')
   
   // 移除 Markdown 语法
-  const markdownChars = /[#*`~\[\]()>_|!]/g
+  const markdownChars = /[#*`~[\]()>_|!]/g
   const plainText = textWithoutCode.replace(markdownChars, ' ')
   
   // 匹配中文字符（连续的中文算一个词）
@@ -315,7 +250,8 @@ export default async function DocsPage({
   }
 
   const sidebarGroups = buildSidebar()
-  const currentPath = `/docs/${decodedSlug.join('/')}`
+  // Use encoded slug to match browser URL format for sidebar highlighting
+  const currentPath = `/docs/${slug.join('/')}`
 
   // 提取 frontmatter 中的元信息
   const title = typeof frontmatterData.title === 'string' ? frontmatterData.title : ''

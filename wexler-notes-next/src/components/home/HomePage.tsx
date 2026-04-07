@@ -26,8 +26,6 @@ export default function HomePage() {
         <div className={`${styles.content} home-content`}>
           <LiquidScene />
         </div>
-        <PageEditor route={pathname} />
-        <ReadingEnhancer />
       </div>
     )
   }

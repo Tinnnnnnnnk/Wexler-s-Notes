@@ -58,7 +58,6 @@ export function Image({ src, alt = '', ...props }: ImageProps) {
 
   return (
     <>
-      {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         {...props}
         src={src}
@@ -76,7 +75,6 @@ export function Image({ src, alt = '', ...props }: ImageProps) {
           aria-modal="true"
           aria-label="图片查看器"
         >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             className={styles.img}
             src={images[lb.index] ?? src}

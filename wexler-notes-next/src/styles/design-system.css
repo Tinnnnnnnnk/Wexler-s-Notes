@@ -1,0 +1,280 @@
+/* ============================================================
+   Design System - Wexler's Notes
+   全局设计 Token 和 CSS 变量定义
+   ============================================================ */
+
+/* -------------------- Color System -------------------- */
+
+/* Light Mode Colors */
+:root {
+  /* Primary - 海洋蓝调 */
+  --color-primary-50: #e8f1f7;
+  --color-primary-100: #c5dce9;
+  --color-primary-200: #9fc7db;
+  --color-primary-300: #79b2cd;
+  --color-primary-400: #539dbf;
+  --color-primary-500: #3d8ab0;
+  --color-primary-600: #31779c;
+  --color-primary-700: #256487;
+  --color-primary-800: #1a5272;
+  --color-primary-900: #0f415d;
+
+  /* Secondary - 暖灰调 */
+  --color-secondary-50: #f5f5f5;
+  --color-secondary-100: #e8e8e8;
+  --color-secondary-200: #d1d1d1;
+  --color-secondary-300: #b0b0b0;
+  --color-secondary-400: #8a8a8a;
+  --color-secondary-500: #666666;
+  --color-secondary-600: #4d4d4d;
+  --color-secondary-700: #333333;
+  --color-secondary-800: #1a1a1a;
+  --color-secondary-900: #0a0a0a;
+
+  /* Accent - 琥珀金 */
+  --color-accent-50: #fef6e8;
+  --color-accent-100: #fce5c5;
+  --color-accent-200: #f9d49e;
+  --color-accent-300: #f5c277;
+  --color-accent-400: #f1b050;
+  --color-accent-500: #e89f29;
+  --color-accent-600: #d88d24;
+  --color-accent-700: #c87b1f;
+  --color-accent-800: #b8691a;
+  --color-accent-900: #a85715;
+
+  /* Semantic Colors */
+  --color-success: #22c55e;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+  --color-info: #3b82f6;
+
+  /* Surface Colors */
+  --color-surface: #ffffff;
+  --color-surface-elevated: #f8fafc;
+  --color-surface-muted: #f1f5f9;
+
+  /* Text Colors */
+  --color-text-primary: #0f172a;
+  --color-text-secondary: #475569;
+  --color-text-tertiary: #64748b;
+  --color-text-muted: #94a3b8;
+
+  /* Border Colors */
+  --color-border: #e2e8f0;
+  --color-border-strong: #cbd5e1;
+  --color-border-muted: #f1f5f9;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+
+  /* Glass Effect */
+  --glass-bg: rgba(255, 255, 255, 0.85);
+  --glass-border: rgba(255, 255, 255, 0.5);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+}
+
+/* Dark Mode Colors */
+.dark {
+  /* Primary - 深海蓝调 */
+  --color-primary-50: #0a1628;
+  --color-primary-100: #0f2747;
+  --color-primary-200: #143866;
+  --color-primary-300: #194985;
+  --color-primary-400: #1e5aa4;
+  --color-primary-500: #236bc3;
+  --color-primary-600: #2a7bd1;
+  --color-primary-700: #318be0;
+  --color-primary-800: #389bee;
+  --color-primary-900: #3fabf7;
+
+  /* Secondary - 冷灰调 */
+  --color-secondary-50: #0a0a0a;
+  --color-secondary-100: #1a1a1a;
+  --color-secondary-200: #2a2a2a;
+  --color-secondary-300: #3a3a3a;
+  --color-secondary-400: #4a4a4a;
+  --color-secondary-500: #5a5a5a;
+  --color-secondary-600: #7a7a7a;
+  --color-secondary-700: #9a9a9a;
+  --color-secondary-800: #b0b0b0;
+  --color-secondary-900: #c5c5c5;
+
+  /* Accent - 星尘金 */
+  --color-accent-50: #2a2015;
+  --color-accent-100: #3d2d1f;
+  --color-accent-200: #503a29;
+  --color-accent-300: #634733;
+  --color-accent-400: #76543d;
+  --color-accent-500: #896147;
+  --color-accent-600: #a87355;
+  --color-accent-700: #c18563;
+  --color-accent-800: #db9771;
+  --color-accent-900: #f4a97f;
+
+  /* Surface Colors */
+  --color-surface: #0f172a;
+  --color-surface-elevated: #1e293b;
+  --color-surface-muted: #334155;
+
+  /* Text Colors */
+  --color-text-primary: #f1f5f9;
+  --color-text-secondary: #cbd5e1;
+  --color-text-tertiary: #94a3b8;
+  --color-text-muted: #64748b;
+
+  /* Border Colors */
+  --color-border: #334155;
+  --color-border-strong: #475569;
+  --color-border-muted: #1e293b;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.4);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.6), 0 8px 10px -6px rgb(0 0 0 / 0.5);
+  --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.8);
+
+  /* Glass Effect */
+  --glass-bg: rgba(15, 23, 42, 0.9);
+  --glass-border: rgba(51, 65, 85, 0.5);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+/* -------------------- Typography -------------------- */
+
+:root {
+  /* Font Families */
+  --font-sans: 'Inter', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', Monaco, monospace;
+  --font-serif: 'Playfair Display', 'Noto Serif SC', Georgia, serif;
+
+  /* Font Sizes - 1.25 ratio scale (Major Third) */
+  --text-xs: 0.64rem;    /* 10.24px */
+  --text-sm: 0.8rem;     /* 12.8px */
+  --text-base: 1rem;     /* 16px */
+  --text-lg: 1.25rem;    /* 20px */
+  --text-xl: 1.563rem;   /* 25px */
+  --text-2xl: 1.953rem; /* 31.25px */
+  --text-3xl: 2.441rem; /* 39px */
+  --text-4xl: 3.052rem; /* 48.8px */
+  --text-5xl: 3.815rem; /* 61px */
+
+  /* Line Heights */
+  --leading-none: 1;
+  --leading-tight: 1.25;
+  --leading-snug: 1.375;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.625;
+  --leading-loose: 2;
+
+  /* Letter Spacing */
+  --tracking-tighter: -0.05em;
+  --tracking-tight: -0.025em;
+  --tracking-normal: 0em;
+  --tracking-wide: 0.025em;
+  --tracking-wider: 0.05em;
+  --tracking-widest: 0.1em;
+
+  /* Font Weights */
+  --font-thin: 100;
+  --font-light: 300;
+  --font-normal: 400;
+  --font-medium: 500;
+  --font-semibold: 600;
+  --font-bold: 700;
+  --font-extrabold: 800;
+  --font-black: 900;
+}
+
+/* -------------------- Spacing -------------------- */
+
+:root {
+  /* Spacing Scale - 1.5 ratio */
+  --space-0: 0;
+  --space-1: 0.25rem;   /* 4px */
+  --space-2: 0.5rem;    /* 8px */
+  --space-3: 0.75rem;   /* 12px */
+  --space-4: 1rem;      /* 16px */
+  --space-5: 1.25rem;   /* 20px */
+  --space-6: 1.5rem;    /* 24px */
+  --space-8: 2rem;      /* 32px */
+  --space-10: 2.5rem;   /* 40px */
+  --space-12: 3rem;     /* 48px */
+  --space-16: 4rem;     /* 64px */
+  --space-20: 5rem;     /* 80px */
+  --space-24: 6rem;     /* 96px */
+  --space-32: 8rem;     /* 128px */
+
+  /* Layout Spacing */
+  --sidebar-width: 260px;
+  --navbar-height: 64px;
+  --content-max-width: 800px;
+  --container-max-width: 1400px;
+}
+
+/* -------------------- Border Radius -------------------- */
+
+:root {
+  --radius-none: 0;
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
+  --radius-3xl: 2rem;
+  --radius-full: 9999px;
+}
+
+/* -------------------- Animation -------------------- */
+
+:root {
+  /* Durations */
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --duration-slow: 400ms;
+  --duration-slower: 600ms;
+
+  /* Easing Functions */
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+  /* Motion Variables */
+  --motion-fast: var(--duration-fast) var(--ease-out);
+  --motion-normal: var(--duration-normal) var(--ease-out);
+  --motion-slow: var(--duration-slow) var(--ease-in-out);
+}
+
+/* -------------------- Z-Index -------------------- */
+
+:root {
+  --z-base: 0;
+  --z-above: 10;
+  --z-dropdown: 20;
+  --z-sticky: 30;
+  --z-overlay: 40;
+  --z-modal: 50;
+  --z-popover: 60;
+  --z-tooltip: 70;
+  --z-nav: 100;
+  --z-modal-backdrop: 150;
+}
+
+/* -------------------- Legacy Oil Variables -------------------- */
+/* 保持向后兼容的原有变量映射 */
+
+:root {
+  --oil-ink: var(--color-text-primary);
+  --oil-accent: #4a6d86;
+  --oil-accent-2: #6a9cc0;
+  --oil-muted: var(--color-text-tertiary);
+  --oil-line: var(--color-border);
+  --oil-surface: var(--color-surface);
+}

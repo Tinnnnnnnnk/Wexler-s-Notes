@@ -10,7 +10,6 @@ import MediaScene from './scenes/MediaScene'
 import LiquidScene from './scenes/LiquidScene'
 import PageEditor from '@/components/editor/PageEditor'
 import ReadingEnhancer from '@/components/reading/ReadingEnhancer'
-import CommandTrigger from '@/components/command/CommandTrigger'
 import styles from './HomePage.module.css'
 
 export default function HomePage() {
@@ -29,9 +28,6 @@ export default function HomePage() {
         </div>
         <PageEditor route={pathname} />
         <ReadingEnhancer />
-        <div className={styles.homeCommandTrigger}>
-          <CommandTrigger />
-        </div>
       </div>
     )
   }
@@ -50,9 +46,6 @@ export default function HomePage() {
 
       <PageEditor route={pathname} />
       <ReadingEnhancer />
-      <div className={styles.homeCommandTrigger}>
-        <CommandTrigger />
-      </div>
     </div>
   )
 }

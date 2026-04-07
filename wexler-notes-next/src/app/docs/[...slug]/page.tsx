@@ -147,7 +147,7 @@ export async function generateMetadata(
     const raw = fs.readFileSync(filePath, 'utf-8')
     const { data } = parseFrontmatter(raw)
     const title = typeof data.title === 'string' && data.title
-      ? `${data.title} 鈥?Wexler's Notes`
+      ? `${data.title} · Wexler's Notes`
       : "Wexler's Notes"
     const description = typeof data.description === 'string' ? data.description : undefined
     return { title, description }
@@ -212,4 +212,5 @@ export default async function DocsPage({
     </MainLayout>
   )
 }
+
 

@@ -1,0 +1,173 @@
+/* src/components/article/EnhancedReadingProgress.module.css */
+
+/* Top Progress Bar */
+.progressBar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  z-index: var(--z-nav);
+  background: var(--color-border-muted);
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(-100%);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.progressBar.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.progressFill {
+  height: 100%;
+  width: 100%;
+  transform-origin: left;
+  transition: transform 100ms linear;
+  position: relative;
+  background: linear-gradient(
+    90deg,
+    var(--color-primary-500) 0%,
+    var(--color-accent-500) 50%,
+    var(--color-primary-400) 100%
+  );
+}
+
+.progressGlow {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 30px;
+  height: 30px;
+  background: radial-gradient(
+    circle,
+    var(--color-accent-500) 0%,
+    transparent 70%
+  );
+  opacity: 0.8;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.6;
+    transform: translateY(-50%) scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-50%) scale(1.2);
+  }
+}
+
+/* Tooltip */
+.tooltip {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  font-size: var(--text-xs);
+  white-space: nowrap;
+  pointer-events: none;
+  animation: fadeIn 0.2s ease;
+  z-index: 10;
+}
+
+.dark .tooltip {
+  background: var(--color-surface-elevated);
+  border-color: var(--color-border-strong);
+}
+
+.tooltipProgress {
+  font-weight: var(--font-bold);
+  color: var(--color-primary-600);
+}
+
+.dark .tooltipProgress {
+  color: var(--color-primary-400);
+}
+
+.tooltipDivider {
+  color: var(--color-text-muted);
+}
+
+.tooltipChapter {
+  color: var(--color-text-secondary);
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Percentage Label */
+.percentageLabel {
+  position: absolute;
+  right: 12px;
+  top: 8px;
+  font-size: var(--text-xs);
+  font-weight: var(--font-semibold);
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.progressBar:hover .percentageLabel {
+  opacity: 1;
+}
+
+/* Mini Progress (Bottom) */
+.miniProgress {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  z-index: var(--z-nav);
+  background: var(--color-border-muted);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.miniProgress.miniVisible {
+  opacity: 1;
+}
+
+.miniProgressFill {
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    var(--color-primary-400) 0%,
+    var(--color-primary-500) 100%
+  );
+  transition: width 100ms linear;
+}
+
+/* Hover Effect */
+.progressBar:hover .progressFill {
+  box-shadow: 0 0 20px var(--color-primary-400);
+}
+
+/* Mobile Responsive */
+@media (max-width: 640px) {
+  .progressBar {
+    height: 3px;
+  }
+
+  .tooltip {
+    font-size: 10px;
+    padding: var(--space-1) var(--space-2);
+  }
+
+  .percentageLabel {
+    display: none;
+  }
+}

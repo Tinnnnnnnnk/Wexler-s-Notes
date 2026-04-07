@@ -1,0 +1,120 @@
+// src/components/mdx/Image.tsx
+// MDX image with lightbox — migrated from Lightbox.vue
+'use client'
+import { useState, useCallback, useEffect } from 'react'
+import styles from './Image.module.css'
+
+interface ImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
+  src: string
+  alt?: string
+}
+
+interface LightboxState {
+  visible: boolean
+  index: number
+}
+
+export function Image({ src, alt = '', ...props }: ImageProps) {
+  const [lb, setLb] = useState<LightboxState>({ visible: false, index: 0 })
+  const [images, setImages] = useState<string[]>([])
+
+  // Collect all doc images on mount
+  useEffect(() => {
+    const imgs = Array.from(document.querySelectorAll<HTMLImageElement>(
+      '.docContent img[data-lightbox]'
+    )).map((img) => img.src)
+    if (src) setImages(imgs)
+  }, [src])
+
+  const openLightbox = useCallback((e: React.MouseEvent) => {
+    e.preventDefault()
+    const index = images.indexOf(src)
+    setLb({ visible: true, index: Math.max(0, index) })
+  }, [images, src])
+
+  const closeLightbox = useCallback(() => {
+    setLb((p) => ({ ...p, visible: false }))
+  }, [])
+
+  const prevImage = useCallback(() => {
+    setLb((p) => ({ ...p, index: (p.index - 1 + images.length) % images.length }))
+  }, [images.length])
+
+  const nextImage = useCallback(() => {
+    setLb((p) => ({ ...p, index: (p.index + 1) % images.length }))
+  }, [images.length])
+
+  // Keyboard navigation
+  useEffect(() => {
+    if (!lb.visible) return
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') closeLightbox()
+      if (e.key === 'ArrowLeft') prevImage()
+      if (e.key === 'ArrowRight') nextImage()
+    }
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+  }, [lb.visible, closeLightbox, prevImage, nextImage])
+
+  return (
+    <>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        {...props}
+        src={src}
+        alt={alt}
+        data-lightbox="true"
+        onClick={openLightbox}
+        style={{ cursor: 'zoom-in', ...props.style }}
+        loading="lazy"
+      />
+      {lb.visible && (
+        <div
+          className={styles.overlay}
+          onClick={closeLightbox}
+          role="dialog"
+          aria-modal="true"
+          aria-label="图片查看器"
+        >
+          {/* eslint-disable-next-line @next/next/no-img */}
+          <img
+            className={styles.img}
+            src={images[lb.index] ?? src}
+            alt={alt}
+            onClick={(e) => e.stopPropagation()}
+          />
+
+          {images.length > 1 && (
+            <>
+              <button
+                type="button"
+                className={`${styles.nav} ${styles.prev}`}
+                onClick={(e) => { e.stopPropagation(); prevImage() }}
+                aria-label="上一张"
+              >
+                ‹
+              </button>
+              <button
+                type="button"
+                className={`${styles.nav} ${styles.next}`}
+                onClick={(e) => { e.stopPropagation(); nextImage() }}
+                aria-label="下一张"
+              >
+                ›
+              </button>
+            </>
+          )}
+
+          <button
+            type="button"
+            className={styles.close}
+            onClick={closeLightbox}
+            aria-label="关闭"
+          >
+            ×
+          </button>
+        </div>
+      )}
+    </>
+  )
+}

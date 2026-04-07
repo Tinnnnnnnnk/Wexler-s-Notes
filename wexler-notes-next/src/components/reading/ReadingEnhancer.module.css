@@ -119,6 +119,7 @@
   color: var(--oil-accent);
 }
 
+/* Collapse toggle — iOS-style chevron icons, no text */
 .toggleBtn {
   width: 24px;
   height: 24px;
@@ -129,27 +130,43 @@
   position: relative;
   flex-shrink: 0;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
+/* Chevron pointing down = expanded (clicking collapses) */
 .toggleBtn::before {
   content: "";
-  position: absolute;
-  left: 50%;
-  top: 50%;
   width: 7px;
   height: 7px;
-  border-right: 2px solid var(--vp-c-text-1);
-  border-bottom: 2px solid var(--vp-c-text-1);
-  transform: translate(-58%, -50%) rotate(-45deg);
+  border-right: 2px solid var(--oil-accent);
+  border-bottom: 2px solid var(--oil-accent);
+  transform: translateY(-1px) rotate(45deg);
+  display: block;
 }
 
 .toggleCollapsed::before {
-  transform: translate(-42%, -50%) rotate(135deg);
+  /* Chevron pointing right = collapsed (clicking expands) */
+  transform: translateY(0) rotate(-45deg);
+}
+
+.toggleBtn:hover {
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: 0 2px 8px rgba(74, 109, 134, 0.18);
 }
 
 .dark .toggleBtn {
   border-color: rgba(136, 168, 192, 0.45);
   background: rgba(30, 46, 62, 0.72);
+}
+
+.dark .toggleBtn::before {
+  border-color: var(--oil-accent-2);
+}
+
+.dark .toggleBtn:hover {
+  background: rgba(50, 70, 90, 0.82);
 }
 
 .spotlightBody {
@@ -166,7 +183,7 @@
   line-height: 1.36;
   font-size: 0.8rem;
   text-decoration: none;
-  color: var(--vp-c-text-2);
+  color: var(--oil-muted);
   border: 1px solid transparent;
   border-radius: 9px;
   transition: all 0.2s ease;
@@ -174,7 +191,7 @@
 
 .navLink:hover {
   transform: translateX(1px);
-  color: var(--vp-c-text-1);
+  color: var(--oil-ink);
   background: rgba(74, 109, 134, 0.1);
 }
 
@@ -184,13 +201,14 @@
 }
 
 .navLinkActive {
-  color: var(--vp-c-text-1);
+  color: var(--oil-ink);
   border-color: rgba(74, 109, 134, 0.38);
   background: linear-gradient(110deg, rgba(74, 109, 134, 0.2) 0%, rgba(106, 138, 160, 0.12) 100%);
   box-shadow: 0 8px 14px rgba(16, 24, 35, 0.12);
 }
 
 .dark .navLinkActive {
+  color: var(--oil-ink);
   border-color: rgba(136, 168, 192, 0.46);
   background: linear-gradient(110deg, rgba(136, 168, 192, 0.28) 0%, rgba(106, 138, 160, 0.14) 100%);
 }

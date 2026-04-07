@@ -5,44 +5,50 @@ import path from 'path'
 
 const SOURCE_DIR = path.join(process.cwd(), '..', 'my-knowledge-base', 'docs')
 const DEST_DIR = path.join(process.cwd(), 'src', 'content')
+const PUBLIC_DIR = path.join(process.cwd(), '..', 'my-knowledge-base', 'docs', 'public')
 
-const SKIP_DIRS = ['.vitepress', '.obsidian', 'public', 'node_modules', '.git']
+const SKIP_DIRS = ['.vitepress', '.obsidian', 'node_modules', '.git']
+const PUBLIC_SUBDIRS = ['images', 'media']
 
 interface Stats {
   copied: number
   skipped: number
+  assetsCopied: number
 }
 
-const stats: Stats = { copied: 0, skipped: 0 }
+const stats: Stats = { copied: 0, skipped: 0, assetsCopied: 0 }
 
-/**
- * Strip the [!note] callout marker from blockquote lines.
- * MDXComponents.tsx overrides `blockquote` to render as <Callout type="...">,
- * so we just need to normalize the blockquote body text.
- */
+// ---------------------------------------------------------------------------
+// Text transformations
+// ---------------------------------------------------------------------------
+
 function stripCalloutMarkers(content: string): string {
   return content
-    .replace(/^(\s*)>\s*\[!(note|tip|warning|danger)\]\s*/gim, '$1> ')
+    .replace(/^(\s*)>\s*\[![a-zA-Z+-]+\]\s*/gim, '$1> ')
     .replace(/^(\s*)>\s*/g, '$1> ')
 }
 
 /**
- * Escape curly braces that MDX treats as JSX expression delimiters.
- * In MDX, { starts an expression and } closes it. In plain text content
- * (especially in lists, tables, or indented blocks), curly braces
- * must be escaped to avoid "is not defined" ReferenceErrors.
+ * Fix HTML-to-MDX compatibility issues BEFORE MDX compilation.
  *
- * Strategy: escape all { that are NOT inside fenced code blocks.
- * We check each { to ensure it's not immediately preceded by a backslash.
+ * Root cause: MDX v3 compiles content as JSX. Raw HTML attributes like `class="..."`
+ * are invalid in JSX (must use `className="..."`), and empty `<>` tags cause
+ * compilation errors. This transformer runs on every file during migration (and
+ * is replicated in serializeMDX as a runtime fallback), ensuring future uploads
+ * are automatically sanitized without manual intervention.
+ *
+ * Supported transformations:
+ * 1. `<tag class="...">` → `<tag className="...">` (JSX attribute requirement)
+ * 2. `<>` empty JSX fragments → `<span>` wrappers (valid HTML, MDX-safe)
  */
-function escapeMdxExpressions(content: string): string {
-  const lines = content.split('\n')
-  const result: string[] = []
+function fixMdxCompatibility(content: string): string {
   let inCodeBlock = false
   let codeBlockMarker = ''
 
+  const lines = content.split('\n')
+  const result: string[] = []
+
   for (const line of lines) {
-    // Track fenced code blocks
     const codeMatch = line.match(/^(\s*)(```+|~~~)\s*/)
     if (codeMatch) {
       if (!inCodeBlock) {
@@ -52,11 +58,23 @@ function escapeMdxExpressions(content: string): string {
         inCodeBlock = false
         codeBlockMarker = ''
       }
+      result.push(line)
+      continue
     }
 
-    // Only escape braces outside code blocks
     if (!inCodeBlock) {
-      result.push(line.replace(/\{/g, '\\{'))
+      // Fix 1: class= → className= (JSX compatibility)
+      // Only affects inline HTML elements (span, div, p, etc.)
+      // Doesn't affect things like HTML comments or doctypes
+      let fixed = line.replace(/<([a-z][a-z0-9]*)\s+class=/gi, '<$1 className=')
+
+      // Fix 2: <> empty tags → <span></span>
+      // MDX treats <> as JSX fragment syntax, but empty <> in text is just text.
+      // We convert them to a span wrapper to prevent parsing errors.
+      // Only converts standalone <> lines or <> at start of line content.
+      fixed = fixed.replace(/^(\s*)<>\s*$/, '$1<span></span>')
+
+      result.push(fixed)
     } else {
       result.push(line)
     }
@@ -65,9 +83,78 @@ function escapeMdxExpressions(content: string): string {
   return result.join('\n')
 }
 
+/**
+ * Replace $...$ inline math and $$...$$ block math with HTML spans.
+ * Must run BEFORE curly brace escaping so braces in math are protected.
+ */
+function processMath(content: string): string {
+  // Replace $$...$$ block math (use [\s\S] for dotAll compatibility)
+  content = content.replace(/\$\$([^$]+?)\$\$/g, (_m: string, math: string) => {
+    return '<div class="math-block">' + math + '</div>'
+  })
+  // Replace $...$ inline math
+  content = content.replace(/\$([^$\n]+?)\$/g, (_m: string, math: string) => {
+    return '<span class="math-inline">' + math + '</span>'
+  })
+  return content
+}
+
+function stripFrontmatterBlock(content: string): { fm: string; body: string } {
+  const fmMatch = content.match(/^---\r?\n([\s\S]*?)(?:\r?\n-{3,})\r?\n([\s\S]*)$/)
+  if (fmMatch) {
+    return { fm: fmMatch[1].trim(), body: fmMatch[2] }
+  }
+  return { fm: '', body: content }
+}
+
+/**
+ * Escape curly braces that MDX treats as JSX expression delimiters.
+ * Only escapes braces OUTSIDE of fenced code blocks.
+ * Math ($...$) must be processed BEFORE this so braces in math are protected.
+ */
+function escapeMdxExpressions(content: string): string {
+  const { fm, body } = stripFrontmatterBlock(content)
+  const fmBlock = fm ? '---\n' + fm + '\n---\n\n' : ''
+
+  const lines = body.split('\n')
+  const result: string[] = []
+  let inCodeBlock = false
+  let codeBlockMarker = ''
+
+  for (const line of lines) {
+    const codeMatch = line.match(/^(\s*)(```+|~~~)\s*/)
+    if (codeMatch) {
+      if (!inCodeBlock) {
+        inCodeBlock = true
+        codeBlockMarker = codeMatch[2]
+      } else if (line.trim().startsWith(codeBlockMarker)) {
+        inCodeBlock = false
+        codeBlockMarker = ''
+      }
+      result.push(line)
+      continue
+    }
+
+    if (!inCodeBlock) {
+      result.push(line.replace(/\{/g, '\\{').replace(/\}/g, '\\}'))
+    } else {
+      result.push(line)
+    }
+  }
+
+  return fmBlock + result.join('\n')
+}
+
+// ---------------------------------------------------------------------------
+// MDX file migration
+// ---------------------------------------------------------------------------
+
 function processFile(srcPath: string, relativePath: string) {
-  // Skip VitePress-specific files
-  if (relativePath === 'index.md' || relativePath === 'index' || relativePath.endsWith('/index.md')) {
+  if (
+    relativePath === 'index.md' ||
+    relativePath === 'index' ||
+    relativePath.endsWith('/index.md')
+  ) {
     stats.skipped++
     return
   }
@@ -81,14 +168,16 @@ function processFile(srcPath: string, relativePath: string) {
 
   let content = fs.readFileSync(srcPath, 'utf-8')
   content = stripCalloutMarkers(content)
+  content = processMath(content)
   content = escapeMdxExpressions(content)
+  content = fixMdxCompatibility(content)
   fs.writeFileSync(destPath, content, 'utf-8')
   stats.copied++
 }
 
-function scanDir(srcDir: string, relativeDir: string = '') {
+function scanDir(srcDir: string, relativeDir = '') {
   if (!fs.existsSync(srcDir)) {
-    console.warn(`Source directory does not exist: ${srcDir}`)
+    console.warn('Source directory not found: ' + srcDir)
     return
   }
 
@@ -100,7 +189,7 @@ function scanDir(srcDir: string, relativeDir: string = '') {
       continue
     }
 
-    const relPath = relativeDir ? `${relativeDir}/${entry.name}` : entry.name
+    const relPath = relativeDir ? relativeDir + '/' + entry.name : entry.name
     const srcPath = path.join(srcDir, entry.name)
 
     if (entry.isDirectory()) {
@@ -111,17 +200,72 @@ function scanDir(srcDir: string, relativeDir: string = '') {
   }
 }
 
+// ---------------------------------------------------------------------------
+// Static asset copying
+// ---------------------------------------------------------------------------
+
+function copyPublicAssets() {
+  if (!fs.existsSync(PUBLIC_DIR)) {
+    console.warn('Public directory not found: ' + PUBLIC_DIR)
+    return
+  }
+
+  const nextPublicDir = path.join(process.cwd(), 'public')
+  if (!fs.existsSync(nextPublicDir)) {
+    fs.mkdirSync(nextPublicDir, { recursive: true })
+  }
+
+  for (const subdir of PUBLIC_SUBDIRS) {
+    const srcDir = path.join(PUBLIC_DIR, subdir)
+    const destDir = path.join(nextPublicDir, subdir)
+    if (!fs.existsSync(srcDir)) continue
+
+    if (!fs.existsSync(destDir)) {
+      fs.mkdirSync(destDir, { recursive: true })
+    }
+
+    function copyRecursive(src: string, dest: string) {
+      const entries = fs.readdirSync(src, { withFileTypes: true })
+      for (const entry of entries) {
+        const srcPath = path.join(src, entry.name)
+        const destPath = path.join(dest, entry.name)
+        if (entry.isDirectory()) {
+          if (!fs.existsSync(destPath)) fs.mkdirSync(destPath, { recursive: true })
+          copyRecursive(srcPath, destPath)
+        } else {
+          fs.copyFileSync(srcPath, destPath)
+          stats.assetsCopied++
+        }
+      }
+    }
+
+    copyRecursive(srcDir, destDir)
+    console.log('  Copied static assets from public/' + subdir + '/')
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Entry
+// ---------------------------------------------------------------------------
+
 function main() {
-  console.log(`\n📄 Migrating docs from:\n  ${SOURCE_DIR}\n  → ${DEST_DIR}\n`)
+  console.log('\nMigrating docs from:\n  ' + SOURCE_DIR + '\n  -> ' + DEST_DIR + '\n')
 
   scanDir(SOURCE_DIR)
 
-  console.log('─'.repeat(50))
-  console.log(`✅ Copied:     ${stats.copied} files`)
+  console.log('-'.repeat(50))
+  console.log('Copied MDX:   ' + stats.copied + ' files')
   if (stats.skipped > 0) {
-    console.log(`⏭  Skipped:    ${stats.skipped} items (.vitepress, .obsidian, etc.)`)
+    console.log('Skipped:      ' + stats.skipped + ' items (.vitepress, .obsidian, etc.)')
   }
-  console.log('─'.repeat(50))
+
+  console.log('\nCopying static assets...')
+  copyPublicAssets()
+  if (stats.assetsCopied > 0) {
+    console.log('Assets copied: ' + stats.assetsCopied + ' files')
+  }
+
+  console.log('-'.repeat(50))
   console.log()
 }
 

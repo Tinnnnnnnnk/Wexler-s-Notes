@@ -20,7 +20,7 @@ export default function Navbar() {
         </Link>
 
         <div className={styles.controls}>
-          <FxToggle fxMode={fxMode} onToggle={toggleFxMode} />
+          <FxToggle fxMode={fxMode} onChange={setFxMode} />
           <LayoutToggle layoutMode={layoutMode} onChange={setLayoutMode} />
 
           <button

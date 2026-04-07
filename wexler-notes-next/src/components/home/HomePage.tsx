@@ -7,6 +7,7 @@ import Backdrop from './Backdrop'
 import KeynoteScene from './scenes/KeynoteScene'
 import WorkbenchScene from './scenes/WorkbenchScene'
 import MediaScene from './scenes/MediaScene'
+import LiquidScene from './scenes/LiquidScene'
 import PageEditor from '@/components/editor/PageEditor'
 import ReadingEnhancer from '@/components/reading/ReadingEnhancer'
 import CommandTrigger from '@/components/command/CommandTrigger'
@@ -15,16 +16,32 @@ import styles from './HomePage.module.css'
 export default function HomePage() {
   const pathname = usePathname()
   const isHome = pathname === '/'
-  const { fxMode, layoutMode, perfMode, toggleFxMode, setLayoutMode } = useUiModeContext()
+  const { fxMode, layoutMode, perfMode, setFxMode, setLayoutMode } = useUiModeContext()
 
   if (!isHome) return null
+
+  // Liquid mode uses LiquidScene regardless of layoutMode
+  if (fxMode === 'liquid') {
+    return (
+      <div className={styles.root}>
+        <Backdrop fxMode={fxMode} perfMode={perfMode} />
+        <div className={styles.content}>
+          <LiquidScene />
+        </div>
+        <PageEditor route={pathname} />
+        <ReadingEnhancer />
+        <div className={styles.homeCommandTrigger}>
+          <CommandTrigger />
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className={styles.root}>
       <Backdrop fxMode={fxMode} perfMode={perfMode} />
 
       <div className={styles.content}>
-        {/* Scene container */}
         <div className={`${styles.scenes} ${styles.enter}`} key={layoutMode}>
           {layoutMode === 'minimal' && <KeynoteScene />}
           {layoutMode === 'dashboard' && <WorkbenchScene />}
@@ -32,10 +49,7 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Editor canvas (fixed overlay) */}
       <PageEditor route={pathname} />
-
-      {/* Reading tools */}
       <ReadingEnhancer />
       <div className={styles.homeCommandTrigger}>
         <CommandTrigger />

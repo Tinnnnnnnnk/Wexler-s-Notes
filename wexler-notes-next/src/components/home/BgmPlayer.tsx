@@ -3,7 +3,11 @@
 import { useRef, useState, useCallback, useEffect } from 'react'
 import styles from './BgmPlayer.module.css'
 
-const BGM_SRC = '/media/home-bgm/liquid-bgm.opus'
+const BGM_CANDIDATES = [
+  '/media/home-bgm/liquid-bgm.opus',
+  '/media/home-bgm/liquid-bgm.flac',
+  '/media/home-bgm/liquid-bgm.mp3',
+]
 const BGM_TITLE = '60% Reverie'
 const BGM_ARTIST = 'ZZ-STUDIO x HOYO-MiX'
 
@@ -23,6 +27,18 @@ export default function BgmPlayer() {
   const [isMini, setIsMini] = useState(false)
   const [showVolume, setShowVolume] = useState(false)
   const [isSeeking, setIsSeeking] = useState(false)
+  const [bgmSrc, setBgmSrc] = useState('/media/home-bgm/liquid-bgm.opus')
+
+  // Reset audio state when liquid mode is re-entered
+  useEffect(() => {
+    const audio = audioRef.current
+    if (audio) {
+      audio.pause()
+      audio.currentTime = 0
+      setIsPlaying(false)
+      setCurrentTime(0)
+    }
+  }, [])
 
   const syncState = useCallback(() => {
     const audio = audioRef.current
@@ -83,6 +99,17 @@ export default function BgmPlayer() {
     audio.volume = volume
     audio.muted = volume <= 0.001
   }, [volume])
+
+  useEffect(() => {
+    return () => {
+      const audio = audioRef.current
+      if (audio) {
+        audio.pause()
+        audio.currentTime = 0
+        audio.src = ''
+      }
+    }
+  }, [])
 
   const isMuted = volume <= 0.001
   const volumePct = Math.round(volume * 100)
@@ -165,7 +192,7 @@ export default function BgmPlayer() {
         ref={audioRef}
         preload="metadata"
         loop
-        src={BGM_SRC}
+        src={bgmSrc}
         onPlay={syncState}
         onPause={syncState}
         onTimeUpdate={syncState}

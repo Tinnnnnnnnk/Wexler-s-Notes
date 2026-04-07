@@ -7,6 +7,15 @@
   overflow: hidden;
   contain: paint;
   transition: opacity var(--motion-mid) var(--motion-ease-soft);
+  opacity: 0;
+}
+
+.visible {
+  opacity: 1;
+}
+
+.hidden {
+  opacity: 0;
 }
 
 .image,

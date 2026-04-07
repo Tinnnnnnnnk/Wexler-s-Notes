@@ -15,7 +15,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <ThemeProvider>
           <UiModeProvider>
-            {children}
+            <div className="rootLayout">
+              {children}
+            </div>
           </UiModeProvider>
         </ThemeProvider>
       </body>

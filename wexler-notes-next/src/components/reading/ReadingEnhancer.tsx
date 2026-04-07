@@ -136,11 +136,10 @@ export default function ReadingEnhancer() {
           onPointerDown={onPointerDown}
         >
           <div className={styles.dragHandle}>
-            <p className={styles.spotlightTitle}>章节导航</p>
             <button
               type="button"
               className={`${styles.toggleBtn} ${isCollapsed ? styles.toggleCollapsed : ''}`}
-              aria-label={isCollapsed ? '展开' : '收起'}
+              aria-label={isCollapsed ? '展开章节导航' : '收起章节导航'}
               onPointerDown={(e) => e.stopPropagation()}
               onClick={(e) => { e.stopPropagation(); toggleCollapse() }}
             />

@@ -1,0 +1,172 @@
+Total MDX files: 71
+
+================================================================================
+CURVY BRACES OUTSIDE CODE BLOCKS
+================================================================================
+Files with curly braces outside code blocks: 7
+Total brace occurrences: 42
+
+
+============================================================
+FILE: 131-分割回文串.mdx
+Path: Code\Hot100\Backtracking\131-分割回文串.mdx
+============================================================
+  Line 90 (char: '{'):
+       L 87: - **时间复杂度：** <span class="math-inline">O(N \cdot 2^N)</span>
+  >>> L 88:   - *分析：* 字符串长度为 <span class="math-inline">N</span>，最多有 <span class="math-inline">N-1</span> 个切割点，共有 <span class="math-i
+       L 89: - **空间复杂度：** <span class="math-inline">O(N^2)</span>
+       L 90:   - *分析：* DP 数组占用了 <span class="math-inline">O(N^2)</span> 的空间，递归调用栈的深度最大为 <span class="math-inline">N</span>。
+
+  Line 90 (char: '}'):
+       L 87: - **时间复杂度：** <span class="math-inline">O(N \cdot 2^N)</span>
+  >>> L 88:   - *分析：* 字符串长度为 <span class="math-inline">N</span>，最多有 <span class="math-inline">N-1</span> 个切割点，共有 <span class="math-i
+       L 89: - **空间复杂度：** <span class="math-inline">O(N^2)</span>
+       L 90:   - *分析：* DP 数组占用了 <span class="math-inline">O(N^2)</span> 的空间，递归调用栈的深度最大为 <span class="math-inline">N</span>。
+
+
+============================================================
+FILE: 560-和为K的子数组.mdx
+Path: Code\Hot100\Prefix-Sum\560-和为K的子数组.mdx
+============================================================
+  Line 44 (char: '{'):
+       L 41:     * 维护一个变量 `preSum` 记录当前累加和。
+  >>> L 42:     * 维护一个 `HashMap` 记录 **\{前缀和 : 出现次数\}**。
+       L 43:     * 遍历数组，对于每个 `preSum`，先去 Map 里查是否存在 `preSum - k`。如果有，说明之前有几个位置可以作为子数组的起点，直接累加次数。
+       L 44:     * 最后将当前的 `preSum` 存入 Map。
+
+  Line 44 (char: '}'):
+       L 41:     * 维护一个变量 `preSum` 记录当前累加和。
+  >>> L 42:     * 维护一个 `HashMap` 记录 **\{前缀和 : 出现次数\}**。
+       L 43:     * 遍历数组，对于每个 `preSum`，先去 Map 里查是否存在 `preSum - k`。如果有，说明之前有几个位置可以作为子数组的起点，直接累加次数。
+       L 44:     * 最后将当前的 `preSum` 存入 Map。
+
+
+============================================================
+FILE: 394-字符串解码.mdx
+Path: Code\Hot100\Stack\394-字符串解码.mdx
+============================================================
+  Line 84 (char: '{'):
+       L 81: ## 📊 复杂度分析
+  >>> L 82: - **时间复杂度：** <span class="math-inline">O(N)</span> (严格来说是 <span class="math-inline">O(\text\{解码后的字符串长度\})</span>)
+       L 83:   - *分析：* 每个字符都会被遍历一次。拼接操作的时间取决于最终生成的字符串总长度。总体上是极其高效的线性时间。
+       L 84: - **空间复杂度：** <span class="math-inline">O(M)</span> (其中 <span class="math-inline">M</span> 是括号的嵌套层数)
+
+  Line 84 (char: '}'):
+       L 81: ## 📊 复杂度分析
+  >>> L 82: - **时间复杂度：** <span class="math-inline">O(N)</span> (严格来说是 <span class="math-inline">O(\text\{解码后的字符串长度\})</span>)
+       L 83:   - *分析：* 每个字符都会被遍历一次。拼接操作的时间取决于最终生成的字符串总长度。总体上是极其高效的线性时间。
+       L 84: - **空间复杂度：** <span class="math-inline">O(M)</span> (其中 <span class="math-inline">M</span> 是括号的嵌套层数)
+
+
+============================================================
+FILE: 通用模板.mdx
+Path: Code\通用模板.mdx
+============================================================
+  Line 11 (char: '{'):
+       L  8: 
+  >>> L  9: # \{\{title\}\}
+       L 10: 
+       L 11: > - 题目描述 (点击展开)
+
+  Line 11 (char: '}'):
+       L  8: 
+  >>> L  9: # \{\{title\}\}
+       L 10: 
+       L 11: > - 题目描述 (点击展开)
+
+
+============================================================
+FILE: 通用模板new.mdx
+Path: Code\通用模板new.mdx
+============================================================
+  Line 11 (char: '{'):
+       L  8: 
+  >>> L  9: # \{\{title\}\}
+       L 10: 
+       L 11: > - 题目描述 (点击展开)
+
+  Line 11 (char: '}'):
+       L  8: 
+  >>> L  9: # \{\{title\}\}
+       L 10: 
+       L 11: > - 题目描述 (点击展开)
+
+
+============================================================
+FILE: day1.mdx
+Path: PromptLearning\day1.mdx
+============================================================
+  Line 85 (char: '{'):
+       L 82:    - 会查 chunk_info 表是否存在 chunkIndex 记录
+  >>> L 83:    - 若 Redis 标记已上传但 DB 没记录，会计算 chunkMd5、构建 storagePath="chunks/\{fileMd5\}/\{chunkIndex\}"，并 statObject 检查 MinIO 是否真有该分片
+       L 84: 4) MinIO 分片写入：
+       L 85:    - bucket 固定为 "uploads"
+
+  Line 85 (char: '}'):
+       L 82:    - 会查 chunk_info 表是否存在 chunkIndex 记录
+  >>> L 83:    - 若 Redis 标记已上传但 DB 没记录，会计算 chunkMd5、构建 storagePath="chunks/\{fileMd5\}/\{chunkIndex\}"，并 statObject 检查 MinIO 是否真有该分片
+       L 84: 4) MinIO 分片写入：
+       L 85:    - bucket 固定为 "uploads"
+
+  Line 88 (char: '{'):
+       L 85:    - bucket 固定为 "uploads"
+  >>> L 86:    - object = "chunks/\{fileMd5\}/\{chunkIndex\}"
+       L 87:    - putObject(PutObjectArgs.builder().bucket("uploads").object(storagePath).stream(...).contentType(...))
+       L 88: 5) 上传成功后：
+
+  Line 88 (char: '}'):
+       L 85:    - bucket 固定为 "uploads"
+  >>> L 86:    - object = "chunks/\{fileMd5\}/\{chunkIndex\}"
+       L 87:    - putObject(PutObjectArgs.builder().bucket("uploads").object(storagePath).stream(...).contentType(...))
+       L 88: 5) 上传成功后：
+
+  Line 148 (char: '{'):
+       L145: 1) POST `http://localhost:8081/api/v1/upload/merge` (JSON)：
+  >>> L146:    \{ "fileMd5": "my_test_file2_14_1", "fileName": "2.14.test.txt" \}
+       L147: 
+       L148: 用户对流程的口述大体正确，但需要你指出：
+
+
+============================================================
+FILE: JAVASE.mdx
+Path: 面试笔记\JavaSe\JAVASE.mdx
+============================================================
+  Line 39 (char: '{'):
+       L 36: <div class="math-block">
+  >>> L 37: \begin\{array\}\{ccc\}
+  >>> L 38: \text\{基本数据类型\} & & \text\{引用数据类型\} \\
+       L 39: \hline
+
+  Line 39 (char: '}'):
+       L 36: <div class="math-block">
+  >>> L 37: \begin\{array\}\{ccc\}
+  >>> L 38: \text\{基本数据类型\} & & \text\{引用数据类型\} \\
+       L 39: \hline
+
+  Line 40 (char: '{'):
+  >>> L 37: \begin\{array\}\{ccc\}
+  >>> L 38: \text\{基本数据类型\} & & \text\{引用数据类型\} \\
+       L 39: \hline
+  >>> L 40: \text\{byte\} & \longleftrightarrow & \text\{Byte\} \\
+
+  Line 40 (char: '}'):
+  >>> L 37: \begin\{array\}\{ccc\}
+  >>> L 38: \text\{基本数据类型\} & & \text\{引用数据类型\} \\
+       L 39: \hline
+  >>> L 40: \text\{byte\} & \longleftrightarrow & \text\{Byte\} \\
+
+  Line 42 (char: '{'):
+       L 39: \hline
+  >>> L 40: \text\{byte\} & \longleftrightarrow & \text\{Byte\} \\
+  >>> L 41: \text\{char\} & \longleftrightarrow & \text\{Character\} \\
+  >>> L 42: \text\{short\} & \longleftrightarrow & \text\{Short\} \\
+
+
+================================================================================
+MATH SYNTAX ($...$ or $$...$$) IN ALL FILES
+================================================================================
+
+No math syntax ($...$ or $$...$$) found in any MDX file.
+
+Summary: 7 files have curly braces outside code blocks, 0 have math syntax
+Done.

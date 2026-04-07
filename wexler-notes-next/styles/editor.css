@@ -199,7 +199,7 @@
   line-height: 1.36;
   font-size: 0.8rem;
   text-decoration: none;
-  color: var(--vp-c-text-2);
+  color: var(--oil-muted);
   border: 1px solid transparent;
   transition: background-color 0.2s ease, border-color 0.2s ease,
     color 0.2s ease, transform 0.2s ease;
@@ -212,12 +212,12 @@
 
 .chapterSpotlightLink:hover {
   transform: translateX(1px);
-  color: var(--vp-c-text-1);
+  color: var(--oil-ink);
   background: rgba(74, 109, 134, 0.1);
 }
 
 .chapterSpotlightLinkActive {
-  color: var(--vp-c-text-1);
+  color: var(--oil-ink);
   border-color: rgba(74, 109, 134, 0.38);
   background: linear-gradient(
     110deg,

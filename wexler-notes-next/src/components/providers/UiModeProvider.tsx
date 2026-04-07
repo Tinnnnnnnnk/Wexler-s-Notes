@@ -88,13 +88,13 @@ export function useUiModeContext(): UiModeContextValue {
 export function UiModeProvider({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const isHome = pathname === '/'
-  // Default to 'glass' so backdrop shows on first load
-  const [fxMode, setFxModeState] = useState<FxMode>('glass')
+  // Default to 'default' (常态) so no backdrop on initial load
+  const [fxMode, setFxModeState] = useState<FxMode>('default')
   const [layoutMode, setLayoutModeState] = useState<LayoutMode>('minimal')
   const [perfMode, setPerfModeState] = useState<PerfMode>('normal')
 
   useEffect(() => {
-    const savedFx = normalizeFxMode(safeRead(FX_STORAGE_KEY, 'glass'))
+    const savedFx = normalizeFxMode(safeRead(FX_STORAGE_KEY, 'default'))
     const savedLayout = normalizeLayoutMode(safeRead(LAYOUT_STORAGE_KEY, 'minimal'))
     const perf = evaluatePerformanceProfile() ? 'safe' : 'normal'
     setFxModeState(savedFx)

@@ -4,7 +4,10 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - 'temp-build-verify'
+      - 'main'
+
+permissions:
+  contents: read
 
 jobs:
   build:
@@ -43,3 +46,6 @@ jobs:
           echo ""
           echo "=== Error Pages Check ==="
           grep -r "__next_error__" out/ 2>/dev/null | wc -l || echo "0"
+          echo ""
+          echo "=== Sample HTML Files ==="
+          find out/docs -name "*.html" | head -20

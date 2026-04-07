@@ -98,8 +98,8 @@ function findFirstDocSlugInDir(dir: string, baseSlug: string[]): string[] | null
 function addParamVariants(set: Set<string>, slug: string) {
   const parts = slug.split('/').filter(Boolean)
   if (!parts.length) return
-
-  set.add(parts.join('/'))
+  // Only use encoded slugs - the canonical format for URLs
+  // This reduces params from 158 to ~93 (41% reduction)
   set.add(parts.map((seg) => encodeURIComponent(seg)).join('/'))
 }
 

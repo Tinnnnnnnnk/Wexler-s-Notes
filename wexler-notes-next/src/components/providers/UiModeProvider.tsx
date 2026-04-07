@@ -1,7 +1,7 @@
 // src/components/providers/UiModeProvider.tsx
-// Provides shared fxMode + layoutMode state to Navbar and HomePage
 'use client'
-import { createContext, useContext, useState, useCallback, useEffect, useMemo } from 'react'
+
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { usePathname } from 'next/navigation'
 import type { FxMode, LayoutMode, PerfMode } from '@/types/uiMode'
 
@@ -39,20 +39,18 @@ function safeWrite(key: string, value: string): void {
 }
 
 function normalizeFxMode(value: string): FxMode {
-  const m = value?.trim().toLowerCase()
-  if (m === 'glass' || m === 'liquid') return m as FxMode
+  if (value === 'glass' || value === 'liquid') return value
   return 'default'
 }
 
 function normalizeLayoutMode(value: string): LayoutMode {
-  const m = value?.trim().toLowerCase()
-  if (m === 'dashboard' || m === 'editorial') return m as LayoutMode
+  if (value === 'dashboard' || value === 'editorial') return value
   return 'minimal'
 }
 
 function evaluatePerformanceProfile(): boolean {
   if (typeof window === 'undefined') return false
-  const prefersReduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches === true
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
   const saveData = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData === true
   const cpuCores = Number((navigator as Navigator & { hardwareConcurrency?: number }).hardwareConcurrency || 0)
   const memorySize = Number((navigator as Navigator & { deviceMemory?: number }).deviceMemory || 0)
@@ -64,7 +62,6 @@ interface UiModeContextValue {
   layoutMode: LayoutMode
   perfMode: PerfMode
   setFxMode: (mode: FxMode) => void
-  setFxModeDirect: (mode: FxMode) => void
   toggleFxMode: (target: 'glass' | 'liquid') => void
   setLayoutMode: (mode: LayoutMode) => void
   setPerfMode: (mode: PerfMode) => void
@@ -75,7 +72,6 @@ export const UiModeContext = createContext<UiModeContextValue>({
   layoutMode: 'minimal',
   perfMode: 'normal',
   setFxMode: () => {},
-  setFxModeDirect: () => {},
   toggleFxMode: () => {},
   setLayoutMode: () => {},
   setPerfMode: () => {},
@@ -88,7 +84,6 @@ export function useUiModeContext(): UiModeContextValue {
 export function UiModeProvider({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const isHome = pathname === '/'
-  // Default to 'default' (常态) so no backdrop on initial load
   const [fxMode, setFxModeState] = useState<FxMode>('default')
   const [layoutMode, setLayoutModeState] = useState<LayoutMode>('minimal')
   const [perfMode, setPerfModeState] = useState<PerfMode>('normal')
@@ -96,73 +91,61 @@ export function UiModeProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const savedFx = normalizeFxMode(safeRead(FX_STORAGE_KEY, 'default'))
     const savedLayout = normalizeLayoutMode(safeRead(LAYOUT_STORAGE_KEY, 'minimal'))
-    const perf = evaluatePerformanceProfile() ? 'safe' : 'normal'
     setFxModeState(savedFx)
     setLayoutModeState(savedLayout)
-    setPerfModeState(perf)
+    setPerfModeState(evaluatePerformanceProfile() ? 'safe' : 'normal')
   }, [])
 
-  // Sync HTML classes
   useEffect(() => {
     if (typeof document === 'undefined') return
-    ;(Object.keys(FX_CLASSES) as FxMode[]).forEach((m) => {
-      document.documentElement.classList.toggle(FX_CLASSES[m], m === fxMode)
+
+    ;(Object.keys(FX_CLASSES) as FxMode[]).forEach((mode) => {
+      document.documentElement.classList.toggle(FX_CLASSES[mode], mode === fxMode)
     })
-    ;(Object.keys(LAYOUT_CLASSES) as LayoutMode[]).forEach((m) => {
-      document.documentElement.classList.toggle(LAYOUT_CLASSES[m], isHome && m === layoutMode)
+
+    ;(Object.keys(LAYOUT_CLASSES) as LayoutMode[]).forEach((mode) => {
+      document.documentElement.classList.toggle(LAYOUT_CLASSES[mode], isHome && mode === layoutMode)
     })
+
     document.documentElement.classList.toggle('home-fx-performance-safe', perfMode === 'safe')
   }, [fxMode, layoutMode, perfMode, isHome])
 
   const setFxMode = useCallback((mode: FxMode) => {
-    setFxModeState((prev) => {
-      const normalized = normalizeFxMode(mode)
-      if (prev === normalized) return prev
-      safeWrite(FX_STORAGE_KEY, normalized)
-      return normalized
-    })
-  }, [])
-
-  const setFxModeDirect = useCallback((mode: FxMode) => {
-    safeWrite(FX_STORAGE_KEY, mode)
-    setFxModeState(mode)
+    const next = normalizeFxMode(mode)
+    safeWrite(FX_STORAGE_KEY, next)
+    setFxModeState(next)
   }, [])
 
   const toggleFxMode = useCallback((target: 'glass' | 'liquid') => {
     setFxModeState((prev) => {
-      const next = prev === target ? 'default' : target
+      const next: FxMode = prev === target ? 'default' : target
       safeWrite(FX_STORAGE_KEY, next)
       return next
     })
   }, [])
 
   const setLayoutMode = useCallback((mode: LayoutMode) => {
-    setLayoutModeState((prev) => {
-      const normalized = normalizeLayoutMode(mode)
-      if (prev === normalized) return prev
-      safeWrite(LAYOUT_STORAGE_KEY, normalized)
-      return normalized
-    })
+    const next = normalizeLayoutMode(mode)
+    safeWrite(LAYOUT_STORAGE_KEY, next)
+    setLayoutModeState(next)
   }, [])
 
   const setPerfMode = useCallback((mode: PerfMode) => {
     setPerfModeState(mode)
   }, [])
 
-  const value = useMemo(() => ({
-    fxMode,
-    layoutMode,
-    perfMode,
-    setFxMode: setFxModeDirect,
-    setFxModeDirect,
-    toggleFxMode,
-    setLayoutMode,
-    setPerfMode,
-  }), [fxMode, layoutMode, perfMode, setFxModeDirect, toggleFxMode, setLayoutMode, setPerfMode])
-
-  return (
-    <UiModeContext.Provider value={value}>
-      {children}
-    </UiModeContext.Provider>
+  const value = useMemo(
+    () => ({
+      fxMode,
+      layoutMode,
+      perfMode,
+      setFxMode,
+      toggleFxMode,
+      setLayoutMode,
+      setPerfMode,
+    }),
+    [fxMode, layoutMode, perfMode, setFxMode, toggleFxMode, setLayoutMode, setPerfMode],
   )
+
+  return <UiModeContext.Provider value={value}>{children}</UiModeContext.Provider>
 }

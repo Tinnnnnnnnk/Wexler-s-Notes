@@ -1,6 +1,6 @@
 // src/components/home/HomePage.tsx
-// Homepage container — migrated from HomeLayoutScenes.vue + HomeFxBackdrop.vue
 'use client'
+
 import { usePathname } from 'next/navigation'
 import { useUiModeContext } from '@/components/providers/UiModeProvider'
 import Backdrop from './Backdrop'
@@ -16,11 +16,10 @@ import styles from './HomePage.module.css'
 export default function HomePage() {
   const pathname = usePathname()
   const isHome = pathname === '/'
-  const { fxMode, layoutMode, perfMode, setFxMode, setLayoutMode } = useUiModeContext()
+  const { fxMode, layoutMode, perfMode } = useUiModeContext()
 
   if (!isHome) return null
 
-  // Liquid mode uses LiquidScene regardless of layoutMode
   if (fxMode === 'liquid') {
     return (
       <div className={styles.root}>

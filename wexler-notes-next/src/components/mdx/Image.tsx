@@ -1,7 +1,7 @@
 // src/components/mdx/Image.tsx
-// MDX image with lightbox — migrated from Lightbox.vue
 'use client'
-import { useState, useCallback, useEffect } from 'react'
+
+import { useCallback, useEffect, useState } from 'react'
 import styles from './Image.module.css'
 
 interface ImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
@@ -18,11 +18,10 @@ export function Image({ src, alt = '', ...props }: ImageProps) {
   const [lb, setLb] = useState<LightboxState>({ visible: false, index: 0 })
   const [images, setImages] = useState<string[]>([])
 
-  // Collect all doc images on mount
   useEffect(() => {
-    const imgs = Array.from(document.querySelectorAll<HTMLImageElement>(
-      '.docContent img[data-lightbox]'
-    )).map((img) => img.src)
+    const imgs = Array.from(
+      document.querySelectorAll<HTMLImageElement>('.docContent img[data-lightbox]'),
+    ).map((img) => img.src)
     if (src) setImages(imgs)
   }, [src])
 
@@ -33,18 +32,19 @@ export function Image({ src, alt = '', ...props }: ImageProps) {
   }, [images, src])
 
   const closeLightbox = useCallback(() => {
-    setLb((p) => ({ ...p, visible: false }))
+    setLb((prev) => ({ ...prev, visible: false }))
   }, [])
 
   const prevImage = useCallback(() => {
-    setLb((p) => ({ ...p, index: (p.index - 1 + images.length) % images.length }))
+    if (!images.length) return
+    setLb((prev) => ({ ...prev, index: (prev.index - 1 + images.length) % images.length }))
   }, [images.length])
 
   const nextImage = useCallback(() => {
-    setLb((p) => ({ ...p, index: (p.index + 1) % images.length }))
+    if (!images.length) return
+    setLb((prev) => ({ ...prev, index: (prev.index + 1) % images.length }))
   }, [images.length])
 
-  // Keyboard navigation
   useEffect(() => {
     if (!lb.visible) return
     const handler = (e: KeyboardEvent) => {
@@ -54,7 +54,7 @@ export function Image({ src, alt = '', ...props }: ImageProps) {
     }
     window.addEventListener('keydown', handler)
     return () => window.removeEventListener('keydown', handler)
-  }, [lb.visible, closeLightbox, prevImage, nextImage])
+  }, [closeLightbox, lb.visible, nextImage, prevImage])
 
   return (
     <>
@@ -76,7 +76,7 @@ export function Image({ src, alt = '', ...props }: ImageProps) {
           aria-modal="true"
           aria-label="图片查看器"
         >
-          {/* eslint-disable-next-line @next/next/no-img */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             className={styles.img}
             src={images[lb.index] ?? src}
@@ -89,7 +89,10 @@ export function Image({ src, alt = '', ...props }: ImageProps) {
               <button
                 type="button"
                 className={`${styles.nav} ${styles.prev}`}
-                onClick={(e) => { e.stopPropagation(); prevImage() }}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  prevImage()
+                }}
                 aria-label="上一张"
               >
                 ‹
@@ -97,7 +100,10 @@ export function Image({ src, alt = '', ...props }: ImageProps) {
               <button
                 type="button"
                 className={`${styles.nav} ${styles.next}`}
-                onClick={(e) => { e.stopPropagation(); nextImage() }}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  nextImage()
+                }}
                 aria-label="下一张"
               >
                 ›

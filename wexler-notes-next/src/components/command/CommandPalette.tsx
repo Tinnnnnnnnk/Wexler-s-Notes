@@ -171,9 +171,7 @@ export default function CommandPalette({ onClose, defaultOpen = false }: Command
           document.querySelector<HTMLInputElement>('input[placeholder*="search"]')
         if (searchInput) {
           searchInput.focus()
-          return
         }
-        router.push('/docs')
         return
       }
 

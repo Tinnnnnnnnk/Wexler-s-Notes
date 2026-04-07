@@ -1,4 +1,4 @@
-// src/app/docs/[...slug]/page.tsx
+﻿// src/app/docs/[...slug]/page.tsx
 import fs from 'fs'
 import path from 'path'
 import { notFound } from 'next/navigation'
@@ -123,7 +123,7 @@ export async function generateStaticParams() {
           ? `${baseSlug}/${entry.name.replace(/\.mdx?$/, '')}`
           : entry.name.replace(/\.mdx?$/, '')
         // NOTE: slug parts (directory/file names) are stored as raw unencoded strings.
-        // When Next.js passes slug in URL, it gets URL-encoded (e.g. "图像处理" -> "%E5%9B%BE%E5%83%8F").
+        // When Next.js passes slug in URL, it gets URL-encoded (e.g. "鍥惧儚澶勭悊" -> "%E5%9B%BE%E5%83%8F").
         // We decode here in DocsPage using decodeURIComponent, so generateStaticParams
         // must match with raw unencoded strings.
         params.push({ slug: slug.split('/') })
@@ -147,7 +147,7 @@ export async function generateMetadata(
     const raw = fs.readFileSync(filePath, 'utf-8')
     const { data } = parseFrontmatter(raw)
     const title = typeof data.title === 'string' && data.title
-      ? `${data.title} — Wexler's Notes`
+      ? `${data.title} 鈥?Wexler's Notes`
       : "Wexler's Notes"
     const description = typeof data.description === 'string' ? data.description : undefined
     return { title, description }
@@ -163,7 +163,7 @@ export default async function DocsPage({
 }) {
   const { slug } = await params
   // URL slug is URL-encoded by Next.js routing, decode before filesystem access.
-  // Example: "/docs/图像处理和安全/Week4" -> slug=["图像处理和信息安全","Week4"]
+  // Example: "/docs/图像处理和信息安全/Week4" -> slug=["图像处理和信息安全","Week4"]
   const filePath = path.join(CONTENT_DIR, ...slug.map(s => decodeURIComponent(s))) + '.mdx'
 
   if (!fs.existsSync(filePath)) notFound()
@@ -212,3 +212,4 @@ export default async function DocsPage({
     </MainLayout>
   )
 }
+

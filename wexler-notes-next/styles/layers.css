@@ -3,11 +3,18 @@
    All z-index values MUST reference CSS variables; no magic numbers allowed.
    ============================================================================= */
 :root {
-  --z-bg: 0;
+  --z-bg: -1;
+  --z-base: 0;
   --z-content: 10;
-  --z-nav: 40;
-  --z-overlay: 60;
+  --z-above: 10;
+  --z-dropdown: 20;
+  --z-sticky: 30;
+  --z-nav: 100;
+  --z-overlay: 40;
   --z-editor: 80;
-  --z-modal: 100;
+  --z-modal: 50;
+  --z-modal-backdrop: 150;
+  --z-popover: 60;
+  --z-tooltip: 70;
   --z-transition: 200;
 }

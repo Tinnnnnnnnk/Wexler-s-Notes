@@ -7,9 +7,12 @@ import type { TOCItem } from '@/types/mdx'
 import { serializeMDX } from '@/lib/mdx'
 import { buildSidebar } from '@/lib/sidebar'
 import { TableOfContents } from '@/components/mdx/TableOfContents'
-import MainLayout from '@/components/layout/MainLayout'
-import Sidebar from '@/components/layout/Sidebar'
+import EnhancedSidebar from '@/components/layout/EnhancedSidebar'
+import ResponsiveMainLayout from '@/components/layout/ResponsiveMainLayout'
 import ReadingEnhancer from '@/components/reading/ReadingEnhancer'
+import EnhancedReadingProgress from '@/components/article/EnhancedReadingProgress'
+import ArticleHeader from '@/components/article/ArticleHeader'
+import Breadcrumb from '@/components/article/Breadcrumb'
 import { MDXComponents } from '@/components/mdx/MDXComponents'
 import { parseFrontmatter } from '@/lib/frontmatter'
 import { decodeSlugSegment, resolveContentDir } from '@/lib/contentPath'
@@ -208,6 +211,29 @@ async function renderDoc(filePath: string): Promise<{ content: SerializedContent
   return { content: result.content, toc }
 }
 
+function calculateWordCount(text: string): number {
+  // 移除 frontmatter
+  const fmRegex = /^---\r?\n[\s\S]*?\r?\n---[\r\n\s]*/
+  const content = text.replace(fmRegex, '')
+  
+  // 移除代码块
+  const codeBlockRegex = /```[\s\S]*?```/g
+  const textWithoutCode = content.replace(codeBlockRegex, '')
+  
+  // 移除 Markdown 语法
+  const markdownChars = /[#*`~\[\]()>_|!]/g
+  const plainText = textWithoutCode.replace(markdownChars, ' ')
+  
+  // 匹配中文字符（连续的中文算一个词）
+  const chineseChars = plainText.match(/[\u4e00-\u9fa5]/g) || []
+  
+  // 匹配英文单词
+  const englishWords = plainText.match(/[a-zA-Z]+/g) || []
+  
+  // 总字数 = 中文字符数 + 英文单词数
+  return chineseChars.length + englishWords.length
+}
+
 export async function generateStaticParams(): Promise<StaticParam[]> {
   const paramsSet = new Set<string>()
   scanStaticPaths(CONTENT_DIR, '', paramsSet)
@@ -259,7 +285,16 @@ export default async function DocsPage({
   const sourcePath = filePath as string
   let content: SerializedContent
   let toc: TOCItem[]
+  let frontmatterData: Record<string, unknown> = {}
+  let wordCount = 0
+
   try {
+    // 读取原始文件内容用于计算字数
+    const rawContent = fs.readFileSync(sourcePath, 'utf-8')
+    const parsed = parseFrontmatter(rawContent)
+    frontmatterData = parsed.data
+    wordCount = calculateWordCount(rawContent)
+
     const rendered = await renderDoc(sourcePath)
     content = rendered.content
     toc = rendered.toc
@@ -273,22 +308,48 @@ export default async function DocsPage({
   const sidebarGroups = buildSidebar()
   const currentPath = `/docs/${decodedSlug.join('/')}`
 
+  // 提取 frontmatter 中的元信息
+  const title = typeof frontmatterData.title === 'string' ? frontmatterData.title : ''
+  const description = typeof frontmatterData.description === 'string' ? frontmatterData.description : undefined
+  const tags = Array.isArray(frontmatterData.tags) ? frontmatterData.tags as string[] : []
+  const difficulty = typeof frontmatterData.difficulty === 'string' ? frontmatterData.difficulty : undefined
+  const status = typeof frontmatterData.status === 'string' ? frontmatterData.status : undefined
+  const date = typeof frontmatterData.date === 'string' ? frontmatterData.date : undefined
+
   return (
-    <MainLayout
-      sidebar={(
-        <Sidebar groups={sidebarGroups} currentPath={currentPath} />
-      )}
+    <ResponsiveMainLayout
+      groups={sidebarGroups}
+      currentPath={currentPath}
     >
-      <div className={styles.wrapper}>
-        <article className={`${styles.article} docContent`}>
+      <article className={styles.article}>
+        {/* 面包屑导航 */}
+        <Breadcrumb />
+
+        {/* 文章头部 */}
+        <ArticleHeader
+          title={title}
+          description={description}
+          tags={tags}
+          difficulty={difficulty}
+          status={status}
+          publishDate={date}
+          wordCount={wordCount}
+        />
+
+        {/* 文章内容 */}
+        <div className={`${styles.content} docContent`}>
           {content}
-        </article>
-        <aside className={styles.tocAside}>
-          <TableOfContents items={toc} />
-        </aside>
-      </div>
+        </div>
+      </article>
+
+      {/* 右侧目录 */}
+      <aside className={styles.tocAside}>
+        <TableOfContents items={toc} />
+      </aside>
+
+      {/* 阅读增强组件 */}
       <ReadingEnhancer />
-    </MainLayout>
+      <EnhancedReadingProgress />
+    </ResponsiveMainLayout>
   )
 }
-

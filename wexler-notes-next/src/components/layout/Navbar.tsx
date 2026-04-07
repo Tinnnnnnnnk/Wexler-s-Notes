@@ -1,4 +1,6 @@
 // src/components/layout/Navbar.tsx
+// 导航栏组件 - 增强版，支持移动端菜单按钮
+
 'use client'
 
 import Link from 'next/link'
@@ -9,16 +11,38 @@ import LayoutToggle from '@/components/home/LayoutToggle'
 import CommandTrigger from '@/components/command/CommandTrigger'
 import styles from './Navbar.module.css'
 
-export default function Navbar() {
+interface NavbarProps {
+  onMenuClick?: () => void
+}
+
+export default function Navbar({ onMenuClick }: NavbarProps) {
   const { isDark, toggle: toggleTheme } = useTheme()
   const { fxMode, layoutMode, setFxMode, setLayoutMode } = useUiModeContext()
 
   return (
     <nav className={`${styles.nav} main-navbar`}>
       <div className={styles.inner}>
-        <Link href="/" className={styles.title}>
-          Wexler&apos;s Notes
-        </Link>
+        {/* 左侧：菜单按钮和标题 */}
+        <div className={styles.left}>
+          {onMenuClick && (
+            <button
+              type="button"
+              className={styles.menuBtn}
+              onClick={onMenuClick}
+              aria-label="切换侧边栏"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <line x1="3" y1="12" x2="21" y2="12" />
+                <line x1="3" y1="6" x2="21" y2="6" />
+                <line x1="3" y1="18" x2="21" y2="18" />
+              </svg>
+            </button>
+          )}
+
+          <Link href="/" className={styles.title}>
+            Wexler&apos;s Notes
+          </Link>
+        </div>
 
         <div className={styles.controls}>
           <FxToggle fxMode={fxMode} onChange={setFxMode} />

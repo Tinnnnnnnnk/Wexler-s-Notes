@@ -1,7 +1,8 @@
 /* Wexler oil paint cool theme - tokens.css */
-/* Copied from .vitepress/theme/styles/tokens.css — unchanged */
+/* 整合新版设计系统 Token */
 
 :root {
+  /* === 原有 Oil 主题变量 === */
   --oil-bg: #d8dee6;
   --oil-bg-deep: #ccd4de;
   --oil-surface: #edf1f6;
@@ -13,7 +14,6 @@
   --oil-line: rgba(31, 42, 56, 0.17);
   --oil-shadow: 0 16px 34px rgba(16, 24, 35, 0.15);
 
-  /* Light mode background gradient — cold oil-paint style */
   --oil-bg-gradient-1: rgba(106, 138, 160, 0.28);
   --oil-bg-gradient-2: rgba(74, 109, 134, 0.22);
   --oil-bg-gradient-3: rgba(126, 151, 173, 0.2);
@@ -45,7 +45,6 @@
   --motion-mid: 0.28s;
   --motion-slow: 0.42s;
 
-  /* Home P1 tokens: hierarchy + glass + motion */
   --oil-home-layer-border: rgba(31, 42, 56, 0.11);
   --oil-home-layer-bg: linear-gradient(
     140deg,
@@ -76,6 +75,39 @@
   --oil-home-lift: -4px;
   --oil-home-lift-soft: -2px;
   --oil-home-reveal-duration: 0.72s;
+
+  /* === 新版设计系统变量 === */
+  --z-base: 0;
+  --z-above: 10;
+  --z-dropdown: 20;
+  --z-sticky: 30;
+  --z-overlay: 40;
+  --z-modal: 50;
+  --z-popover: 60;
+  --z-tooltip: 70;
+  --z-nav: 100;
+  --z-modal-backdrop: 150;
+  --z-bg: -1;
+
+  --navbar-height: 64px;
+  --sidebar-width: 260px;
+  --content-max-width: 800px;
+  --container-max-width: 1400px;
+
+  --color-primary-50: #e8f1f7;
+  --color-primary-100: #c5dce9;
+  --color-primary-500: #3d8ab0;
+  --color-primary-600: #31779c;
+  --color-primary-700: #256487;
+
+  --color-text-primary: var(--oil-ink);
+  --color-text-secondary: var(--oil-muted);
+  --color-surface: var(--oil-surface);
+  --color-surface-elevated: var(--oil-surface-2);
+  --color-border: var(--oil-line);
+
+  --font-sans: var(--vp-font-family-base);
+  --font-mono: var(--vp-font-family-mono);
 }
 
 .dark {
@@ -90,7 +122,6 @@
   --oil-line: rgba(229, 237, 247, 0.18);
   --oil-shadow: 0 20px 44px rgba(1, 7, 12, 0.46);
 
-  /* Dark mode background gradient — deep starfield style */
   --oil-bg-gradient-1: rgba(136, 168, 192, 0.22);
   --oil-bg-gradient-2: rgba(106, 138, 160, 0.18);
   --oil-bg-gradient-3: rgba(76, 108, 130, 0.17);
@@ -125,4 +156,17 @@
   --oil-home-panel-shadow: 0 12px 22px rgba(1, 7, 12, 0.34);
   --oil-home-panel-shadow-hover: 0 18px 30px rgba(1, 7, 12, 0.48);
   --oil-home-panel-blur: 10px;
+
+  /* 新版设计系统暗色变量 */
+  --color-text-primary: var(--oil-ink);
+  --color-text-secondary: var(--oil-muted);
+  --color-surface: var(--oil-surface);
+  --color-surface-elevated: var(--oil-surface-2);
+  --color-border: var(--oil-line);
+
+  --color-primary-50: #0a1628;
+  --color-primary-100: #0f2747;
+  --color-primary-500: #236bc3;
+  --color-primary-600: #2a7bd1;
+  --color-primary-700: #318be0;
 }

@@ -1,0 +1,139 @@
+/* src/components/layout/ResponsiveMainLayout.module.css */
+
+.root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.body {
+  display: flex;
+  flex: 1;
+  position: relative;
+}
+
+/* -------------------- Sidebar -------------------- */
+
+.sidebar {
+  width: var(--sidebar-width);
+  flex-shrink: 0;
+  position: sticky;
+  top: var(--navbar-height);
+  height: calc(100vh - var(--navbar-height));
+  overflow-y: auto;
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border-right: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  z-index: var(--z-sticky);
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+/* -------------------- Main Content -------------------- */
+
+.main {
+  flex: 1;
+  min-width: 0;
+  padding: var(--space-8);
+}
+
+/* -------------------- Overlay -------------------- */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  top: var(--navbar-height);
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: calc(var(--z-sticky) - 1);
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* -------------------- Mobile Menu Button -------------------- */
+
+.mobileMenuBtn {
+  position: fixed;
+  bottom: var(--space-6);
+  right: var(--space-6);
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(
+    135deg,
+    var(--color-primary-500) 0%,
+    var(--color-primary-600) 100%
+  );
+  border: none;
+  border-radius: var(--radius-full);
+  color: white;
+  box-shadow: var(--shadow-lg), 0 0 20px rgba(59, 130, 246, 0.4);
+  cursor: pointer;
+  z-index: var(--z-sticky);
+  transition: all var(--motion-normal);
+}
+
+.mobileMenuBtn:hover {
+  transform: scale(1.1);
+  box-shadow: var(--shadow-xl), 0 0 30px rgba(59, 130, 246, 0.5);
+}
+
+.mobileMenuBtn:active {
+  transform: scale(0.95);
+}
+
+/* -------------------- Responsive -------------------- */
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .sidebar {
+    position: fixed;
+    left: 0;
+    top: var(--navbar-height);
+    height: calc(100vh - var(--navbar-height));
+    transform: translateX(-100%);
+    z-index: var(--z-overlay);
+  }
+
+  .sidebarOpen {
+    transform: translateX(0);
+    box-shadow: var(--shadow-2xl);
+  }
+
+  .main {
+    padding: var(--space-6);
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .main {
+    padding: var(--space-4);
+  }
+
+  .mobileMenuBtn {
+    bottom: var(--space-4);
+    right: var(--space-4);
+    width: 44px;
+    height: 44px;
+  }
+}
+
+/* Large Screen */
+@media (min-width: 1400px) {
+  .main {
+    max-width: calc(100% - var(--sidebar-width) - 200px);
+    margin: 0 auto;
+  }
+}

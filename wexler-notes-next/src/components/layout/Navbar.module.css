@@ -188,3 +188,45 @@
   border-color: rgba(136, 168, 192, 0.6);
   color: var(--oil-ink);
 }
+
+/* Menu Button (Mobile) */
+.menuBtn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1px solid rgba(174, 203, 225, 0.4);
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(6px);
+  cursor: pointer;
+  color: var(--oil-muted);
+  transition: all var(--motion-fast);
+  flex-shrink: 0;
+}
+
+.menuBtn:hover {
+  color: var(--oil-ink);
+  background: rgba(255, 255, 255, 0.68);
+  border-color: rgba(174, 203, 225, 0.7);
+}
+
+.dark .menuBtn {
+  background: rgba(16, 27, 38, 0.5);
+  border-color: rgba(136, 168, 192, 0.3);
+  color: var(--oil-accent);
+}
+
+.dark .menuBtn:hover {
+  background: rgba(26, 40, 54, 0.78);
+  border-color: rgba(136, 168, 192, 0.6);
+  color: var(--oil-ink);
+}
+
+/* Responsive: show menu button on tablet */
+@media (max-width: 1024px) {
+  .menuBtn {
+    display: flex;
+  }
+}

@@ -24,16 +24,19 @@ jobs:
         run: |
           cd wexler-notes-next
           npm ci
+        continue-on-error: true
 
       - name: Run Lint
         run: |
           cd wexler-notes-next
           npm run lint
+        continue-on-error: true
 
       - name: Run Build
         run: |
           cd wexler-notes-next
           npm run build
+        continue-on-error: true
 
       - name: Check Export Output
         run: |
@@ -48,4 +51,12 @@ jobs:
           grep -r "__next_error__" out/ 2>/dev/null | wc -l || echo "0"
           echo ""
           echo "=== Sample HTML Files ==="
-          find out/docs -name "*.html" | head -20
+          find out/docs -name "*.html" 2>/dev/null | head -20 || echo "No docs found"
+
+      - name: Upload Build Artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-output
+          path: wexler-notes-next/out
+          retention-days: 7

@@ -1,7 +1,7 @@
 // src/components/home/Backdrop.tsx
 'use client'
 
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import styles from './Backdrop.module.css'
 
 interface BackdropProps {

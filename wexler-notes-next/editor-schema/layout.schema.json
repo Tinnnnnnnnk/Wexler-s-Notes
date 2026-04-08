@@ -1,0 +1,118 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Editor Layout Bundle",
+  "description": "Schema for editor layout bundle published to GitOps workflow",
+  "type": "object",
+  "required": ["schemaVersion", "route", "routeKey", "updatedAt", "blocks"],
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "const": "editor-layout.v1",
+      "description": "Schema version identifier"
+    },
+    "route": {
+      "type": "string",
+      "description": "Original route path"
+    },
+    "routeKey": {
+      "type": "string",
+      "description": "Stable route key for file naming (e.g., 'home' for '/')"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO timestamp of last update"
+    },
+    "blocks": {
+      "type": "array",
+      "description": "Array of layout blocks",
+      "items": {
+        "$ref": "#/definitions/Block"
+      }
+    }
+  },
+  "definitions": {
+    "Block": {
+      "type": "object",
+      "required": ["id", "type", "x", "y", "w", "h", "z", "opacity", "radius", "blur", "bg", "color", "title", "body", "visibleOnMobile", "locked"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique block identifier"
+        },
+        "type": {
+          "type": "string",
+          "description": "Block type (e.g., 'text', 'image', 'video')"
+        },
+        "x": {
+          "type": "number",
+          "description": "X position"
+        },
+        "y": {
+          "type": "number",
+          "description": "Y position"
+        },
+        "w": {
+          "type": "number",
+          "description": "Width"
+        },
+        "h": {
+          "type": "number",
+          "description": "Height"
+        },
+        "z": {
+          "type": "number",
+          "description": "Z-index layer"
+        },
+        "opacity": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Opacity (0-1)"
+        },
+        "radius": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Border radius in pixels"
+        },
+        "blur": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Backdrop blur in pixels"
+        },
+        "bg": {
+          "type": "string",
+          "description": "Background color (CSS color string)"
+        },
+        "color": {
+          "type": "string",
+          "description": "Text color (CSS color string)"
+        },
+        "title": {
+          "type": "string",
+          "description": "Block title text"
+        },
+        "body": {
+          "type": "string",
+          "description": "Block body text"
+        },
+        "kicker": {
+          "type": "string",
+          "description": "Optional kicker label"
+        },
+        "link": {
+          "type": "string",
+          "description": "Optional link URL"
+        },
+        "visibleOnMobile": {
+          "type": "boolean",
+          "description": "Whether block is visible on mobile"
+        },
+        "locked": {
+          "type": "boolean",
+          "description": "Whether block is locked from editing"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "scannedAt": "2026-04-08T13:54:02.173Z",
+  "totalDependencies": 0,
+  "vulnerabilities": {
+    "critical": 0,
+    "high": 0,
+    "medium": 0,
+    "low": 0,
+    "total": 0
+  },
+  "criticalVulnerabilities": [],
+  "passed": true,
+  "blockingThreshold": "critical>0 OR high>10 OR medium>50"
+}

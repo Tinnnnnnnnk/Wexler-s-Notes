@@ -51,6 +51,12 @@ const SCAN_PATHS = [
 const EXCLUDED_FILES = ['privacy.ts']
 
 function scanFile(filePath: string): PIIFinding[] {
+  // Skip excluded files
+  const fileName = path.basename(filePath)
+  if (EXCLUDED_FILES.includes(fileName)) {
+    return []
+  }
+
   const findings: PIIFinding[] = []
 
   try {
@@ -70,7 +76,6 @@ function scanFile(filePath: string): PIIFinding[] {
     }
 
     // Check string values (only for non-privacy files)
-    const fileName = path.basename(filePath)
     if (!fileName.includes('privacy')) {
       for (const { pattern, type, description } of PII_VALUE_PATTERNS) {
         pattern.lastIndex = 0

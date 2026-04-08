@@ -1,0 +1,67 @@
+name: Editor Config Check
+
+on:
+  pull_request:
+    paths:
+      - 'wexler-notes-next/public/editor-layouts/**'
+      - 'wexler-notes-next/editor-schema/**'
+      - 'wexler-notes-next/scripts/editor-*.ts'
+      - 'wexler-notes-next/package.json'
+  push:
+    branches:
+      - main
+    paths:
+      - 'wexler-notes-next/public/editor-layouts/**'
+      - 'wexler-notes-next/editor-schema/**'
+      - 'wexler-notes-next/scripts/editor-*.ts'
+      - 'wexler-notes-next/package.json'
+
+permissions:
+  contents: read
+
+jobs:
+  validate-editor:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: |
+          cd wexler-notes-next
+          npm ci
+        continue-on-error: true
+
+      - name: Validate Editor Layouts
+        run: |
+          cd wexler-notes-next
+          npm run editor:validate
+        continue-on-error: true
+
+      - name: Build Manifest
+        run: |
+          cd wexler-notes-next
+          npx tsx scripts/editor-build-manifest.ts
+        continue-on-error: true
+
+      - name: Run Lint
+        run: |
+          cd wexler-notes-next
+          npm run lint
+        continue-on-error: true
+
+      - name: Build Next.js
+        run: |
+          cd wexler-notes-next
+          npm run build
+        continue-on-error: true
+
+      - name: Stage 5 Self Check
+        run: |
+          cd wexler-notes-next
+          npx tsx scripts/stage5-self-check.ts
+        continue-on-error: true

@@ -8,7 +8,12 @@
     "start": "next start",
     "lint": "eslint src --ext .ts,.tsx,.js,.jsx",
     "migrate": "tsx scripts/migrate-docs.ts",
-    "check-headings": "tsx scripts/check-duplicate-headings.ts"
+    "check-headings": "tsx scripts/check-duplicate-headings.ts",
+    "editor:validate": "tsx scripts/editor-validate.ts",
+    "editor:manifest": "tsx scripts/editor-build-manifest.ts",
+    "editor:apply": "tsx scripts/editor-apply-bundle.ts",
+    "editor:rollback": "tsx scripts/editor-rollback.ts",
+    "stage5:self-check": "tsx scripts/stage5-self-check.ts"
   },
   "dependencies": {
     "fuse.js": "^7.0.0",

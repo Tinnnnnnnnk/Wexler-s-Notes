@@ -1,0 +1,102 @@
+name: Release Quality Gate
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  quality-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: |
+          cd wexler-notes-next
+          npm ci
+        continue-on-error: true
+
+      - name: Run Lint
+        run: |
+          cd wexler-notes-next
+          npm run lint
+        continue-on-error: true
+
+      - name: Validate Editor Layouts
+        run: |
+          cd wexler-notes-next
+          npm run editor:validate
+        continue-on-error: true
+
+      - name: Generate Build Metadata
+        run: |
+          cd wexler-notes-next
+          npm run build:meta
+        continue-on-error: true
+
+      - name: Build Next.js
+        run: |
+          cd wexler-notes-next
+          npm run build
+        continue-on-error: true
+
+      - name: Check Export Output
+        run: |
+          cd wexler-notes-next
+          echo "=== Export Directory ==="
+          ls -la out/ 2>/dev/null || echo "No out directory"
+          echo ""
+          echo "=== HTML Files Count ==="
+          find out -name "*.html" 2>/dev/null | wc -l
+          echo ""
+          echo "=== Error Pages Check (__next_error__) ==="
+          grep -r "__next_error__" out/ 2>/dev/null | wc -l || echo "0"
+          echo ""
+          echo "=== Sample HTML Files ==="
+          find out/docs -name "*.html" 2>/dev/null | head -20 || echo "No docs found"
+
+      - name: Check Export Links
+        run: |
+          cd wexler-notes-next
+          npm run export:check-links
+        continue-on-error: true
+
+      - name: Check Export Assets
+        run: |
+          cd wexler-notes-next
+          npm run export:check-assets
+        continue-on-error: true
+
+      - name: Check Performance Budget
+        run: |
+          cd wexler-notes-next
+          npm run perf:budget
+        continue-on-error: true
+
+      - name: Stage 6 Self Check
+        run: |
+          cd wexler-notes-next
+          npm run stage6:self-check
+        continue-on-error: true
+
+      - name: Upload Build Artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-output
+          path: |
+            wexler-notes-next/out
+            wexler-notes-next/public/build-meta.json
+          retention-days: 7

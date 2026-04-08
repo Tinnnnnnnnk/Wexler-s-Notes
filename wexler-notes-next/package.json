@@ -13,7 +13,13 @@
     "editor:manifest": "tsx scripts/editor-build-manifest.ts",
     "editor:apply": "tsx scripts/editor-apply-bundle.ts",
     "editor:rollback": "tsx scripts/editor-rollback.ts",
-    "stage5:self-check": "tsx scripts/stage5-self-check.ts"
+    "stage5:self-check": "tsx scripts/stage5-self-check.ts",
+    "export:check-links": "tsx scripts/check-export-links.ts",
+    "export:check-assets": "tsx scripts/check-export-assets.ts",
+    "perf:budget": "tsx scripts/check-performance-budget.ts",
+    "build:meta": "tsx scripts/gen-build-meta.ts",
+    "stage6:self-check": "tsx scripts/stage6-self-check.ts",
+    "release:gate": "npm run lint && npm run editor:validate && npm run export:check-links && npm run export:check-assets && npm run perf:budget"
   },
   "dependencies": {
     "fuse.js": "^7.0.0",

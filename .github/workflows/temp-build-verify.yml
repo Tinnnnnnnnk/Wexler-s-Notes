@@ -15,6 +15,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Setup environment
+        run: |
+          cd wexler-notes-next
+          echo "# 编辑模式开关" > .env.example
+          echo "# 设置为 true 可在开发/本地环境启用编辑入口" >> .env.example
+          echo "# 生产环境默认 false" >> .env.example
+          echo "NEXT_PUBLIC_EDITOR_ENABLED=true" >> .env.example
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:

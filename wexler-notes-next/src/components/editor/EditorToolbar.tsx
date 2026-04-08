@@ -1,5 +1,6 @@
 // src/components/editor/EditorToolbar.tsx
 'use client'
+import { useRef } from 'react'
 import styles from './EditorToolbar.module.css'
 
 interface EditorToolbarProps {
@@ -12,6 +13,7 @@ interface EditorToolbarProps {
   onRedo: () => void
   onReset: () => void
   onExport: () => void
+  onImport: (json: unknown) => void
   onPublish: () => void
   hasUnpublishedChanges?: boolean
 }
@@ -24,8 +26,35 @@ export default function EditorToolbar({
   onRedo,
   onReset,
   onExport,
+  onImport,
   onPublish,
 }: EditorToolbarProps) {
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
+  const handleImportClick = () => {
+    fileInputRef.current?.click()
+  }
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    const reader = new FileReader()
+    reader.onload = (ev) => {
+      try {
+        const text = ev.target?.result as string
+        const parsed = JSON.parse(text)
+        onImport(parsed)
+        alert('导入成功！')
+      } catch {
+        alert('导入失败：JSON 格式错误')
+      }
+    }
+    reader.readAsText(file)
+
+    // 重置 input 以便再次选择相同文件
+    e.target.value = ''
+  }
   return (
     <div className={styles.toolbar}>
       <button type="button" className={styles.btn} onClick={onAdd} title="添加模块">
@@ -56,11 +85,24 @@ export default function EditorToolbar({
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
       </button>
 
+      <button type="button" className={styles.btn} onClick={handleImportClick} title="导入 JSON">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      </button>
+
       <div className={styles.sep} />
 
       <button type="button" className={`${styles.btn} ${styles.publishBtn}`} onClick={onPublish} title="发布">
         发布
       </button>
+
+      {/* 隐藏的文件输入框 */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept=".json"
+        style={{ display: 'none' }}
+        onChange={handleFileChange}
+      />
     </div>
   )
 }

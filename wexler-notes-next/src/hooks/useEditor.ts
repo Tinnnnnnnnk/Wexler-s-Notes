@@ -39,6 +39,8 @@ export interface UseEditorReturn {
   selectedBlockId: string
   historyStack: HistoryStack
   validation: EditorValidationResult | null
+  canUndo: boolean
+  canRedo: boolean
   toggleEditor: () => void
   addBlock: () => void
   removeBlock: (id: string) => void
@@ -49,6 +51,7 @@ export interface UseEditorReturn {
   publish: () => boolean
   revert: () => void
   exportBundle: () => void
+  importBundle: (json: unknown) => void
   resetLayout: () => void
 }
 
@@ -155,6 +158,41 @@ export function useEditor(route: string): UseEditorReturn {
     }
   }, [blocks, historyStack])
 
+  const redo = useCallback(() => {
+    // Get next snapshot from future
+    if (historyStack.future.length === 0) return
+    const nextSnapshot = historyStack.future[0]
+    if (!nextSnapshot) return
+
+    // Update blocks to next snapshot
+    setBlocks(nextSnapshot.blocks)
+    // Update history stack: move snapshot from future to past
+    setHistoryStack((stack) => ({
+      past: [...stack.past, { version: 2, blocks }],
+      future: stack.future.slice(1),
+    }))
+  }, [blocks, historyStack.future])
+
+  const importBundle = useCallback((json: unknown) => {
+    if (!json || typeof json !== 'object') {
+      alert('导入失败：无效的 JSON 数据')
+      return
+    }
+    const bundle = json as { schema?: string; version?: number; draft?: Layout; published?: Layout }
+    if (bundle.schema !== 'wexler.editor.layout.bundle') {
+      alert('导入失败：不是有效的编辑器布局文件')
+      return
+    }
+    const layout = bundle.draft || bundle.published
+    if (layout && Array.isArray(layout.blocks)) {
+      const normalized = normalizeLayout(normalizedRoute, layout)
+      setBlocks(normalized.blocks)
+      alert('导入成功！')
+    } else {
+      alert('导入失败：布局数据格式错误')
+    }
+  }, [normalizedRoute])
+
   const publish = useCallback((): boolean => {
     const layout = normalizeLayout(normalizedRoute, { version: 2, blocks })
     const val = validateLayout(normalizedRoute, layout)
@@ -218,16 +256,19 @@ export function useEditor(route: string): UseEditorReturn {
     selectedBlockId,
     historyStack,
     validation,
+    canUndo: historyStack.past.length > 0,
+    canRedo: historyStack.future.length > 0,
     toggleEditor,
     addBlock,
     removeBlock,
     selectBlock,
     patchBlock,
     undo,
-    redo: () => {}, // redo not yet implemented
+    redo,
     publish,
     revert,
     exportBundle,
+    importBundle,
     resetLayout,
   }
 }

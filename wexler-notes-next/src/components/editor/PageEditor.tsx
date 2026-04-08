@@ -24,10 +24,13 @@ export default function PageEditor({ route }: PageEditorProps) {
     patchBlock,
     undo,
     redo,
+    canUndo,
+    canRedo,
     publish,
     revert,
     exportBundle,
     resetLayout,
+    importBundle,
   } = useEditor(route)
 
   const dragRef = useRef<{
@@ -96,8 +99,8 @@ export default function PageEditor({ route }: PageEditorProps) {
   return (
     <div className={styles.canvas} onClick={handleCanvasClick}>
       <EditorToolbar
-        canUndo={false}
-        canRedo={false}
+        canUndo={canUndo}
+        canRedo={canRedo}
         onAdd={addBlock}
         onDuplicate={() => {}}
         onDelete={() => { if (selectedBlockId) removeBlock(selectedBlockId) }}
@@ -105,6 +108,7 @@ export default function PageEditor({ route }: PageEditorProps) {
         onRedo={redo}
         onReset={resetLayout}
         onExport={exportBundle}
+        onImport={importBundle}
         onPublish={handlePublish}
       />
 

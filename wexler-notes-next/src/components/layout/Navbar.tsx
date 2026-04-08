@@ -4,11 +4,13 @@
 'use client'
 
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { useTheme } from '@/components/providers/ThemeProvider'
 import { useUiModeContext } from '@/components/providers/UiModeProvider'
 import FxToggle from '@/components/home/FxToggle'
 import LayoutToggle from '@/components/home/LayoutToggle'
 import CommandTrigger from '@/components/command/CommandTrigger'
+import EditorToggle from '@/components/editor/EditorToggle'
 import styles from './Navbar.module.css'
 
 interface NavbarProps {
@@ -16,6 +18,7 @@ interface NavbarProps {
 }
 
 export default function Navbar({ onMenuClick }: NavbarProps) {
+  const pathname = usePathname()
   const { isDark, toggle: toggleTheme } = useTheme()
   const { fxMode, layoutMode, setFxMode, setLayoutMode } = useUiModeContext()
 
@@ -45,6 +48,7 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
         </div>
 
         <div className={styles.controls}>
+          <EditorToggle route={pathname} />
           <FxToggle fxMode={fxMode} onChange={setFxMode} />
           <LayoutToggle layoutMode={layoutMode} onChange={setLayoutMode} />
 

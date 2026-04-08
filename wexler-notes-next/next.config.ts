@@ -1,6 +1,7 @@
 import type { NextConfig } from 'next'
 
 const isProductionBuild = process.env.NODE_ENV === 'production'
+const isEditorEnabled = process.env.NEXT_PUBLIC_EDITOR_ENABLED === 'true'
 
 const nextConfig: NextConfig = {
   pageExtensions: ['ts', 'tsx', 'mdx'],
@@ -15,7 +16,7 @@ const nextConfig: NextConfig = {
   ...(isProductionBuild ? { output: 'export' } : {}),
   outputFileTracingRoot: __dirname,
   env: {
-    // Accessible in browser via process.env.NEXT_PUBLIC_*
+    NEXT_PUBLIC_EDITOR_ENABLED: isEditorEnabled.toString(),
   },
 }
 

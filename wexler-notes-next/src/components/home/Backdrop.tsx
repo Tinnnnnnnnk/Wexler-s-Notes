@@ -25,9 +25,6 @@ export default function Backdrop({ fxMode, perfMode, site = false }: BackdropPro
   const [visible, setVisible] = useState(false)
   const [videoFailed, setVideoFailed] = useState(false)
   const [videoIndex, setVideoIndex] = useState(0)
-  const rafRef = useRef(0)
-  const timerRef = useRef(0)
-  const fpsCheckedRef = useRef(false)
 
   const isActive = fxMode === 'glass' || fxMode === 'liquid'
   const isLiquidActive = fxMode === 'liquid'
@@ -52,42 +49,6 @@ export default function Backdrop({ fxMode, perfMode, site = false }: BackdropPro
       setVideoIndex(0)
     }
   }, [isActive])
-
-  useEffect(() => {
-    if (!isActive) {
-      stopFpsProbe()
-      fpsCheckedRef.current = false
-      return
-    }
-
-    if (fpsCheckedRef.current) return
-    fpsCheckedRef.current = true
-    const start = performance.now()
-
-    const probe = (now: number) => {
-      const elapsed = now - start
-      if (elapsed >= 1800) {
-        stopFpsProbe()
-        return
-      }
-      rafRef.current = window.requestAnimationFrame(probe)
-    }
-
-    timerRef.current = window.setTimeout(() => stopFpsProbe(), 2600)
-    rafRef.current = window.requestAnimationFrame(probe)
-    return () => stopFpsProbe()
-  }, [isActive])
-
-  function stopFpsProbe() {
-    if (rafRef.current) {
-      window.cancelAnimationFrame(rafRef.current)
-      rafRef.current = 0
-    }
-    if (timerRef.current) {
-      window.clearTimeout(timerRef.current)
-      timerRef.current = 0
-    }
-  }
 
   if (!isActive) return null
 

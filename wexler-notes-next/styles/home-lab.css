@@ -1168,6 +1168,37 @@ html.home-fx-performance-safe .backdropImage {
   animation: none !important;
 }
 
+/* perf-safe 降档策略：降低 backdrop-filter 强度（不改变用户感知） */
+.perfSafe .main-navbar,
+.perfSafe .main-sidebar,
+.perfSafe .main-footer,
+.perfSafe .docArticle,
+.perfSafe .doc-toc-panel {
+  backdrop-filter: blur(6px) saturate(120%) !important;
+  -webkit-backdrop-filter: blur(6px) saturate(120%) !important;
+}
+
+html.home-fx-performance-safe .main-navbar,
+html.home-fx-performance-safe .main-sidebar,
+html.home-fx-performance-safe .main-footer,
+html.home-fx-performance-safe .docArticle,
+html.home-fx-performance-safe .doc-toc-panel {
+  backdrop-filter: blur(6px) saturate(120%) !important;
+  -webkit-backdrop-filter: blur(6px) saturate(120%) !important;
+}
+
+.perfSafe .liquidPlayer {
+  backdrop-filter: blur(8px) saturate(120%) !important;
+}
+
+.perfSafe .fxToggle {
+  backdrop-filter: blur(4px) !important;
+}
+
+.perfSafe .layoutToggle {
+  backdrop-filter: blur(4px) !important;
+}
+
 /* =============================================
    Global Restoration Layer - Next layout linkage
    晶透：背景视频 + 明显磨砂玻璃面板

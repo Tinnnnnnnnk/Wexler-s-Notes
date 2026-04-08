@@ -30,6 +30,11 @@
   transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
+/* perf-safe：sidebar blur 降档 */
+:global(html.home-fx-performance-safe) .sidebar {
+  backdrop-filter: blur(6px) saturate(120%) !important;
+}
+
 /* -------------------- Main Content -------------------- */
 
 .main {

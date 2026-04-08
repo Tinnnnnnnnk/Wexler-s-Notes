@@ -230,3 +230,15 @@
     display: flex;
   }
 }
+
+/* perf-safe：降低 navbar blur 强度（不改变视觉感知） */
+:global(html.home-fx-performance-safe) .nav {
+  backdrop-filter: blur(6px) saturate(120%) !important;
+}
+
+:global(html.home-fx-performance-safe) .fxGroup,
+:global(html.home-fx-performance-safe) .layoutGroup,
+:global(html.home-fx-performance-safe) .themeBtn,
+:global(html.home-fx-performance-safe) .menuBtn {
+  backdrop-filter: blur(4px) !important;
+}

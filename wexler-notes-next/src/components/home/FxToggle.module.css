@@ -126,6 +126,16 @@
     );
 }
 
+/* perf-safe：降低 FxToggle blur 强度 */
+:global(html.home-fx-performance-safe) .group {
+  backdrop-filter: blur(4px) !important;
+}
+
+:global(html.home-fx-performance-safe) .transitionOverlay {
+  animation: none !important;
+  opacity: 0 !important;
+}
+
 @keyframes fx-switch-reveal {
   from {
     opacity: 1;

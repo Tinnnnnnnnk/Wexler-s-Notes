@@ -1,3 +1,12 @@
+/* perf-safe：降低所有 blur 滤镜强度 */
+:global(html.home-fx-performance-safe) .trigger {
+  backdrop-filter: blur(4px) !important;
+}
+
+:global(html.home-fx-performance-safe) .overlay {
+  backdrop-filter: blur(2px) !important;
+}
+
 .trigger {
   display: inline-flex;
   align-items: center;

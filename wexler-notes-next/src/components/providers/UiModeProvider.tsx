@@ -54,7 +54,10 @@ function evaluatePerformanceProfile(): boolean {
   const saveData = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData === true
   const cpuCores = Number((navigator as Navigator & { hardwareConcurrency?: number }).hardwareConcurrency || 0)
   const memorySize = Number((navigator as Navigator & { deviceMemory?: number }).deviceMemory || 0)
-  return prefersReduced || saveData || (cpuCores > 0 && cpuCores <= 4) || (memorySize > 0 && memorySize <= 4)
+
+  // 扩大 safe 模式触发范围：<=6 核 CPU 或 <=4GB 内存均降档
+  // 这覆盖了绝大多数笔记本和旧款移动设备，显著降低 GPU 组合压力
+  return prefersReduced || saveData || (cpuCores > 0 && cpuCores <= 6) || (memorySize > 0 && memorySize <= 4)
 }
 
 interface UiModeContextValue {

@@ -1,4 +1,8 @@
 /* src/components/home/BgmPlayer.module.css */
+:global(html.home-fx-performance-safe) .wrapper {
+  display: none !important;
+}
+
 .wrapper {
   position: fixed;
   bottom: 24px;

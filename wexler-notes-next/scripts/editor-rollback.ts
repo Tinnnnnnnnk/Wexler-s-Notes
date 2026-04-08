@@ -5,6 +5,7 @@ import * as fs from 'fs'
 import * as path from 'path'
 import { execSync } from 'child_process'
 import { generateRouteKey, getLayoutPath, readManifest, writeManifest } from './editor-utils'
+import { logAudit } from './editor-audit-log'
 
 function getLayoutsFromCommit(commit: string): string[] {
   try {
@@ -53,7 +54,13 @@ async function main() {
   const args = process.argv.slice(2)
 
   if (args.length < 2 || args[0] !== '--route') {
-    console.log('Usage: npx tsx scripts/editor-rollback.ts --route <route> [--commit <commit-sha>]')
+    console.log('Usage: npx tsx scripts/editor-rollback.ts --route <route> [--commit <commit-sha>] [--confirm]')
+    console.log('')
+    console.log('Options:')
+    console.log('  --route <path>   Route to rollback (required)')
+    console.log('  --commit <sha>   Specific commit to rollback to (optional)')
+    console.log('  --list           List available rollback points')
+    console.log('  --confirm        Confirm rollback operation (required for production)')
     console.log('')
     console.log('Examples:')
     console.log('  # Rollback / to the previous version')
@@ -69,6 +76,7 @@ async function main() {
 
   const route = args[1]
   const routeKey = generateRouteKey(route)
+  const confirm = args.includes('--confirm')
 
   const commitIndex = args.indexOf('--commit')
   const listIndex = args.indexOf('--list')
@@ -87,6 +95,25 @@ async function main() {
     return
   }
 
+  // Production safety check
+  const isProduction = process.env.NODE_ENV === 'production' || args.includes('--production')
+  if (isProduction && !confirm) {
+    console.error('Error: Production rollback requires --confirm flag')
+    console.error('This will restore the layout to a previous version')
+    console.error('')
+    console.error('To confirm, run:')
+    console.error(`  npx tsx scripts/editor-rollback.ts --route ${route} --confirm`)
+    logAudit({
+      timestamp: new Date().toISOString(),
+      operation: 'rollback',
+      route,
+      routeKey,
+      success: false,
+      details: 'Rejected: --confirm flag required for production',
+    })
+    process.exit(1)
+  }
+
   // Rollback mode
   const commit = commitIndex !== -1 ? args[commitIndex + 1] : null
 
@@ -103,9 +130,25 @@ async function main() {
       targetCommit = commits[1]
     } else if (commits.length === 1) {
       console.log('No previous version found - this is the only version')
+      logAudit({
+        timestamp: new Date().toISOString(),
+        operation: 'rollback',
+        route,
+        routeKey,
+        success: false,
+        details: 'No previous version available',
+      })
       process.exit(1)
     } else {
       console.log('No history found for this route')
+      logAudit({
+        timestamp: new Date().toISOString(),
+        operation: 'rollback',
+        route,
+        routeKey,
+        success: false,
+        details: 'No history found',
+      })
       process.exit(1)
     }
   } else {
@@ -118,6 +161,14 @@ async function main() {
   const layout = getFileFromCommit(targetCommit!, routeKey)
   if (!layout) {
     console.error(`Error: Could not find layout at commit ${targetCommit}`)
+    logAudit({
+      timestamp: new Date().toISOString(),
+      operation: 'rollback',
+      route,
+      routeKey,
+      success: false,
+      details: `Layout not found at commit ${targetCommit}`,
+    })
     process.exit(1)
   }
 
@@ -137,6 +188,18 @@ async function main() {
   }
   writeManifest(manifest)
   console.log(`✓ Manifest updated`)
+
+  // Log audit
+  logAudit({
+    timestamp: new Date().toISOString(),
+    operation: 'rollback',
+    route,
+    routeKey,
+    commitSha: targetCommit,
+    details: `Rolled back to commit ${targetCommit}`,
+    success: true,
+  })
+  console.log('✓ Audit log written')
 
   console.log('\nRollback completed!')
   console.log('\nNext steps:')

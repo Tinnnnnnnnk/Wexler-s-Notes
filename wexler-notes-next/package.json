@@ -27,6 +27,13 @@
     "experiments:decision": "tsx scripts/experiment-decision.ts",
     "stage8:self-check": "tsx scripts/stage8-self-check.ts",
     "analytics:all": "npm run telemetry:aggregate && npm run experiments:report && npm run experiments:decision",
+    "security:secrets": "tsx scripts/security-secrets-scan.ts",
+    "security:pii": "tsx scripts/security-pii-scan.ts",
+    "security:deps": "tsx scripts/security-deps-audit.ts",
+    "security:config": "tsx scripts/security-config-guard.ts",
+    "security:reports": "npm run security:secrets && npm run security:pii && npm run security:deps && npm run security:config",
+    "stage9:self-check": "tsx scripts/stage9-self-check.ts",
+    "security:gate": "npm run lint && npm run security:reports && npm run stage9:self-check",
     "release:gate": "npm run lint && npm run editor:validate && npm run export:check-links && npm run export:check-assets && npm run perf:budget"
   },
   "dependencies": {

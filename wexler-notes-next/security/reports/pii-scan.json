@@ -1,0 +1,38 @@
+{
+  "scannedAt": "2026-04-08T13:53:19.066Z",
+  "totalFiles": 8,
+  "totalFindings": 5,
+  "findings": [
+    {
+      "file": "src\\lib\\telemetry\\privacy.ts",
+      "type": "Email Field",
+      "description": "Field named \"email\" is not allowed",
+      "severity": "critical"
+    },
+    {
+      "file": "src\\lib\\telemetry\\privacy.ts",
+      "type": "Phone Field",
+      "description": "Field named \"phone\" is not allowed",
+      "severity": "critical"
+    },
+    {
+      "file": "src\\lib\\telemetry\\privacy.ts",
+      "type": "Address Field",
+      "description": "Field named \"address\" is not allowed",
+      "severity": "critical"
+    },
+    {
+      "file": "src\\lib\\telemetry\\privacy.ts",
+      "type": "User ID Field",
+      "description": "Field named \"userId\" or \"user_id\" is not allowed",
+      "severity": "critical"
+    },
+    {
+      "file": "src\\lib\\telemetry\\privacy.ts",
+      "type": "SSN Field",
+      "description": "Social Security Number field is not allowed",
+      "severity": "critical"
+    }
+  ],
+  "passed": false
+}

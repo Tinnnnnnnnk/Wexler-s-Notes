@@ -1,0 +1,81 @@
+name: Security Governance Gate
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  security-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: |
+          cd wexler-notes-next
+          npm ci
+        continue-on-error: true
+
+      - name: Run Lint
+        run: |
+          cd wexler-notes-next
+          npm run lint
+        continue-on-error: true
+
+      - name: Security Secrets Scan
+        run: |
+          cd wexler-notes-next
+          npm run security:secrets
+        continue-on-error: true
+
+      - name: Security PII Scan
+        run: |
+          cd wexler-notes-next
+          npm run security:pii
+        continue-on-error: true
+
+      - name: Security Dependencies Audit
+        run: |
+          cd wexler-notes-next
+          npm run security:deps
+        continue-on-error: true
+
+      - name: Security Config Guard
+        run: |
+          cd wexler-notes-next
+          npm run security:config
+        continue-on-error: true
+
+      - name: Stage 9 Self Check
+        run: |
+          cd wexler-notes-next
+          npm run stage9:self-check
+        continue-on-error: true
+
+      - name: Build Next.js
+        run: |
+          cd wexler-notes-next
+          npm run build
+        continue-on-error: true
+
+      - name: Upload Security Reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-reports
+          path: |
+            wexler-notes-next/security/reports
+          retention-days: 7

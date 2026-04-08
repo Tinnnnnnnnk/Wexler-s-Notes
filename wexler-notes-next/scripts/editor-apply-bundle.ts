@@ -4,6 +4,7 @@
 import * as fs from 'fs'
 import * as path from 'path'
 import { generateRouteKey, writeLayout, writeManifest, readManifest } from './editor-utils'
+import { logAudit } from './editor-audit-log'
 
 interface Bundle {
   schemaVersion?: string
@@ -39,14 +40,42 @@ async function main() {
   const args = process.argv.slice(2)
 
   if (args.length < 2 || args[0] !== '--input') {
-    console.log('Usage: npx tsx scripts/editor-apply-bundle.ts --input <json-file>')
+    console.log('Usage: npx tsx scripts/editor-apply-bundle.ts --input <json-file> [--confirm]')
+    console.log('')
+    console.log('Options:')
+    console.log('  --input <file>   Input bundle JSON file (required)')
+    console.log('  --confirm        Confirm production deployment (required for production)')
     process.exit(1)
   }
 
   const inputFile = args[1]
+  const confirm = args.includes('--confirm')
+
+  // Production safety check
+  const isProduction = process.env.NODE_ENV === 'production' || args.includes('--production')
+  if (isProduction && !confirm) {
+    console.error('Error: Production deployment requires --confirm flag')
+    console.error('This will apply changes to public/editor-layouts/')
+    console.error('')
+    console.error('To confirm, run:')
+    console.error('  npx tsx scripts/editor-apply-bundle.ts --input <file> --confirm')
+    logAudit({
+      timestamp: new Date().toISOString(),
+      operation: 'apply',
+      success: false,
+      details: 'Rejected: --confirm flag required for production',
+    })
+    process.exit(1)
+  }
 
   if (!fs.existsSync(inputFile)) {
     console.error(`Error: Input file not found: ${inputFile}`)
+    logAudit({
+      timestamp: new Date().toISOString(),
+      operation: 'apply',
+      success: false,
+      details: `Input file not found: ${inputFile}`,
+    })
     process.exit(1)
   }
 
@@ -56,6 +85,12 @@ async function main() {
     bundle = JSON.parse(content)
   } catch (e) {
     console.error(`Error: Failed to parse JSON: ${e}`)
+    logAudit({
+      timestamp: new Date().toISOString(),
+      operation: 'apply',
+      success: false,
+      details: `JSON parse error: ${e}`,
+    })
     process.exit(1)
   }
 
@@ -66,6 +101,12 @@ async function main() {
     for (const err of validation.errors) {
       console.error(`  - ${err}`)
     }
+    logAudit({
+      timestamp: new Date().toISOString(),
+      operation: 'apply',
+      success: false,
+      details: `Validation failed: ${validation.errors.join(', ')}`,
+    })
     process.exit(1)
   }
 
@@ -95,10 +136,21 @@ async function main() {
   writeManifest(manifest)
   console.log(`✓ Manifest updated`)
 
+  // Log audit
+  logAudit({
+    timestamp: new Date().toISOString(),
+    operation: 'apply',
+    route,
+    routeKey,
+    details: `Applied ${layoutData.blocks.length} blocks`,
+    success: true,
+  })
+
   console.log('\nBundle applied successfully!')
   console.log(`Route: ${route}`)
   console.log(`RouteKey: ${routeKey}`)
   console.log(`Blocks: ${layoutData.blocks.length}`)
+  console.log('\n✓ Audit log written')
 
   console.log('\nNext steps:')
   console.log('1. Commit the changes: git add -A && git commit -m "editor: apply layout for ${route}"')

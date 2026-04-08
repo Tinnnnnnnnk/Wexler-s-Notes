@@ -1,6 +1,7 @@
 // src/app/docs/[...slug]/page.tsx
 import fs from 'fs'
 import path from 'path'
+import dynamic from 'next/dynamic'
 import { notFound, redirect } from 'next/navigation'
 import type { Metadata } from 'next'
 import type { TOCItem } from '@/types/mdx'
@@ -8,14 +9,17 @@ import { serializeMDX } from '@/lib/mdx'
 import { buildSidebar } from '@/lib/sidebar'
 import { TableOfContents } from '@/components/mdx/TableOfContents'
 import ResponsiveMainLayout from '@/components/layout/ResponsiveMainLayout'
-import ReadingEnhancer from '@/components/reading/ReadingEnhancer'
-import EnhancedReadingProgress from '@/components/article/EnhancedReadingProgress'
 import ArticleHeader from '@/components/article/ArticleHeader'
 import Breadcrumb from '@/components/article/Breadcrumb'
 import { MDXComponents } from '@/components/mdx/MDXComponents'
 import { parseFrontmatter } from '@/lib/frontmatter'
 import { decodeSlugSegment, resolveContentDir } from '@/lib/contentPath'
 import styles from './page.module.css'
+
+// P1-C 优化：将重客户端组件改为 dynamic import，减少首屏 JS bundle
+// ssr: false 使其不参与服务端渲染，降低 TTFB 和 LCP
+const ReadingEnhancer = dynamic(() => import('@/components/reading/ReadingEnhancer'), { ssr: false })
+const EnhancedReadingProgress = dynamic(() => import('@/components/article/EnhancedReadingProgress'), { ssr: false })
 
 const CONTENT_DIR = resolveContentDir()
 
@@ -116,6 +120,7 @@ function scanStaticPaths(dir: string, baseSlug: string, paramsSet: Set<string>):
       const nextSlug = baseSlug ? `${baseSlug}/${entry.name}` : entry.name
       const childHasDoc = scanStaticPaths(path.join(dir, entry.name), nextSlug, paramsSet)
       if (childHasDoc) {
+        // 关键修复：始终将目录本身作为 params，确保"只有子目录无直接 MDX"的中间路径可访问
         addParamVariants(paramsSet, nextSlug)
         hasDoc = true
       }

@@ -40,6 +40,9 @@ export default function BgmPlayer({ variant = 'floating' }: BgmPlayerProps) {
   const [showVolume, setShowVolume] = useState(false)
   const [isSeeking, setIsSeeking] = useState(false)
   const [candidateIndex, setCandidateIndex] = useState(0)
+  // 修复：添加播放错误状态，避免静默失败
+  const [playError, setPlayError] = useState<string | null>(null)
+  const allFailedRef = useRef(false)
 
   const bgmSrc = useMemo(
     () => BGM_CANDIDATES[Math.min(candidateIndex, BGM_CANDIDATES.length - 1)],
@@ -56,11 +59,41 @@ export default function BgmPlayer({ variant = 'floating' }: BgmPlayerProps) {
     }
   }, [isSeeking])
 
+  // 修复：移除静默 catch，改为记录错误并自动回退
+  const handleAudioError = useCallback(() => {
+    const audio = audioRef.current
+    if (!audio?.src) return
+    // eslint-disable-next-line no-console
+    console.warn(`[BgmPlayer] Failed to load: ${audio.src}`)
+
+    setCandidateIndex((prev) => {
+      const next = prev + 1
+      if (next >= BGM_CANDIDATES.length) {
+        // 所有候选均失败，标记错误状态
+        allFailedRef.current = true
+        setPlayError('音频文件加载失败，请检查 /media/home-bgm/ 目录是否存在有效音频文件')
+        setIsPlaying(false)
+        return prev
+      }
+      // 自动切换到下一个候选
+      if (audio) {
+        audio.src = BGM_CANDIDATES[next]
+        audio.load()
+      }
+      return next
+    })
+  }, [])
+
   const togglePlay = useCallback(() => {
     const audio = audioRef.current
     if (!audio) return
+    if (allFailedRef.current) return
     if (audio.paused || audio.ended) {
-      audio.play().catch(() => {})
+      audio.play().catch((err) => {
+        // 修复：不再静默吞掉错误
+        setPlayError(`播放失败: ${err?.message ?? '未知错误'}`)
+        setIsPlaying(false)
+      })
     } else {
       audio.pause()
     }
@@ -121,6 +154,10 @@ export default function BgmPlayer({ variant = 'floating' }: BgmPlayerProps) {
   return (
     <div className={`${styles.wrapper} ${variant === 'stage' ? styles.stageWrapper : ''}`}>
       <div className={`${styles.player} ${isMini ? styles.mini : ''} ${variant === 'stage' ? styles.stagePlayer : ''}`}>
+        {playError && (
+          <p className={styles.errorHint}>{playError}</p>
+        )}
+
         <div className={styles.top}>
           <button
             type="button"
@@ -140,9 +177,10 @@ export default function BgmPlayer({ variant = 'floating' }: BgmPlayerProps) {
             </button>
             <button
               type="button"
-              className={`${styles.ctrl} ${styles.ctrlMain}`}
+              className={`${styles.ctrl} ${styles.ctrlMain} ${allFailedRef.current ? styles.ctrlDisabled : ''}`}
               aria-label={isPlaying ? '暂停' : '播放'}
               onClick={togglePlay}
+              disabled={allFailedRef.current}
             >
               {isPlaying ? <span className={styles.pauseIcon} /> : <span className={styles.playIcon} />}
             </button>
@@ -210,9 +248,7 @@ export default function BgmPlayer({ variant = 'floating' }: BgmPlayerProps) {
         onTimeUpdate={syncState}
         onLoadedMetadata={syncState}
         onEnded={syncState}
-        onError={() => {
-          setCandidateIndex((prev) => (prev < BGM_CANDIDATES.length - 1 ? prev + 1 : prev))
-        }}
+        onError={handleAudioError}
       />
     </div>
   )

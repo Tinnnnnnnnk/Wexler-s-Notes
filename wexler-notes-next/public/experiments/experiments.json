@@ -1,0 +1,28 @@
+{
+  "version": "1.0.0",
+  "experiments": [
+    {
+      "key": "homepage-hero-cta",
+      "name": "Homepage Hero CTA Experiment",
+      "description": "Test different CTA text and styles on homepage hero section",
+      "enabled": true,
+      "rollout": 50,
+      "startAt": "2026-04-01T00:00:00Z",
+      "endAt": "2026-05-01T00:00:00Z",
+      "variants": [
+        {
+          "key": "control",
+          "weight": 50,
+          "label": "Control - Default CTA"
+        },
+        {
+          "key": "variant-a",
+          "weight": 50,
+          "label": "Variant A - Bold CTA"
+        }
+      ],
+      "defaultVariant": "control",
+      "trackConversion": ["page_view", "sidebar_search"]
+    }
+  ]
+}

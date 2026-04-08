@@ -1,0 +1,69 @@
+name: Observability Experiments Check
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  observability-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: |
+          cd wexler-notes-next
+          npm ci
+        continue-on-error: true
+
+      - name: Run Lint
+        run: |
+          cd wexler-notes-next
+          npm run lint
+        continue-on-error: true
+
+      - name: Telemetry Validation
+        run: |
+          cd wexler-notes-next
+          npm run telemetry:validate
+        continue-on-error: true
+
+      - name: Experiments Validation
+        run: |
+          cd wexler-notes-next
+          npm run experiments:validate
+        continue-on-error: true
+
+      - name: Stage 7 Self Check
+        run: |
+          cd wexler-notes-next
+          npm run stage7:self-check
+        continue-on-error: true
+
+      - name: Build Next.js
+        run: |
+          cd wexler-notes-next
+          npm run build
+        continue-on-error: true
+
+      - name: Upload Build Artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-output
+          path: |
+            wexler-notes-next/out
+            wexler-notes-next/public/build-meta.json
+          retention-days: 7

@@ -22,6 +22,11 @@
     "telemetry:validate": "tsx scripts/telemetry-validate.ts",
     "experiments:validate": "tsx scripts/experiments-validate.ts",
     "stage7:self-check": "tsx scripts/stage7-self-check.ts",
+    "telemetry:aggregate": "tsx scripts/aggregate-telemetry.ts",
+    "experiments:report": "tsx scripts/experiment-report.ts",
+    "experiments:decision": "tsx scripts/experiment-decision.ts",
+    "stage8:self-check": "tsx scripts/stage8-self-check.ts",
+    "analytics:all": "npm run telemetry:aggregate && npm run experiments:report && npm run experiments:decision",
     "release:gate": "npm run lint && npm run editor:validate && npm run export:check-links && npm run export:check-assets && npm run perf:budget"
   },
   "dependencies": {

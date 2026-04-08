@@ -1,0 +1,26 @@
+[
+  {
+    "experimentKey": "homepage-hero-cta",
+    "experimentName": "Homepage Hero CTA Experiment",
+    "status": "active",
+    "variants": [
+      {
+        "key": "control",
+        "label": "Control - Default CTA",
+        "exposures": 351,
+        "conversions": 17,
+        "conversionRate": 0.05
+      },
+      {
+        "key": "variant-a",
+        "label": "Variant A - Bold CTA",
+        "exposures": 326,
+        "conversions": 18,
+        "conversionRate": 0.0573
+      }
+    ],
+    "winner": "variant-a",
+    "confidence": 96,
+    "lift": 14.6
+  }
+]

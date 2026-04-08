@@ -1,8 +1,6 @@
 'use client'
 
 import { usePathname } from 'next/navigation'
-import { useUiModeContext } from '@/components/providers/UiModeProvider'
-import Backdrop from '@/components/home/Backdrop'
 
 /**
  * P1-C 优化：首页由 HomePage 自带 Backdrop；

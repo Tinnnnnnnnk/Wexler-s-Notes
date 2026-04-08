@@ -3,6 +3,12 @@
 
 import type { EventName } from './schema'
 
+// PerformanceNavigationTiming.responseStart 是 DOM Performance API 属性，非 Node perf_hooks
+// 用 minimal interface 解决 TypeScript strict 模式下的类型错误
+type PerformanceNavTimingFix = { responseStart: number }
+// LayoutShift 属于 DOM lib，在 Next.js + TypeScript 环境下需要显式定义
+type LayoutShift = { value: number; hadRecentInput: boolean }
+
 interface WebVital {
   metricName: string
   value: number
@@ -88,17 +94,18 @@ class WebVitalsCollector {
 
     // TTFB
     this.observeMetric('TTFB', (entry) => {
-      if (entry.responseStart > 0) {
-        this.trackWebVital('TTFB', entry.responseStart)
+      const ttfbEntry = entry as unknown as PerformanceNavTimingFix
+      if (ttfbEntry.responseStart > 0) {
+        this.trackWebVital('TTFB', ttfbEntry.responseStart)
       }
     })
 
     // CLS (cumulative layout shift)
     let clsValue = 0
-    let clsEntries: PerformanceEntry[] = []
+    let clsEntries: LayoutShift[] = []
 
     const clsObserver = new PerformanceObserver((entryList) => {
-      for (const entry of entryList.getEntries() as LayoutShift[]) {
+      for (const entry of entryList.getEntries() as unknown as LayoutShift[]) {
         if (!entry.hadRecentInput) {
           clsEntries.push(entry)
           clsValue += entry.value

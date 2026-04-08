@@ -12,12 +12,13 @@ interface Heading {
   text: string
   line: number
   level: number
+  duplicate?: boolean
 }
 
 interface DocIssue {
   file: string
   headings: Heading[]
-  duplicates: Map<string, Heading[]>
+  duplicates: Map<string, { lines: number[]; texts: string[] }>
 }
 
 function slugify(text: string): string {

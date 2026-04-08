@@ -42,7 +42,7 @@ export default function BgmPlayer({ variant = 'floating' }: BgmPlayerProps) {
   const [candidateIndex, setCandidateIndex] = useState(0)
   // 修复：添加播放错误状态，避免静默失败
   const [playError, setPlayError] = useState<string | null>(null)
-  const allFailedRef = useRef(false)
+  const [allFailed, setAllFailed] = useState(false)
 
   const bgmSrc = useMemo(
     () => BGM_CANDIDATES[Math.min(candidateIndex, BGM_CANDIDATES.length - 1)],
@@ -70,7 +70,7 @@ export default function BgmPlayer({ variant = 'floating' }: BgmPlayerProps) {
       const next = prev + 1
       if (next >= BGM_CANDIDATES.length) {
         // 所有候选均失败，标记错误状态
-        allFailedRef.current = true
+        setAllFailed(true)
         setPlayError('音频文件加载失败，请检查 /media/home-bgm/ 目录是否存在有效音频文件')
         setIsPlaying(false)
         return prev
@@ -87,7 +87,7 @@ export default function BgmPlayer({ variant = 'floating' }: BgmPlayerProps) {
   const togglePlay = useCallback(() => {
     const audio = audioRef.current
     if (!audio) return
-    if (allFailedRef.current) return
+    if (allFailed) return
     if (audio.paused || audio.ended) {
       audio.play().catch((err) => {
         // 修复：不再静默吞掉错误
@@ -97,7 +97,7 @@ export default function BgmPlayer({ variant = 'floating' }: BgmPlayerProps) {
     } else {
       audio.pause()
     }
-  }, [])
+  }, [allFailed])
 
   const seekBy = useCallback((delta: number) => {
     const audio = audioRef.current
@@ -177,10 +177,10 @@ export default function BgmPlayer({ variant = 'floating' }: BgmPlayerProps) {
             </button>
             <button
               type="button"
-              className={`${styles.ctrl} ${styles.ctrlMain} ${allFailedRef.current ? styles.ctrlDisabled : ''}`}
+              className={`${styles.ctrl} ${styles.ctrlMain} ${allFailed ? styles.ctrlDisabled : ''}`}
               aria-label={isPlaying ? '暂停' : '播放'}
               onClick={togglePlay}
-              disabled={allFailedRef.current}
+              disabled={allFailed}
             >
               {isPlaying ? <span className={styles.pauseIcon} /> : <span className={styles.playIcon} />}
             </button>

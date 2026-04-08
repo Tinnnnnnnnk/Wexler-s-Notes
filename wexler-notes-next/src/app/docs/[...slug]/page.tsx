@@ -16,10 +16,10 @@ import { parseFrontmatter } from '@/lib/frontmatter'
 import { decodeSlugSegment, resolveContentDir } from '@/lib/contentPath'
 import styles from './page.module.css'
 
-// P1-C 优化：将重客户端组件改为 dynamic import，减少首屏 JS bundle
-// ssr: false 使其不参与服务端渲染，降低 TTFB 和 LCP
-const ReadingEnhancer = dynamic(() => import('@/components/reading/ReadingEnhancer'), { ssr: false })
-const EnhancedReadingProgress = dynamic(() => import('@/components/article/EnhancedReadingProgress'), { ssr: false })
+// P1-C 优化：dynamic import 实现代码分割（bundle 不打入主 chunk）
+// ssr: true（默认）确保服务端仍可渲染，动态导入避免主 bundle 膨胀
+const ReadingEnhancer = dynamic(() => import('@/components/reading/ReadingEnhancer'))
+const EnhancedReadingProgress = dynamic(() => import('@/components/article/EnhancedReadingProgress'))
 
 const CONTENT_DIR = resolveContentDir()
 

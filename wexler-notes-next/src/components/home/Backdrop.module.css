@@ -5,7 +5,8 @@
   z-index: var(--z-bg);
   pointer-events: none;
   overflow: hidden;
-  contain: paint;
+  contain: strict;
+  isolation: isolate;
   transition: opacity var(--motion-mid) var(--motion-ease-soft);
   opacity: 0;
 }
@@ -40,6 +41,7 @@
 .video {
   transform: translateZ(0);
   backface-visibility: hidden;
+  image-rendering: auto;
 }
 
 .backdrop::after {
@@ -76,9 +78,9 @@
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(circle at 18% 24%, rgba(255, 255, 255, 0.08), transparent 42%),
-    radial-gradient(circle at 78% 16%, rgba(206, 230, 255, 0.08), transparent 40%);
-  opacity: 0.28;
+    radial-gradient(circle at 18% 24%, rgba(255, 255, 255, 0.06), transparent 44%),
+    radial-gradient(circle at 78% 16%, rgba(206, 230, 255, 0.06), transparent 42%);
+  opacity: 0.16;
   will-change: opacity;
 }
 
@@ -91,4 +93,20 @@
 .perfSafe .aura {
   animation: none !important;
   display: none !important;
+}
+
+.lowFps::after {
+  background:
+    linear-gradient(180deg, rgba(16, 22, 31, 0.2) 0%, rgba(16, 22, 31, 0.26) 100%),
+    radial-gradient(circle at 22% 20%, rgba(255, 255, 255, 0.08), transparent 46%);
+}
+
+.lowFps .aura {
+  display: none;
+}
+
+@media (max-width: 1600px) {
+  .aura {
+    display: none;
+  }
 }

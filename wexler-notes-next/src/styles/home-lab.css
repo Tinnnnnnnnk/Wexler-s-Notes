@@ -324,7 +324,7 @@ html.home-ember-mode .main-navbar a {
 }
 
 /* ------------------------------------------------------------
-   Glass tuning for 4 extra styles (cyberpunk/rgb/anime/stream)
+   Glass tuning + docs palette sync for non-video styles
    ------------------------------------------------------------ */
 html.home-cyberpunk-mode {
   --site-glass-bg: rgba(22, 12, 28, 0.34);
@@ -337,6 +337,12 @@ html.home-cyberpunk-mode {
   --site-glass-shadow-soft: 0 10px 24px rgba(6, 4, 12, 0.24);
   --site-glass-blur: 14px;
   --site-glass-sat: 152%;
+  --oil-accent: #ff4a93;
+  --oil-accent-2: #66ebff;
+  --color-primary-400: #ff6ba8;
+  --color-primary-500: #ff4a93;
+  --color-primary-600: #ff2f83;
+  --color-primary-700: #e61f73;
 }
 
 html.home-rgb-mode {
@@ -350,6 +356,12 @@ html.home-rgb-mode {
   --site-glass-shadow-soft: 0 10px 24px rgba(5, 10, 20, 0.22);
   --site-glass-blur: 14px;
   --site-glass-sat: 150%;
+  --oil-accent: #a980ff;
+  --oil-accent-2: #40ddff;
+  --color-primary-400: #c19dff;
+  --color-primary-500: #a980ff;
+  --color-primary-600: #9366f8;
+  --color-primary-700: #7b4ce8;
 }
 
 html.home-anime-mode {
@@ -363,6 +375,12 @@ html.home-anime-mode {
   --site-glass-shadow-soft: 0 10px 24px rgba(120, 80, 120, 0.1);
   --site-glass-blur: 14px;
   --site-glass-sat: 148%;
+  --oil-accent: #e889be;
+  --oil-accent-2: #c7a9ff;
+  --color-primary-400: #f1a4d0;
+  --color-primary-500: #e889be;
+  --color-primary-600: #dc74b0;
+  --color-primary-700: #cc5fa0;
 }
 
 html.home-stream-mode {
@@ -376,6 +394,107 @@ html.home-stream-mode {
   --site-glass-shadow-soft: 0 10px 24px rgba(6, 10, 16, 0.22);
   --site-glass-blur: 14px;
   --site-glass-sat: 148%;
+  --oil-accent: #f49d52;
+  --oil-accent-2: #ffd366;
+  --color-primary-400: #f8b06f;
+  --color-primary-500: #f49d52;
+  --color-primary-600: #e98a3d;
+  --color-primary-700: #d67426;
+}
+
+html.home-aurora-mode {
+  --site-glass-bg: rgba(10, 26, 38, 0.32);
+  --site-glass-bg-strong: rgba(14, 30, 46, 0.42);
+  --site-glass-bg-soft: rgba(8, 24, 36, 0.26);
+  --site-glass-chip-bg: rgba(108, 233, 223, 0.12);
+  --site-glass-border: rgba(152, 216, 255, 0.34);
+  --site-glass-border-muted: rgba(127, 141, 255, 0.2);
+  --site-glass-shadow: 0 18px 40px rgba(4, 10, 20, 0.3);
+  --site-glass-shadow-soft: 0 10px 24px rgba(4, 10, 20, 0.22);
+  --site-glass-blur: 14px;
+  --site-glass-sat: 152%;
+  --oil-accent: #58d8cc;
+  --oil-accent-2: #8f9cff;
+  --color-primary-400: #7ce8de;
+  --color-primary-500: #58d8cc;
+  --color-primary-600: #3bc5b8;
+  --color-primary-700: #24afa3;
+}
+
+html.home-graphite-mode {
+  --site-glass-bg: rgba(22, 26, 32, 0.34);
+  --site-glass-bg-strong: rgba(26, 32, 40, 0.44);
+  --site-glass-bg-soft: rgba(20, 24, 30, 0.28);
+  --site-glass-chip-bg: rgba(164, 174, 188, 0.1);
+  --site-glass-border: rgba(180, 192, 208, 0.3);
+  --site-glass-border-muted: rgba(148, 160, 176, 0.2);
+  --site-glass-shadow: 0 18px 40px rgba(6, 10, 16, 0.32);
+  --site-glass-shadow-soft: 0 10px 24px rgba(6, 10, 16, 0.24);
+  --site-glass-blur: 14px;
+  --site-glass-sat: 136%;
+  --oil-accent: #a4b0bf;
+  --oil-accent-2: #c5d0de;
+  --color-primary-400: #bac4d2;
+  --color-primary-500: #a4b0bf;
+  --color-primary-600: #8f9bac;
+  --color-primary-700: #7c8798;
+}
+
+html.home-sakura-mode {
+  --site-glass-bg: rgba(255, 245, 252, 0.3);
+  --site-glass-bg-strong: rgba(255, 246, 252, 0.42);
+  --site-glass-bg-soft: rgba(255, 245, 252, 0.24);
+  --site-glass-chip-bg: rgba(248, 186, 220, 0.16);
+  --site-glass-border: rgba(255, 216, 238, 0.48);
+  --site-glass-border-muted: rgba(210, 170, 255, 0.24);
+  --site-glass-shadow: 0 16px 36px rgba(68, 32, 82, 0.18);
+  --site-glass-shadow-soft: 0 10px 24px rgba(68, 32, 82, 0.12);
+  --site-glass-blur: 14px;
+  --site-glass-sat: 150%;
+  --oil-accent: #ee8fc7;
+  --oil-accent-2: #cbabff;
+  --color-primary-400: #f5a7d5;
+  --color-primary-500: #ee8fc7;
+  --color-primary-600: #e778b7;
+  --color-primary-700: #d85da5;
+}
+
+html.home-ocean-mode {
+  --site-glass-bg: rgba(10, 28, 42, 0.34);
+  --site-glass-bg-strong: rgba(12, 34, 50, 0.44);
+  --site-glass-bg-soft: rgba(8, 24, 38, 0.28);
+  --site-glass-chip-bg: rgba(96, 198, 235, 0.12);
+  --site-glass-border: rgba(132, 221, 255, 0.34);
+  --site-glass-border-muted: rgba(80, 220, 206, 0.22);
+  --site-glass-shadow: 0 18px 40px rgba(4, 10, 16, 0.3);
+  --site-glass-shadow-soft: 0 10px 24px rgba(4, 10, 16, 0.22);
+  --site-glass-blur: 14px;
+  --site-glass-sat: 152%;
+  --oil-accent: #4fb0df;
+  --oil-accent-2: #52dfd2;
+  --color-primary-400: #73c4ea;
+  --color-primary-500: #4fb0df;
+  --color-primary-600: #3b9fce;
+  --color-primary-700: #268ab7;
+}
+
+html.home-ember-mode {
+  --site-glass-bg: rgba(42, 22, 14, 0.34);
+  --site-glass-bg-strong: rgba(48, 26, 16, 0.44);
+  --site-glass-bg-soft: rgba(38, 20, 12, 0.28);
+  --site-glass-chip-bg: rgba(255, 164, 102, 0.12);
+  --site-glass-border: rgba(255, 190, 126, 0.34);
+  --site-glass-border-muted: rgba(255, 214, 138, 0.22);
+  --site-glass-shadow: 0 18px 40px rgba(18, 8, 4, 0.32);
+  --site-glass-shadow-soft: 0 10px 24px rgba(18, 8, 4, 0.24);
+  --site-glass-blur: 14px;
+  --site-glass-sat: 146%;
+  --oil-accent: #ff9b5d;
+  --oil-accent-2: #ffd98d;
+  --color-primary-400: #ffb580;
+  --color-primary-500: #ff9b5d;
+  --color-primary-600: #f68545;
+  --color-primary-700: #e66f2d;
 }
 
 /* ============================================================
@@ -513,7 +632,12 @@ html.home-liquid-mode .rootLayout {
 html.home-cyberpunk-mode .rootLayout,
 html.home-rgb-mode .rootLayout,
 html.home-anime-mode .rootLayout,
-html.home-stream-mode .rootLayout {
+html.home-stream-mode .rootLayout,
+html.home-aurora-mode .rootLayout,
+html.home-graphite-mode .rootLayout,
+html.home-sakura-mode .rootLayout,
+html.home-ocean-mode .rootLayout,
+html.home-ember-mode .rootLayout {
   background: transparent !important;
 }
 
@@ -525,7 +649,12 @@ html.home-liquid-mode .rootLayout::before {
 html.home-cyberpunk-mode .rootLayout::before,
 html.home-rgb-mode .rootLayout::before,
 html.home-anime-mode .rootLayout::before,
-html.home-stream-mode .rootLayout::before {
+html.home-stream-mode .rootLayout::before,
+html.home-aurora-mode .rootLayout::before,
+html.home-graphite-mode .rootLayout::before,
+html.home-sakura-mode .rootLayout::before,
+html.home-ocean-mode .rootLayout::before,
+html.home-ember-mode .rootLayout::before {
   opacity: 0.12;
 }
 
@@ -534,7 +663,34 @@ html.home-liquid-mode .app-body,
 html.home-glass-mode .app-main,
 html.home-liquid-mode .app-main,
 html.home-glass-mode .home-content,
-html.home-liquid-mode .home-content {
+html.home-liquid-mode .home-content,
+html.home-cyberpunk-mode .app-body,
+html.home-rgb-mode .app-body,
+html.home-anime-mode .app-body,
+html.home-stream-mode .app-body,
+html.home-aurora-mode .app-body,
+html.home-graphite-mode .app-body,
+html.home-sakura-mode .app-body,
+html.home-ocean-mode .app-body,
+html.home-ember-mode .app-body,
+html.home-cyberpunk-mode .app-main,
+html.home-rgb-mode .app-main,
+html.home-anime-mode .app-main,
+html.home-stream-mode .app-main,
+html.home-aurora-mode .app-main,
+html.home-graphite-mode .app-main,
+html.home-sakura-mode .app-main,
+html.home-ocean-mode .app-main,
+html.home-ember-mode .app-main,
+html.home-cyberpunk-mode .home-content,
+html.home-rgb-mode .home-content,
+html.home-anime-mode .home-content,
+html.home-stream-mode .home-content,
+html.home-aurora-mode .home-content,
+html.home-graphite-mode .home-content,
+html.home-sakura-mode .home-content,
+html.home-ocean-mode .home-content,
+html.home-ember-mode .home-content {
   background: transparent !important;
 }
 

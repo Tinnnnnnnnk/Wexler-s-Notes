@@ -1,6 +1,7 @@
 // src/app/layout.tsx
 import type { Metadata } from 'next'
 import './globals.css'
+import '@/styles/home-lab.css'
 import { ThemeProvider } from '@/components/providers/ThemeProvider'
 import { UiModeProvider } from '@/components/providers/UiModeProvider'
 import GlobalSiteBackdrop from '@/components/layout/GlobalSiteBackdrop'

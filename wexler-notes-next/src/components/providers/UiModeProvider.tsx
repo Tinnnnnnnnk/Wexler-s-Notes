@@ -4,15 +4,10 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { usePathname } from 'next/navigation'
 import type { FxMode, LayoutMode, PerfMode } from '@/types/uiMode'
+import { FX_CLASSES } from '@/lib/theme/stylePresets'
 
 const FX_STORAGE_KEY = 'wexler.homeFx.mode'
 const LAYOUT_STORAGE_KEY = 'wexler.homeLayout.mode'
-
-const FX_CLASSES: Record<FxMode, string> = {
-  default: 'home-default-mode',
-  glass: 'home-glass-mode',
-  liquid: 'home-liquid-mode',
-}
 
 const LAYOUT_CLASSES: Record<LayoutMode, string> = {
   minimal: 'home-layout-minimal',
@@ -39,8 +34,8 @@ function safeWrite(key: string, value: string): void {
 }
 
 function normalizeFxMode(value: string): FxMode {
-  if (value === 'glass' || value === 'liquid') return value
-  return 'default'
+  const valid: FxMode[] = ['default', 'glass', 'liquid', 'cyberpunk', 'rgb', 'anime', 'stream']
+  return valid.includes(value as FxMode) ? (value as FxMode) : 'default'
 }
 
 function normalizeLayoutMode(value: string): LayoutMode {

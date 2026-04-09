@@ -1,0 +1,402 @@
+/* src/components/home/StyleCard.module.css */
+
+.card {
+  display: flex;
+  flex-direction: column;
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--site-glass-bg-strong, rgba(245, 251, 255, 0.4));
+  border: 1px solid var(--site-glass-border, rgba(174, 203, 225, 0.5));
+  backdrop-filter: blur(14px) saturate(148%);
+  -webkit-backdrop-filter: blur(14px) saturate(148%);
+  box-shadow: var(--site-glass-shadow-soft, 0 10px 24px rgba(16, 24, 35, 0.08));
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 0.25s ease,
+              border-color 0.2s ease;
+  cursor: default;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(16, 24, 35, 0.12);
+}
+
+.card:focus-within {
+  outline: 2px solid var(--oil-accent, #5d88a7);
+  outline-offset: 2px;
+}
+
+.dark .card {
+  background: var(--site-glass-bg-strong, rgba(16, 28, 40, 0.42));
+  border-color: var(--site-glass-border, rgba(130, 170, 198, 0.3));
+}
+
+.dark .card:hover {
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+}
+
+.card.active {
+  border-color: var(--site-glass-border, var(--oil-accent, #5d88a7));
+  box-shadow:
+    0 0 0 2px color-mix(in srgb, var(--oil-accent, #5d88a7) 48%, transparent),
+    0 10px 26px rgba(93, 136, 167, 0.2);
+}
+
+/* ---- Preview Area ---- */
+.preview {
+  position: relative;
+  height: 140px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: var(--site-glass-bg-soft, rgba(255, 255, 255, 0.16));
+}
+
+.preview::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.24) 0%, rgba(255, 255, 255, 0.04) 44%, rgba(255, 255, 255, 0.14) 100%);
+  z-index: 1;
+}
+
+.card[data-style-id='cyberpunk'] .preview::after {
+  background:
+    linear-gradient(145deg, rgba(255, 60, 140, 0.24) 0%, rgba(0, 240, 255, 0.08) 50%, rgba(255, 255, 255, 0.16) 100%);
+}
+
+.card[data-style-id='rgb'] .preview::after {
+  background:
+    linear-gradient(145deg, rgba(168, 85, 247, 0.22) 0%, rgba(34, 211, 238, 0.12) 55%, rgba(255, 255, 255, 0.14) 100%);
+}
+
+.card[data-style-id='anime'] .preview::after {
+  background:
+    linear-gradient(145deg, rgba(244, 114, 182, 0.2) 0%, rgba(167, 139, 250, 0.12) 55%, rgba(255, 255, 255, 0.18) 100%);
+}
+
+.card[data-style-id='stream'] .preview::after {
+  background:
+    linear-gradient(145deg, rgba(249, 115, 22, 0.2) 0%, rgba(250, 204, 21, 0.1) 52%, rgba(255, 255, 255, 0.16) 100%);
+}
+
+.canvasGrad,
+.canvasNeon,
+.canvasRgb,
+.canvasAnime,
+.canvasStream {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  inset: 0;
+}
+
+/* Neon canvas */
+.canvasNeon {
+  background: rgba(10, 10, 15, 0.72);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+.neonLine1,
+.neonLine2 {
+  width: 60px;
+  height: 2px;
+  border-radius: 2px;
+  position: absolute;
+}
+
+.neonLine1 {
+  top: 50%;
+  left: 20%;
+  transform: rotate(-15deg);
+  box-shadow: 0 0 12px currentColor;
+}
+
+.neonLine2 {
+  bottom: 40%;
+  right: 20%;
+  transform: rotate(10deg);
+  box-shadow: 0 0 12px currentColor;
+}
+
+.neonGlow1,
+.neonGlow2 {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  position: absolute;
+  filter: blur(20px);
+  opacity: 0.35;
+}
+
+.neonGlow1 {
+  top: 20%;
+  left: 25%;
+}
+
+.neonGlow2 {
+  bottom: 20%;
+  right: 25%;
+}
+
+/* RGB flow canvas */
+.canvasRgb {
+  background: rgba(26, 26, 46, 0.72);
+  display: flex;
+  align-items: stretch;
+  gap: 6px;
+  padding: 16px;
+}
+
+.rgbStrip1,
+.rgbStrip2,
+.rgbStrip3 {
+  flex: 1;
+  border-radius: 6px;
+  position: relative;
+  overflow: hidden;
+  animation: rgbShift 4s ease-in-out infinite alternate;
+}
+
+.rgbStrip1 { animation-delay: 0s; }
+.rgbStrip2 { animation-delay: 1.3s; }
+.rgbStrip3 { animation-delay: 2.6s; }
+
+.rgbStrip1::after,
+.rgbStrip2::after,
+.rgbStrip3::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 60%);
+}
+
+@keyframes rgbShift {
+  from { opacity: 0.7; transform: scaleY(0.95); }
+  to { opacity: 1; transform: scaleY(1); }
+}
+
+/* Anime canvas */
+.canvasAnime {
+  background: linear-gradient(135deg, rgba(254, 249, 255, 0.72) 0%, rgba(253, 244, 255, 0.66) 50%, rgba(252, 231, 243, 0.68) 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.animeCircle1,
+.animeCircle2 {
+  border-radius: 50%;
+  position: absolute;
+  opacity: 0.5;
+}
+
+.animeCircle1 {
+  width: 70px;
+  height: 70px;
+  top: 20%;
+  left: 15%;
+}
+
+.animeCircle2 {
+  width: 45px;
+  height: 45px;
+  bottom: 25%;
+  right: 20%;
+  opacity: 0.35;
+}
+
+.animeStar1,
+.animeStar2 {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: #fde047;
+  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+  animation: starTwinkle 2s ease-in-out infinite;
+}
+
+.animeStar1 {
+  top: 30%;
+  right: 25%;
+}
+
+.animeStar2 {
+  bottom: 35%;
+  left: 30%;
+  animation-delay: 0.8s;
+  transform: scale(0.7);
+}
+
+@keyframes starTwinkle {
+  0%, 100% { opacity: 1; transform: scale(1) rotate(0deg); }
+  50% { opacity: 0.5; transform: scale(0.8) rotate(15deg); }
+}
+
+/* Stream canvas */
+.canvasStream {
+  background: rgba(255, 255, 255, 0.72);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 16px;
+  overflow: hidden;
+}
+
+.dark .canvasStream {
+  background: #0f172a;
+}
+
+.streamCard {
+  height: 70px;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+/* Active badge */
+.activeBadge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--oil-accent, #5d88a7);
+  backdrop-filter: blur(4px);
+  z-index: 2;
+}
+
+.dark .activeBadge {
+  background: rgba(10, 20, 30, 0.85);
+  color: #8baec8;
+}
+
+/* ---- Info Area ---- */
+.info {
+  padding: 14px 16px 10px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.name {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.nameZh {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--oil-ink, #1a2a3a);
+}
+
+.nameEn {
+  font-size: 0.75rem;
+  color: var(--oil-muted, #5d88a7);
+  font-weight: 500;
+}
+
+.tagline {
+  font-size: 0.78rem;
+  color: var(--oil-muted, #5d88a7);
+  line-height: 1.4;
+  margin: 0;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 2px;
+}
+
+.tag {
+  display: inline-block;
+  padding: 2px 7px;
+  border-radius: 999px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  background: rgba(93, 136, 167, 0.12);
+  color: var(--oil-accent, #5d88a7);
+  border: 1px solid rgba(93, 136, 167, 0.25);
+}
+
+.dark .tag {
+  background: rgba(139, 174, 200, 0.12);
+  border-color: rgba(139, 174, 200, 0.25);
+  color: #8baec8;
+}
+
+.tag-classic { background: rgba(93, 136, 167, 0.1); color: #5d88a7; }
+.tag-ambient { background: rgba(100, 160, 200, 0.1); color: #4a90b8; }
+.tag-creative { background: rgba(160, 80, 200, 0.1); color: #8b5cf6; }
+.tag-entertainment { background: rgba(230, 100, 60, 0.1); color: #c0503a; }
+
+/* ---- Apply Button ---- */
+.applyBtn {
+  margin: 0 16px 16px;
+  padding: 9px 16px;
+  border-radius: 10px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  border: 1.5px solid rgba(93, 136, 167, 0.5);
+  background: transparent;
+  color: var(--oil-accent, #5d88a7);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.18s ease;
+  flex-shrink: 0;
+}
+
+.applyBtn:hover:not(:disabled) {
+  background: var(--oil-accent, #5d88a7);
+  color: #fff;
+  border-color: var(--oil-accent, #5d88a7);
+  transform: scale(1.02);
+}
+
+.applyBtn:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.applyBtn:focus-visible {
+  outline: 2px solid var(--oil-accent, #5d88a7);
+  outline-offset: 2px;
+}
+
+.applyBtn:disabled {
+  cursor: default;
+  opacity: 0.75;
+}
+
+.applyBtnActive {
+  background: rgba(93, 136, 167, 0.15);
+  color: var(--oil-accent, #5d88a7);
+  border-color: var(--oil-accent, #5d88a7);
+}
+
+.dark .applyBtnActive {
+  background: rgba(139, 174, 200, 0.12);
+  color: #8baec8;
+  border-color: rgba(139, 174, 200, 0.5);
+}
+
+@media (max-width: 480px) {
+  .nameZh { font-size: 0.9rem; }
+  .preview { height: 110px; }
+}

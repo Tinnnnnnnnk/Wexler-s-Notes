@@ -232,6 +232,7 @@
 }
 
 /* perf-safe：降低 navbar blur 强度（不改变视觉感知） */
+
 :global(html.home-fx-performance-safe) .nav {
   backdrop-filter: blur(6px) saturate(120%) !important;
 }
@@ -241,4 +242,64 @@
 :global(html.home-fx-performance-safe) .themeBtn,
 :global(html.home-fx-performance-safe) .menuBtn {
   backdrop-filter: blur(4px) !important;
+}
+
+/* ---- Style Lab Button ---- */
+.styleLabBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(174, 203, 225, 0.5);
+  background: rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(6px);
+  cursor: pointer;
+  color: var(--oil-muted, #5d88a7);
+  text-decoration: none;
+  font-size: 0.72rem;
+  font-weight: 700;
+  font-family: inherit;
+  transition: all var(--motion-fast, 0.15s ease);
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.styleLabBtn:hover {
+  background: rgba(255, 255, 255, 0.6);
+  color: var(--oil-ink, #1a2a3a);
+  border-color: rgba(174, 203, 225, 0.7);
+}
+
+.styleLabActive {
+  background: rgba(93, 136, 167, 0.18);
+  color: var(--oil-accent, #5d88a7);
+  border-color: rgba(93, 136, 167, 0.5);
+}
+
+.dark .styleLabBtn {
+  background: rgba(16, 27, 38, 0.5);
+  border-color: rgba(130, 170, 198, 0.3);
+  color: rgba(139, 174, 200, 0.8);
+}
+
+.dark .styleLabBtn:hover {
+  background: rgba(26, 40, 54, 0.78);
+  color: #e6edf5;
+  border-color: rgba(130, 170, 198, 0.6);
+}
+
+.dark .styleLabActive {
+  background: rgba(139, 174, 200, 0.15);
+  color: #8baec8;
+  border-color: rgba(139, 174, 200, 0.4);
+}
+
+@media (max-width: 640px) {
+  .styleLabText {
+    display: none;
+  }
+  .styleLabBtn {
+    padding: 4px 8px;
+  }
 }

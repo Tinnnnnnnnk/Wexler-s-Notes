@@ -12,12 +12,16 @@ import PageEditor from '@/components/editor/PageEditor'
 import ReadingEnhancer from '@/components/reading/ReadingEnhancer'
 import styles from './HomePage.module.css'
 
+const VIDEO_STYLES = new Set(['glass', 'liquid'])
+
 export default function HomePage() {
   const pathname = usePathname()
   const isHome = pathname === '/'
   const { fxMode, layoutMode, perfMode } = useUiModeContext()
 
   if (!isHome) return null
+
+  const shouldShowBackdrop = VIDEO_STYLES.has(fxMode)
 
   if (fxMode === 'liquid') {
     return (
@@ -32,7 +36,7 @@ export default function HomePage() {
 
   return (
     <div className={`${styles.root} home-root`}>
-      <Backdrop fxMode={fxMode} perfMode={perfMode} />
+      {shouldShowBackdrop && <Backdrop fxMode={fxMode} perfMode={perfMode} />}
 
       <div className={`${styles.content} home-content`}>
         <div className={`${styles.scenes} ${styles.enter}`} key={layoutMode}>

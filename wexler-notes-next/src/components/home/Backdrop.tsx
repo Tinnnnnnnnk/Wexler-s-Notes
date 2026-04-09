@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from 'react'
 import styles from './Backdrop.module.css'
 
 interface BackdropProps {
-  fxMode: 'default' | 'glass' | 'liquid'
+  fxMode: 'default' | 'glass' | 'liquid' | 'cyberpunk' | 'rgb' | 'anime' | 'stream'
   perfMode: 'normal' | 'safe'
   /** 文档站等非首页：更轻的遮罩，液态下更突出视频 */
   site?: boolean

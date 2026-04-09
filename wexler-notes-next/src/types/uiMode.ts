@@ -1,8 +1,10 @@
 // src/types/uiMode.ts
 
-export type FxMode = 'default' | 'glass' | 'liquid'
+export type FxMode = 'default' | 'glass' | 'liquid' | 'cyberpunk' | 'rgb' | 'anime' | 'stream'
 export type LayoutMode = 'minimal' | 'dashboard' | 'editorial'
 export type PerfMode = 'normal' | 'safe'
+
+export type FxModeKey = Extract<FxMode, 'default' | 'glass' | 'liquid' | 'cyberpunk' | 'rgb' | 'anime' | 'stream'>
 
 export interface UiModeState {
   fxMode: FxMode

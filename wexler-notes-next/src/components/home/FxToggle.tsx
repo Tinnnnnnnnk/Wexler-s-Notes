@@ -50,6 +50,7 @@ export default function FxToggle({ fxMode, onChange }: FxToggleProps) {
     onChange(mode)
   }, [onChange, triggerTransition])
 
+  // 快捷切换：仅保留 default/glass/liquid 三个按钮，新增四种通过风格展厅选择
   return (
     <>
       <div className={styles.group}>

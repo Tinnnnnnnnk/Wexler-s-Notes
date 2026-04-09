@@ -13,6 +13,10 @@ const FX_CLASSES: Record<FxMode, string> = {
   default: 'home-default-mode',
   glass: 'home-glass-mode',
   liquid: 'home-liquid-mode',
+  cyberpunk: 'home-cyberpunk-mode',
+  rgb: 'home-rgb-mode',
+  anime: 'home-anime-mode',
+  stream: 'home-stream-mode',
 }
 
 const LAYOUT_CLASSES: Record<LayoutMode, string> = {
@@ -41,8 +45,8 @@ function safeWrite(key: string, value: string): void {
 
 function normalizeFxMode(value: string): FxMode {
   const m = value?.trim().toLowerCase()
-  if (m === 'glass' || m === 'liquid') return m as FxMode
-  return 'default'
+  const valid: FxMode[] = ['default', 'glass', 'liquid', 'cyberpunk', 'rgb', 'anime', 'stream']
+  return valid.includes(m as FxMode) ? (m as FxMode) : 'default'
 }
 
 function normalizeLayoutMode(value: string): LayoutMode {

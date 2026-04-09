@@ -7,6 +7,13 @@
 
 .hero {
   margin-bottom: 3rem;
+  background: var(--home-panel-bg-hero, var(--oil-home-panel-bg-hero));
+  border: 1px solid var(--home-panel-border, var(--oil-home-panel-border));
+  border-radius: 24px;
+  padding: 2rem 1.8rem;
+  box-shadow: var(--home-panel-shadow, var(--oil-home-panel-shadow));
+  backdrop-filter: blur(var(--home-panel-blur, 14px)) saturate(145%);
+  -webkit-backdrop-filter: blur(var(--home-panel-blur, 14px)) saturate(145%);
 }
 
 .tag {
@@ -57,9 +64,11 @@
 }
 
 .cta a:first-child {
-  background: transparent;
+  background: var(--site-glass-chip-bg, rgba(255, 255, 255, 0.12));
   color: var(--oil-accent);
-  border: 1px solid var(--oil-accent);
+  border: 1px solid var(--site-glass-border, var(--oil-accent));
+  backdrop-filter: blur(8px) saturate(140%);
+  -webkit-backdrop-filter: blur(8px) saturate(140%);
 }
 
 .cta a:hover {
@@ -78,11 +87,13 @@
 }
 
 .feature {
-  background: var(--oil-home-panel-bg-hero);
-  border: 1px solid var(--oil-home-panel-border);
+  background: var(--home-panel-bg-hero, var(--oil-home-panel-bg-hero));
+  border: 1px solid var(--home-panel-border, var(--oil-home-panel-border));
   border-radius: 18px;
   padding: 2rem 1.8rem;
-  box-shadow: var(--oil-home-panel-shadow);
+  box-shadow: var(--home-panel-shadow, var(--oil-home-panel-shadow));
+  backdrop-filter: blur(var(--home-panel-blur, 14px)) saturate(145%);
+  -webkit-backdrop-filter: blur(var(--home-panel-blur, 14px)) saturate(145%);
 }
 
 .eyebrow {
@@ -127,18 +138,22 @@
 }
 
 .stack a {
-  background: var(--oil-home-panel-bg-card);
-  border: 1px solid var(--oil-home-panel-border);
+  background: var(--home-panel-bg-card, var(--oil-home-panel-bg-card));
+  border: 1px solid var(--home-panel-border, var(--oil-home-panel-border));
   border-radius: 12px;
   padding: 1rem 1.2rem;
   text-decoration: none;
   display: block;
   transition: all var(--motion-mid);
+  box-shadow: var(--home-panel-shadow, var(--oil-home-panel-shadow));
+  backdrop-filter: blur(var(--home-panel-blur, 14px)) saturate(145%);
+  -webkit-backdrop-filter: blur(var(--home-panel-blur, 14px)) saturate(145%);
 }
 
 .stack a:hover {
   transform: translateX(4px);
-  border-color: var(--oil-home-panel-border-strong);
+  border-color: var(--home-panel-border, var(--oil-home-panel-border-strong));
+  box-shadow: var(--home-panel-shadow-hover, var(--oil-home-panel-shadow-hover));
 }
 
 .stack p {

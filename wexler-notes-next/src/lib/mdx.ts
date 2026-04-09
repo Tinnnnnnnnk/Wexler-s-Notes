@@ -1,22 +1,83 @@
-// src/lib/mdx.ts
+﻿// src/lib/mdx.ts
 // MDX serialization using next-mdx-remote/rsc
 import { compileMDX } from 'next-mdx-remote/rsc'
 import remarkGfm from 'remark-gfm'
 import type { MDXFrontmatter } from '@/types/mdx'
+import { slugifyHeading } from '@/lib/heading'
+
+type MdNode = {
+  type?: string
+  value?: string
+  depth?: number
+  children?: MdNode[]
+  data?: {
+    id?: string
+    hProperties?: Record<string, unknown>
+  }
+  alt?: string
+  title?: string
+}
+
+function extractNodeText(node: MdNode | undefined): string {
+  if (!node) return ''
+
+  const t = node.type
+  if (t === 'text' || t === 'inlineCode' || t === 'code') {
+    return node.value ?? ''
+  }
+  if (t === 'image') {
+    return node.alt ?? node.title ?? ''
+  }
+
+  if (!Array.isArray(node.children) || node.children.length === 0) {
+    return ''
+  }
+
+  return node.children.map((child) => extractNodeText(child)).join('')
+}
+
+function walk(node: MdNode | undefined, visit: (node: MdNode) => void): void {
+  if (!node) return
+  visit(node)
+  if (Array.isArray(node.children)) {
+    for (const child of node.children) {
+      walk(child, visit)
+    }
+  }
+}
+
+function remarkHeadingIds() {
+  return (tree: MdNode) => {
+    const seen = new Map<string, number>()
+
+    walk(tree, (node) => {
+      if (node.type !== 'heading') return
+      if (typeof node.depth !== 'number' || node.depth < 2 || node.depth > 4) return
+
+      const text = extractNodeText(node).trim()
+      if (!text) return
+
+      let id = slugifyHeading(text)
+      if (!id) return
+
+      if (seen.has(id)) {
+        const count = seen.get(id)! + 1
+        seen.set(id, count)
+        id = `${id}-${count}`
+      } else {
+        seen.set(id, 0)
+      }
+
+      node.data ??= {}
+      node.data.hProperties ??= {}
+      node.data.id = id
+      node.data.hProperties.id = id
+    })
+  }
+}
 
 /**
  * Pre-process MDX source to fix HTML-to-JSX compatibility issues.
- *
- * Root cause: MDX v3 compiles content as JSX. Raw HTML attributes like `class="..."`
- * are invalid in JSX (must use `className="..."`), and bare `<` in text is treated
- * as the start of JSX elements (e.g. `<Integer>`, `<>` fragments).
- *
- * Approach: transform incompatible patterns BEFORE MDX compilation.
- * This runs for every page — no file modification needed. New MDX uploads
- * are automatically sanitized at runtime.
- *
- * IMPORTANT: Keep this in sync with fixMdxCompatibility() in migrate-docs.ts
- * and fix-existing-mdx.ts.
  */
 function preprocessSource(source: string): string {
   let inCodeBlock = false
@@ -42,21 +103,26 @@ function preprocessSource(source: string): string {
     if (!inCodeBlock) {
       let fixed = line
 
-      // Fix 1: class= → className= (JSX attribute requirement)
-      // `<span class="...">` → `<span className="...">`
+      // Fix 1: class= -> className=
       fixed = fixed.replace(/<([a-z][a-z0-9]*)\s+class=/gi, '<$1 className=')
 
-      // Fix 2: empty <> fragment → <span></span> (prevents JSX parse errors)
-      // Only converts standalone <> lines (not `<` in comparison operators)
+      // Fix 1.1: escape comparisons in inline math span content
+      // Example: <span className="math-inline">0 <= n</span>
+      fixed = fixed.replace(
+        /<span\s+className=(["'])math-inline\1>([\s\S]*?)<\/span>/gi,
+        (_full, quote: string, content: string) => {
+          const safe = content
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+          return `<span className=${quote}math-inline${quote}>${safe}</span>`
+        },
+      )
+
+      // Fix 2: standalone empty fragment
       fixed = fixed.replace(/^(\s*)<>\s*$/, '$1<span></span>')
 
-      // Fix 3: bare <> in text → escape to prevent JSX parse errors
-      // e.g. "use `Deque<XXX> stack = new ArrayDeque<>()`" → `Deque&lt;XXX&gt; stack...`
-      // Only escapes <> that are NOT inside a tag or code span
-      // We match <> surrounded by non-word chars (comparison operators, type params)
+      // Fix 3: bare empty generic marker
       fixed = fixed.replace(/<>/g, '&lt;&gt;')
-      // Restore <> inside inline code (backtick pairs) — those are already safe
-      // But if the <> appeared as text content (not in code), we already escaped above
 
       result.push(fixed)
     } else {
@@ -72,14 +138,13 @@ export async function serializeMDX(
   components?: Record<string, React.ComponentType>,
 ) {
   try {
-    // Pre-process source to fix HTML→JSX compatibility before compilation
     const processed = preprocessSource(source)
 
     const { content, frontmatter } = await compileMDX<MDXFrontmatter>({
       source: processed,
       options: {
         mdxOptions: {
-          remarkPlugins: [remarkGfm],
+          remarkPlugins: [remarkGfm, remarkHeadingIds],
         },
       },
       components,

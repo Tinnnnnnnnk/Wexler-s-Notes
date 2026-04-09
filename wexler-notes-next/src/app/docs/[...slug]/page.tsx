@@ -13,6 +13,7 @@ import ArticleHeader from '@/components/article/ArticleHeader'
 import Breadcrumb from '@/components/article/Breadcrumb'
 import { MDXComponents } from '@/components/mdx/MDXComponents'
 import { parseFrontmatter } from '@/lib/frontmatter'
+import { slugifyHeading } from '@/lib/heading'
 import {
   buildDocsPathFromSegments,
   decodeSlugSegment,
@@ -38,15 +39,6 @@ interface RenderCacheEntry {
 
 const renderCache = new Map<string, RenderCacheEntry>()
 
-function slugify(text: string): string {
-  return text
-    .toLowerCase()
-    .normalize('NFKC')
-    .replace(/[^\p{L}\p{N}\s-]/gu, '')
-    .replace(/\s+/g, '-')
-    .replace(/^-+|-+$/g, '')
-}
-
 function extractTOCFromSource(source: string): TOCItem[] {
   const items: TOCItem[] = []
   const seenIds = new Map<string, number>()
@@ -55,7 +47,7 @@ function extractTOCFromSource(source: string): TOCItem[] {
   while ((match = headingRegex.exec(source)) !== null) {
     const rawLevel = match[0].match(/^(#+)/)?.[1].length ?? 2
     const text = match[1].trim()
-    let id = match[2] ?? slugify(text)
+    let id = match[2] ?? slugifyHeading(text)
     if (text) {
       // 处理重复 id，确保每个 id 都是唯一的
       if (seenIds.has(id)) {

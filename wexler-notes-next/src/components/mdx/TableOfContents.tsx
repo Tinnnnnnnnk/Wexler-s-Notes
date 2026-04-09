@@ -11,6 +11,19 @@ interface TableOfContentsProps {
 export function TableOfContents({ items }: TableOfContentsProps) {
   const [activeId, setActiveId] = useState('')
 
+  const scrollToHeading = (id: string) => {
+    const node = document.getElementById(id)
+    if (!node) return
+
+    const top = node.getBoundingClientRect().top + window.scrollY - 88
+    window.history.replaceState(null, '', `#${id}`)
+    window.scrollTo({
+      top: Math.max(top, 0),
+      behavior: 'smooth',
+    })
+    setActiveId(id)
+  }
+
   useEffect(() => {
     if (!items.length) return
     const marker = window.scrollY + 160
@@ -58,6 +71,10 @@ export function TableOfContents({ items }: TableOfContentsProps) {
             <a
               href={`#${item.id}`}
               className={`${styles.tocLink} ${item.id === activeId ? styles.tocLinkActive : ''}`}
+              onClick={(event) => {
+                event.preventDefault()
+                scrollToHeading(item.id)
+              }}
             >
               {item.text}
             </a>

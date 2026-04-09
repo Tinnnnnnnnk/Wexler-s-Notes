@@ -198,6 +198,11 @@
 .indicator-rgb { background: linear-gradient(135deg, #a855f7, #06b6d4); box-shadow: 0 0 8px rgba(168,85,247,0.5); }
 .indicator-anime { background: #f472b6; box-shadow: 0 0 6px rgba(244,114,182,0.5); }
 .indicator-stream { background: #f97316; box-shadow: 0 0 6px rgba(249,115,22,0.5); }
+.indicator-aurora { background: linear-gradient(135deg, #58d8cc, #7f8dff); box-shadow: 0 0 8px rgba(88,216,204,0.55); }
+.indicator-graphite { background: linear-gradient(135deg, #9da9b8, #677283); box-shadow: 0 0 8px rgba(157,169,184,0.45); }
+.indicator-sakura { background: linear-gradient(135deg, #f08bc2, #c9a7ff); box-shadow: 0 0 8px rgba(240,139,194,0.5); }
+.indicator-ocean { background: linear-gradient(135deg, #4fb0df, #2cd4c7); box-shadow: 0 0 8px rgba(79,176,223,0.5); }
+.indicator-ember { background: linear-gradient(135deg, #ff8b4a, #ffd26a); box-shadow: 0 0 8px rgba(255,139,74,0.55); }
 
 /* ---- Main Grid ---- */
 .main {

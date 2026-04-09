@@ -81,6 +81,31 @@
     linear-gradient(145deg, rgba(249, 115, 22, 0.2) 0%, rgba(250, 204, 21, 0.1) 52%, rgba(255, 255, 255, 0.16) 100%);
 }
 
+.card[data-style-id='aurora'] .preview::after {
+  background:
+    linear-gradient(145deg, rgba(88, 216, 204, 0.24) 0%, rgba(127, 141, 255, 0.12) 55%, rgba(255, 255, 255, 0.16) 100%);
+}
+
+.card[data-style-id='graphite'] .preview::after {
+  background:
+    linear-gradient(145deg, rgba(157, 169, 184, 0.2) 0%, rgba(103, 114, 131, 0.14) 55%, rgba(255, 255, 255, 0.1) 100%);
+}
+
+.card[data-style-id='sakura'] .preview::after {
+  background:
+    linear-gradient(145deg, rgba(240, 139, 194, 0.2) 0%, rgba(201, 167, 255, 0.12) 55%, rgba(255, 255, 255, 0.18) 100%);
+}
+
+.card[data-style-id='ocean'] .preview::after {
+  background:
+    linear-gradient(145deg, rgba(79, 176, 223, 0.22) 0%, rgba(44, 212, 199, 0.12) 55%, rgba(255, 255, 255, 0.16) 100%);
+}
+
+.card[data-style-id='ember'] .preview::after {
+  background:
+    linear-gradient(145deg, rgba(255, 139, 74, 0.24) 0%, rgba(255, 210, 106, 0.14) 55%, rgba(255, 255, 255, 0.14) 100%);
+}
+
 .canvasGrad,
 .canvasNeon,
 .canvasRgb,

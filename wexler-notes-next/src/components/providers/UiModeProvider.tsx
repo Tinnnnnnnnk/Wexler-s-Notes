@@ -34,7 +34,20 @@ function safeWrite(key: string, value: string): void {
 }
 
 function normalizeFxMode(value: string): FxMode {
-  const valid: FxMode[] = ['default', 'glass', 'liquid', 'cyberpunk', 'rgb', 'anime', 'stream']
+  const valid: FxMode[] = [
+    'default',
+    'glass',
+    'liquid',
+    'cyberpunk',
+    'rgb',
+    'anime',
+    'stream',
+    'aurora',
+    'graphite',
+    'sakura',
+    'ocean',
+    'ember',
+  ]
   return valid.includes(value as FxMode) ? (value as FxMode) : 'default'
 }
 

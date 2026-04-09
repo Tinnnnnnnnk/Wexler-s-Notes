@@ -1,45 +1,27 @@
-// src/lib/theme/stylePresets.ts
-// 首页风格预设配置中心 —— 所有风格元数据的唯一来源
+﻿// src/lib/theme/stylePresets.ts
+// Home style preset metadata (single source of truth)
 
 import type { FxMode } from '@/types/uiMode'
 
-/** 风格唯一标识 */
 export type StylePresetId = FxMode
-
-/** 风格视觉分类 */
 export type StyleCategory = 'classic' | 'ambient' | 'creative' | 'entertainment'
 
-/** 单个风格的完整元数据 */
 export interface StylePreset {
-  /** 唯一 ID */
   id: FxMode
-  /** 中文名称 */
   labelZh: string
-  /** 英文名称 */
   labelEn: string
-  /** 一句话描述 */
   tagline: string
-  /** 风格分类 */
   category: StyleCategory
-  /** 是否使用视频背景（液态/晶透依赖视频） */
   hasVideo: boolean
-  /** 是否启用 BGM（仅液态有 BGM） */
   hasBgm: boolean
-  /** 是否需要 GPU 合成层（液滴/光晕等） */
   hasGpuLayer: boolean
-  /** 视觉预览背景类型 */
   previewType: 'gradient' | 'neon' | 'rgb-flow' | 'anime' | 'stream' | 'solid'
-  /** 预览主色调（用于生成 CSS 变量） */
   accentColor: string
-  /** 次要色 */
   secondaryColor: string
-  /** 暗色主色调 */
   darkAccentColor: string
-  /** 暗色次要色 */
   darkSecondaryColor: string
 }
 
-/** 7 种风格完整预设 */
 export const STYLE_PRESETS: Record<FxMode, StylePreset> = {
   default: {
     id: 'default',
@@ -90,7 +72,7 @@ export const STYLE_PRESETS: Record<FxMode, StylePreset> = {
     id: 'cyberpunk',
     labelZh: '赛博朋克',
     labelEn: 'Cyberpunk',
-    tagline: '霓虹暗夜，高对比的科技感',
+    tagline: '霓虹暗夜，高对比科技感',
     category: 'creative',
     hasVideo: false,
     hasBgm: false,
@@ -146,12 +128,98 @@ export const STYLE_PRESETS: Record<FxMode, StylePreset> = {
     darkAccentColor: '#fb923c',
     darkSecondaryColor: '#fde047',
   },
+  aurora: {
+    id: 'aurora',
+    labelZh: '极光',
+    labelEn: 'Aurora',
+    tagline: '冷光浮动，山海空气感',
+    category: 'ambient',
+    hasVideo: false,
+    hasBgm: false,
+    hasGpuLayer: false,
+    previewType: 'gradient',
+    accentColor: '#58d8cc',
+    secondaryColor: '#7f8dff',
+    darkAccentColor: '#6ee5da',
+    darkSecondaryColor: '#9da7ff',
+  },
+  graphite: {
+    id: 'graphite',
+    labelZh: '石墨',
+    labelEn: 'Graphite',
+    tagline: '低饱和工程感，冷静清晰',
+    category: 'classic',
+    hasVideo: false,
+    hasBgm: false,
+    hasGpuLayer: false,
+    previewType: 'solid',
+    accentColor: '#9da9b8',
+    secondaryColor: '#677283',
+    darkAccentColor: '#b4c0d0',
+    darkSecondaryColor: '#7f8c9f',
+  },
+  sakura: {
+    id: 'sakura',
+    labelZh: '樱雾',
+    labelEn: 'Sakura Mist',
+    tagline: '柔软粉紫，轻甜玻璃层次',
+    category: 'entertainment',
+    hasVideo: false,
+    hasBgm: false,
+    hasGpuLayer: false,
+    previewType: 'anime',
+    accentColor: '#f08bc2',
+    secondaryColor: '#c9a7ff',
+    darkAccentColor: '#f3a7d2',
+    darkSecondaryColor: '#d6beff',
+  },
+  ocean: {
+    id: 'ocean',
+    labelZh: '深海',
+    labelEn: 'Ocean Depth',
+    tagline: '深蓝冷光，稳定技术氛围',
+    category: 'ambient',
+    hasVideo: false,
+    hasBgm: false,
+    hasGpuLayer: false,
+    previewType: 'stream',
+    accentColor: '#4fb0df',
+    secondaryColor: '#2cd4c7',
+    darkAccentColor: '#70c4ed',
+    darkSecondaryColor: '#50ddd2',
+  },
+  ember: {
+    id: 'ember',
+    labelZh: '余烬',
+    labelEn: 'Ember',
+    tagline: '暖黑对比，电影级光影质感',
+    category: 'creative',
+    hasVideo: false,
+    hasBgm: false,
+    hasGpuLayer: false,
+    previewType: 'neon',
+    accentColor: '#ff8b4a',
+    secondaryColor: '#ffd26a',
+    darkAccentColor: '#ffa66f',
+    darkSecondaryColor: '#ffe08f',
+  },
 }
 
-/** 所有风格 ID 列表（有序） */
-export const ALL_STYLE_IDS: FxMode[] = ['default', 'liquid', 'glass', 'cyberpunk', 'rgb', 'anime', 'stream']
+export const ALL_STYLE_IDS: FxMode[] = [
+  'default',
+  'liquid',
+  'glass',
+  'cyberpunk',
+  'rgb',
+  'anime',
+  'stream',
+  'aurora',
+  'graphite',
+  'sakura',
+  'ocean',
+  'ember',
+]
 
-/** 风格切换时 DOM 需清理的副作用 key */
 export const FX_CLASSES: Record<FxMode, string> = {
   default: 'home-default-mode',
   glass: 'home-glass-mode',
@@ -160,12 +228,13 @@ export const FX_CLASSES: Record<FxMode, string> = {
   rgb: 'home-rgb-mode',
   anime: 'home-anime-mode',
   stream: 'home-stream-mode',
+  aurora: 'home-aurora-mode',
+  graphite: 'home-graphite-mode',
+  sakura: 'home-sakura-mode',
+  ocean: 'home-ocean-mode',
+  ember: 'home-ember-mode',
 }
 
-/**
- * 获取给定风格在当前是否为"高性能安全模式"应降级。
- * 规则：新增4风格默认无视频，仅 cyberpunk 需要 GPU 合成。
- */
 export function needsGpuLayer(mode: FxMode): boolean {
   return mode === 'liquid'
 }

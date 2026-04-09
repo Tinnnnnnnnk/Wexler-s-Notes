@@ -17,6 +17,11 @@ const FX_CLASSES: Record<FxMode, string> = {
   rgb: 'home-rgb-mode',
   anime: 'home-anime-mode',
   stream: 'home-stream-mode',
+  aurora: 'home-aurora-mode',
+  graphite: 'home-graphite-mode',
+  sakura: 'home-sakura-mode',
+  ocean: 'home-ocean-mode',
+  ember: 'home-ember-mode',
 }
 
 const LAYOUT_CLASSES: Record<LayoutMode, string> = {
@@ -45,7 +50,20 @@ function safeWrite(key: string, value: string): void {
 
 function normalizeFxMode(value: string): FxMode {
   const m = value?.trim().toLowerCase()
-  const valid: FxMode[] = ['default', 'glass', 'liquid', 'cyberpunk', 'rgb', 'anime', 'stream']
+  const valid: FxMode[] = [
+    'default',
+    'glass',
+    'liquid',
+    'cyberpunk',
+    'rgb',
+    'anime',
+    'stream',
+    'aurora',
+    'graphite',
+    'sakura',
+    'ocean',
+    'ember',
+  ]
   return valid.includes(m as FxMode) ? (m as FxMode) : 'default'
 }
 

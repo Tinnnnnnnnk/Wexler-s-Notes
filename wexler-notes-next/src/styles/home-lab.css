@@ -193,6 +193,136 @@ html.home-stream-mode .main-navbar a {
   -webkit-text-fill-color: transparent !important;
 }
 
+/* ============================================================
+   8. Aurora - aurora light flow
+   ============================================================ */
+html.home-aurora-mode body {
+  background: #071322;
+  background-image:
+    linear-gradient(125deg, rgba(6, 16, 30, 0.62) 0%, rgba(6, 16, 30, 0.5) 100%),
+    url('/media/home-bg/bg-aurora.jpg');
+  background-size: cover, cover;
+  background-position: center, center;
+  background-attachment: fixed;
+}
+
+html.home-aurora-mode .main-navbar {
+  background: rgba(8, 21, 36, 0.82) !important;
+  border-bottom-color: rgba(115, 232, 223, 0.22) !important;
+}
+
+html.home-aurora-mode .main-navbar .title,
+html.home-aurora-mode .main-navbar a {
+  background: linear-gradient(135deg, #73e8df 0%, #9fa8ff 100%) !important;
+  background-clip: text !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+}
+
+/* ============================================================
+   9. Graphite - monochrome engineering look
+   ============================================================ */
+html.home-graphite-mode body {
+  background: #121822;
+  background-image:
+    linear-gradient(125deg, rgba(14, 18, 24, 0.62) 0%, rgba(14, 18, 24, 0.54) 100%),
+    url('/media/home-bg/bg-graphite.jpg');
+  background-size: cover, cover;
+  background-position: center, center;
+  background-attachment: fixed;
+}
+
+html.home-graphite-mode .main-navbar {
+  background: rgba(20, 24, 30, 0.84) !important;
+  border-bottom-color: rgba(166, 178, 195, 0.24) !important;
+}
+
+html.home-graphite-mode .main-navbar .title,
+html.home-graphite-mode .main-navbar a {
+  background: linear-gradient(135deg, #d4dce8 0%, #a8b3c4 100%) !important;
+  background-clip: text !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+}
+
+/* ============================================================
+   10. Sakura - soft pink glass
+   ============================================================ */
+html.home-sakura-mode body {
+  background: #2a1f2e;
+  background-image:
+    linear-gradient(145deg, rgba(43, 27, 48, 0.46) 0%, rgba(43, 27, 48, 0.36) 100%),
+    url('/media/home-bg/bg-sakura.jpg');
+  background-size: cover, cover;
+  background-position: center, center;
+  background-attachment: fixed;
+}
+
+html.home-sakura-mode .main-navbar {
+  background: rgba(52, 30, 60, 0.74) !important;
+  border-bottom-color: rgba(244, 170, 214, 0.28) !important;
+}
+
+html.home-sakura-mode .main-navbar .title,
+html.home-sakura-mode .main-navbar a {
+  background: linear-gradient(135deg, #ffc2e6 0%, #d8c0ff 100%) !important;
+  background-clip: text !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+}
+
+/* ============================================================
+   11. Ocean - deep sea tech blue
+   ============================================================ */
+html.home-ocean-mode body {
+  background: #071c2b;
+  background-image:
+    linear-gradient(125deg, rgba(5, 20, 34, 0.62) 0%, rgba(5, 20, 34, 0.5) 100%),
+    url('/media/home-bg/bg-ocean.jpg');
+  background-size: cover, cover;
+  background-position: center, center;
+  background-attachment: fixed;
+}
+
+html.home-ocean-mode .main-navbar {
+  background: rgba(7, 23, 37, 0.8) !important;
+  border-bottom-color: rgba(102, 212, 250, 0.24) !important;
+}
+
+html.home-ocean-mode .main-navbar .title,
+html.home-ocean-mode .main-navbar a {
+  background: linear-gradient(135deg, #75cfff 0%, #58f0df 100%) !important;
+  background-clip: text !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+}
+
+/* ============================================================
+   12. Ember - warm cinematic contrast
+   ============================================================ */
+html.home-ember-mode body {
+  background: #2a150d;
+  background-image:
+    linear-gradient(125deg, rgba(34, 16, 10, 0.66) 0%, rgba(34, 16, 10, 0.54) 100%),
+    url('/media/home-bg/bg-ember.jpg');
+  background-size: cover, cover;
+  background-position: center, center;
+  background-attachment: fixed;
+}
+
+html.home-ember-mode .main-navbar {
+  background: rgba(40, 20, 12, 0.8) !important;
+  border-bottom-color: rgba(255, 184, 110, 0.28) !important;
+}
+
+html.home-ember-mode .main-navbar .title,
+html.home-ember-mode .main-navbar a {
+  background: linear-gradient(135deg, #ffb16f 0%, #ffe293 100%) !important;
+  background-clip: text !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+}
+
 /* ------------------------------------------------------------
    Glass tuning for 4 extra styles (cyberpunk/rgb/anime/stream)
    ------------------------------------------------------------ */

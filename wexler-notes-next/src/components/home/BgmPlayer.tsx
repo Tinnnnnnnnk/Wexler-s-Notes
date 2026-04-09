@@ -10,11 +10,16 @@ interface BgmPlayerProps {
   variant?: BgmPlayerVariant
 }
 
-const BGM_CANDIDATES = [
-  '/media/home-bgm/liquid-bgm.ogg',
-  '/media/home-bgm/liquid-bgm.opus',
-  '/media/home-bgm/liquid-bgm.mp3',
-  '/media/home-bgm/liquid-bgm.flac',
+interface BgmSource {
+  src: string
+  type: string
+}
+
+const BGM_SOURCE_TEMPLATES: BgmSource[] = [
+  { src: '/media/home-bgm/liquid-bgm.ogg', type: 'audio/ogg' },
+  { src: '/media/home-bgm/liquid-bgm.opus', type: 'audio/ogg; codecs=opus' },
+  { src: '/media/home-bgm/liquid-bgm.mp3', type: 'audio/mpeg' },
+  { src: '/media/home-bgm/liquid-bgm.flac', type: 'audio/flac' },
 ]
 
 const BGM_TITLE = '60% Reverie'
@@ -31,6 +36,44 @@ function clamp(value: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, value))
 }
 
+function detectRuntimeBasePath(): string {
+  if (typeof window === 'undefined') return ''
+
+  const script = document.querySelector('script[src*="/_next/"]') as HTMLScriptElement | null
+  const src = script?.src
+  if (!src) return ''
+
+  try {
+    const url = new URL(src, window.location.origin)
+    const idx = url.pathname.indexOf('/_next/')
+    if (idx > 0) {
+      return url.pathname.slice(0, idx)
+    }
+  } catch {
+    return ''
+  }
+
+  return ''
+}
+
+function buildBgmSources(basePath: string): BgmSource[] {
+  const prefixed = basePath
+    ? BGM_SOURCE_TEMPLATES.map((item) => ({ ...item, src: `${basePath}${item.src}` }))
+    : []
+
+  const merged = [...prefixed, ...BGM_SOURCE_TEMPLATES]
+  const dedup = new Set<string>()
+  const result: BgmSource[] = []
+
+  for (const item of merged) {
+    if (dedup.has(item.src)) continue
+    dedup.add(item.src)
+    result.push(item)
+  }
+
+  return result
+}
+
 export default function BgmPlayer({ variant = 'floating' }: BgmPlayerProps) {
   const audioRef = useRef<HTMLAudioElement>(null)
   const [isPlaying, setIsPlaying] = useState(false)
@@ -40,15 +83,16 @@ export default function BgmPlayer({ variant = 'floating' }: BgmPlayerProps) {
   const [isMini, setIsMini] = useState(false)
   const [showVolume, setShowVolume] = useState(false)
   const [isSeeking, setIsSeeking] = useState(false)
-  const [candidateIndex, setCandidateIndex] = useState(0)
   const [playError, setPlayError] = useState<string | null>(null)
   const [allFailed, setAllFailed] = useState(false)
   const [hasAttemptedPlay, setHasAttemptedPlay] = useState(false)
+  const [runtimeBasePath, setRuntimeBasePath] = useState('')
 
-  const bgmSrc = useMemo(
-    () => BGM_CANDIDATES[Math.min(candidateIndex, BGM_CANDIDATES.length - 1)],
-    [candidateIndex],
-  )
+  useEffect(() => {
+    setRuntimeBasePath(detectRuntimeBasePath())
+  }, [])
+
+  const bgmSources = useMemo(() => buildBgmSources(runtimeBasePath), [runtimeBasePath])
 
   const syncState = useCallback(() => {
     const audio = audioRef.current
@@ -61,23 +105,11 @@ export default function BgmPlayer({ variant = 'floating' }: BgmPlayerProps) {
   }, [isSeeking])
 
   const handleAudioError = useCallback(() => {
-    const audio = audioRef.current
-    if (!audio?.src) return
-    // eslint-disable-next-line no-console
-    console.warn(`[BgmPlayer] Failed to load: ${audio.src}`)
-
-    setCandidateIndex((prev) => {
-      const next = prev + 1
-      if (next >= BGM_CANDIDATES.length) {
-        setAllFailed(true)
-        setIsPlaying(false)
-        if (hasAttemptedPlay) {
-          setPlayError('音频文件加载失败，请检查 /media/home-bgm/ 目录是否存在有效音频文件')
-        }
-        return prev
-      }
-      return next
-    })
+    setAllFailed(true)
+    setIsPlaying(false)
+    if (hasAttemptedPlay) {
+      setPlayError('音频文件加载失败，请检查 /media/home-bgm/ 目录是否存在有效音频文件')
+    }
   }, [hasAttemptedPlay])
 
   const togglePlay = useCallback(() => {
@@ -89,8 +121,6 @@ export default function BgmPlayer({ variant = 'floating' }: BgmPlayerProps) {
     if (allFailed) {
       setAllFailed(false)
       setPlayError(null)
-      setCandidateIndex(0)
-      audio.src = BGM_CANDIDATES[0]
       audio.load()
     }
 
@@ -157,7 +187,8 @@ export default function BgmPlayer({ variant = 'floating' }: BgmPlayerProps) {
       if (!audio) return
       audio.pause()
       audio.currentTime = 0
-      audio.src = ''
+      audio.removeAttribute('src')
+      audio.load()
     }
   }, [])
 
@@ -252,7 +283,6 @@ export default function BgmPlayer({ variant = 'floating' }: BgmPlayerProps) {
         ref={audioRef}
         preload="metadata"
         loop
-        src={bgmSrc}
         onPlay={syncState}
         onPause={syncState}
         onTimeUpdate={syncState}
@@ -264,7 +294,11 @@ export default function BgmPlayer({ variant = 'floating' }: BgmPlayerProps) {
         }}
         onEnded={syncState}
         onError={handleAudioError}
-      />
+      >
+        {bgmSources.map((item) => (
+          <source key={item.src} src={item.src} type={item.type} />
+        ))}
+      </audio>
     </div>
   )
 }

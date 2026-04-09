@@ -16,7 +16,6 @@ import { parseFrontmatter } from '@/lib/frontmatter'
 import {
   buildDocsPathFromSegments,
   decodeSlugSegment,
-  encodeSlugPath,
   resolveContentDir,
 } from '@/lib/contentPath'
 import styles from './page.module.css'
@@ -105,11 +104,15 @@ function findFirstDocSlugInDir(dir: string, baseSlug: string[]): string[] | null
 }
 
 function addParamVariants(set: Set<string>, slug: string) {
-  const encodedSlug = encodeSlugPath(slug)
-  if (!encodedSlug) return
-  // Only use encoded slugs - the canonical format for URLs
-  // This reduces params from 158 to ~93 (41% reduction)
-  set.add(encodedSlug)
+  const normalizedSlug = slug
+    .split('/')
+    .filter(Boolean)
+    .map(decodeSlugSegment)
+    .join('/')
+  if (!normalizedSlug) return
+  // generateStaticParams must return decoded param values.
+  // URL encoding is handled when building hrefs (e.g. sidebar/currentPath).
+  set.add(normalizedSlug)
 }
 
 function scanStaticPaths(dir: string, baseSlug: string, paramsSet: Set<string>): boolean {

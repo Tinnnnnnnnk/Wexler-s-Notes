@@ -11,9 +11,10 @@ interface BgmPlayerProps {
 }
 
 const BGM_CANDIDATES = [
+  '/media/home-bgm/liquid-bgm.ogg',
   '/media/home-bgm/liquid-bgm.opus',
-  '/media/home-bgm/liquid-bgm.flac',
   '/media/home-bgm/liquid-bgm.mp3',
+  '/media/home-bgm/liquid-bgm.flac',
 ]
 
 const BGM_TITLE = '60% Reverie'
@@ -40,9 +41,9 @@ export default function BgmPlayer({ variant = 'floating' }: BgmPlayerProps) {
   const [showVolume, setShowVolume] = useState(false)
   const [isSeeking, setIsSeeking] = useState(false)
   const [candidateIndex, setCandidateIndex] = useState(0)
-  // 修复：添加播放错误状态，避免静默失败
   const [playError, setPlayError] = useState<string | null>(null)
   const [allFailed, setAllFailed] = useState(false)
+  const [hasAttemptedPlay, setHasAttemptedPlay] = useState(false)
 
   const bgmSrc = useMemo(
     () => BGM_CANDIDATES[Math.min(candidateIndex, BGM_CANDIDATES.length - 1)],
@@ -59,7 +60,6 @@ export default function BgmPlayer({ variant = 'floating' }: BgmPlayerProps) {
     }
   }, [isSeeking])
 
-  // 修复：移除静默 catch，改为记录错误并自动回退
   const handleAudioError = useCallback(() => {
     const audio = audioRef.current
     if (!audio?.src) return
@@ -69,29 +69,40 @@ export default function BgmPlayer({ variant = 'floating' }: BgmPlayerProps) {
     setCandidateIndex((prev) => {
       const next = prev + 1
       if (next >= BGM_CANDIDATES.length) {
-        // 所有候选均失败，标记错误状态
         setAllFailed(true)
-        setPlayError('音频文件加载失败，请检查 /media/home-bgm/ 目录是否存在有效音频文件')
         setIsPlaying(false)
+        if (hasAttemptedPlay) {
+          setPlayError('音频文件加载失败，请检查 /media/home-bgm/ 目录是否存在有效音频文件')
+        }
         return prev
-      }
-      // 自动切换到下一个候选
-      if (audio) {
-        audio.src = BGM_CANDIDATES[next]
-        audio.load()
       }
       return next
     })
-  }, [])
+  }, [hasAttemptedPlay])
 
   const togglePlay = useCallback(() => {
     const audio = audioRef.current
     if (!audio) return
-    if (allFailed) return
+
+    setHasAttemptedPlay(true)
+
+    if (allFailed) {
+      setAllFailed(false)
+      setPlayError(null)
+      setCandidateIndex(0)
+      audio.src = BGM_CANDIDATES[0]
+      audio.load()
+    }
+
     if (audio.paused || audio.ended) {
+      setPlayError(null)
       audio.play().catch((err) => {
-        // 修复：不再静默吞掉错误
-        setPlayError(`播放失败: ${err?.message ?? '未知错误'}`)
+        const name = typeof err?.name === 'string' ? err.name : ''
+        if (name === 'NotAllowedError') {
+          setPlayError('浏览器拦截了自动播放，请手动点击播放按钮')
+        } else {
+          setPlayError(`播放失败: ${err?.message ?? '未知错误'}`)
+        }
         setIsPlaying(false)
       })
     } else {
@@ -113,7 +124,9 @@ export default function BgmPlayer({ variant = 'floating' }: BgmPlayerProps) {
     setIsSeeking(true)
   }
 
-  const handleSeekCommit = (e: React.ChangeEvent<HTMLInputElement> | React.MouseEvent<HTMLInputElement> | React.TouchEvent<HTMLInputElement>) => {
+  const handleSeekCommit = (
+    e: React.ChangeEvent<HTMLInputElement> | React.MouseEvent<HTMLInputElement> | React.TouchEvent<HTMLInputElement>,
+  ) => {
     const audio = audioRef.current
     if (!audio) return
     const target = e.currentTarget as HTMLInputElement
@@ -154,9 +167,7 @@ export default function BgmPlayer({ variant = 'floating' }: BgmPlayerProps) {
   return (
     <div className={`${styles.wrapper} ${variant === 'stage' ? styles.stageWrapper : ''}`}>
       <div className={`${styles.player} ${isMini ? styles.mini : ''} ${variant === 'stage' ? styles.stagePlayer : ''}`}>
-        {playError && (
-          <p className={styles.errorHint}>{playError}</p>
-        )}
+        {playError && <p className={styles.errorHint}>{playError}</p>}
 
         <div className={styles.top}>
           <button
@@ -180,7 +191,6 @@ export default function BgmPlayer({ variant = 'floating' }: BgmPlayerProps) {
               className={`${styles.ctrl} ${styles.ctrlMain} ${allFailed ? styles.ctrlDisabled : ''}`}
               aria-label={isPlaying ? '暂停' : '播放'}
               onClick={togglePlay}
-              disabled={allFailed}
             >
               {isPlaying ? <span className={styles.pauseIcon} /> : <span className={styles.playIcon} />}
             </button>
@@ -247,6 +257,11 @@ export default function BgmPlayer({ variant = 'floating' }: BgmPlayerProps) {
         onPause={syncState}
         onTimeUpdate={syncState}
         onLoadedMetadata={syncState}
+        onCanPlay={() => {
+          if (!hasAttemptedPlay) return
+          setPlayError(null)
+          setAllFailed(false)
+        }}
         onEnded={syncState}
         onError={handleAudioError}
       />

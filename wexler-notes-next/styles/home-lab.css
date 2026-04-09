@@ -1303,8 +1303,8 @@ html.home-glass-mode .docContent {
 html.home-liquid-mode .main-navbar {
   background: rgba(223, 238, 253, 0.22) !important;
   border-bottom-color: rgba(255, 255, 255, 0.55) !important;
-  backdrop-filter: blur(14px) saturate(155%);
-  -webkit-backdrop-filter: blur(14px) saturate(155%);
+  backdrop-filter: blur(9px) saturate(138%);
+  -webkit-backdrop-filter: blur(9px) saturate(138%);
 }
 
 html.home-liquid-mode.dark .main-navbar {
@@ -1315,8 +1315,8 @@ html.home-liquid-mode.dark .main-navbar {
 html.home-liquid-mode .main-sidebar {
   background: rgba(255, 255, 255, 0.1) !important;
   border-right-color: rgba(255, 255, 255, 0.38) !important;
-  backdrop-filter: blur(14px) saturate(150%);
-  -webkit-backdrop-filter: blur(14px) saturate(150%);
+  backdrop-filter: blur(8px) saturate(132%);
+  -webkit-backdrop-filter: blur(8px) saturate(132%);
   box-shadow: 0 12px 32px rgba(12, 20, 32, 0.1);
 }
 
@@ -1362,8 +1362,8 @@ html.home-liquid-mode .docContent {
 html.home-liquid-mode .main-footer {
   background: rgba(255, 255, 255, 0.06) !important;
   border-top-color: rgba(255, 255, 255, 0.35) !important;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
 }
 
 /* Liquid mode ambiance */
@@ -1380,10 +1380,9 @@ html.home-liquid-mode .main-footer {
 html.home-liquid-mode .home-root::before {
   opacity: 1;
   background:
-    radial-gradient(circle at 15% 20%, rgba(255, 255, 255, 0.14), transparent 44%),
-    radial-gradient(circle at 84% 16%, rgba(200, 230, 255, 0.12), transparent 42%),
-    radial-gradient(circle at 50% 100%, rgba(180, 212, 246, 0.12), transparent 48%);
-  mix-blend-mode: screen;
+    radial-gradient(circle at 15% 20%, rgba(255, 255, 255, 0.1), transparent 46%),
+    radial-gradient(circle at 84% 16%, rgba(200, 230, 255, 0.09), transparent 44%),
+    radial-gradient(circle at 50% 100%, rgba(180, 212, 246, 0.08), transparent 50%);
 }
 
 @media (max-width: 960px) {

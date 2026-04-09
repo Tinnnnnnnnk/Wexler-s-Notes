@@ -33,7 +33,8 @@ export default function Backdrop({ fxMode, perfMode, site = false }: BackdropPro
     () => VIDEO_CANDIDATES[Math.min(videoIndex, VIDEO_CANDIDATES.length - 1)],
     [videoIndex],
   )
-  const shouldUseVideo = perfMode !== 'safe' && !videoFailed
+  const shouldUseVideo = !videoFailed
+  const shouldShowAura = isLiquidActive && perfMode !== 'safe' && !site
 
   useEffect(() => {
     if (isActive) {
@@ -71,6 +72,9 @@ export default function Backdrop({ fxMode, perfMode, site = false }: BackdropPro
           muted
           loop
           playsInline
+          preload="metadata"
+          poster={imageSrc}
+          disablePictureInPicture
           src={videoSrc}
           onError={() => {
             setVideoIndex((prev) => {
@@ -86,7 +90,7 @@ export default function Backdrop({ fxMode, perfMode, site = false }: BackdropPro
       ) : (
         <div className={styles.image} />
       )}
-      {isLiquidActive && <div className={styles.aura} />}
+      {shouldShowAura && <div className={styles.aura} />}
     </div>
   )
 }

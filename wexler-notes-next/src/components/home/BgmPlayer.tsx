@@ -46,9 +46,7 @@ function detectRuntimeBasePath(): string {
   try {
     const url = new URL(src, window.location.origin)
     const idx = url.pathname.indexOf('/_next/')
-    if (idx > 0) {
-      return url.pathname.slice(0, idx)
-    }
+    if (idx > 0) return url.pathname.slice(0, idx)
   } catch {
     return ''
   }
@@ -76,6 +74,10 @@ function buildBgmSources(basePath: string): BgmSource[] {
 
 export default function BgmPlayer({ variant = 'floating' }: BgmPlayerProps) {
   const audioRef = useRef<HTMLAudioElement>(null)
+  const lastSyncTsRef = useRef(0)
+  const lastTimeRef = useRef(0)
+  const lastDurationRef = useRef(0)
+
   const [isPlaying, setIsPlaying] = useState(false)
   const [currentTime, setCurrentTime] = useState(0)
   const [duration, setDuration] = useState(0)
@@ -94,13 +96,29 @@ export default function BgmPlayer({ variant = 'floating' }: BgmPlayerProps) {
 
   const bgmSources = useMemo(() => buildBgmSources(runtimeBasePath), [runtimeBasePath])
 
-  const syncState = useCallback(() => {
+  const syncState = useCallback((force = false) => {
     const audio = audioRef.current
     if (!audio) return
-    setIsPlaying(!audio.paused && !audio.ended)
-    setDuration(Number.isFinite(audio.duration) ? audio.duration : 0)
-    if (!isSeeking) {
-      setCurrentTime(Number.isFinite(audio.currentTime) ? audio.currentTime : 0)
+
+    const now = typeof performance !== 'undefined' ? performance.now() : Date.now()
+    if (!force && now - lastSyncTsRef.current < 120) return
+    lastSyncTsRef.current = now
+
+    const nextPlaying = !audio.paused && !audio.ended
+    setIsPlaying((prev) => (prev === nextPlaying ? prev : nextPlaying))
+
+    const nextDuration = Number.isFinite(audio.duration) ? audio.duration : 0
+    if (force || Math.abs(nextDuration - lastDurationRef.current) > 0.2) {
+      lastDurationRef.current = nextDuration
+      setDuration(nextDuration)
+    }
+
+    if (isSeeking) return
+
+    const nextTime = Number.isFinite(audio.currentTime) ? audio.currentTime : 0
+    if (force || Math.abs(nextTime - lastTimeRef.current) > 0.12) {
+      lastTimeRef.current = nextTime
+      setCurrentTime(nextTime)
     }
   }, [isSeeking])
 
@@ -146,6 +164,7 @@ export default function BgmPlayer({ variant = 'floating' }: BgmPlayerProps) {
     const maxDuration = Number.isFinite(audio.duration) ? audio.duration : 0
     const next = clamp((Number.isFinite(audio.currentTime) ? audio.currentTime : 0) + delta, 0, maxDuration)
     audio.currentTime = next
+    lastTimeRef.current = next
     setCurrentTime(next)
   }, [])
 
@@ -161,6 +180,7 @@ export default function BgmPlayer({ variant = 'floating' }: BgmPlayerProps) {
     if (!audio) return
     const target = e.currentTarget as HTMLInputElement
     audio.currentTime = Number(target.value)
+    lastTimeRef.current = audio.currentTime
     setCurrentTime(audio.currentTime)
     setIsSeeking(false)
   }
@@ -281,18 +301,18 @@ export default function BgmPlayer({ variant = 'floating' }: BgmPlayerProps) {
 
       <audio
         ref={audioRef}
-        preload="metadata"
+        preload="none"
         loop
-        onPlay={syncState}
-        onPause={syncState}
-        onTimeUpdate={syncState}
-        onLoadedMetadata={syncState}
+        onPlay={() => syncState(true)}
+        onPause={() => syncState(true)}
+        onTimeUpdate={() => syncState(false)}
+        onLoadedMetadata={() => syncState(true)}
         onCanPlay={() => {
           if (!hasAttemptedPlay) return
           setPlayError(null)
           setAllFailed(false)
         }}
-        onEnded={syncState}
+        onEnded={() => syncState(true)}
         onError={handleAudioError}
       >
         {bgmSources.map((item) => (

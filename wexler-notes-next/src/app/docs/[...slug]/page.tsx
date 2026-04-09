@@ -110,9 +110,18 @@ function addParamVariants(set: Set<string>, slug: string) {
     .map(decodeSlugSegment)
     .join('/')
   if (!normalizedSlug) return
-  // generateStaticParams must return decoded param values.
-  // URL encoding is handled when building hrefs (e.g. sidebar/currentPath).
+  // Primary: decoded param values (official Next.js contract).
   set.add(normalizedSlug)
+
+  // Compatibility alias: some environments may still compare encoded values.
+  // Registering a non-ASCII encoded alias avoids "missing param" false negatives.
+  const encodedAlias = normalizedSlug
+    .split('/')
+    .map((seg) => encodeURIComponent(seg))
+    .join('/')
+  if (encodedAlias !== normalizedSlug) {
+    set.add(encodedAlias)
+  }
 }
 
 function scanStaticPaths(dir: string, baseSlug: string, paramsSet: Set<string>): boolean {

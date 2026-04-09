@@ -5,7 +5,7 @@ import fs from 'fs'
 import path from 'path'
 import type { SidebarGroup, SidebarItem } from '@/types/sidebar'
 import { parseFrontmatter } from '@/lib/frontmatter'
-import { resolveContentDir } from '@/lib/contentPath'
+import { buildDocsPathFromSlugPath, resolveContentDir } from '@/lib/contentPath'
 
 const CONTENT_DIR = resolveContentDir()
 const SIDEBAR_CACHE_TTL_MS = 5000
@@ -69,7 +69,7 @@ function scanDir(dir: string, baseSlug: string = ''): SidebarItem[] {
 
       items.push({
         title,
-        link: `/docs/${slug}`,
+        link: buildDocsPathFromSlugPath(slug),
       })
     }
   }

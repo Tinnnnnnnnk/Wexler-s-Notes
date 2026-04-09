@@ -13,7 +13,12 @@ import ArticleHeader from '@/components/article/ArticleHeader'
 import Breadcrumb from '@/components/article/Breadcrumb'
 import { MDXComponents } from '@/components/mdx/MDXComponents'
 import { parseFrontmatter } from '@/lib/frontmatter'
-import { decodeSlugSegment, resolveContentDir } from '@/lib/contentPath'
+import {
+  buildDocsPathFromSegments,
+  decodeSlugSegment,
+  encodeSlugPath,
+  resolveContentDir,
+} from '@/lib/contentPath'
 import styles from './page.module.css'
 
 // P1-C 优化：dynamic import 实现代码分割（bundle 不打入主 chunk）
@@ -100,11 +105,11 @@ function findFirstDocSlugInDir(dir: string, baseSlug: string[]): string[] | null
 }
 
 function addParamVariants(set: Set<string>, slug: string) {
-  const parts = slug.split('/').filter(Boolean)
-  if (!parts.length) return
+  const encodedSlug = encodeSlugPath(slug)
+  if (!encodedSlug) return
   // Only use encoded slugs - the canonical format for URLs
   // This reduces params from 158 to ~93 (41% reduction)
-  set.add(parts.map((seg) => encodeURIComponent(seg)).join('/'))
+  set.add(encodedSlug)
 }
 
 function scanStaticPaths(dir: string, baseSlug: string, paramsSet: Set<string>): boolean {
@@ -224,8 +229,7 @@ export default async function DocsPage({
     if (fs.existsSync(dirPath) && fs.statSync(dirPath).isDirectory()) {
       const firstDoc = findFirstDocSlugInDir(dirPath, decodedSlug)
       if (firstDoc) {
-        const target = firstDoc.map((seg) => encodeURIComponent(seg)).join('/')
-        redirect(`/docs/${target}`)
+        redirect(buildDocsPathFromSegments(firstDoc))
       }
     }
     notFound()
@@ -255,8 +259,7 @@ export default async function DocsPage({
   }
 
   const sidebarGroups = buildSidebar()
-  // Use encoded slug to match browser URL format for sidebar highlighting
-  const currentPath = `/docs/${slug.join('/')}`
+  const currentPath = buildDocsPathFromSegments(decodedSlug)
 
   // 提取 frontmatter 中的元信息
   const title = typeof frontmatterData.title === 'string' ? frontmatterData.title : ''

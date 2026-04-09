@@ -25,3 +25,28 @@ export function decodeSlugSegment(seg: string): string {
   }
 }
 
+export function encodeSlugSegment(seg: string): string {
+  try {
+    return encodeURIComponent(seg)
+  } catch {
+    return seg
+  }
+}
+
+export function encodeSlugPath(slugPath: string): string {
+  return slugPath
+    .split('/')
+    .filter(Boolean)
+    .map((seg) => encodeSlugSegment(decodeSlugSegment(seg)))
+    .join('/')
+}
+
+export function buildDocsPathFromSlugPath(slugPath: string): string {
+  const encoded = encodeSlugPath(slugPath)
+  return encoded ? `/docs/${encoded}` : '/docs'
+}
+
+export function buildDocsPathFromSegments(segments: string[]): string {
+  const encoded = segments.map((seg) => encodeSlugSegment(decodeSlugSegment(seg))).join('/')
+  return encoded ? `/docs/${encoded}` : '/docs'
+}

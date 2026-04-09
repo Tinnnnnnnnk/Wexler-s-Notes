@@ -26,6 +26,7 @@ export default function Backdrop({ fxMode, perfMode, site = false }: BackdropPro
   const [videoFailed, setVideoFailed] = useState(false)
   const [videoIndex, setVideoIndex] = useState(0)
   const [lowFps, setLowFps] = useState(false)
+  const [videoReady, setVideoReady] = useState(false)
 
   const isActive = fxMode === 'glass' || fxMode === 'liquid'
   const isLiquidActive = fxMode === 'liquid'
@@ -50,8 +51,13 @@ export default function Backdrop({ fxMode, perfMode, site = false }: BackdropPro
       setVideoFailed(false)
       setVideoIndex(0)
       setLowFps(false)
+      setVideoReady(false)
     }
   }, [isActive])
+
+  useEffect(() => {
+    setVideoReady(false)
+  }, [videoSrc, shouldUseVideo, isActive])
 
   useEffect(() => {
     if (!isLiquidActive || perfMode === 'safe' || !shouldUseVideo) {
@@ -102,15 +108,16 @@ export default function Backdrop({ fxMode, perfMode, site = false }: BackdropPro
     >
       {shouldUseVideo ? (
         <video
-          className={styles.video}
+          className={`${styles.video} ${videoReady ? styles.videoReady : styles.videoPending}`}
           autoPlay
           muted
           loop
           playsInline
-          preload="metadata"
-          poster={imageSrc}
+          preload="auto"
           disablePictureInPicture
           src={videoSrc}
+          onLoadedData={() => setVideoReady(true)}
+          onCanPlay={() => setVideoReady(true)}
           onError={() => {
             setVideoIndex((prev) => {
               const next = prev + 1

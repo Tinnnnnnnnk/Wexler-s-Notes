@@ -726,3 +726,289 @@ html[class*='home-'] .docArticle {
 html[class*='home-'] .doc-toc-panel {
   background: var(--site-glass-bg) !important;
 }
+
+/* Docs panel personality per style */
+html.home-cyberpunk-mode .docArticle,
+html.home-cyberpunk-mode .main-sidebar,
+html.home-cyberpunk-mode .doc-toc-panel {
+  box-shadow:
+    0 0 0 1px rgba(255, 84, 156, 0.18),
+    0 18px 42px rgba(6, 4, 14, 0.32),
+    0 0 18px rgba(41, 224, 255, 0.12) inset !important;
+}
+
+html.home-rgb-mode .docArticle,
+html.home-rgb-mode .main-sidebar,
+html.home-rgb-mode .doc-toc-panel {
+  box-shadow:
+    0 0 0 1px rgba(194, 142, 255, 0.24),
+    0 16px 38px rgba(6, 10, 18, 0.3),
+    0 0 22px rgba(74, 204, 255, 0.1) inset !important;
+}
+
+html.home-anime-mode .docArticle,
+html.home-sakura-mode .docArticle {
+  border-radius: 22px !important;
+}
+
+html.home-stream-mode .docArticle {
+  max-width: 1060px;
+}
+
+html.home-graphite-mode .main-sidebar,
+html.home-graphite-mode .doc-toc-panel {
+  border-style: solid;
+  border-width: 1px;
+}
+
+html.home-ocean-mode .docArticle,
+html.home-ocean-mode .main-sidebar,
+html.home-ocean-mode .doc-toc-panel {
+  box-shadow:
+    0 18px 40px rgba(3, 10, 18, 0.34),
+    0 0 20px rgba(96, 218, 255, 0.1) inset !important;
+}
+
+html.home-ember-mode .docArticle,
+html.home-ember-mode .main-sidebar,
+html.home-ember-mode .doc-toc-panel {
+  box-shadow:
+    0 18px 44px rgba(20, 9, 5, 0.36),
+    0 0 20px rgba(255, 164, 92, 0.12) inset !important;
+}
+
+/* ------------------------------------------------------------
+   Dynamic style stage effects (homepage only)
+   ------------------------------------------------------------ */
+html[class*='home-'] .home-root::before,
+html[class*='home-'] .home-root::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+html.home-cyberpunk-mode .home-root::before {
+  background:
+    linear-gradient(120deg, rgba(255, 42, 122, 0.08), transparent 34%),
+    linear-gradient(320deg, rgba(24, 230, 255, 0.08), transparent 36%),
+    repeating-linear-gradient(
+      180deg,
+      transparent,
+      transparent 5px,
+      rgba(60, 216, 255, 0.04) 6px,
+      rgba(60, 216, 255, 0.04) 7px
+    );
+  animation: cyberpunkScan 7.5s linear infinite;
+}
+
+html.home-cyberpunk-mode .home-root::after {
+  background: radial-gradient(circle at 60% 20%, rgba(255, 52, 136, 0.16), transparent 38%);
+  mix-blend-mode: screen;
+}
+
+html.home-rgb-mode .home-root::before {
+  background:
+    linear-gradient(90deg, rgba(250, 84, 255, 0), rgba(250, 84, 255, 0.22), rgba(250, 84, 255, 0)),
+    linear-gradient(90deg, rgba(70, 165, 255, 0), rgba(70, 165, 255, 0.2), rgba(70, 165, 255, 0)),
+    linear-gradient(90deg, rgba(74, 255, 184, 0), rgba(74, 255, 184, 0.2), rgba(74, 255, 184, 0));
+  background-size: 36% 100%, 40% 100%, 32% 100%;
+  background-position: -40% 0, 130% 0, -20% 0;
+  background-repeat: no-repeat;
+  animation: rgbBeamRun 12s linear infinite;
+}
+
+html.home-rgb-mode .home-root::after {
+  background:
+    radial-gradient(circle at 16% 72%, rgba(241, 95, 255, 0.2), transparent 42%),
+    radial-gradient(circle at 84% 20%, rgba(66, 224, 255, 0.16), transparent 40%);
+}
+
+html.home-anime-mode .home-root::before,
+html.home-sakura-mode .home-root::before {
+  background:
+    radial-gradient(circle at 22% 18%, rgba(255, 205, 235, 0.2), transparent 46%),
+    radial-gradient(circle at 78% 72%, rgba(209, 186, 255, 0.18), transparent 42%);
+}
+
+html.home-anime-mode .home-root::after,
+html.home-sakura-mode .home-root::after {
+  background-image:
+    radial-gradient(7px 7px at 10% -5%, rgba(255, 204, 232, 0.68), transparent 65%),
+    radial-gradient(6px 6px at 28% -8%, rgba(255, 181, 220, 0.62), transparent 65%),
+    radial-gradient(8px 8px at 46% -6%, rgba(255, 214, 236, 0.68), transparent 65%),
+    radial-gradient(6px 6px at 65% -7%, rgba(233, 200, 255, 0.64), transparent 65%),
+    radial-gradient(7px 7px at 84% -5%, rgba(255, 184, 224, 0.66), transparent 65%);
+  background-repeat: no-repeat;
+  animation: petalsDrift 14s linear infinite;
+  opacity: 0.7;
+}
+
+html.home-stream-mode .home-root::before {
+  background:
+    radial-gradient(circle at 20% 24%, rgba(250, 171, 96, 0.18), transparent 46%),
+    radial-gradient(circle at 80% 78%, rgba(255, 217, 118, 0.16), transparent 44%);
+}
+
+html.home-stream-mode .home-root::after {
+  background: linear-gradient(100deg, rgba(255, 191, 118, 0) 16%, rgba(255, 191, 118, 0.22) 50%, rgba(255, 191, 118, 0) 84%);
+  animation: streamSweepGlow 15s ease-in-out infinite;
+}
+
+html.home-aurora-mode .home-root::before {
+  background:
+    radial-gradient(circle at 20% 20%, rgba(114, 238, 224, 0.2), transparent 44%),
+    radial-gradient(circle at 82% 16%, rgba(125, 140, 255, 0.2), transparent 44%),
+    linear-gradient(160deg, rgba(50, 222, 212, 0.08), rgba(133, 141, 255, 0.08));
+  animation: auroraShift 16s ease-in-out infinite alternate;
+}
+
+html.home-aurora-mode .home-root::after {
+  background:
+    linear-gradient(120deg, rgba(85, 228, 218, 0) 14%, rgba(85, 228, 218, 0.14) 42%, rgba(85, 228, 218, 0) 72%),
+    linear-gradient(320deg, rgba(133, 144, 255, 0) 16%, rgba(133, 144, 255, 0.14) 46%, rgba(133, 144, 255, 0) 76%);
+  animation: auroraBand 20s linear infinite;
+}
+
+html.home-graphite-mode .home-root::before {
+  background:
+    linear-gradient(rgba(180, 192, 208, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(180, 192, 208, 0.05) 1px, transparent 1px);
+  background-size: 34px 34px;
+}
+
+html.home-graphite-mode .home-root::after {
+  background: linear-gradient(110deg, rgba(255, 255, 255, 0) 24%, rgba(232, 240, 255, 0.1) 50%, rgba(255, 255, 255, 0) 76%);
+  animation: graphiteSheen 18s linear infinite;
+}
+
+html.home-ocean-mode .home-root::before {
+  background:
+    radial-gradient(circle at 18% 24%, rgba(106, 214, 255, 0.2), transparent 45%),
+    radial-gradient(circle at 84% 80%, rgba(82, 227, 211, 0.16), transparent 44%);
+}
+
+html.home-ocean-mode .home-root::after {
+  background:
+    repeating-radial-gradient(
+      circle at 50% 65%,
+      rgba(124, 226, 255, 0.14) 0,
+      rgba(124, 226, 255, 0.14) 8px,
+      rgba(124, 226, 255, 0) 16px,
+      rgba(124, 226, 255, 0) 30px
+    );
+  opacity: 0.3;
+  animation: oceanPulse 13s ease-in-out infinite;
+}
+
+html.home-ember-mode .home-root::before {
+  background:
+    radial-gradient(circle at 16% 22%, rgba(255, 165, 98, 0.2), transparent 42%),
+    radial-gradient(circle at 82% 82%, rgba(255, 213, 129, 0.16), transparent 40%);
+}
+
+html.home-ember-mode .home-root::after {
+  background:
+    linear-gradient(145deg, rgba(255, 177, 97, 0) 18%, rgba(255, 177, 97, 0.2) 48%, rgba(255, 177, 97, 0) 78%),
+    radial-gradient(circle at 70% 28%, rgba(255, 130, 72, 0.16), transparent 38%);
+  animation: emberFlicker 8s ease-in-out infinite;
+}
+
+html.home-fx-performance-safe[class*='home-'] .home-root::before,
+html.home-fx-performance-safe[class*='home-'] .home-root::after {
+  animation: none !important;
+}
+
+@keyframes cyberpunkScan {
+  0% {
+    transform: translateY(-4px);
+  }
+  100% {
+    transform: translateY(4px);
+  }
+}
+
+@keyframes rgbBeamRun {
+  0% {
+    background-position: -40% 0, 130% 0, -20% 0;
+  }
+  100% {
+    background-position: 130% 0, -40% 0, 120% 0;
+  }
+}
+
+@keyframes petalsDrift {
+  0% {
+    background-position: 10% -8%, 28% -12%, 46% -10%, 65% -9%, 84% -8%;
+  }
+  100% {
+    background-position: 12% 108%, 30% 106%, 48% 110%, 67% 107%, 86% 109%;
+  }
+}
+
+@keyframes streamSweepGlow {
+  0% {
+    transform: translateX(-22%);
+    opacity: 0.32;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    transform: translateX(22%);
+    opacity: 0.32;
+  }
+}
+
+@keyframes auroraShift {
+  0% {
+    transform: translate3d(-2%, -2%, 0) scale(1);
+  }
+  100% {
+    transform: translate3d(3%, 3%, 0) scale(1.06);
+  }
+}
+
+@keyframes auroraBand {
+  0% {
+    transform: translateX(-6%);
+  }
+  100% {
+    transform: translateX(6%);
+  }
+}
+
+@keyframes graphiteSheen {
+  0% {
+    transform: translateX(-14%);
+  }
+  100% {
+    transform: translateX(14%);
+  }
+}
+
+@keyframes oceanPulse {
+  0%,
+  100% {
+    opacity: 0.22;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.38;
+    transform: scale(1.04);
+  }
+}
+
+@keyframes emberFlicker {
+  0%,
+  100% {
+    opacity: 0.42;
+  }
+  45% {
+    opacity: 0.62;
+  }
+  70% {
+    opacity: 0.36;
+  }
+}

@@ -23,8 +23,16 @@
 .streamGlow,
 .streamSweep,
 .streamSweep2,
+.streamTrack,
+.streamTrack2,
+.streamSpot,
 .graphiteGrid,
 .graphiteSheen,
+.graphiteReticle,
+.oceanWaveA,
+.oceanWaveB,
+.heatHaze,
+.emberGlow,
 .petal,
 .bubble,
 .ember {
@@ -195,6 +203,42 @@
   animation: streamMove 18s ease-in-out infinite reverse;
 }
 
+.streamTrack,
+.streamTrack2 {
+  left: 0;
+  width: 100%;
+  height: 38px;
+  background-image:
+    linear-gradient(90deg, rgba(255, 214, 150, 0.35), rgba(255, 214, 150, 0)),
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 230, 178, 0.32) 0,
+      rgba(255, 230, 178, 0.32) 22px,
+      rgba(255, 230, 178, 0.06) 22px,
+      rgba(255, 230, 178, 0.06) 42px
+    );
+  opacity: 0.34;
+  animation: streamTrackMove 20s linear infinite;
+}
+
+.streamTrack {
+  top: 88px;
+}
+
+.streamTrack2 {
+  bottom: 24px;
+  animation-direction: reverse;
+}
+
+.streamSpot {
+  top: -10vh;
+  right: -8vw;
+  width: 44vw;
+  height: 46vh;
+  background: radial-gradient(circle at 60% 46%, rgba(255, 218, 136, 0.3), rgba(255, 218, 136, 0));
+  opacity: 0.42;
+}
+
 .graphiteGrid {
   inset: 0;
   background:
@@ -211,6 +255,20 @@
   animation: sheenMove 20s linear infinite;
 }
 
+.graphiteReticle {
+  top: 84px;
+  right: 26px;
+  width: 180px;
+  height: 180px;
+  border: 1px solid rgba(196, 208, 226, 0.32);
+  border-radius: 18px;
+  background:
+    linear-gradient(rgba(196, 208, 226, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(196, 208, 226, 0.1) 1px, transparent 1px);
+  background-size: 20px 20px;
+  opacity: 0.4;
+}
+
 .bubble {
   width: calc(6px + var(--i) * 0.2px);
   height: calc(6px + var(--i) * 0.2px);
@@ -224,6 +282,28 @@
   animation-delay: calc(var(--i) * -1.1s);
 }
 
+.oceanWaveA,
+.oceanWaveB {
+  left: -20vw;
+  width: 140vw;
+  height: 26vh;
+  border-radius: 999px;
+  opacity: 0.34;
+  will-change: transform, opacity;
+}
+
+.oceanWaveA {
+  bottom: 8vh;
+  background: linear-gradient(90deg, rgba(96, 226, 255, 0), rgba(96, 226, 255, 0.34), rgba(96, 226, 255, 0));
+  animation: oceanWaveMove 16s ease-in-out infinite;
+}
+
+.oceanWaveB {
+  bottom: 2vh;
+  background: linear-gradient(90deg, rgba(92, 243, 220, 0), rgba(92, 243, 220, 0.28), rgba(92, 243, 220, 0));
+  animation: oceanWaveMove 22s ease-in-out infinite reverse;
+}
+
 .ember {
   width: calc(5px + var(--i) * 0.2px);
   height: calc(5px + var(--i) * 0.2px);
@@ -234,6 +314,26 @@
   will-change: transform, opacity;
   animation: emberRise calc(8.6s + var(--i) * 0.45s) linear infinite;
   animation-delay: calc(var(--i) * -0.7s);
+}
+
+.heatHaze {
+  inset: -8% -14%;
+  background:
+    linear-gradient(160deg, rgba(255, 174, 112, 0.1), transparent 44%),
+    linear-gradient(340deg, rgba(255, 214, 139, 0.08), transparent 46%);
+  opacity: 0.48;
+  will-change: transform;
+  animation: heatWave 10s ease-in-out infinite;
+}
+
+.emberGlow {
+  left: 50%;
+  bottom: -16vh;
+  width: 86vw;
+  height: 44vh;
+  transform: translateX(-50%);
+  background: radial-gradient(circle at 50% 40%, rgba(255, 154, 79, 0.34), rgba(255, 154, 79, 0));
+  opacity: 0.42;
 }
 
 .safe .scanline,
@@ -255,6 +355,13 @@
 .safe .bubble,
 .safe .ember,
 .safe .beam {
+  display: none;
+}
+
+.safe .streamTrack2,
+.safe .graphiteReticle,
+.safe .oceanWaveB,
+.safe .heatHaze {
   display: none;
 }
 
@@ -343,6 +450,15 @@
   }
 }
 
+@keyframes streamTrackMove {
+  0% {
+    background-position: 0 0, 0 0;
+  }
+  100% {
+    background-position: 120px 0, 180px 0;
+  }
+}
+
 @keyframes sheenMove {
   0% {
     transform: translateX(-12%);
@@ -368,6 +484,20 @@
   }
 }
 
+@keyframes oceanWaveMove {
+  0% {
+    transform: translate3d(-8%, 0, 0);
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 0.38;
+  }
+  100% {
+    transform: translate3d(8%, 0, 0);
+    opacity: 0.2;
+  }
+}
+
 @keyframes emberRise {
   0% {
     transform: translate3d(0, 0, 0) scale(0.7);
@@ -379,6 +509,18 @@
   100% {
     transform: translate3d(12px, -104vh, 0) scale(1.08);
     opacity: 0;
+  }
+}
+
+@keyframes heatWave {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(0, -1.6%, 0) scale(1.02);
+  }
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
   }
 }
 

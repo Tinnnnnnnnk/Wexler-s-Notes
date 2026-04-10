@@ -78,6 +78,9 @@ export default function StyleFxLayer({ fxMode, perfMode }: StyleFxLayerProps) {
           <span className={styles.streamGlow} />
           <span className={styles.streamSweep} />
           <span className={styles.streamSweep2} />
+          <span className={styles.streamTrack} />
+          <span className={styles.streamTrack2} />
+          <span className={styles.streamSpot} />
         </>
       )}
 
@@ -85,23 +88,32 @@ export default function StyleFxLayer({ fxMode, perfMode }: StyleFxLayerProps) {
         <>
           <span className={styles.graphiteGrid} />
           <span className={styles.graphiteSheen} />
+          <span className={styles.graphiteReticle} />
         </>
       )}
 
       {fxMode === 'ocean' && (
-        <div className={styles.particleField}>
-          {Array.from({ length: bubbleCount }).map((_, idx) => (
-            <span key={`bubble-${idx}`} className={styles.bubble} style={particleStyle(idx, bubbleCount)} />
-          ))}
-        </div>
+        <>
+          <span className={styles.oceanWaveA} />
+          <span className={styles.oceanWaveB} />
+          <div className={styles.particleField}>
+            {Array.from({ length: bubbleCount }).map((_, idx) => (
+              <span key={`bubble-${idx}`} className={styles.bubble} style={particleStyle(idx, bubbleCount)} />
+            ))}
+          </div>
+        </>
       )}
 
       {fxMode === 'ember' && (
-        <div className={styles.particleField}>
-          {Array.from({ length: emberCount }).map((_, idx) => (
-            <span key={`ember-${idx}`} className={styles.ember} style={particleStyle(idx, emberCount)} />
-          ))}
-        </div>
+        <>
+          <span className={styles.heatHaze} />
+          <span className={styles.emberGlow} />
+          <div className={styles.particleField}>
+            {Array.from({ length: emberCount }).map((_, idx) => (
+              <span key={`ember-${idx}`} className={styles.ember} style={particleStyle(idx, emberCount)} />
+            ))}
+          </div>
+        </>
       )}
     </div>
   )

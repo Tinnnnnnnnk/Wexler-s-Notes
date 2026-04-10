@@ -236,3 +236,127 @@
   border-color: var(--oil-accent);
   background: rgba(74, 109, 134, 0.08);
 }
+
+/* ------------------------------------------------------------
+   Mode-specific layout remixes
+   ------------------------------------------------------------ */
+:global(html.home-stream-mode) .scene {
+  max-width: 1240px;
+  margin: 0 auto;
+}
+
+:global(html.home-stream-mode) .hero {
+  max-width: none;
+  text-align: left;
+  padding: 78px 2.6rem 44px;
+  border-radius: 30px 30px 18px 18px;
+}
+
+:global(html.home-stream-mode) .hero p {
+  margin-left: 0;
+  max-width: 760px;
+}
+
+:global(html.home-stream-mode) .actions {
+  justify-content: flex-start;
+}
+
+:global(html.home-stream-mode) .band {
+  max-width: none;
+}
+
+:global(html.home-stream-mode) .triptych {
+  max-width: none;
+}
+
+:global(html.home-stream-mode) .rail {
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+:global(html.home-graphite-mode) .hero {
+  border-radius: 12px;
+  padding: 90px 2.2rem 52px;
+}
+
+:global(html.home-graphite-mode) .band {
+  border-radius: 12px;
+  gap: 0;
+}
+
+:global(html.home-graphite-mode) .triptych {
+  gap: 12px;
+}
+
+:global(html.home-graphite-mode) .triptych a {
+  border-radius: 10px;
+}
+
+:global(html.home-graphite-mode) .rail a {
+  border-radius: 8px;
+}
+
+:global(html.home-ocean-mode) .hero {
+  padding: 94px 2.3rem 58px;
+  border-radius: 28px;
+  background:
+    linear-gradient(170deg, rgba(8, 36, 52, 0.42), rgba(8, 36, 52, 0.2)),
+    var(--home-panel-bg-hero, var(--oil-home-panel-bg-hero));
+}
+
+:global(html.home-ocean-mode) .hero h1 {
+  background: linear-gradient(120deg, #c4f4ff 0%, #66daff 60%, #64eedc 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+:global(html.home-ocean-mode) .triptych a {
+  border-radius: 20px;
+}
+
+:global(html.home-ember-mode) .hero {
+  text-align: left;
+  max-width: 980px;
+  padding: 88px 2.4rem 52px;
+  border-radius: 30px 18px 26px 18px;
+  background:
+    linear-gradient(140deg, rgba(55, 24, 12, 0.38), rgba(55, 24, 12, 0.2)),
+    var(--home-panel-bg-hero, var(--oil-home-panel-bg-hero));
+}
+
+:global(html.home-ember-mode) .hero p {
+  margin-left: 0;
+}
+
+:global(html.home-ember-mode) .actions {
+  justify-content: flex-start;
+}
+
+:global(html.home-ember-mode) .triptych {
+  max-width: 980px;
+  gap: 14px;
+}
+
+:global(html.home-ember-mode) .triptych a {
+  border-radius: 16px;
+}
+
+:global(html.home-ember-mode) .rail {
+  justify-content: flex-start;
+}
+
+@media (max-width: 760px) {
+  :global(html.home-stream-mode) .hero,
+  :global(html.home-ember-mode) .hero {
+    text-align: center;
+    padding: 72px 1.2rem 38px;
+  }
+
+  :global(html.home-stream-mode) .actions,
+  :global(html.home-ember-mode) .actions {
+    justify-content: center;
+  }
+}

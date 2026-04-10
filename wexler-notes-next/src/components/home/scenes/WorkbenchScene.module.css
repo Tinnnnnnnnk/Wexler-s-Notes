@@ -211,3 +211,92 @@
   color: var(--oil-muted);
   line-height: 1.4;
 }
+
+/* ------------------------------------------------------------
+   Mode-specific layout remixes
+   ------------------------------------------------------------ */
+:global(html.home-stream-mode) .layout {
+  grid-template-columns: 280px 1fr;
+  max-width: 1220px;
+  gap: 18px;
+}
+
+:global(html.home-stream-mode) .main {
+  gap: 16px;
+}
+
+:global(html.home-stream-mode) .hero {
+  border-radius: 24px 24px 12px 12px;
+}
+
+:global(html.home-stream-mode) .matrix {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+:global(html.home-stream-mode) .matrix a {
+  min-height: 150px;
+}
+
+:global(html.home-graphite-mode) .layout {
+  grid-template-columns: 260px 1fr;
+  gap: 14px;
+}
+
+:global(html.home-graphite-mode) .side,
+:global(html.home-graphite-mode) .hero,
+:global(html.home-graphite-mode) .kpi article,
+:global(html.home-graphite-mode) .matrix a {
+  border-radius: 10px;
+}
+
+:global(html.home-graphite-mode) .matrix {
+  gap: 10px;
+}
+
+:global(html.home-ocean-mode) .layout {
+  grid-template-columns: 300px 1fr;
+  max-width: 1180px;
+}
+
+:global(html.home-ocean-mode) .side {
+  background:
+    linear-gradient(170deg, rgba(8, 36, 52, 0.36), rgba(8, 36, 52, 0.16)),
+    var(--home-panel-bg, var(--oil-home-panel-bg-surface));
+}
+
+:global(html.home-ocean-mode) .hero {
+  background:
+    linear-gradient(160deg, rgba(10, 41, 56, 0.32), rgba(10, 41, 56, 0.12)),
+    var(--home-panel-bg-hero, var(--oil-home-panel-bg-hero));
+  border-radius: 24px;
+}
+
+:global(html.home-ocean-mode) .matrix a {
+  border-radius: 18px;
+}
+
+:global(html.home-ember-mode) .layout {
+  grid-template-columns: 260px 1fr;
+  max-width: 1200px;
+}
+
+:global(html.home-ember-mode) .hero {
+  background:
+    linear-gradient(145deg, rgba(64, 28, 14, 0.34), rgba(64, 28, 14, 0.16)),
+    var(--home-panel-bg-hero, var(--oil-home-panel-bg-hero));
+  border-radius: 26px 14px 20px 14px;
+}
+
+:global(html.home-ember-mode) .kpi article {
+  border-radius: 14px 10px 14px 10px;
+}
+
+:global(html.home-ember-mode) .matrix a {
+  border-radius: 14px;
+}
+
+@media (max-width: 980px) {
+  :global(html.home-stream-mode) .matrix {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

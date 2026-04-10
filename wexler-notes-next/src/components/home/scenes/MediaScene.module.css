@@ -191,3 +191,92 @@
 .ticker span:first-child {
   padding-left: 0;
 }
+
+/* ------------------------------------------------------------
+   Mode-specific layout remixes
+   ------------------------------------------------------------ */
+:global(html.home-stream-mode) .scene {
+  max-width: 1240px;
+}
+
+:global(html.home-stream-mode) .hero {
+  border-radius: 28px 28px 14px 14px;
+  padding: 2.2rem 2.2rem;
+}
+
+:global(html.home-stream-mode) .body {
+  grid-template-columns: 1.6fr 1fr;
+}
+
+:global(html.home-stream-mode) .feature {
+  border-radius: 20px;
+}
+
+:global(html.home-stream-mode) .stack a {
+  border-radius: 14px;
+}
+
+:global(html.home-stream-mode) .ticker {
+  overflow-x: auto;
+  white-space: nowrap;
+  flex-wrap: nowrap;
+}
+
+:global(html.home-graphite-mode) .scene {
+  max-width: 980px;
+}
+
+:global(html.home-graphite-mode) .hero,
+:global(html.home-graphite-mode) .feature,
+:global(html.home-graphite-mode) .stack a {
+  border-radius: 10px;
+}
+
+:global(html.home-graphite-mode) .body {
+  gap: 14px;
+}
+
+:global(html.home-ocean-mode) .hero {
+  border-radius: 26px;
+  background:
+    linear-gradient(165deg, rgba(8, 40, 56, 0.34), rgba(8, 40, 56, 0.14)),
+    var(--home-panel-bg-hero, var(--oil-home-panel-bg-hero));
+}
+
+:global(html.home-ocean-mode) .hero h1 {
+  background: linear-gradient(120deg, #c4f4ff 0%, #76d6ff 60%, #66f0df 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+:global(html.home-ocean-mode) .feature,
+:global(html.home-ocean-mode) .stack a {
+  border-radius: 20px;
+}
+
+:global(html.home-ember-mode) .hero {
+  border-radius: 28px 18px 22px 18px;
+  background:
+    linear-gradient(150deg, rgba(64, 28, 14, 0.38), rgba(64, 28, 14, 0.16)),
+    var(--home-panel-bg-hero, var(--oil-home-panel-bg-hero));
+}
+
+:global(html.home-ember-mode) .body {
+  grid-template-columns: 1.45fr 1fr;
+}
+
+:global(html.home-ember-mode) .feature {
+  border-radius: 18px;
+}
+
+:global(html.home-ember-mode) .stack a {
+  border-radius: 14px;
+}
+
+@media (max-width: 860px) {
+  :global(html.home-stream-mode) .body,
+  :global(html.home-ember-mode) .body {
+    grid-template-columns: 1fr;
+  }
+}

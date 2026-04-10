@@ -29,10 +29,10 @@ export default function StyleFxLayer({ fxMode, perfMode }: StyleFxLayerProps) {
   if (!ENHANCED_MODES.includes(fxMode)) return null
 
   const safe = perfMode === 'safe'
-  const petalCount = safe ? 8 : 16
-  const bubbleCount = safe ? 6 : 12
-  const emberCount = safe ? 8 : 16
-  const stripeCount = safe ? 4 : 7
+  const petalCount = safe ? 4 : 8
+  const bubbleCount = safe ? 4 : 8
+  const emberCount = safe ? 5 : 10
+  const stripeCount = safe ? 3 : 5
 
   return (
     <div className={`${styles.layer} ${safe ? styles.safe : ''}`} data-mode={fxMode} aria-hidden="true">
@@ -40,7 +40,7 @@ export default function StyleFxLayer({ fxMode, perfMode }: StyleFxLayerProps) {
         <>
           <span className={`${styles.ribbon} ${styles.ribbonA}`} />
           <span className={`${styles.ribbon} ${styles.ribbonB}`} />
-          {!safe && <span className={`${styles.ribbon} ${styles.ribbonC}`} />}
+          {fxMode === 'aurora' && !safe && <span className={`${styles.ribbon} ${styles.ribbonC}`} />}
         </>
       )}
 
@@ -48,7 +48,7 @@ export default function StyleFxLayer({ fxMode, perfMode }: StyleFxLayerProps) {
         <>
           <span className={styles.scanline} />
           <span className={`${styles.beam} ${styles.beamA}`} />
-          <span className={`${styles.beam} ${styles.beamB}`} />
+          {!safe && <span className={`${styles.beam} ${styles.beamB}`} />}
           <span className={styles.sweep} />
         </>
       )}

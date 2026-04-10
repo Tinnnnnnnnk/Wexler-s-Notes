@@ -44,7 +44,7 @@ html.home-cyberpunk-mode body {
     radial-gradient(ellipse at 50% 50%, rgba(120, 0, 255, 0.04) 0%, transparent 60%);
   background-size: cover, cover, auto, auto, auto;
   background-position: center, center, center, center, center;
-  background-attachment: fixed;
+  background-attachment: scroll;
 }
 
 /* Cyberpunk 导航栏 */
@@ -104,7 +104,7 @@ html.home-rgb-mode body {
     url('/media/home-bg/bg-rgb.jpg');
   background-size: cover, cover;
   background-position: center, center;
-  background-attachment: fixed;
+  background-attachment: scroll;
 }
 
 html.home-rgb-mode .main-navbar {
@@ -131,7 +131,7 @@ html.home-anime-mode body {
     url('/media/home-bg/bg-anime.jpg');
   background-size: cover, cover;
   background-position: center, center;
-  background-attachment: fixed;
+  background-attachment: scroll;
 }
 
 html.home-anime-mode .main-navbar {
@@ -175,7 +175,7 @@ html.home-stream-mode body {
     radial-gradient(ellipse at 80% 80%, rgba(250, 204, 21, 0.05) 0%, transparent 50%);
   background-size: cover, cover, auto, auto;
   background-position: center, center, center, center;
-  background-attachment: fixed;
+  background-attachment: scroll;
 }
 
 html.home-stream-mode .main-navbar {
@@ -203,7 +203,7 @@ html.home-aurora-mode body {
     url('/media/home-bg/bg-aurora.jpg');
   background-size: cover, cover;
   background-position: center, center;
-  background-attachment: fixed;
+  background-attachment: scroll;
 }
 
 html.home-aurora-mode .main-navbar {
@@ -229,7 +229,7 @@ html.home-graphite-mode body {
     url('/media/home-bg/bg-graphite.jpg');
   background-size: cover, cover;
   background-position: center, center;
-  background-attachment: fixed;
+  background-attachment: scroll;
 }
 
 html.home-graphite-mode .main-navbar {
@@ -255,7 +255,7 @@ html.home-sakura-mode body {
     url('/media/home-bg/bg-sakura.jpg');
   background-size: cover, cover;
   background-position: center, center;
-  background-attachment: fixed;
+  background-attachment: scroll;
 }
 
 html.home-sakura-mode .main-navbar {
@@ -281,7 +281,7 @@ html.home-ocean-mode body {
     url('/media/home-bg/bg-ocean.jpg');
   background-size: cover, cover;
   background-position: center, center;
-  background-attachment: fixed;
+  background-attachment: scroll;
 }
 
 html.home-ocean-mode .main-navbar {
@@ -307,7 +307,7 @@ html.home-ember-mode body {
     url('/media/home-bg/bg-ember.jpg');
   background-size: cover, cover;
   background-position: center, center;
-  background-attachment: fixed;
+  background-attachment: scroll;
 }
 
 html.home-ember-mode .main-navbar {
@@ -1010,5 +1010,66 @@ html.home-fx-performance-safe[class*='home-'] .home-root::after {
   }
   70% {
     opacity: 0.36;
+  }
+}
+
+/* ------------------------------------------------------------
+   Performance trim + clearer style identity
+   ------------------------------------------------------------ */
+/* Avoid double-rendering: these three modes already have StyleFxLayer */
+html.home-cyberpunk-mode .home-root::before,
+html.home-cyberpunk-mode .home-root::after,
+html.home-rgb-mode .home-root::before,
+html.home-rgb-mode .home-root::after,
+html.home-anime-mode .home-root::before,
+html.home-anime-mode .home-root::after {
+  content: none !important;
+}
+
+/* Disable duplicated global scanline overlay in cyberpunk */
+html.home-cyberpunk-mode::before {
+  content: none !important;
+}
+
+/* Stronger but lightweight style cues for home content */
+html.home-cyberpunk-mode .home-root h1,
+html.home-cyberpunk-mode .home-root h2,
+html.home-cyberpunk-mode .home-root h3 {
+  letter-spacing: 0.015em;
+  text-shadow:
+    0 0 12px rgba(255, 52, 136, 0.26),
+    0 0 10px rgba(66, 224, 255, 0.2);
+}
+
+html.home-cyberpunk-mode .home-root a {
+  box-shadow: 0 0 0 1px rgba(255, 74, 147, 0.22) inset;
+}
+
+html.home-rgb-mode .home-root h1,
+html.home-rgb-mode .home-root h2,
+html.home-rgb-mode .home-root h3 {
+  background: linear-gradient(90deg, #f06cff 0%, #6ee7ff 50%, #7dffcc 100%);
+  background-size: 200% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: rgbTitleShift 9s linear infinite;
+}
+
+html.home-anime-mode .home-root h1,
+html.home-anime-mode .home-root h2,
+html.home-anime-mode .home-root h3 {
+  letter-spacing: 0.01em;
+  text-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.82),
+    0 6px 18px rgba(232, 140, 190, 0.18);
+}
+
+@keyframes rgbTitleShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
   }
 }

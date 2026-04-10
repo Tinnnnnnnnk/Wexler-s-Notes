@@ -104,7 +104,6 @@
     linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
-  animation: rgb-ring-rotate 12s linear infinite;
 }
 
 .frameRgb::after {
@@ -322,19 +321,6 @@
 :global(html.home-fx-performance-safe) .sceneFrame::after {
   animation: none !important;
   transition: none !important;
-}
-
-:global(html.home-fx-performance-safe) .frameRgb::before {
-  animation: none !important;
-}
-
-@keyframes rgb-ring-rotate {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
 }
 
 @media (max-width: 860px) {

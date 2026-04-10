@@ -1,0 +1,405 @@
+.layer {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  contain: layout paint style;
+  isolation: isolate;
+  opacity: 0.92;
+}
+
+.safe {
+  opacity: 0.7;
+}
+
+.ribbon,
+.scanline,
+.beam,
+.sweep,
+.rgbStrip,
+.rgbHalo,
+.lineOverlay,
+.streamGlow,
+.streamSweep,
+.streamSweep2,
+.graphiteGrid,
+.graphiteSheen,
+.petal,
+.bubble,
+.ember {
+  position: absolute;
+}
+
+.ribbon {
+  width: 62vw;
+  height: 24vh;
+  border-radius: 999px;
+  opacity: 0.26;
+  will-change: transform, opacity;
+  animation: auroraDrift 18s ease-in-out infinite alternate;
+}
+
+.ribbonA {
+  top: -6vh;
+  left: -12vw;
+  background: radial-gradient(circle at 34% 50%, rgba(96, 241, 229, 0.58), rgba(96, 241, 229, 0));
+}
+
+.ribbonB {
+  top: 22vh;
+  right: -14vw;
+  background: radial-gradient(circle at 66% 50%, rgba(136, 145, 255, 0.56), rgba(136, 145, 255, 0));
+  animation-duration: 22s;
+}
+
+.ribbonC {
+  bottom: 10vh;
+  left: 18vw;
+  background: radial-gradient(circle at 50% 50%, rgba(90, 214, 255, 0.44), rgba(90, 214, 255, 0));
+  animation-duration: 24s;
+}
+
+.scanline {
+  inset: 0;
+  background:
+    repeating-linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0) 0,
+      rgba(255, 255, 255, 0) 3px,
+      rgba(0, 238, 255, 0.04) 4px,
+      rgba(0, 238, 255, 0.04) 5px
+    );
+  opacity: 0.3;
+}
+
+.beam {
+  width: 2px;
+  height: 100vh;
+  top: 0;
+  opacity: 0.62;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 70, 150, 0),
+    rgba(255, 70, 150, 0.75),
+    rgba(0, 240, 255, 0.75),
+    rgba(0, 240, 255, 0)
+  );
+  will-change: transform, opacity;
+}
+
+.beamA {
+  left: 16vw;
+  animation: beamShift 10s linear infinite;
+}
+
+.beamB {
+  left: 72vw;
+  animation: beamShift 12s linear infinite reverse;
+}
+
+.sweep {
+  inset: -18% -24%;
+  background: linear-gradient(110deg, rgba(255, 45, 120, 0.09) 24%, rgba(0, 240, 255, 0.11) 52%, rgba(255, 45, 120, 0.09) 76%);
+  opacity: 0.5;
+  will-change: transform;
+  animation: sweepMove 12s linear infinite;
+}
+
+.rgbStrip {
+  width: 18vw;
+  height: 110vh;
+  top: -5vh;
+  left: calc((100% / max(1, var(--spread))) * var(--i));
+  transform: translateX(-50%);
+  opacity: 0.3;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 88, 244, 0) 0%,
+    rgba(255, 88, 244, 0.72) 30%,
+    rgba(74, 163, 255, 0.72) 58%,
+    rgba(76, 255, 178, 0) 100%
+  );
+  will-change: transform, opacity;
+  animation: rgbFloat calc(12s + var(--i) * 0.8s) ease-in-out infinite alternate;
+}
+
+.rgbHalo {
+  inset: 0;
+  background:
+    radial-gradient(circle at 16% 72%, rgba(255, 85, 246, 0.2), transparent 42%),
+    radial-gradient(circle at 84% 20%, rgba(76, 255, 178, 0.18), transparent 44%),
+    radial-gradient(circle at 56% 14%, rgba(77, 163, 255, 0.18), transparent 40%);
+  will-change: opacity;
+  animation: haloPulse 9s ease-in-out infinite;
+}
+
+.lineOverlay {
+  inset: 0;
+  background:
+    repeating-linear-gradient(
+      130deg,
+      rgba(255, 255, 255, 0) 0,
+      rgba(255, 255, 255, 0) 16px,
+      rgba(255, 255, 255, 0.09) 17px,
+      rgba(255, 255, 255, 0.09) 18px
+    );
+  opacity: 0.18;
+}
+
+.particleField {
+  position: absolute;
+  inset: 0;
+}
+
+.petal {
+  width: 12px;
+  height: 9px;
+  left: calc((100% / max(1, var(--spread))) * var(--i));
+  top: -8%;
+  border-radius: 65% 35% 70% 30%;
+  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.88), rgba(255, 191, 220, 0.82) 60%, rgba(238, 146, 199, 0.68) 100%);
+  opacity: 0.86;
+  will-change: transform, opacity;
+  animation:
+    petalFall calc(10s + var(--i) * 0.55s) linear infinite,
+    petalSwing calc(3s + var(--i) * 0.1s) ease-in-out infinite;
+  animation-delay: calc(var(--i) * -1s);
+}
+
+.streamGlow {
+  inset: 0;
+  background:
+    radial-gradient(circle at 20% 22%, rgba(248, 149, 59, 0.2), transparent 46%),
+    radial-gradient(circle at 84% 76%, rgba(255, 215, 101, 0.18), transparent 42%);
+}
+
+.streamSweep,
+.streamSweep2 {
+  width: 120vw;
+  height: 30vh;
+  left: -10vw;
+  opacity: 0.44;
+  will-change: transform;
+}
+
+.streamSweep {
+  top: 14vh;
+  background: linear-gradient(90deg, rgba(255, 181, 110, 0), rgba(255, 181, 110, 0.24), rgba(255, 181, 110, 0));
+  animation: streamMove 14s ease-in-out infinite;
+}
+
+.streamSweep2 {
+  bottom: 12vh;
+  background: linear-gradient(90deg, rgba(255, 212, 140, 0), rgba(255, 212, 140, 0.24), rgba(255, 212, 140, 0));
+  animation: streamMove 18s ease-in-out infinite reverse;
+}
+
+.graphiteGrid {
+  inset: 0;
+  background:
+    linear-gradient(rgba(170, 186, 210, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(170, 186, 210, 0.06) 1px, transparent 1px);
+  background-size: 40px 40px;
+  opacity: 0.24;
+}
+
+.graphiteSheen {
+  inset: -15% -20%;
+  background: linear-gradient(110deg, rgba(255, 255, 255, 0) 22%, rgba(220, 232, 250, 0.15) 50%, rgba(255, 255, 255, 0) 78%);
+  will-change: transform, opacity;
+  animation: sheenMove 20s linear infinite;
+}
+
+.bubble {
+  width: calc(6px + var(--i) * 0.2px);
+  height: calc(6px + var(--i) * 0.2px);
+  left: calc((100% / max(1, var(--spread))) * var(--i));
+  bottom: -10%;
+  border-radius: 999px;
+  background: radial-gradient(circle at 36% 34%, rgba(255, 255, 255, 0.9), rgba(118, 220, 255, 0.34) 58%, rgba(118, 220, 255, 0) 100%);
+  opacity: 0.72;
+  will-change: transform, opacity;
+  animation: bubbleRise calc(11s + var(--i) * 0.6s) linear infinite;
+  animation-delay: calc(var(--i) * -1.1s);
+}
+
+.ember {
+  width: calc(5px + var(--i) * 0.2px);
+  height: calc(5px + var(--i) * 0.2px);
+  left: calc((100% / max(1, var(--spread))) * var(--i));
+  bottom: -10%;
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(255, 236, 170, 0.92) 0%, rgba(255, 156, 92, 0.82) 54%, rgba(255, 108, 46, 0) 100%);
+  will-change: transform, opacity;
+  animation: emberRise calc(8.6s + var(--i) * 0.45s) linear infinite;
+  animation-delay: calc(var(--i) * -0.7s);
+}
+
+.safe .scanline,
+.safe .lineOverlay,
+.safe .graphiteGrid {
+  opacity: 0.18;
+}
+
+.safe .ribbon,
+.safe .rgbStrip,
+.safe .streamSweep,
+.safe .streamSweep2,
+.safe .sweep,
+.safe .graphiteSheen {
+  animation-duration: 28s !important;
+}
+
+.safe .petal,
+.safe .bubble,
+.safe .ember,
+.safe .beam {
+  display: none;
+}
+
+@keyframes auroraDrift {
+  0% {
+    transform: translate3d(-2%, -2%, 0) scale(1);
+  }
+  100% {
+    transform: translate3d(3%, 2%, 0) scale(1.05);
+  }
+}
+
+@keyframes beamShift {
+  0% {
+    transform: translateX(0);
+    opacity: 0.42;
+  }
+  50% {
+    transform: translateX(16vw);
+    opacity: 0.78;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 0.42;
+  }
+}
+
+@keyframes sweepMove {
+  0% {
+    transform: translate3d(-7%, -2%, 0) rotate(-3deg);
+  }
+  100% {
+    transform: translate3d(7%, 2%, 0) rotate(3deg);
+  }
+}
+
+@keyframes rgbFloat {
+  0% {
+    transform: translate3d(-50%, -2%, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 4%, 0);
+  }
+}
+
+@keyframes haloPulse {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 0.78;
+  }
+}
+
+@keyframes petalFall {
+  0% {
+    transform: translate3d(0, -8%, 0) rotate(0deg);
+    opacity: 0;
+  }
+  12% {
+    opacity: 0.86;
+  }
+  100% {
+    transform: translate3d(24px, 112vh, 0) rotate(280deg);
+    opacity: 0.2;
+  }
+}
+
+@keyframes petalSwing {
+  0%,
+  100% {
+    margin-left: 0;
+  }
+  50% {
+    margin-left: -10px;
+  }
+}
+
+@keyframes streamMove {
+  0% {
+    transform: translate3d(-8%, 0, 0);
+  }
+  100% {
+    transform: translate3d(8%, 0, 0);
+  }
+}
+
+@keyframes sheenMove {
+  0% {
+    transform: translateX(-12%);
+    opacity: 0.18;
+  }
+  100% {
+    transform: translateX(12%);
+    opacity: 0.32;
+  }
+}
+
+@keyframes bubbleRise {
+  0% {
+    transform: translate3d(0, 0, 0) scale(0.9);
+    opacity: 0;
+  }
+  14% {
+    opacity: 0.68;
+  }
+  100% {
+    transform: translate3d(8px, -110vh, 0) scale(1.2);
+    opacity: 0;
+  }
+}
+
+@keyframes emberRise {
+  0% {
+    transform: translate3d(0, 0, 0) scale(0.7);
+    opacity: 0;
+  }
+  16% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translate3d(12px, -104vh, 0) scale(1.08);
+    opacity: 0;
+  }
+}
+
+@media (max-width: 860px) {
+  .layer {
+    opacity: 0.78;
+  }
+
+  .ribbon {
+    width: 74vw;
+    height: 20vh;
+  }
+
+  .rgbStrip {
+    width: 22vw;
+  }
+
+  .petal,
+  .bubble,
+  .ember {
+    width: 6px;
+    height: 6px;
+  }
+}

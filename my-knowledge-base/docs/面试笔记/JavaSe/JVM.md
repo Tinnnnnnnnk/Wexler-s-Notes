@@ -28,4 +28,5 @@
 	- 再比如JVM自身一些底层的方法，例如Object类中的hashCode、clone
 ##### 堆
 - JVM中最大的一块内存区域，被所有线程共享，在JVM创建时启动，主要用来存储new出来的对象
-- 
+- 从内存回收角度，堆被分为新生代和老生代，老生代又分为 Eden区和两个 Survivor区（From Survivor 和 To Survivor）
+- 如果堆中的内存没用完成实例分配，且堆也无法扩展时会抛出OOM

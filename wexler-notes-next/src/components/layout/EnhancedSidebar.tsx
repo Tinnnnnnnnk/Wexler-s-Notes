@@ -1,10 +1,8 @@
-// src/components/layout/EnhancedSidebar.tsx
-// 增强型侧边栏组件 - 支持折叠、搜索、高亮当前项
-
 'use client'
-import { useState, useEffect, useMemo, useCallback } from 'react'
+
+import { useState, useMemo, useCallback, useRef, useEffect, type KeyboardEvent, type ReactNode } from 'react'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import styles from './EnhancedSidebar.module.css'
 import type { SidebarGroup, SidebarItem } from '@/types/sidebar'
 
@@ -20,7 +18,9 @@ interface FlatItem {
   groupIndex: number
 }
 
-function flattenItems(items: SidebarItem[], depth: number = 0, groupIndex: number = 0): FlatItem[] {
+const SIDEBAR_SCROLL_STORAGE_KEY = 'wexler.sidebar.nav.scrollTop'
+
+function flattenItems(items: SidebarItem[], depth = 0, groupIndex = 0): FlatItem[] {
   const result: FlatItem[] = []
   for (const item of items) {
     if (item.link) {
@@ -35,43 +35,96 @@ function flattenItems(items: SidebarItem[], depth: number = 0, groupIndex: numbe
 
 export default function EnhancedSidebar({ groups, currentPath = '' }: EnhancedSidebarProps) {
   const pathname = usePathname()
+  const router = useRouter()
   const [searchQuery, setSearchQuery] = useState('')
   const [collapsedGroups, setCollapsedGroups] = useState<Set<number>>(new Set())
   const [isSearchFocused, setIsSearchFocused] = useState(false)
   const [activeIndex, setActiveIndex] = useState(-1)
+  const navRef = useRef<HTMLElement | null>(null)
+  const persistRafRef = useRef<number | null>(null)
 
-  // 扁平化所有链接用于搜索和键盘导航
   const flatItems = useMemo(() => {
     const items: FlatItem[] = []
-    groups.forEach((group, gi) => {
-      items.push(...flattenItems(group.items, 0, gi))
+    groups.forEach((group, groupIndex) => {
+      items.push(...flattenItems(group.items, 0, groupIndex))
     })
     return items
   }, [groups])
 
-  // 过滤搜索结果
   const filteredItems = useMemo(() => {
     if (!searchQuery.trim()) return null
     const query = searchQuery.toLowerCase()
     return flatItems.filter((item) => item.title.toLowerCase().includes(query))
   }, [flatItems, searchQuery])
 
-  // 切换分组折叠状态
-  const toggleGroup = useCallback((index: number) => {
+  const persistNavScroll = useCallback(() => {
+    if (typeof window === 'undefined' || !navRef.current) return
+    try {
+      window.sessionStorage.setItem(SIDEBAR_SCROLL_STORAGE_KEY, String(navRef.current.scrollTop || 0))
+    } catch {
+      // ignore storage errors
+    }
+  }, [])
+
+  const handleNavScroll = useCallback(() => {
+    if (typeof window === 'undefined') return
+    if (persistRafRef.current !== null) return
+    persistRafRef.current = window.requestAnimationFrame(() => {
+      persistRafRef.current = null
+      persistNavScroll()
+    })
+  }, [persistNavScroll])
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    if (searchQuery) return
+
+    const restore = () => {
+      if (!navRef.current) return
+      try {
+        const raw = window.sessionStorage.getItem(SIDEBAR_SCROLL_STORAGE_KEY)
+        const scrollTop = Number(raw)
+        if (Number.isFinite(scrollTop) && scrollTop > 0) {
+          navRef.current.scrollTop = scrollTop
+        }
+      } catch {
+        // ignore storage errors
+      }
+    }
+
+    const raf1 = window.requestAnimationFrame(() => {
+      restore()
+      window.requestAnimationFrame(restore)
+    })
+
+    return () => {
+      window.cancelAnimationFrame(raf1)
+    }
+  }, [pathname, currentPath, searchQuery])
+
+  useEffect(() => {
+    return () => {
+      if (typeof window !== 'undefined' && persistRafRef.current !== null) {
+        window.cancelAnimationFrame(persistRafRef.current)
+      }
+      persistNavScroll()
+    }
+  }, [persistNavScroll])
+
+  const toggleGroup = useCallback((groupIndex: number) => {
     setCollapsedGroups((prev) => {
       const next = new Set(prev)
-      if (next.has(index)) {
-        next.delete(index)
+      if (next.has(groupIndex)) {
+        next.delete(groupIndex)
       } else {
-        next.add(index)
+        next.add(groupIndex)
       }
       return next
     })
   }, [])
 
-  // 键盘导航
   const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent) => {
+    (e: KeyboardEvent<HTMLInputElement>) => {
       const items = filteredItems || flatItems
       if (!items.length) return
 
@@ -87,22 +140,63 @@ export default function EnhancedSidebar({ groups, currentPath = '' }: EnhancedSi
         case 'Enter':
           e.preventDefault()
           if (activeIndex >= 0 && items[activeIndex]) {
-            window.location.href = items[activeIndex].link
+            persistNavScroll()
+            router.push(items[activeIndex].link)
           }
           break
         case 'Escape':
           setSearchQuery('')
           setIsSearchFocused(false)
+          setActiveIndex(-1)
           break
       }
     },
-    [filteredItems, flatItems, activeIndex]
+    [filteredItems, flatItems, activeIndex, persistNavScroll, router],
   )
 
-  // 渲染单个分组
+  function renderItems(items: SidebarItem[], depth = 0): ReactNode {
+    return (
+      <ul className={depth === 0 ? styles.list : styles.sublist}>
+        {items.map((item, index) => {
+          const isActive = currentPath === item.link
+          const hasChildren = Boolean(item.items?.length)
+
+          return (
+            <li key={`${item.title}-${index}`} className={styles.item}>
+              {item.link ? (
+                <Link
+                  href={item.link}
+                  className={`${styles.link} ${depth > 0 ? styles.sublink : ''} ${isActive ? styles.active : ''}`}
+                  onClick={persistNavScroll}
+                >
+                  <span className={styles.linkText}>{item.title}</span>
+                  {hasChildren && (
+                    <svg
+                      className={styles.hasChildrenIcon}
+                      width="12"
+                      height="12"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
+                      <polyline points="9 18 15 12 9 6" />
+                    </svg>
+                  )}
+                </Link>
+              ) : (
+                <span className={`${styles.link} ${styles.muted} ${depth > 0 ? styles.sublink : ''}`}>{item.title}</span>
+              )}
+              {hasChildren && renderItems(item.items!, depth + 1)}
+            </li>
+          )
+        })}
+      </ul>
+    )
+  }
+
   function renderGroup(group: SidebarGroup, groupIndex: number) {
     const isCollapsed = collapsedGroups.has(groupIndex)
-
     return (
       <div key={groupIndex} className={styles.group}>
         <button
@@ -124,69 +218,15 @@ export default function EnhancedSidebar({ groups, currentPath = '' }: EnhancedSi
           </svg>
         </button>
 
-        <div className={`${styles.groupContent} ${isCollapsed ? styles.hidden : ''}`}>
-          {renderItems(group.items, 0)}
-        </div>
+        <div className={`${styles.groupContent} ${isCollapsed ? styles.hidden : ''}`}>{renderItems(group.items, 0)}</div>
       </div>
-    )
-  }
-
-  // 渲染菜单项
-  function renderItems(items: SidebarItem[], depth: number = 0): React.ReactNode {
-    return (
-      <ul className={depth === 0 ? styles.list : styles.sublist}>
-        {items.map((item, index) => {
-          const isActive = currentPath === item.link
-          const hasChildren = item.items && item.items.length > 0
-
-          return (
-            <li key={`${item.title}-${index}`} className={styles.item}>
-              {item.link ? (
-                <Link
-                  href={item.link}
-                  className={`${styles.link} ${depth > 0 ? styles.sublink : ''} ${isActive ? styles.active : ''}`}
-                >
-                  <span className={styles.linkText}>{item.title}</span>
-                  {hasChildren && (
-                    <svg
-                      className={styles.hasChildrenIcon}
-                      width="12"
-                      height="12"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    >
-                      <polyline points="9 18 15 12 9 6" />
-                    </svg>
-                  )}
-                </Link>
-              ) : (
-                <span className={`${styles.link} ${styles.muted} ${depth > 0 ? styles.sublink : ''}`}>
-                  {item.title}
-                </span>
-              )}
-              {hasChildren && renderItems(item.items!, depth + 1)}
-            </li>
-          )
-        })}
-      </ul>
     )
   }
 
   return (
     <div className={styles.sidebar}>
-      {/* 搜索框 */}
       <div className={`${styles.searchWrapper} ${isSearchFocused ? styles.searchFocused : ''}`}>
-        <svg
-          className={styles.searchIcon}
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-        >
+        <svg className={styles.searchIcon} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <circle cx="11" cy="11" r="8" />
           <path d="M21 21l-4.35-4.35" />
         </svg>
@@ -201,11 +241,7 @@ export default function EnhancedSidebar({ groups, currentPath = '' }: EnhancedSi
           onKeyDown={handleKeyDown}
         />
         {searchQuery && (
-          <button
-            className={styles.clearBtn}
-            onClick={() => setSearchQuery('')}
-            aria-label="清除搜索"
-          >
+          <button className={styles.clearBtn} onClick={() => setSearchQuery('')} aria-label="清除搜索">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <line x1="18" y1="6" x2="6" y2="18" />
               <line x1="6" y1="6" x2="18" y2="18" />
@@ -214,22 +250,18 @@ export default function EnhancedSidebar({ groups, currentPath = '' }: EnhancedSi
         )}
       </div>
 
-      {/* 搜索结果 */}
       {filteredItems && (
         <div className={styles.searchResults}>
-          <p className={styles.searchResultsCount}>
-            找到 {filteredItems.length} 个结果
-          </p>
+          <p className={styles.searchResultsCount}>找到 {filteredItems.length} 个结果</p>
           <ul className={styles.searchList}>
             {filteredItems.map((item, index) => (
               <li key={item.link}>
                 <Link
                   href={item.link}
                   className={`${styles.searchItem} ${index === activeIndex ? styles.searchItemActive : ''}`}
+                  onClick={persistNavScroll}
                 >
-                  <span className={styles.searchItemDepth}>
-                    {Array(item.depth + 1).fill('·').join('')}
-                  </span>
+                  <span className={styles.searchItemDepth}>{Array(item.depth + 1).fill('·').join('')}</span>
                   <span>{item.title}</span>
                 </Link>
               </li>
@@ -238,14 +270,12 @@ export default function EnhancedSidebar({ groups, currentPath = '' }: EnhancedSi
         </div>
       )}
 
-      {/* 分组列表 */}
       {!searchQuery && (
-        <nav className={styles.nav}>
+        <nav ref={navRef} className={styles.nav} onScroll={handleNavScroll}>
           {groups.map((group, index) => renderGroup(group, index))}
         </nav>
       )}
 
-      {/* 快捷键提示 */}
       <div className={styles.shortcuts}>
         <span className={styles.shortcut}>
           <kbd>↑</kbd><kbd>↓</kbd> 导航

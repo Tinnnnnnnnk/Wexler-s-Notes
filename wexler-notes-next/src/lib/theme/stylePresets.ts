@@ -4,7 +4,7 @@
 import type { FxMode } from '@/types/uiMode'
 
 export type StylePresetId = FxMode
-export type StyleCategory = 'classic' | 'ambient' | 'creative' | 'entertainment'
+export type StyleCategory = 'classic' | 'ambient' | 'creative' | 'entertainment' | 'tech'
 
 export interface StylePreset {
   id: FxMode

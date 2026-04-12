@@ -367,6 +367,7 @@
 .tag-ambient { background: rgba(100, 160, 200, 0.1); color: #4a90b8; }
 .tag-creative { background: rgba(160, 80, 200, 0.1); color: #8b5cf6; }
 .tag-entertainment { background: rgba(230, 100, 60, 0.1); color: #c0503a; }
+.tag-tech { background: rgba(8, 247, 254, 0.1); color: #08F7FE; }
 
 /* ---- Apply Button ---- */
 .applyBtn {

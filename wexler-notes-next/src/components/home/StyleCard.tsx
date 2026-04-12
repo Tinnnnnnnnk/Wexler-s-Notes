@@ -81,8 +81,9 @@ function categoryLabel(cat: string): string {
     ambient: '氛围',
     creative: '创意',
     entertainment: '娱乐',
+    tech: '科技',
   }
-  return map[cat] ?? cat
+  return map[cat] || cat
 }
 
 /** 根据 previewType 渲染不同的视觉预览 Canvas */

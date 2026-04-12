@@ -498,6 +498,300 @@ html.home-ember-mode {
 }
 
 /* ============================================================
+   13. 春日 (haru)
+   ============================================================ */
+html.home-haru-mode body {
+  background: #fdf5f8;
+  background-image:
+    linear-gradient(160deg, rgba(255, 255, 255, 0.6) 0%, rgba(255, 240, 245, 0.4) 40%, rgba(235, 248, 255, 0.5) 100%),
+    url('/media/home-bg/bg-haru.jpg'); /* 建议放置一张清新的二次元春日风景图 */
+  background-size: cover, cover;
+  background-position: center, center;
+  background-attachment: scroll;
+}
+
+html.home-haru-mode .main-navbar {
+  background: rgba(255, 255, 255, 0.65) !important;
+  border-bottom-color: rgba(255, 183, 197, 0.25) !important;
+  box-shadow: 0 2px 16px rgba(135, 206, 235, 0.1) !important;
+}
+
+html.home-haru-mode .main-navbar .title,
+html.home-haru-mode .main-navbar a {
+  background: linear-gradient(135deg, #87CEEB 0%, #FFB7C5 100%) !important;
+  background-clip: text !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+}
+
+html.home-haru-mode {
+  --site-glass-bg: rgba(255, 255, 255, 0.5);
+  --site-glass-bg-strong: rgba(255, 255, 255, 0.65);
+  --site-glass-bg-soft: rgba(255, 255, 255, 0.35);
+  --site-glass-chip-bg: rgba(135, 206, 235, 0.15);
+  --site-glass-border: rgba(255, 255, 255, 0.8);
+  --site-glass-border-muted: rgba(255, 255, 255, 0.5);
+  --site-glass-shadow: 0 16px 40px rgba(135, 206, 235, 0.15);
+  --site-glass-shadow-soft: 0 8px 24px rgba(135, 206, 235, 0.1);
+  --site-glass-blur: 14px;
+  --site-glass-sat: 120%;
+  --oil-accent: #87CEEB;
+  --oil-accent-2: #FFB7C5;
+  --color-primary-400: #A0D8EF;
+  --color-primary-500: #87CEEB;
+  --color-primary-600: #6EB4D1;
+  --color-primary-700: #559AB8;
+}
+
+html.dark.home-haru-mode {
+  --site-glass-bg: rgba(20, 30, 40, 0.5);
+  --site-glass-bg-strong: rgba(20, 30, 40, 0.65);
+  --site-glass-bg-soft: rgba(20, 30, 40, 0.35);
+  --site-glass-chip-bg: rgba(109, 169, 200, 0.15);
+  --site-glass-border: rgba(109, 169, 200, 0.4);
+  --site-glass-border-muted: rgba(109, 169, 200, 0.2);
+  --site-glass-shadow: 0 16px 40px rgba(10, 15, 20, 0.3);
+  --site-glass-shadow-soft: 0 8px 24px rgba(10, 15, 20, 0.2);
+  --oil-accent: #6DA9C8;
+  --oil-accent-2: #E6A3B1;
+}
+
+/* ============================================================
+   14. 梦境 (mugen)
+   ============================================================ */
+html.home-mugen-mode body {
+  background: #0f0a1e;
+  background-image:
+    linear-gradient(135deg, rgba(16, 10, 30, 0.7) 0%, rgba(20, 15, 40, 0.5) 100%),
+    url('/media/home-bg/bg-mugen.jpg'); /* 建议放置一张深紫/深蓝色的星空或幻境虚拟场景图 */
+  background-size: cover, cover;
+  background-position: center, center;
+  background-attachment: scroll;
+}
+
+html.home-mugen-mode .main-navbar {
+  background: rgba(15, 10, 30, 0.6) !important;
+  border-bottom: 1px solid rgba(176, 136, 255, 0.2) !important;
+  box-shadow: 0 0 20px rgba(120, 214, 255, 0.1) !important;
+  backdrop-filter: blur(24px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+}
+
+html.home-mugen-mode .main-navbar .title,
+html.home-mugen-mode .main-navbar a {
+  background: linear-gradient(135deg, #B088FF 0%, #78D6FF 100%) !important;
+  background-clip: text !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+}
+
+html.home-mugen-mode {
+  --site-glass-bg: rgba(255, 255, 255, 0.1);
+  --site-glass-bg-strong: rgba(255, 255, 255, 0.15);
+  --site-glass-bg-soft: rgba(255, 255, 255, 0.05);
+  --site-glass-chip-bg: rgba(176, 136, 255, 0.1);
+  --site-glass-border: rgba(255, 255, 255, 0.2);
+  --site-glass-border-muted: rgba(255, 255, 255, 0.1);
+  --site-glass-shadow: 0 20px 50px rgba(20, 10, 40, 0.4);
+  --site-glass-shadow-soft: 0 10px 30px rgba(20, 10, 40, 0.2);
+  --site-glass-blur: 24px;
+  --site-glass-sat: 160%;
+  --oil-accent: #B088FF;
+  --oil-accent-2: #78D6FF;
+  --color-primary-400: #C2A3FF;
+  --color-primary-500: #B088FF;
+  --color-primary-600: #9E6EFF;
+  --color-primary-700: #8C54FF;
+}
+
+html.dark.home-mugen-mode {
+  --site-glass-bg: rgba(255, 255, 255, 0.05);
+  --site-glass-bg-strong: rgba(255, 255, 255, 0.08);
+  --site-glass-bg-soft: rgba(255, 255, 255, 0.02);
+  --site-glass-chip-bg: rgba(150, 115, 214, 0.15);
+  --site-glass-border: rgba(255, 255, 255, 0.15);
+  --site-glass-border-muted: rgba(255, 255, 255, 0.05);
+  --site-glass-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+  --site-glass-shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.4);
+  --oil-accent: #9673D6;
+  --oil-accent-2: #66B5D9;
+}
+
+/* ============================================================
+   15. 黑客终端 (cyber-hacker)
+   ============================================================ */
+html.home-cyber-hacker-mode body {
+  background: #020804;
+  background-image:
+    linear-gradient(180deg, rgba(0, 20, 5, 0.9) 0%, rgba(0, 5, 2, 0.95) 100%),
+    url('/media/home-bg/bg-cyber-hacker.jpg'); /* 建议放置代码雨/终端界面壁纸 */
+  background-size: cover, cover;
+  background-position: center, center;
+  background-attachment: scroll;
+}
+
+html.home-cyber-hacker-mode .main-navbar {
+  background: rgba(2, 8, 4, 0.8) !important;
+  border-bottom: 1px solid rgba(0, 255, 65, 0.3) !important;
+  box-shadow: 0 0 15px rgba(0, 255, 65, 0.1) !important;
+  font-family: monospace;
+}
+
+html.home-cyber-hacker-mode .main-navbar .title,
+html.home-cyber-hacker-mode .main-navbar a {
+  color: #00FF41 !important;
+  text-shadow: 0 0 8px rgba(0, 255, 65, 0.6);
+}
+
+html.home-cyber-hacker-mode {
+  --site-glass-bg: rgba(0, 20, 5, 0.6);
+  --site-glass-bg-strong: rgba(0, 30, 10, 0.8);
+  --site-glass-bg-soft: rgba(0, 10, 2, 0.4);
+  --site-glass-chip-bg: rgba(0, 255, 65, 0.1);
+  --site-glass-border: rgba(0, 255, 65, 0.4);
+  --site-glass-border-muted: rgba(0, 255, 65, 0.2);
+  --site-glass-shadow: 0 0 20px rgba(0, 255, 65, 0.1);
+  --site-glass-shadow-soft: 0 0 10px rgba(0, 255, 65, 0.05);
+  --site-glass-blur: 8px;
+  --site-glass-sat: 100%;
+  --oil-accent: #00FF41;
+  --oil-accent-2: #008F11;
+  --color-primary-400: #33FF66;
+  --color-primary-500: #00FF41;
+  --color-primary-600: #00CC33;
+  --color-primary-700: #009922;
+}
+
+html.dark.home-cyber-hacker-mode {
+  --site-glass-bg: rgba(0, 15, 5, 0.7);
+  --site-glass-bg-strong: rgba(0, 25, 8, 0.9);
+  --site-glass-bg-soft: rgba(0, 10, 2, 0.5);
+  --site-glass-chip-bg: rgba(0, 255, 65, 0.15);
+  --site-glass-border: rgba(0, 255, 65, 0.5);
+  --site-glass-border-muted: rgba(0, 255, 65, 0.25);
+  --site-glass-shadow: 0 0 25px rgba(0, 255, 65, 0.15);
+  --site-glass-shadow-soft: 0 0 15px rgba(0, 255, 65, 0.08);
+  --oil-accent: #00FF41;
+  --oil-accent-2: #008F11;
+}
+
+/* ============================================================
+   16. 企业财阀 (cyber-corp)
+   ============================================================ */
+html.home-cyber-corp-mode body {
+  background: #010A15;
+  background-image:
+    linear-gradient(135deg, rgba(1, 10, 21, 0.8) 0%, rgba(0, 5, 10, 0.9) 100%),
+    url('/media/home-bg/bg-cyber-corp.jpg'); /* 建议放置企业控制台/AI核心壁纸 */
+  background-size: cover, cover;
+  background-position: center, center;
+  background-attachment: scroll;
+}
+
+html.home-cyber-corp-mode .main-navbar {
+  background: rgba(1, 10, 21, 0.85) !important;
+  border-bottom: 1px solid rgba(8, 247, 254, 0.4) !important;
+  box-shadow: 0 2px 20px rgba(8, 247, 254, 0.15) !important;
+}
+
+html.home-cyber-corp-mode .main-navbar .title,
+html.home-cyber-corp-mode .main-navbar a {
+  color: #08F7FE !important;
+  text-shadow: 0 0 10px rgba(8, 247, 254, 0.5);
+}
+
+html.home-cyber-corp-mode {
+  --site-glass-bg: rgba(1, 15, 30, 0.5);
+  --site-glass-bg-strong: rgba(1, 20, 40, 0.7);
+  --site-glass-bg-soft: rgba(1, 10, 20, 0.3);
+  --site-glass-chip-bg: rgba(8, 247, 254, 0.1);
+  --site-glass-border: rgba(8, 247, 254, 0.3);
+  --site-glass-border-muted: rgba(8, 247, 254, 0.15);
+  --site-glass-shadow: 0 10px 30px rgba(0, 10, 20, 0.5);
+  --site-glass-shadow-soft: 0 5px 15px rgba(0, 10, 20, 0.3);
+  --site-glass-blur: 16px;
+  --site-glass-sat: 120%;
+  --oil-accent: #08F7FE;
+  --oil-accent-2: #09FBD3;
+  --color-primary-400: #66FBFF;
+  --color-primary-500: #08F7FE;
+  --color-primary-600: #00D2D9;
+  --color-primary-700: #00A4CC;
+}
+
+html.dark.home-cyber-corp-mode {
+  --site-glass-bg: rgba(1, 10, 20, 0.6);
+  --site-glass-bg-strong: rgba(1, 15, 30, 0.8);
+  --site-glass-bg-soft: rgba(1, 5, 10, 0.4);
+  --site-glass-chip-bg: rgba(8, 247, 254, 0.15);
+  --site-glass-border: rgba(8, 247, 254, 0.4);
+  --site-glass-border-muted: rgba(8, 247, 254, 0.2);
+  --site-glass-shadow: 0 15px 40px rgba(0, 5, 10, 0.8);
+  --site-glass-shadow-soft: 0 8px 20px rgba(0, 5, 10, 0.5);
+  --oil-accent: #08F7FE;
+  --oil-accent-2: #09FBD3;
+}
+
+/* ============================================================
+   17. 游戏概念 (cyber-game)
+   ============================================================ */
+html.home-cyber-game-mode body {
+  background: #0A0002;
+  background-image:
+    linear-gradient(45deg, rgba(20, 0, 5, 0.8) 0%, rgba(5, 0, 0, 0.95) 100%),
+    url('/media/home-bg/bg-cyber-game.jpg'); /* 建议放置高反差的红色系游戏设定壁纸 */
+  background-size: cover, cover;
+  background-position: center, center;
+  background-attachment: scroll;
+}
+
+html.home-cyber-game-mode .main-navbar {
+  background: rgba(10, 0, 2, 0.9) !important;
+  border-bottom: 2px solid rgba(255, 0, 85, 0.5) !important;
+  box-shadow: 0 5px 25px rgba(255, 0, 85, 0.2) !important;
+}
+
+html.home-cyber-game-mode .main-navbar .title,
+html.home-cyber-game-mode .main-navbar a {
+  color: #FF0055 !important;
+  text-shadow: 2px 2px 0 rgba(0, 255, 255, 0.5), -2px -2px 0 rgba(255, 0, 85, 0.5);
+  font-weight: 900;
+  letter-spacing: 1px;
+}
+
+html.home-cyber-game-mode {
+  --site-glass-bg: rgba(20, 0, 5, 0.7);
+  --site-glass-bg-strong: rgba(30, 0, 10, 0.85);
+  --site-glass-bg-soft: rgba(10, 0, 2, 0.5);
+  --site-glass-chip-bg: rgba(255, 0, 85, 0.15);
+  --site-glass-border: rgba(255, 0, 85, 0.5);
+  --site-glass-border-muted: rgba(255, 0, 85, 0.25);
+  --site-glass-shadow: 0 15px 40px rgba(255, 0, 85, 0.2);
+  --site-glass-shadow-soft: 0 8px 20px rgba(255, 0, 85, 0.1);
+  --site-glass-blur: 10px;
+  --site-glass-sat: 180%;
+  --oil-accent: #FF0055;
+  --oil-accent-2: #FF003C;
+  --color-primary-400: #FF4D88;
+  --color-primary-500: #FF0055;
+  --color-primary-600: #CC0044;
+  --color-primary-700: #990033;
+}
+
+html.dark.home-cyber-game-mode {
+  --site-glass-bg: rgba(15, 0, 3, 0.8);
+  --site-glass-bg-strong: rgba(25, 0, 8, 0.95);
+  --site-glass-bg-soft: rgba(5, 0, 1, 0.6);
+  --site-glass-chip-bg: rgba(255, 0, 85, 0.2);
+  --site-glass-border: rgba(255, 0, 85, 0.6);
+  --site-glass-border-muted: rgba(255, 0, 85, 0.3);
+  --site-glass-shadow: 0 20px 50px rgba(255, 0, 85, 0.3);
+  --site-glass-shadow-soft: 0 10px 25px rgba(255, 0, 85, 0.15);
+  --oil-accent: #FF0055;
+  --oil-accent-2: #FF003C;
+}
+
+/* ============================================================
    性能安全模式降级
    ============================================================ */
 html.home-fx-performance-safe.home-anime-mode::after {
@@ -630,8 +924,13 @@ html.home-liquid-mode .rootLayout {
 }
 
 html.home-cyberpunk-mode .rootLayout,
+html.home-cyber-hacker-mode .rootLayout,
+html.home-cyber-corp-mode .rootLayout,
+html.home-cyber-game-mode .rootLayout,
 html.home-rgb-mode .rootLayout,
 html.home-anime-mode .rootLayout,
+html.home-haru-mode .rootLayout,
+html.home-mugen-mode .rootLayout,
 html.home-stream-mode .rootLayout,
 html.home-aurora-mode .rootLayout,
 html.home-graphite-mode .rootLayout,
@@ -647,8 +946,13 @@ html.home-liquid-mode .rootLayout::before {
 }
 
 html.home-cyberpunk-mode .rootLayout::before,
+html.home-cyber-hacker-mode .rootLayout::before,
+html.home-cyber-corp-mode .rootLayout::before,
+html.home-cyber-game-mode .rootLayout::before,
 html.home-rgb-mode .rootLayout::before,
 html.home-anime-mode .rootLayout::before,
+html.home-haru-mode .rootLayout::before,
+html.home-mugen-mode .rootLayout::before,
 html.home-stream-mode .rootLayout::before,
 html.home-aurora-mode .rootLayout::before,
 html.home-graphite-mode .rootLayout::before,
@@ -665,8 +969,13 @@ html.home-liquid-mode .app-main,
 html.home-glass-mode .home-content,
 html.home-liquid-mode .home-content,
 html.home-cyberpunk-mode .app-body,
+html.home-cyber-hacker-mode .app-body,
+html.home-cyber-corp-mode .app-body,
+html.home-cyber-game-mode .app-body,
 html.home-rgb-mode .app-body,
 html.home-anime-mode .app-body,
+html.home-haru-mode .app-body,
+html.home-mugen-mode .app-body,
 html.home-stream-mode .app-body,
 html.home-aurora-mode .app-body,
 html.home-graphite-mode .app-body,
@@ -674,8 +983,13 @@ html.home-sakura-mode .app-body,
 html.home-ocean-mode .app-body,
 html.home-ember-mode .app-body,
 html.home-cyberpunk-mode .app-main,
+html.home-cyber-hacker-mode .app-main,
+html.home-cyber-corp-mode .app-main,
+html.home-cyber-game-mode .app-main,
 html.home-rgb-mode .app-main,
 html.home-anime-mode .app-main,
+html.home-haru-mode .app-main,
+html.home-mugen-mode .app-main,
 html.home-stream-mode .app-main,
 html.home-aurora-mode .app-main,
 html.home-graphite-mode .app-main,
@@ -683,8 +997,13 @@ html.home-sakura-mode .app-main,
 html.home-ocean-mode .app-main,
 html.home-ember-mode .app-main,
 html.home-cyberpunk-mode .home-content,
+html.home-cyber-hacker-mode .home-content,
+html.home-cyber-corp-mode .home-content,
+html.home-cyber-game-mode .home-content,
 html.home-rgb-mode .home-content,
 html.home-anime-mode .home-content,
+html.home-haru-mode .home-content,
+html.home-mugen-mode .home-content,
 html.home-stream-mode .home-content,
 html.home-aurora-mode .home-content,
 html.home-graphite-mode .home-content,
@@ -1016,18 +1335,31 @@ html.home-fx-performance-safe[class*='home-'] .home-root::after {
 /* ------------------------------------------------------------
    Performance trim + clearer style identity
    ------------------------------------------------------------ */
-/* Avoid double-rendering: these three modes already have StyleFxLayer */
+/* Avoid double-rendering: these modes already have StyleFxLayer */
 html.home-cyberpunk-mode .home-root::before,
 html.home-cyberpunk-mode .home-root::after,
+html.home-cyber-hacker-mode .home-root::before,
+html.home-cyber-hacker-mode .home-root::after,
+html.home-cyber-corp-mode .home-root::before,
+html.home-cyber-corp-mode .home-root::after,
+html.home-cyber-game-mode .home-root::before,
+html.home-cyber-game-mode .home-root::after,
 html.home-rgb-mode .home-root::before,
 html.home-rgb-mode .home-root::after,
 html.home-anime-mode .home-root::before,
-html.home-anime-mode .home-root::after {
+html.home-anime-mode .home-root::after,
+html.home-haru-mode .home-root::before,
+html.home-haru-mode .home-root::after,
+html.home-mugen-mode .home-root::before,
+html.home-mugen-mode .home-root::after {
   content: none !important;
 }
 
 /* Disable duplicated global scanline overlay in cyberpunk */
-html.home-cyberpunk-mode::before {
+html.home-cyberpunk-mode::before,
+html.home-cyber-hacker-mode::before,
+html.home-cyber-corp-mode::before,
+html.home-cyber-game-mode::before {
   content: none !important;
 }
 

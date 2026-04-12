@@ -14,11 +14,33 @@ import ReadingEnhancer from '@/components/reading/ReadingEnhancer'
 import type { FxMode } from '@/types/uiMode'
 import styles from './HomePage.module.css'
 
-const VIDEO_STYLES = new Set<FxMode>(['glass', 'liquid'])
-const ENHANCED_STYLES = new Set<FxMode>([
+const VIDEO_STYLES = new Set<FxMode>([
+  'glass',
+  'liquid',
   'cyberpunk',
+  'cyber-hacker',
+  'cyber-corp',
+  'cyber-game',
   'rgb',
   'anime',
+  'haru',
+  'mugen',
+  'stream',
+  'aurora',
+  'graphite',
+  'sakura',
+  'ocean',
+  'ember',
+])
+const ENHANCED_STYLES = new Set<FxMode>([
+  'cyberpunk',
+  'cyber-hacker',
+  'cyber-corp',
+  'cyber-game',
+  'rgb',
+  'anime',
+  'haru',
+  'mugen',
   'stream',
   'aurora',
   'graphite',
@@ -29,8 +51,13 @@ const ENHANCED_STYLES = new Set<FxMode>([
 
 const ROOT_MODE_CLASS: Partial<Record<FxMode, string>> = {
   cyberpunk: styles.modeCyberpunk,
+  'cyber-hacker': styles.modeCyberHacker,
+  'cyber-corp': styles.modeCyberCorp,
+  'cyber-game': styles.modeCyberGame,
   rgb: styles.modeRgb,
   anime: styles.modeAnime,
+  haru: styles.modeHaru,
+  mugen: styles.modeMugen,
   stream: styles.modeStream,
   aurora: styles.modeAurora,
   graphite: styles.modeGraphite,
@@ -41,8 +68,13 @@ const ROOT_MODE_CLASS: Partial<Record<FxMode, string>> = {
 
 const FRAME_MODE_CLASS: Partial<Record<FxMode, string>> = {
   cyberpunk: styles.frameCyberpunk,
+  'cyber-hacker': styles.frameCyberHacker,
+  'cyber-corp': styles.frameCyberCorp,
+  'cyber-game': styles.frameCyberGame,
   rgb: styles.frameRgb,
   anime: styles.frameAnime,
+  haru: styles.frameHaru,
+  mugen: styles.frameMugen,
   stream: styles.frameStream,
   aurora: styles.frameAurora,
   graphite: styles.frameGraphite,

@@ -545,3 +545,849 @@
     height: 6px;
   }
 }
+
+/* --- Cyberpunk & RGB Enhancements --- */
+.cyberGrid,
+.glitchOverlay,
+.vignetteOverlay,
+.beamC,
+.dataSpark,
+.digitalRain,
+.rgbBackground,
+.rgbSpectrumWave,
+.rgbLaser,
+.rgbBorderGlow,
+.rgbPulseOrb {
+  position: absolute;
+}
+
+.cyberGrid {
+  inset: 0;
+  background:
+    linear-gradient(rgba(0, 240, 255, 0.15) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 240, 255, 0.15) 1px, transparent 1px);
+  background-size: 50px 50px;
+  transform: perspective(600px) rotateX(60deg) translateY(-100px) translateZ(-200px);
+  transform-origin: 50% 100%;
+  animation: cyberGridMove 5s linear infinite;
+  opacity: 0.4;
+  will-change: transform;
+}
+
+@keyframes cyberGridMove {
+  0% { background-position: 0 0; }
+  100% { background-position: 0 50px; }
+}
+
+.glitchOverlay {
+  inset: 0;
+  background: rgba(255, 45, 120, 0.05);
+  mix-blend-mode: overlay;
+  animation: glitchFlash 3s infinite;
+  will-change: opacity, transform, filter;
+}
+
+.vignetteOverlay {
+  inset: 0;
+  background: radial-gradient(circle, transparent 50%, rgba(0, 0, 0, 0.8) 150%);
+  pointer-events: none;
+}
+
+@keyframes glitchFlash {
+  0%, 100% { opacity: 0.1; }
+  92% { opacity: 0.1; }
+  93% { opacity: 0.9; transform: translateX(-6px) scale(1.02); filter: hue-rotate(90deg); }
+  95% { opacity: 0.2; transform: translateX(6px) scale(0.98); filter: hue-rotate(-90deg); }
+  98% { opacity: 1; transform: translateY(-4px); }
+  99% { opacity: 0.1; }
+}
+
+.beamC {
+  left: 45vw;
+  width: 4px;
+  height: 100vh;
+  top: 0;
+  opacity: 0.62;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 0, 0),
+    rgba(255, 255, 0, 0.8),
+    rgba(255, 45, 120, 0.8),
+    rgba(255, 45, 120, 0)
+  );
+  will-change: transform, opacity, box-shadow;
+  animation: beamShift 8s linear infinite alternate, beamPulse 2s infinite;
+}
+
+@keyframes beamPulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.8; box-shadow: 0 0 20px rgba(255, 45, 120, 0.8); }
+}
+
+.dataSpark {
+  width: 3px;
+  height: 12px;
+  left: calc((100% / max(1, var(--spread))) * var(--i));
+  top: -10%;
+  background: #00f0ff;
+  box-shadow: 0 0 8px #00f0ff, 0 0 12px #ff2d78;
+  opacity: 0.8;
+  will-change: transform, opacity;
+  animation: sparkFall calc(2s + var(--i) * 0.3s) linear infinite;
+  animation-delay: calc(var(--i) * -0.5s);
+}
+
+@keyframes sparkFall {
+  0% { transform: translateY(0) scaleY(1); opacity: 1; }
+  80% { opacity: 1; }
+  100% { transform: translateY(110vh) scaleY(3); opacity: 0; }
+}
+
+.digitalRain {
+  width: 2px;
+  height: 100px;
+  left: calc((100% / 8) * var(--i));
+  top: -200px;
+  background: linear-gradient(to bottom, transparent, #00f0ff, #fff);
+  opacity: 0.6;
+  will-change: transform;
+  animation: rainDrop calc(4s + var(--i) * 1s) linear infinite;
+  animation-delay: calc(var(--i) * 0.2s);
+}
+
+@keyframes rainDrop {
+  0% { transform: translateY(0); opacity: 1; }
+  100% { transform: translateY(120vh); opacity: 0.2; }
+}
+
+.rgbBackground {
+  inset: -50%;
+  background: conic-gradient(
+    from 0deg,
+    #ff0000,
+    #ff8000,
+    #ffff00,
+    #00ff00,
+    #00ffff,
+    #0000ff,
+    #ff00ff,
+    #ff0000
+  );
+  opacity: 0.15;
+  filter: blur(60px);
+  will-change: transform;
+  animation: rgbSpin 8s linear infinite;
+}
+
+.rgbSpectrumWave {
+  inset: 0;
+  background: linear-gradient(45deg, rgba(255,0,0,0.1), rgba(0,255,0,0.1), rgba(0,0,255,0.1));
+  background-size: 400% 400%;
+  mix-blend-mode: color-dodge;
+  will-change: background-position;
+  animation: spectrumWave 6s ease infinite;
+}
+
+@keyframes spectrumWave {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.rgbBorderGlow {
+  inset: 0;
+  box-shadow: inset 0 0 50px 20px rgba(0, 0, 0, 0.5), inset 0 0 120px rgba(255, 0, 255, 0.2);
+  will-change: box-shadow;
+  animation: borderPulse 4s infinite alternate;
+}
+
+@keyframes borderPulse {
+  0% { box-shadow: inset 0 0 50px 20px rgba(0, 0, 0, 0.5), inset 0 0 80px rgba(255, 0, 255, 0.1); }
+  100% { box-shadow: inset 0 0 50px 20px rgba(0, 0, 0, 0.5), inset 0 0 150px rgba(0, 255, 255, 0.3); }
+}
+
+@keyframes rgbSpin {
+  0% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(180deg) scale(1.1); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+
+.rgbLaser {
+  width: 3px;
+  height: 120px;
+  left: calc((100% / max(1, var(--spread))) * var(--i));
+  bottom: -20%;
+  background: #fff;
+  box-shadow: 0 0 15px 5px hsl(calc(var(--i) * 30deg), 100%, 50%), 0 0 30px hsl(calc(var(--i) * 30deg), 100%, 50%);
+  will-change: transform, opacity;
+  animation: laserShoot calc(2s + var(--i) * 0.3s) cubic-bezier(0.4, 0, 1, 1) infinite;
+  animation-delay: calc(var(--i) * -0.5s);
+}
+
+@keyframes laserShoot {
+  0% { transform: translateY(0) scaleY(1); opacity: 0; }
+  10% { opacity: 1; transform: translateY(-10vh) scaleY(2); }
+  100% { transform: translateY(-150vh) scaleY(4); opacity: 0; }
+}
+
+.rgbPulseOrb {
+  width: calc(40px + var(--i) * 10px);
+  height: calc(40px + var(--i) * 10px);
+  border-radius: 50%;
+  left: calc((100% / 10) * var(--i));
+  top: calc(20% + (var(--i) * 5%));
+  background: radial-gradient(circle, hsl(calc(var(--i) * 36deg), 100%, 60%) 0%, transparent 70%);
+  opacity: 0;
+  mix-blend-mode: screen;
+  will-change: transform, opacity;
+  animation: orbPulse calc(3s + var(--i) * 0.5s) ease-in-out infinite alternate;
+  animation-delay: calc(var(--i) * -1s);
+}
+
+@keyframes orbPulse {
+  0% { transform: scale(0.5); opacity: 0; }
+  50% { opacity: 0.3; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+
+/* Perf Mode: safe 降级处理 */
+.safe .cyberGrid,
+.safe .rgbBackground {
+  animation-duration: 20s;
+}
+
+.safe .dataSpark,
+.safe .digitalRain,
+.safe .rgbLaser,
+.safe .rgbPulseOrb,
+.safe .glitchOverlay,
+.safe .vignetteOverlay,
+.safe .rgbSpectrumWave,
+.safe .beamC {
+  display: none;
+}
+
+/* --- Additional Style Enhancements --- */
+.animeSunburst,
+.sakuraMoon,
+.streamGrid,
+.streamFloatingData,
+.auroraStars,
+.graphiteBlueprintLines,
+.graphiteScanline,
+.oceanGodRays,
+.emberSpark {
+  position: absolute;
+}
+
+.animeSunburst {
+  inset: -50%;
+  background: repeating-conic-gradient(from 0deg, rgba(255, 255, 255, 0.05) 0deg 10deg, transparent 10deg 20deg);
+  animation: slowSpin 60s linear infinite;
+  opacity: 0.6;
+}
+
+@keyframes slowSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.sakuraMoon {
+  top: 10%;
+  right: 15%;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #fff, #ffe6f0);
+  box-shadow: 0 0 40px 10px rgba(255, 182, 193, 0.4);
+  opacity: 0.8;
+}
+
+.streamGrid {
+  inset: 0;
+  background: 
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 30px 30px;
+  transform: perspective(500px) rotateX(20deg) scale(1.1);
+  opacity: 0.5;
+}
+
+.streamFloatingData {
+  width: 2px;
+  height: 16px;
+  left: calc((100% / max(1, var(--spread))) * var(--i));
+  bottom: -5%;
+  background: #ffb56e;
+  box-shadow: 0 0 6px #ffb56e;
+  opacity: 0.8;
+  will-change: transform, opacity;
+  animation: dataRise calc(3s + var(--i) * 0.4s) linear infinite;
+  animation-delay: calc(var(--i) * -0.5s);
+}
+
+@keyframes dataRise {
+  0% { transform: translateY(0); opacity: 1; }
+  100% { transform: translateY(-110vh); opacity: 0; }
+}
+
+.auroraStars {
+  inset: 0;
+  background-image: 
+    radial-gradient(1px 1px at 20px 30px, #fff, rgba(0,0,0,0)),
+    radial-gradient(1px 1px at 40px 70px, #fff, rgba(0,0,0,0)),
+    radial-gradient(1px 1px at 50px 160px, #fff, rgba(0,0,0,0)),
+    radial-gradient(1px 1px at 90px 40px, #fff, rgba(0,0,0,0)),
+    radial-gradient(1px 1px at 130px 80px, #fff, rgba(0,0,0,0)),
+    radial-gradient(1px 1px at 160px 120px, #fff, rgba(0,0,0,0));
+  background-repeat: repeat;
+  background-size: 200px 200px;
+  opacity: 0.4;
+  animation: twinkle 4s ease-in-out infinite alternate;
+}
+
+@keyframes twinkle {
+  0% { opacity: 0.2; }
+  100% { opacity: 0.6; }
+}
+
+.ribbonD {
+  bottom: -10vh;
+  right: 10vw;
+  background: radial-gradient(circle at 50% 50%, rgba(200, 100, 255, 0.4), rgba(200, 100, 255, 0));
+  animation-duration: 26s;
+  animation-direction: reverse;
+}
+
+.graphiteBlueprintLines {
+  inset: 10%;
+  border: 1px solid rgba(170, 186, 210, 0.1);
+  background: 
+    linear-gradient(90deg, transparent 50%, rgba(170, 186, 210, 0.15) 50%, transparent 51%),
+    linear-gradient(0deg, transparent 50%, rgba(170, 186, 210, 0.15) 50%, transparent 51%);
+}
+
+.graphiteScanline {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: rgba(170, 186, 210, 0.3);
+  box-shadow: 0 0 10px rgba(170, 186, 210, 0.5);
+  animation: graphiteScan 6s linear infinite;
+}
+
+@keyframes graphiteScan {
+  0% { transform: translateY(-10px); }
+  100% { transform: translateY(100vh); }
+}
+
+.oceanGodRays {
+  inset: -20% 0 0 0;
+  background: repeating-linear-gradient(
+    105deg,
+    rgba(255, 255, 255, 0.05) 0px,
+    rgba(255, 255, 255, 0.05) 40px,
+    transparent 40px,
+    transparent 80px
+  );
+  mask-image: linear-gradient(to bottom, #000 0%, transparent 80%);
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 80%);
+  animation: sway 10s ease-in-out infinite alternate;
+}
+
+@keyframes sway {
+  0% { transform: skewX(-5deg); }
+  100% { transform: skewX(5deg); }
+}
+
+.emberSpark {
+  width: 2px;
+  height: 6px;
+  left: calc((100% / max(1, var(--spread))) * var(--i));
+  bottom: -5%;
+  background: #ffcc00;
+  box-shadow: 0 0 8px #ffaa00;
+  will-change: transform, opacity;
+  animation: fastSpark calc(2s + var(--i) * 0.2s) ease-out infinite;
+  animation-delay: calc(var(--i) * -0.3s);
+}
+
+@keyframes fastSpark {
+  0% { transform: translateY(0) scaleY(1); opacity: 1; }
+  100% { transform: translateY(-80vh) scaleY(2); opacity: 0; }
+}
+
+.safe .animeSunburst,
+.safe .sakuraMoon,
+.safe .streamFloatingData,
+.safe .auroraStars,
+.safe .graphiteBlueprintLines,
+.safe .graphiteScanline,
+.safe .oceanGodRays,
+.safe .emberSpark {
+  display: none;
+}
+
+/* --- Hacker Terminal --- */
+.hackerGrid,
+.hackerScanline,
+.hackerDigitalRain,
+.hackerDataSpark {
+  position: absolute;
+}
+
+.hackerGrid {
+  inset: 0;
+  background:
+    linear-gradient(rgba(0, 255, 65, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 65, 0.05) 1px, transparent 1px);
+  background-size: 20px 20px;
+  animation: scrollDown 10s linear infinite;
+  opacity: 0.3;
+}
+
+@keyframes scrollDown {
+  0% { background-position: 0 0; }
+  100% { background-position: 0 20px; }
+}
+
+.hackerScanline {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 20px;
+  background: linear-gradient(to bottom, transparent, rgba(0, 255, 65, 0.2), transparent);
+  animation: scanHacker 4s linear infinite;
+}
+
+@keyframes scanHacker {
+  0% { transform: translateY(-20px); }
+  100% { transform: translateY(100vh); }
+}
+
+.hackerDigitalRain {
+  width: 2px;
+  height: 60px;
+  left: calc((100% / max(1, var(--spread))) * var(--i));
+  top: -100px;
+  background: linear-gradient(to bottom, transparent, #00FF41, #fff);
+  opacity: 0.8;
+  animation: hackerRain calc(3s + var(--i) * 0.5s) linear infinite;
+  animation-delay: calc(var(--i) * 0.1s);
+}
+
+@keyframes hackerRain {
+  0% { transform: translateY(0); opacity: 1; }
+  100% { transform: translateY(120vh); opacity: 0.1; }
+}
+
+.hackerDataSpark {
+  width: 4px;
+  height: 4px;
+  background: #00FF41;
+  box-shadow: 0 0 8px 2px #008F11;
+  left: calc((100% / max(1, var(--spread))) * var(--i));
+  top: calc(100% * (var(--i) * 7 % 11) / 10);
+  animation: hackerBlink calc(1s + var(--i) * 0.5s) step-end infinite;
+}
+
+@keyframes hackerBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* --- Corporate Tech --- */
+.corpBgLayer,
+.corpGrid,
+.corpPulse,
+.corpScanline,
+.corpDataStream,
+.corpDataNode,
+.corpNetworkLine {
+  position: absolute;
+}
+
+.corpBgLayer {
+  inset: 0;
+  background: radial-gradient(circle at 50% 0%, rgba(8, 247, 254, 0.05), transparent 70%);
+}
+
+.corpGrid {
+  inset: 0;
+  background:
+    linear-gradient(rgba(8, 247, 254, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(8, 247, 254, 0.03) 1px, transparent 1px);
+  background-size: 80px 80px;
+  transform: perspective(1000px) rotateX(60deg) translateY(-100px) translateZ(-200px);
+  transform-origin: 50% 100%;
+  animation: corpGridSlow 15s linear infinite;
+  opacity: 0.6;
+}
+
+@keyframes corpGridSlow {
+  0% { background-position: 0 0; }
+  100% { background-position: 0 80px; }
+}
+
+.corpPulse {
+  inset: -20%;
+  background: radial-gradient(circle at 50% 50%, rgba(8, 247, 254, 0.03) 0%, transparent 50%);
+  animation: corpPulseCore 10s ease-in-out infinite alternate;
+}
+
+@keyframes corpPulseCore {
+  0% { transform: scale(0.9); opacity: 0.6; }
+  100% { transform: scale(1.1); opacity: 1; }
+}
+
+.corpScanline {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: rgba(8, 247, 254, 0.15);
+  box-shadow: 0 0 15px rgba(8, 247, 254, 0.3);
+  animation: corpScan 8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@keyframes corpScan {
+  0% { transform: translateY(-10px); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(100vh); opacity: 0; }
+}
+
+.corpDataStream {
+  width: 1px;
+  height: 100vh;
+  left: 25%;
+  top: 0;
+  background: linear-gradient(to bottom, transparent, rgba(8, 247, 254, 0.4), transparent);
+  opacity: 0;
+  animation: streamFlow 6s ease-in-out infinite;
+}
+
+@keyframes streamFlow {
+  0% { transform: translateY(-100%); opacity: 0; }
+  50% { opacity: 0.8; }
+  100% { transform: translateY(100%); opacity: 0; }
+}
+
+.corpDataNode {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 8px 2px rgba(8, 247, 254, 0.6);
+  left: calc((100% / max(1, var(--spread))) * var(--i));
+  top: calc(100% * (var(--i) * 5 % 13) / 10);
+  animation: corpFloatNode calc(8s + var(--i) * 2s) ease-in-out infinite alternate;
+}
+
+@keyframes corpFloatNode {
+  0% { transform: translate(0, 0) scale(0.8); opacity: 0.3; }
+  100% { transform: translate(15px, -15px) scale(1.2); opacity: 0.8; }
+}
+
+.corpNetworkLine {
+  width: calc(40px + var(--i) * 20px);
+  height: 1px;
+  background: rgba(8, 247, 254, 0.2);
+  left: calc((100% / max(1, var(--spread))) * var(--i));
+  top: calc(100% * (var(--i) * 7 % 11) / 10);
+  transform: rotate(calc(var(--i) * 45deg));
+  animation: linePulse calc(4s + var(--i) * 1s) ease-in-out infinite alternate;
+  transform-origin: left center;
+}
+
+@keyframes linePulse {
+  0% { opacity: 0.1; transform: scaleX(0.5) rotate(calc(var(--i) * 45deg)); }
+  100% { opacity: 0.6; transform: scaleX(1.5) rotate(calc(var(--i) * 45deg)); }
+}
+
+/* --- Game Concept --- */
+.gameGrid,
+.gameGlitch,
+.gameVignette,
+.gameSpark,
+.gameSlash {
+  position: absolute;
+}
+
+.gameGrid {
+  inset: 0;
+  background:
+    linear-gradient(rgba(255, 0, 85, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 0, 85, 0.1) 1px, transparent 1px);
+  background-size: 60px 60px;
+  transform: perspective(800px) rotateX(45deg);
+  transform-origin: bottom center;
+  opacity: 0.6;
+}
+
+.gameVignette {
+  inset: 0;
+  background: radial-gradient(circle, transparent 40%, rgba(10, 0, 2, 0.9) 100%);
+  pointer-events: none;
+}
+
+.gameGlitch {
+  inset: 0;
+  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  opacity: 0.05;
+  mix-blend-mode: color-dodge;
+  pointer-events: none;
+}
+
+.gameSpark {
+  width: 4px;
+  height: 4px;
+  background: #fff;
+  box-shadow: 0 0 10px 2px #FF0055, 0 0 20px #FF003C;
+  left: calc((100% / max(1, var(--spread))) * var(--i));
+  bottom: -10px;
+  animation: gameFloat calc(2s + var(--i) * 0.5s) ease-in infinite;
+  animation-delay: calc(var(--i) * -0.5s);
+}
+
+@keyframes gameFloat {
+  0% { transform: translateY(0) scale(1); opacity: 1; }
+  100% { transform: translateY(-100vh) scale(0); opacity: 0; }
+}
+
+.gameSlash {
+  width: 150%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #FF0055, #fff, #FF0055, transparent);
+  top: calc(20% + var(--i) * 40%);
+  left: -25%;
+  transform: rotate(-15deg);
+  opacity: 0;
+  box-shadow: 0 0 20px 5px rgba(255, 0, 85, 0.5);
+  animation: slashEffect 6s cubic-bezier(0.1, 1, 0.1, 1) infinite;
+  animation-delay: calc(var(--i) * 3s);
+}
+
+@keyframes slashEffect {
+  0% { opacity: 0; transform: rotate(-15deg) scaleX(0); }
+  5% { opacity: 1; transform: rotate(-15deg) scaleX(1); }
+  10%, 100% { opacity: 0; transform: rotate(-15deg) scaleX(1); }
+}
+
+.safe .hackerDigitalRain,
+.safe .corpRing,
+.safe .gameSlash,
+.safe .gameGlitch {
+  display: none;
+}
+
+/* --- Haru (清新日系) --- */
+.haruSky,
+.haruSunbeam,
+.haruCloudsA,
+.haruCloudsB,
+.haruLight,
+.mugenOrbA,
+.mugenOrbB,
+.mugenOrbC,
+.mugenGlassRay,
+.mugenRipple,
+.mugenStar,
+.mugenDust {
+  position: absolute;
+}
+
+.haruSky {
+  inset: 0;
+  background: linear-gradient(180deg, rgba(135, 206, 235, 0.4) 0%, rgba(255, 255, 255, 0) 60%);
+  opacity: 0.8;
+}
+
+.haruSunbeam {
+  inset: -20% 0 0 0;
+  background: repeating-linear-gradient(
+    115deg,
+    rgba(255, 255, 255, 0.1) 0px,
+    rgba(255, 255, 255, 0.1) 60px,
+    transparent 60px,
+    transparent 120px
+  );
+  mask-image: linear-gradient(to bottom, #000 0%, transparent 80%);
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 80%);
+  animation: sunbeamSway 15s ease-in-out infinite alternate;
+  transform-origin: top center;
+}
+
+@keyframes sunbeamSway {
+  0% { transform: skewX(-8deg) scale(1.1); opacity: 0.4; }
+  100% { transform: skewX(8deg) scale(1.1); opacity: 0.8; }
+}
+
+.haruCloudsA,
+.haruCloudsB {
+  width: 200vw;
+  height: 40vh;
+  top: 0;
+  left: -50vw;
+  background-image: 
+    radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.8) 0%, transparent 20%),
+    radial-gradient(circle at 80% 40%, rgba(255, 255, 255, 0.6) 0%, transparent 25%),
+    radial-gradient(circle at 40% 60%, rgba(255, 255, 255, 0.7) 0%, transparent 30%);
+  background-size: 50vw 40vh;
+  background-repeat: repeat-x;
+  filter: blur(10px);
+  opacity: 0.5;
+  animation: cloudDrift 60s linear infinite;
+}
+
+.haruCloudsB {
+  top: 10vh;
+  animation: cloudDrift 90s linear infinite reverse;
+  opacity: 0.3;
+  transform: scale(1.2);
+}
+
+@keyframes cloudDrift {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(50vw); }
+}
+
+.haruLight {
+  width: calc(20px + var(--i) * 5px);
+  height: calc(20px + var(--i) * 5px);
+  border-radius: 50%;
+  left: calc((100% / max(1, var(--spread))) * var(--i));
+  top: calc(10% + var(--i) * 10%);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.8) 0%, transparent 70%);
+  opacity: 0.4;
+  animation: gentlePulse calc(4s + var(--i) * 1s) ease-in-out infinite alternate;
+  animation-delay: calc(var(--i) * -0.5s);
+}
+
+@keyframes gentlePulse {
+  0% { transform: scale(1) translateY(0); opacity: 0.2; }
+  100% { transform: scale(1.5) translateY(-20px); opacity: 0.6; }
+}
+
+/* --- Mugen (梦幻玻璃二次元) --- */
+.mugenOrbA,
+.mugenOrbB,
+.mugenOrbC {
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.6;
+  animation: orbFloat 20s ease-in-out infinite alternate;
+}
+
+.mugenOrbA {
+  width: 60vw;
+  height: 60vw;
+  top: -20vh;
+  left: -20vw;
+  background: radial-gradient(circle, rgba(176, 136, 255, 0.5), transparent 70%);
+}
+
+.mugenOrbB {
+  width: 50vw;
+  height: 50vw;
+  bottom: -10vh;
+  right: -10vw;
+  background: radial-gradient(circle, rgba(120, 214, 255, 0.4), transparent 70%);
+  animation-delay: -5s;
+}
+
+.mugenOrbC {
+  width: 40vw;
+  height: 40vw;
+  top: 30vh;
+  left: 30vw;
+  background: radial-gradient(circle, rgba(255, 182, 193, 0.3), transparent 70%);
+  animation-delay: -10s;
+}
+
+@keyframes orbFloat {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(5vw, 5vh) scale(1.1); }
+  100% { transform: translate(-5vw, -5vh) scale(0.9); }
+}
+
+.mugenGlassRay {
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 40%, rgba(255, 255, 255, 0.05) 50%, transparent 60%, rgba(255, 255, 255, 0.1) 100%);
+  mix-blend-mode: overlay;
+  animation: raySweep 10s linear infinite;
+}
+
+@keyframes raySweep {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.mugenStar {
+  width: 4px;
+  height: 4px;
+  background: #fff;
+  border-radius: 50%;
+  left: calc((100% / max(1, var(--spread))) * var(--i));
+  top: calc(100% * (var(--i) * 7 % 11) / 10);
+  box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.8),
+              0 0 20px 4px rgba(176, 136, 255, 0.6);
+  opacity: 0.8;
+  animation: starTwinkle calc(2s + var(--i) * 0.5s) ease-in-out infinite alternate,
+             starFloat 15s linear infinite;
+  animation-delay: calc(var(--i) * -1s);
+}
+
+@keyframes starTwinkle {
+  0% { opacity: 0.2; transform: scale(0.8); }
+  100% { opacity: 1; transform: scale(1.5); }
+}
+
+@keyframes starFloat {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-50vh); }
+}
+
+.mugenRipple {
+  inset: 0;
+  background: 
+    radial-gradient(circle at 30% 70%, rgba(255, 255, 255, 0.03) 0%, transparent 40%),
+    radial-gradient(circle at 70% 30%, rgba(255, 255, 255, 0.02) 0%, transparent 50%);
+  animation: glassRipple 12s ease-in-out infinite alternate;
+}
+
+@keyframes glassRipple {
+  0% { transform: scale(1); opacity: 0.5; }
+  100% { transform: scale(1.1); opacity: 1; }
+}
+
+.mugenDust {
+  width: 2px;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 50%;
+  left: calc((100% / max(1, var(--spread))) * var(--i));
+  top: calc(100% * (var(--i) * 3 % 13) / 10);
+  box-shadow: 0 0 4px 1px rgba(255, 255, 255, 0.4);
+  animation: dustDrift calc(6s + var(--i) * 1s) ease-in-out infinite alternate;
+  animation-delay: calc(var(--i) * -2s);
+}
+
+@keyframes dustDrift {
+  0% { transform: translate(0, 0) scale(0.8); opacity: 0.2; }
+  50% { opacity: 0.8; }
+  100% { transform: translate(20px, -30px) scale(1.2); opacity: 0; }
+}
+
+.safe .haruCloudsA,
+.safe .haruCloudsB,
+.safe .haruLight,
+.safe .haruSunbeam,
+.safe .mugenOrbC,
+.safe .mugenGlassRay,
+.safe .mugenRipple,
+.safe .mugenStar,
+.safe .mugenDust {
+  display: none;
+}

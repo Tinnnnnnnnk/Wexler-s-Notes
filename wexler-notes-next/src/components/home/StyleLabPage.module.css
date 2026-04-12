@@ -195,12 +195,17 @@
 .indicator-glass { background: #8bb8d4; box-shadow: 0 0 6px rgba(139,184,212,0.5); }
 .indicator-liquid { background: #6fa4ce; box-shadow: 0 0 6px rgba(111,164,206,0.5); }
 .indicator-cyberpunk { background: #ff2d78; box-shadow: 0 0 8px rgba(255,45,120,0.6); }
+.indicator-cyber-hacker { background: #00FF41; box-shadow: 0 0 8px rgba(0,255,65,0.6); }
+.indicator-cyber-corp { background: #08F7FE; box-shadow: 0 0 8px rgba(8,247,254,0.6); }
+.indicator-cyber-game { background: #FF0055; box-shadow: 0 0 8px rgba(255,0,85,0.6); }
 .indicator-rgb { background: linear-gradient(135deg, #a855f7, #06b6d4); box-shadow: 0 0 8px rgba(168,85,247,0.5); }
 .indicator-anime { background: #f472b6; box-shadow: 0 0 6px rgba(244,114,182,0.5); }
 .indicator-stream { background: #f97316; box-shadow: 0 0 6px rgba(249,115,22,0.5); }
 .indicator-aurora { background: linear-gradient(135deg, #58d8cc, #7f8dff); box-shadow: 0 0 8px rgba(88,216,204,0.55); }
 .indicator-graphite { background: linear-gradient(135deg, #9da9b8, #677283); box-shadow: 0 0 8px rgba(157,169,184,0.45); }
 .indicator-sakura { background: linear-gradient(135deg, #f08bc2, #c9a7ff); box-shadow: 0 0 8px rgba(240,139,194,0.5); }
+.indicator-haru { background: linear-gradient(135deg, #87CEEB, #FFB7C5); box-shadow: 0 0 8px rgba(135,206,235,0.5); }
+.indicator-mugen { background: linear-gradient(135deg, #B088FF, #78D6FF); box-shadow: 0 0 8px rgba(176,136,255,0.5); }
 .indicator-ocean { background: linear-gradient(135deg, #4fb0df, #2cd4c7); box-shadow: 0 0 8px rgba(79,176,223,0.5); }
 .indicator-ember { background: linear-gradient(135deg, #ff8b4a, #ffd26a); box-shadow: 0 0 8px rgba(255,139,74,0.55); }
 

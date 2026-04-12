@@ -84,6 +84,91 @@
   transform: perspective(1300px) rotateX(0.8deg);
 }
 
+.frameCyberHacker {
+  padding-top: 70px;
+}
+
+.frameCyberHacker::before {
+  inset: 14px;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 255, 65, 0.4);
+  box-shadow:
+    0 0 0 1px rgba(0, 143, 17, 0.3) inset,
+    0 0 30px rgba(0, 255, 65, 0.15);
+}
+
+.frameCyberHacker::after {
+  inset: 14px;
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, rgba(0, 255, 65, 0.05), transparent 40%),
+    repeating-linear-gradient(
+      0deg,
+      rgba(0, 255, 65, 0.03) 0,
+      rgba(0, 255, 65, 0.03) 2px,
+      transparent 2px,
+      transparent 4px
+    );
+}
+
+.frameCyberHacker :global(section) {
+  width: min(1200px, 100%);
+  margin: 0 auto;
+}
+
+.frameCyberCorp {
+  padding-top: 70px;
+}
+
+.frameCyberCorp::before {
+  inset: 14px;
+  border-radius: 16px;
+  border: 1px solid rgba(8, 247, 254, 0.4);
+  box-shadow:
+    0 0 0 1px rgba(9, 251, 211, 0.2) inset,
+    0 0 40px rgba(8, 247, 254, 0.2);
+}
+
+.frameCyberCorp::after {
+  inset: 14px;
+  border-radius: 16px;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(8, 247, 254, 0.05), transparent 60%);
+}
+
+.frameCyberCorp :global(section) {
+  width: min(1240px, 100%);
+  margin: 0 auto;
+}
+
+.frameCyberGame {
+  padding-top: 70px;
+}
+
+.frameCyberGame::before {
+  inset: 14px;
+  border-radius: 0;
+  border: 2px solid rgba(255, 0, 85, 0.5);
+  box-shadow:
+    0 0 0 2px rgba(255, 0, 60, 0.2) inset,
+    0 0 50px rgba(255, 0, 85, 0.25);
+  clip-path: polygon(0 10px, 10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%);
+}
+
+.frameCyberGame::after {
+  inset: 14px;
+  border-radius: 0;
+  background:
+    linear-gradient(45deg, rgba(255, 0, 85, 0.1), transparent 30%),
+    linear-gradient(225deg, rgba(255, 0, 60, 0.1), transparent 30%);
+}
+
+.frameCyberGame :global(section) {
+  width: min(1280px, 100%);
+  margin: 0 auto;
+  transform: perspective(1000px) rotateX(1deg);
+}
+
 .frameRgb {
   padding-top: 66px;
 }
@@ -134,8 +219,8 @@
 .frameAnime::after {
   inset: 18px;
   border-radius: 36px;
-  border: 1px solid rgba(255, 255, 255, 0.48);
-  box-shadow: 0 18px 44px rgba(61, 36, 72, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 18px 50px rgba(255, 182, 193, 0.25);
 }
 
 .frameAnime :global(section) {
@@ -158,10 +243,10 @@
 .frameStream::after {
   inset: 16px;
   border-radius: 30px;
-  border: 1px solid rgba(255, 196, 122, 0.25);
+  border: 1px solid rgba(255, 196, 122, 0.4);
   box-shadow:
-    0 18px 44px rgba(6, 10, 16, 0.24),
-    0 0 22px rgba(255, 161, 80, 0.14) inset;
+    0 20px 50px rgba(6, 10, 16, 0.4),
+    0 0 30px rgba(255, 161, 80, 0.25) inset;
 }
 
 .frameStream :global(section) {
@@ -185,7 +270,8 @@
 .frameAurora::after {
   inset: 20px;
   border-radius: 34px;
-  border: 1px solid rgba(151, 218, 255, 0.28);
+  border: 1px solid rgba(151, 218, 255, 0.4);
+  box-shadow: 0 0 40px rgba(129, 140, 255, 0.2);
 }
 
 .frameAurora :global(section) {
@@ -206,8 +292,8 @@
 .frameGraphite::after {
   inset: 18px;
   border-radius: 26px;
-  border: 1px solid rgba(179, 193, 209, 0.26);
-  box-shadow: 0 16px 38px rgba(6, 10, 16, 0.3);
+  border: 1px solid rgba(179, 193, 209, 0.4);
+  box-shadow: 0 20px 45px rgba(6, 10, 16, 0.4), 0 0 20px rgba(170, 186, 210, 0.1) inset;
 }
 
 .frameGraphite :global(section) {
@@ -230,12 +316,64 @@
 .frameSakura::after {
   inset: 16px;
   border-radius: 38px;
-  border: 1px solid rgba(255, 224, 241, 0.48);
-  box-shadow: 0 16px 42px rgba(66, 34, 86, 0.2);
+  border: 1px solid rgba(255, 224, 241, 0.6);
+  box-shadow: 0 20px 50px rgba(255, 182, 193, 0.3);
 }
 
 .frameSakura :global(section) {
   width: min(1060px, 100%);
+  margin: 0 auto;
+}
+
+.frameHaru {
+  padding-top: 84px;
+}
+
+.frameHaru::before {
+  inset: 18px;
+  border-radius: 36px;
+  background:
+    radial-gradient(circle at 15% 15%, rgba(240, 248, 255, 0.6), transparent 50%),
+    radial-gradient(circle at 85% 85%, rgba(255, 240, 245, 0.5), transparent 50%);
+}
+
+.frameHaru::after {
+  inset: 18px;
+  border-radius: 36px;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow: 0 15px 40px rgba(135, 206, 235, 0.15);
+}
+
+.frameHaru :global(section) {
+  width: min(1040px, 100%);
+  margin: 0 auto;
+}
+
+.frameMugen {
+  padding-top: 76px;
+}
+
+.frameMugen::before {
+  inset: 18px;
+  border-radius: 34px;
+  background:
+    radial-gradient(circle at 10% 20%, rgba(176, 136, 255, 0.25), transparent 40%),
+    radial-gradient(circle at 90% 80%, rgba(120, 214, 255, 0.2), transparent 40%);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.frameMugen::after {
+  inset: 18px;
+  border-radius: 34px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 
+    0 20px 50px rgba(20, 10, 40, 0.3),
+    0 0 30px rgba(176, 136, 255, 0.2) inset;
+}
+
+.frameMugen :global(section) {
+  width: min(1100px, 100%);
   margin: 0 auto;
 }
 
@@ -254,10 +392,10 @@
 .frameOcean::after {
   inset: 18px;
   border-radius: 30px;
-  border: 1px solid rgba(138, 223, 255, 0.3);
+  border: 1px solid rgba(138, 223, 255, 0.4);
   box-shadow:
-    0 18px 44px rgba(2, 12, 22, 0.34),
-    0 0 26px rgba(90, 203, 247, 0.16) inset;
+    0 20px 50px rgba(2, 12, 22, 0.4),
+    0 0 35px rgba(90, 203, 247, 0.25) inset;
 }
 
 .frameOcean :global(section) {
@@ -280,10 +418,10 @@
 .frameEmber::after {
   inset: 16px;
   border-radius: 30px;
-  border: 1px solid rgba(255, 191, 124, 0.28);
+  border: 1px solid rgba(255, 191, 124, 0.4);
   box-shadow:
-    0 18px 46px rgba(20, 8, 4, 0.34),
-    0 0 26px rgba(255, 156, 74, 0.16) inset;
+    0 20px 50px rgba(20, 8, 4, 0.5),
+    0 0 35px rgba(255, 156, 74, 0.25) inset;
 }
 
 .frameEmber :global(section) {
@@ -329,12 +467,17 @@
   }
 
   .frameCyberpunk,
+  .frameCyberHacker,
+  .frameCyberCorp,
+  .frameCyberGame,
   .frameRgb,
   .frameAnime,
   .frameStream,
   .frameAurora,
   .frameGraphite,
   .frameSakura,
+  .frameHaru,
+  .frameMugen,
   .frameOcean,
   .frameEmber {
     padding-top: 56px;
@@ -342,6 +485,12 @@
 
   .frameCyberpunk::before,
   .frameCyberpunk::after,
+  .frameCyberHacker::before,
+  .frameCyberHacker::after,
+  .frameCyberCorp::before,
+  .frameCyberCorp::after,
+  .frameCyberGame::before,
+  .frameCyberGame::after,
   .frameRgb::before,
   .frameRgb::after,
   .frameAnime::before,
@@ -354,6 +503,10 @@
   .frameGraphite::after,
   .frameSakura::before,
   .frameSakura::after,
+  .frameHaru::before,
+  .frameHaru::after,
+  .frameMugen::before,
+  .frameMugen::after,
   .frameOcean::before,
   .frameOcean::after,
   .frameEmber::before,

@@ -5,6 +5,25 @@ import { useEffect, useMemo, useState } from 'react'
 import styles from './Backdrop.module.css'
 import type { FxMode } from '@/types/uiMode'
 
+const VIDEO_STYLES = new Set<FxMode>([
+  'glass',
+  'liquid',
+  'cyberpunk',
+  'cyber-hacker',
+  'cyber-corp',
+  'cyber-game',
+  'rgb',
+  'anime',
+  'haru',
+  'mugen',
+  'stream',
+  'aurora',
+  'graphite',
+  'sakura',
+  'ocean',
+  'ember',
+])
+
 interface BackdropProps {
   fxMode: FxMode
   perfMode: 'normal' | 'safe'
@@ -12,30 +31,18 @@ interface BackdropProps {
   site?: boolean
 }
 
-const IMAGE_CANDIDATES = [
-  '/media/home-bg/test1.jpg',
-  '/images/hero-abstract.jpg',
-]
-
-const VIDEO_CANDIDATES = [
-  '/media/home-bg/楼梯不变云动视频.mp4',
-  '/media/home-bg/Bg1.mp4',
-]
-
 export default function Backdrop({ fxMode, perfMode, site = false }: BackdropProps) {
   const [visible, setVisible] = useState(false)
   const [videoFailed, setVideoFailed] = useState(false)
-  const [videoIndex, setVideoIndex] = useState(0)
   const [lowFps, setLowFps] = useState(false)
   const [videoReady, setVideoReady] = useState(false)
 
-  const isActive = fxMode === 'glass' || fxMode === 'liquid'
+  const isActive = VIDEO_STYLES.has(fxMode)
   const isLiquidActive = fxMode === 'liquid'
-  const imageSrc = IMAGE_CANDIDATES[0]
-  const videoSrc = useMemo(
-    () => VIDEO_CANDIDATES[Math.min(videoIndex, VIDEO_CANDIDATES.length - 1)],
-    [videoIndex],
-  )
+  const imageSrc = `/media/home-bg/bg-${fxMode}.jpg`
+  const videoSrc = useMemo(() => {
+    return `/media/home-bg/bg-${fxMode}.mp4`
+  }, [fxMode])
   const shouldUseVideo = !videoFailed
   const shouldShowAura = isLiquidActive && perfMode !== 'safe' && !site
 
@@ -50,7 +57,6 @@ export default function Backdrop({ fxMode, perfMode, site = false }: BackdropPro
   useEffect(() => {
     if (!isActive) {
       setVideoFailed(false)
-      setVideoIndex(0)
       setLowFps(false)
       setVideoReady(false)
     }
@@ -120,14 +126,7 @@ export default function Backdrop({ fxMode, perfMode, site = false }: BackdropPro
           onLoadedData={() => setVideoReady(true)}
           onCanPlay={() => setVideoReady(true)}
           onError={() => {
-            setVideoIndex((prev) => {
-              const next = prev + 1
-              if (next >= VIDEO_CANDIDATES.length) {
-                setVideoFailed(true)
-                return prev
-              }
-              return next
-            })
+            setVideoFailed(true)
           }}
         />
       ) : (

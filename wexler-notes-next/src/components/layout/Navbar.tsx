@@ -52,6 +52,18 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
           <FxToggle fxMode={fxMode} onChange={setFxMode} />
           <LayoutToggle layoutMode={layoutMode} onChange={setLayoutMode} />
           <Link
+            href="/about"
+            className={`${styles.styleLabBtn} ${pathname === '/about' ? styles.styleLabActive : ''}`}
+            title="个人空间"
+            aria-label="个人空间"
+          >
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+            <span className={styles.styleLabText}>个人空间</span>
+          </Link>
+          <Link
             href="/style-lab"
             className={`${styles.styleLabBtn} ${pathname === '/style-lab' ? styles.styleLabActive : ''}`}
             title="风格展厅"

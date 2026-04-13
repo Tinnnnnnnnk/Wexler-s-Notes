@@ -115,8 +115,11 @@ export function UiModeProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (typeof document === 'undefined') return
 
+    const isStyleLab = pathname === '/style-lab'
+
     ;(Object.keys(FX_CLASSES) as FxMode[]).forEach((mode) => {
-      document.documentElement.classList.toggle(FX_CLASSES[mode], mode === fxMode)
+      // Don't apply global mode classes on Style Lab page to keep it neutral
+      document.documentElement.classList.toggle(FX_CLASSES[mode], !isStyleLab && mode === fxMode)
     })
 
     ;(Object.keys(LAYOUT_CLASSES) as LayoutMode[]).forEach((mode) => {
@@ -124,7 +127,7 @@ export function UiModeProvider({ children }: { children: React.ReactNode }) {
     })
 
     document.documentElement.classList.toggle('home-fx-performance-safe', perfMode === 'safe')
-  }, [fxMode, layoutMode, perfMode, isHome])
+  }, [fxMode, layoutMode, perfMode, isHome, pathname])
 
   const setFxMode = useCallback((mode: FxMode) => {
     const next = normalizeFxMode(mode)

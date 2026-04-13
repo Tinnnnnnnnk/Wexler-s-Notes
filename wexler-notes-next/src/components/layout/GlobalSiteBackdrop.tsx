@@ -16,6 +16,9 @@ export default function GlobalSiteBackdrop() {
   // Skip rendering on home page as it has its own logic
   if (pathname === '/') return null
   
+  // Skip on Style Lab to keep the preview environment neutral
+  if (pathname === '/style-lab') return null
+  
   // Skip on API routes
   if (pathname.startsWith('/api')) return null
 

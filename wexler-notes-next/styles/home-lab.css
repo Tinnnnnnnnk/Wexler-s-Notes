@@ -1385,6 +1385,74 @@ html.home-liquid-mode .home-root::before {
     radial-gradient(circle at 50% 100%, rgba(180, 212, 246, 0.06), transparent 52%);
 }
 
+/* =============================================
+   Enhanced Modes Global Support
+   Apply content visual effects (text-shadows, filters) globally based on fxMode
+   ============================================= */
+
+/* Cyberpunk Mode: Neon Glow */
+html.home-cyberpunk-mode .docArticle h1,
+html.home-cyberpunk-mode .docArticle h2,
+html.home-cyberpunk-mode .docArticle h3,
+html.home-cyber-hacker-mode .docArticle h1,
+html.home-cyber-hacker-mode .docArticle h2,
+html.home-cyber-hacker-mode .docArticle h3,
+html.home-cyber-game-mode .docArticle h1,
+html.home-cyber-game-mode .docArticle h2,
+html.home-cyber-game-mode .docArticle h3 {
+  text-shadow: 0 0 16px rgba(255, 66, 149, 0.35);
+}
+
+/* RGB Mode: Cyan/Blue Glow */
+html.home-rgb-mode .docArticle h1,
+html.home-rgb-mode .docArticle h2,
+html.home-rgb-mode .docArticle h3 {
+  text-shadow: 0 0 12px rgba(117, 192, 255, 0.3);
+}
+
+/* Anime/Sakura/Haru: Spacing & Atmosphere */
+html.home-anime-mode .docArticle,
+html.home-sakura-mode .docArticle,
+html.home-haru-mode .docArticle {
+  letter-spacing: 0.015em;
+}
+
+/* Mode-based Filters */
+html.home-graphite-mode .app-main {
+  filter: saturate(0.92) contrast(1.05);
+}
+
+html.home-ocean-mode .app-main,
+html.home-aurora-mode .app-main {
+  filter: saturate(1.05);
+}
+
+/* Mode-based Article Background Adjustments for readability */
+html.home-cyberpunk-mode .docArticle,
+html.home-cyber-hacker-mode .docArticle,
+html.home-cyber-corp-mode .docArticle,
+html.home-cyber-game-mode .docArticle {
+  background: rgba(10, 15, 24, 0.65) !important;
+  border-color: rgba(0, 240, 255, 0.25) !important;
+}
+
+html.home-rgb-mode .docArticle {
+  background: rgba(15, 23, 42, 0.6) !important;
+}
+
+html.home-aurora-mode .docArticle,
+html.home-ocean-mode .docArticle,
+html.home-mugen-mode .docArticle {
+  background: rgba(255, 255, 255, 0.12) !important;
+  backdrop-filter: blur(20px) saturate(160%);
+}
+
+html.home-aurora-mode.dark .docArticle,
+html.home-ocean-mode.dark .docArticle,
+html.home-mugen-mode.dark .docArticle {
+  background: rgba(15, 25, 40, 0.25) !important;
+}
+
 @media (max-width: 960px) {
   html.home-glass-mode .docArticle,
   html.home-liquid-mode .docArticle {

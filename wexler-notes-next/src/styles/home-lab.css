@@ -13,28 +13,28 @@ html.home-default-mode {
   --home-fx-bg: #eef4f9;
 }
 
-html.home-default-mode body {
+html.home-default-mode {
   /* 仅背景，无额外特效 */
 }
 
 /* ============================================================
    2. 晶透 (glass) - 玻璃磨砂 + 视频背景
    ============================================================ */
-html.home-glass-mode body {
+html.home-glass-mode {
   background: #0a1520;
 }
 
 /* ============================================================
    3. 液态 (liquid) - 流动背景 + 视频 + BGM
    ============================================================ */
-html.home-liquid-mode body {
+html.home-liquid-mode {
   background: #050d18;
 }
 
 /* ============================================================
    4. 赛博朋克 (cyberpunk) - 霓虹暗夜
    ============================================================ */
-html.home-cyberpunk-mode body {
+html.home-cyberpunk-mode {
   background: #080b14;
   background-image:
     linear-gradient(120deg, rgba(8, 10, 18, 0.72) 0%, rgba(8, 10, 18, 0.6) 100%),
@@ -97,7 +97,7 @@ html.home-cyberpunk-mode::before {
 /* ============================================================
    5. RGB (rgb) - 流光渐变边框
    ============================================================ */
-html.home-rgb-mode body {
+html.home-rgb-mode {
   background: #111827;
   background-image:
     linear-gradient(120deg, rgba(10, 14, 26, 0.68) 0%, rgba(10, 14, 26, 0.56) 100%),
@@ -125,7 +125,7 @@ html.home-rgb-mode .main-navbar a {
 /* ============================================================
    6. 动漫 (anime) - 干净明亮，日系插画感
    ============================================================ */
-html.home-anime-mode body {
+html.home-anime-mode {
   background:
     linear-gradient(160deg, rgba(254, 249, 255, 0.5) 0%, rgba(253, 244, 255, 0.42) 40%, rgba(252, 231, 243, 0.44) 100%),
     url('/media/home-bg/bg-anime.jpg');
@@ -166,7 +166,7 @@ html.home-anime-mode::after {
 /* ============================================================
    7. 流媒体 (stream) - 层次卡片，横向节奏
    ============================================================ */
-html.home-stream-mode body {
+html.home-stream-mode {
   background: #0f172a;
   background-image:
     linear-gradient(120deg, rgba(12, 18, 30, 0.7) 0%, rgba(12, 18, 30, 0.56) 100%),
@@ -196,7 +196,7 @@ html.home-stream-mode .main-navbar a {
 /* ============================================================
    8. Aurora - aurora light flow
    ============================================================ */
-html.home-aurora-mode body {
+html.home-aurora-mode {
   background: #071322;
   background-image:
     linear-gradient(125deg, rgba(6, 16, 30, 0.62) 0%, rgba(6, 16, 30, 0.5) 100%),
@@ -222,7 +222,7 @@ html.home-aurora-mode .main-navbar a {
 /* ============================================================
    9. Graphite - monochrome engineering look
    ============================================================ */
-html.home-graphite-mode body {
+html.home-graphite-mode {
   background: #121822;
   background-image:
     linear-gradient(125deg, rgba(14, 18, 24, 0.62) 0%, rgba(14, 18, 24, 0.54) 100%),
@@ -248,7 +248,7 @@ html.home-graphite-mode .main-navbar a {
 /* ============================================================
    10. Sakura - soft pink glass
    ============================================================ */
-html.home-sakura-mode body {
+html.home-sakura-mode {
   background: #2a1f2e;
   background-image:
     linear-gradient(145deg, rgba(43, 27, 48, 0.46) 0%, rgba(43, 27, 48, 0.36) 100%),
@@ -274,7 +274,7 @@ html.home-sakura-mode .main-navbar a {
 /* ============================================================
    11. Ocean - deep sea tech blue
    ============================================================ */
-html.home-ocean-mode body {
+html.home-ocean-mode {
   background: #071c2b;
   background-image:
     linear-gradient(125deg, rgba(5, 20, 34, 0.62) 0%, rgba(5, 20, 34, 0.5) 100%),
@@ -300,7 +300,7 @@ html.home-ocean-mode .main-navbar a {
 /* ============================================================
    12. Ember - warm cinematic contrast
    ============================================================ */
-html.home-ember-mode body {
+html.home-ember-mode {
   background: #2a150d;
   background-image:
     linear-gradient(125deg, rgba(34, 16, 10, 0.66) 0%, rgba(34, 16, 10, 0.54) 100%),
@@ -500,7 +500,7 @@ html.home-ember-mode {
 /* ============================================================
    13. 春日 (haru)
    ============================================================ */
-html.home-haru-mode body {
+html.home-haru-mode {
   background: #fdf5f8;
   background-image:
     linear-gradient(160deg, rgba(255, 255, 255, 0.6) 0%, rgba(255, 240, 245, 0.4) 40%, rgba(235, 248, 255, 0.5) 100%),
@@ -559,7 +559,7 @@ html.dark.home-haru-mode {
 /* ============================================================
    14. 梦境 (mugen)
    ============================================================ */
-html.home-mugen-mode body {
+html.home-mugen-mode {
   background: #0f0a1e;
   background-image:
     linear-gradient(135deg, rgba(16, 10, 30, 0.7) 0%, rgba(20, 15, 40, 0.5) 100%),
@@ -620,7 +620,7 @@ html.dark.home-mugen-mode {
 /* ============================================================
    15. 黑客终端 (cyber-hacker)
    ============================================================ */
-html.home-cyber-hacker-mode body {
+html.home-cyber-hacker-mode {
   background: #020804;
   background-image:
     linear-gradient(180deg, rgba(0, 20, 5, 0.9) 0%, rgba(0, 5, 2, 0.95) 100%),
@@ -678,7 +678,7 @@ html.dark.home-cyber-hacker-mode {
 /* ============================================================
    16. 企业财阀 (cyber-corp)
    ============================================================ */
-html.home-cyber-corp-mode body {
+html.home-cyber-corp-mode {
   background: #010A15;
   background-image:
     linear-gradient(135deg, rgba(1, 10, 21, 0.8) 0%, rgba(0, 5, 10, 0.9) 100%),
@@ -735,7 +735,7 @@ html.dark.home-cyber-corp-mode {
 /* ============================================================
    17. 游戏概念 (cyber-game)
    ============================================================ */
-html.home-cyber-game-mode body {
+html.home-cyber-game-mode {
   background: #0A0002;
   background-image:
     linear-gradient(45deg, rgba(20, 0, 5, 0.8) 0%, rgba(5, 0, 0, 0.95) 100%),
@@ -794,7 +794,7 @@ html.dark.home-cyber-game-mode {
 /* ============================================================
    18. 未来科工 (future-tech)
    ============================================================ */
-html.home-future-tech-mode body {
+html.home-future-tech-mode {
   background: #020b14;
   background-image:
     linear-gradient(135deg, rgba(2, 11, 20, 0.8) 0%, rgba(0, 4, 10, 0.95) 100%),
@@ -1465,4 +1465,10 @@ html.home-anime-mode .home-root h3 {
   100% {
     background-position: 200% 50%;
   }
+}
+
+
+/* Fix mobile overscroll flash */
+html[class*="home-"] body {
+  background: transparent !important;
 }

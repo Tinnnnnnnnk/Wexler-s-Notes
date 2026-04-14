@@ -14,6 +14,7 @@ const ENHANCED_MODES: FxMode[] = [
   'cyber-hacker',
   'cyber-corp',
   'cyber-game',
+  'future-tech',
   'rgb',
   'anime',
   'haru',

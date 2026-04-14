@@ -1402,6 +1402,8 @@ html.home-cyber-corp-mode .home-root::before,
 html.home-cyber-corp-mode .home-root::after,
 html.home-cyber-game-mode .home-root::before,
 html.home-cyber-game-mode .home-root::after,
+html.home-future-tech-mode .home-root::before,
+html.home-future-tech-mode .home-root::after,
 html.home-rgb-mode .home-root::before,
 html.home-rgb-mode .home-root::after,
 html.home-anime-mode .home-root::before,
@@ -1417,7 +1419,8 @@ html.home-mugen-mode .home-root::after {
 html.home-cyberpunk-mode::before,
 html.home-cyber-hacker-mode::before,
 html.home-cyber-corp-mode::before,
-html.home-cyber-game-mode::before {
+html.home-cyber-game-mode::before,
+html.home-future-tech-mode::before {
   content: none !important;
 }
 

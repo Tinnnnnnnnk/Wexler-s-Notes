@@ -11,24 +11,43 @@
   flex: 1;
   position: relative;
   z-index: var(--z-content);
+  max-width: 1600px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 32px 40px;
+  gap: 40px;
 }
 
 /* -------------------- Sidebar -------------------- */
 
 .sidebar {
-  width: var(--sidebar-width);
+  width: 280px;
   flex-shrink: 0;
   position: sticky;
-  top: var(--navbar-height);
-  height: calc(100vh - var(--navbar-height));
+  top: calc(var(--navbar-height) + 32px);
+  height: calc(100vh - var(--navbar-height) - 64px);
   overflow-y: auto;
-  background: var(--site-glass-bg, rgba(255, 255, 255, 0.35));
-  backdrop-filter: blur(var(--site-glass-blur, 14px)) saturate(var(--site-glass-sat, 145%));
-  -webkit-backdrop-filter: blur(var(--site-glass-blur, 14px)) saturate(var(--site-glass-sat, 145%));
-  border-right: 1px solid var(--site-glass-border, rgba(255, 255, 255, 0.5));
-  box-shadow: var(--site-glass-shadow-soft, 0 10px 24px rgba(0, 0, 0, 0.1));
+  background: var(--site-glass-bg-strong, rgba(255, 255, 255, 0.45));
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border: 1px solid var(--site-glass-border, rgba(255, 255, 255, 0.6));
+  border-radius: 24px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04);
   z-index: var(--z-sticky);
-  transition: transform 0.3s ease, opacity 0.3s ease;
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease;
+  
+  /* 隐藏默认滚动条，让侧边栏看起来更高级 */
+  scrollbar-width: none; 
+}
+
+.sidebar::-webkit-scrollbar {
+  display: none;
+}
+
+:global(.dark) .sidebar {
+  background: var(--site-glass-bg-strong, rgba(15, 15, 18, 0.6));
+  border-color: var(--site-glass-border, rgba(255, 255, 255, 0.08));
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
 }
 
 /* perf-safe：sidebar blur 降档 */
@@ -41,7 +60,9 @@
 .main {
   flex: 1;
   min-width: 0;
-  padding: var(--space-8);
+  padding: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 /* -------------------- Overlay -------------------- */
@@ -71,28 +92,25 @@
   position: fixed;
   bottom: var(--space-6);
   right: var(--space-6);
-  width: 48px;
-  height: 48px;
+  width: 56px;
+  height: 56px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(
-    135deg,
-    var(--color-primary-500) 0%,
-    var(--color-primary-600) 100%
-  );
-  border: none;
+  background: var(--oil-accent, #3b82f6);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: var(--radius-full);
   color: white;
-  box-shadow: var(--shadow-lg), 0 0 20px rgba(59, 130, 246, 0.4);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
   cursor: pointer;
   z-index: var(--z-sticky);
-  transition: all var(--motion-normal);
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  backdrop-filter: blur(10px);
 }
 
 .mobileMenuBtn:hover {
-  transform: scale(1.1);
-  box-shadow: var(--shadow-xl), 0 0 30px rgba(59, 130, 246, 0.5);
+  transform: scale(1.05) translateY(-2px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
 }
 
 .mobileMenuBtn:active {
@@ -103,43 +121,45 @@
 
 /* Tablet */
 @media (max-width: 1024px) {
+  .body {
+    padding: 24px;
+    gap: 24px;
+  }
+
   .sidebar {
     position: fixed;
-    left: 0;
-    top: var(--navbar-height);
-    height: calc(100vh - var(--navbar-height));
-    transform: translateX(-100%);
+    left: 24px;
+    top: calc(var(--navbar-height) + 24px);
+    height: calc(100vh - var(--navbar-height) - 48px);
+    transform: translateX(calc(-100% - 48px));
     z-index: var(--z-overlay);
   }
 
   .sidebarOpen {
     transform: translateX(0);
-    box-shadow: var(--shadow-2xl);
-  }
-
-  .main {
-    padding: var(--space-6);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
   }
 }
 
 /* Mobile */
 @media (max-width: 768px) {
-  .main {
-    padding: var(--space-4);
+  .body {
+    padding: 16px;
+    gap: 16px;
+  }
+
+  .sidebar {
+    left: 16px;
+    top: calc(var(--navbar-height) + 16px);
+    height: calc(100vh - var(--navbar-height) - 32px);
+    transform: translateX(calc(-100% - 32px));
+    width: calc(100vw - 32px);
   }
 
   .mobileMenuBtn {
     bottom: var(--space-4);
     right: var(--space-4);
-    width: 44px;
-    height: 44px;
-  }
-}
-
-/* Large Screen */
-@media (min-width: 1400px) {
-  .main {
-    max-width: calc(100% - var(--sidebar-width) - 200px);
-    margin: 0 auto;
+    width: 48px;
+    height: 48px;
   }
 }

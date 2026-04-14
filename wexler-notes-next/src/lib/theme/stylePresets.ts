@@ -278,6 +278,21 @@ export const STYLE_PRESETS: Record<FxMode, StylePreset> = {
     darkAccentColor: '#FF0055',
     darkSecondaryColor: '#7A0026',
   },
+  'future-tech': {
+    id: 'future-tech',
+    labelZh: '未来科工',
+    labelEn: 'Quantum Core',
+    tagline: '高级未来科技感，量子全息数据与空间阵列',
+    category: 'tech',
+    hasVideo: false,
+    hasBgm: false,
+    hasGpuLayer: false,
+    previewType: 'stream',
+    accentColor: '#00D8FF',
+    secondaryColor: '#0055FF',
+    darkAccentColor: '#00D8FF',
+    darkSecondaryColor: '#002B80',
+  },
 }
 
 export const ALL_STYLE_IDS: FxMode[] = [
@@ -288,6 +303,7 @@ export const ALL_STYLE_IDS: FxMode[] = [
   'cyber-hacker',
   'cyber-corp',
   'cyber-game',
+  'future-tech',
   'rgb',
   'anime',
   'haru',
@@ -308,6 +324,7 @@ export const FX_CLASSES: Record<FxMode, string> = {
   'cyber-hacker': 'home-cyber-hacker-mode',
   'cyber-corp': 'home-cyber-corp-mode',
   'cyber-game': 'home-cyber-game-mode',
+  'future-tech': 'home-future-tech-mode',
   rgb: 'home-rgb-mode',
   anime: 'home-anime-mode',
   haru: 'home-haru-mode',

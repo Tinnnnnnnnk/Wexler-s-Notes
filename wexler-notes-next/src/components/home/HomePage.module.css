@@ -169,6 +169,31 @@
   transform: perspective(1000px) rotateX(1deg);
 }
 
+.frameFutureTech {
+  padding-top: 70px;
+}
+
+.frameFutureTech::before {
+  inset: 14px;
+  border-radius: 20px;
+  border: 1px solid rgba(0, 216, 255, 0.4);
+  box-shadow:
+    0 0 0 1px rgba(0, 85, 255, 0.2) inset,
+    0 0 45px rgba(0, 216, 255, 0.2);
+}
+
+.frameFutureTech::after {
+  inset: 14px;
+  border-radius: 20px;
+  background:
+    radial-gradient(circle at 50% 10%, rgba(0, 216, 255, 0.05), transparent 40%);
+}
+
+.frameFutureTech :global(section) {
+  width: min(1180px, 100%);
+  margin: 0 auto;
+}
+
 .frameRgb {
   padding-top: 66px;
 }

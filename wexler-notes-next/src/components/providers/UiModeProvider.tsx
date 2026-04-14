@@ -42,6 +42,7 @@ function normalizeFxMode(value: string): FxMode {
     'cyber-hacker',
     'cyber-corp',
     'cyber-game',
+    'future-tech',
     'rgb',
     'anime',
     'haru',

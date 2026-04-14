@@ -1173,10 +1173,124 @@
   10%, 100% { opacity: 0; transform: rotate(-15deg) scaleX(1); }
 }
 
+/* --- Future Tech (未来科工) --- */
+.futureTechBg,
+.futureTechGrid,
+.futureTechRings,
+.futureTechRing,
+.futureTechScanline,
+.futureTechHexagon,
+.futureTechBeam {
+  position: absolute;
+}
+
+.futureTechBg {
+  inset: 0;
+  background: radial-gradient(circle at 50% 100%, rgba(0, 216, 255, 0.08), transparent 60%);
+}
+
+.futureTechGrid {
+  inset: 0;
+  background:
+    linear-gradient(rgba(0, 216, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 216, 255, 0.05) 1px, transparent 1px);
+  background-size: 60px 60px;
+  transform: perspective(800px) rotateX(45deg);
+  transform-origin: bottom center;
+  animation: gridAdvance 10s linear infinite;
+  opacity: 0.6;
+}
+
+@keyframes gridAdvance {
+  0% { background-position: 0 0; }
+  100% { background-position: 0 60px; }
+}
+
+.futureTechRings {
+  top: 50%;
+  left: 50%;
+  width: 100vw;
+  height: 100vh;
+  transform: translate(-50%, -50%);
+  position: absolute;
+  pointer-events: none;
+}
+
+.futureTechRing {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 80vw;
+  height: 80vw;
+  max-width: 800px;
+  max-height: 800px;
+  border: 1px solid rgba(0, 216, 255, 0.2);
+  border-radius: 50%;
+  box-shadow: inset 0 0 40px rgba(0, 136, 255, 0.1), 0 0 20px rgba(0, 216, 255, 0.1);
+  transform-origin: center;
+  animation: rotateTechRing linear infinite;
+}
+
+@keyframes rotateTechRing {
+  0% { transform: translate(-50%, -50%) rotateZ(0deg) rotateX(70deg) rotateY(10deg); }
+  100% { transform: translate(-50%, -50%) rotateZ(360deg) rotateX(70deg) rotateY(10deg); }
+}
+
+.futureTechScanline {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: rgba(0, 216, 255, 0.3);
+  box-shadow: 0 0 20px rgba(0, 216, 255, 0.5);
+  animation: scanTech 6s ease-in-out infinite alternate;
+}
+
+@keyframes scanTech {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(100vh); }
+}
+
+.futureTechHexagon {
+  width: 12px;
+  height: 14px;
+  background: rgba(0, 216, 255, 0.1);
+  border: 1px solid rgba(0, 216, 255, 0.3);
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  left: calc((100% / max(1, var(--spread))) * var(--i));
+  top: calc(100% * (var(--i) * 3 % 11) / 10);
+  box-shadow: 0 0 10px rgba(0, 216, 255, 0.2);
+  animation: floatHex calc(8s + var(--i) * 2s) ease-in-out infinite alternate;
+}
+
+@keyframes floatHex {
+  0% { transform: translateY(0) rotate(0deg) scale(0.8); opacity: 0.3; }
+  100% { transform: translateY(-40px) rotate(60deg) scale(1.2); opacity: 0.8; }
+}
+
+.futureTechBeam {
+  width: 2px;
+  height: 150px;
+  left: calc((100% / 6) * var(--i));
+  top: -150px;
+  background: linear-gradient(to bottom, transparent, #00D8FF, #fff);
+  opacity: 0.8;
+  animation: beamDrop calc(5s + var(--i) * 1.5s) ease-in infinite;
+  animation-delay: calc(var(--i) * 0.5s);
+}
+
+@keyframes beamDrop {
+  0% { transform: translateY(0); opacity: 1; }
+  10% { opacity: 1; }
+  100% { transform: translateY(150vh); opacity: 0; }
+}
+
 .safe .hackerDigitalRain,
 .safe .corpRing,
 .safe .gameSlash,
-.safe .gameGlitch {
+.safe .gameGlitch,
+.safe .futureTechBeam,
+.safe .futureTechRings {
   display: none;
 }
 

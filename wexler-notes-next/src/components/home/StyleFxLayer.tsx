@@ -124,6 +124,26 @@ export default function StyleFxLayer({ fxMode, perfMode }: StyleFxLayerProps) {
         </>
       )}
 
+      {fxMode === 'future-tech' && (
+        <>
+          <span className={styles.futureTechBg} />
+          <span className={styles.futureTechGrid} />
+          <div className={styles.futureTechRings}>
+            <div className={styles.futureTechRing} style={{ animationDuration: '20s', transform: 'rotateX(70deg) rotateY(10deg)' }} />
+            <div className={styles.futureTechRing} style={{ animationDuration: '25s', animationDirection: 'reverse', transform: 'rotateX(70deg) rotateY(-10deg) scale(1.5)' }} />
+          </div>
+          <span className={styles.futureTechScanline} />
+          <div className={styles.particleField}>
+            {Array.from({ length: safe ? 10 : 25 }).map((_, idx) => (
+              <span key={`futureTechHex-${idx}`} className={styles.futureTechHexagon} style={particleStyle(idx, safe ? 10 : 25)} />
+            ))}
+            {!safe && Array.from({ length: 6 }).map((_, idx) => (
+              <span key={`futureTechBeam-${idx}`} className={styles.futureTechBeam} style={particleStyle(idx, 6)} />
+            ))}
+          </div>
+        </>
+      )}
+
       {fxMode === 'rgb' && (
         <>
           <span className={styles.rgbBackground} />

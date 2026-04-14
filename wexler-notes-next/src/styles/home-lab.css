@@ -792,6 +792,64 @@ html.dark.home-cyber-game-mode {
 }
 
 /* ============================================================
+   18. 未来科工 (future-tech)
+   ============================================================ */
+html.home-future-tech-mode body {
+  background: #020b14;
+  background-image:
+    linear-gradient(135deg, rgba(2, 11, 20, 0.8) 0%, rgba(0, 4, 10, 0.95) 100%),
+    url('/media/home-bg/bg-future-tech.jpg'); /* 深空蓝未来科技壁纸 */
+  background-size: cover, cover;
+  background-position: center, center;
+  background-attachment: scroll;
+}
+
+html.home-future-tech-mode .main-navbar {
+  background: rgba(2, 11, 20, 0.85) !important;
+  border-bottom: 1px solid rgba(0, 216, 255, 0.4) !important;
+  box-shadow: 0 2px 20px rgba(0, 216, 255, 0.15) !important;
+}
+
+html.home-future-tech-mode .main-navbar .title,
+html.home-future-tech-mode .main-navbar a {
+  color: #00D8FF !important;
+  text-shadow: 0 0 10px rgba(0, 216, 255, 0.5);
+  letter-spacing: 1.5px;
+}
+
+html.home-future-tech-mode {
+  --site-glass-bg: rgba(2, 15, 28, 0.6);
+  --site-glass-bg-strong: rgba(2, 22, 40, 0.8);
+  --site-glass-bg-soft: rgba(2, 10, 20, 0.4);
+  --site-glass-chip-bg: rgba(0, 216, 255, 0.15);
+  --site-glass-border: rgba(0, 216, 255, 0.4);
+  --site-glass-border-muted: rgba(0, 216, 255, 0.2);
+  --site-glass-shadow: 0 10px 40px rgba(0, 20, 40, 0.6);
+  --site-glass-shadow-soft: 0 5px 20px rgba(0, 20, 40, 0.4);
+  --site-glass-blur: 20px;
+  --site-glass-sat: 130%;
+  --oil-accent: #00D8FF;
+  --oil-accent-2: #0088FF;
+  --color-primary-400: #66E8FF;
+  --color-primary-500: #00D8FF;
+  --color-primary-600: #00AACC;
+  --color-primary-700: #007799;
+}
+
+html.dark.home-future-tech-mode {
+  --site-glass-bg: rgba(2, 10, 20, 0.7);
+  --site-glass-bg-strong: rgba(2, 15, 30, 0.9);
+  --site-glass-bg-soft: rgba(2, 6, 12, 0.5);
+  --site-glass-chip-bg: rgba(0, 216, 255, 0.2);
+  --site-glass-border: rgba(0, 216, 255, 0.5);
+  --site-glass-border-muted: rgba(0, 216, 255, 0.25);
+  --site-glass-shadow: 0 15px 50px rgba(0, 10, 25, 0.8);
+  --site-glass-shadow-soft: 0 8px 25px rgba(0, 10, 25, 0.5);
+  --oil-accent: #00D8FF;
+  --oil-accent-2: #0088FF;
+}
+
+/* ============================================================
    性能安全模式降级
    ============================================================ */
 html.home-fx-performance-safe.home-anime-mode::after {

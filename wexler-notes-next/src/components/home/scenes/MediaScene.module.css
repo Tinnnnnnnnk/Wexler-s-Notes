@@ -12,14 +12,21 @@
   gap: 4rem;
 }
 
-/* --- Editorial Header --- */
+/* --- Editorial Header (Glass Optimized) --- */
 .hero {
   border-bottom: 2px solid var(--oil-ink);
-  padding-bottom: 3rem;
+  padding-bottom: 3.5rem;
+  background: rgba(255, 255, 255, 0.15);
+  padding: 3rem;
+  border-radius: 32px;
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.4);
 }
 
 :global(.dark) .hero {
-  border-bottom-color: #ffffff;
+  background: rgba(10, 10, 15, 0.3);
+  border-color: rgba(255, 255, 255, 0.06);
 }
 
 .issue {
@@ -36,7 +43,7 @@
   line-height: 0.85;
   letter-spacing: -0.05em;
   color: var(--oil-ink);
-  margin-bottom: 2rem;
+  margin-bottom: 2.5rem;
   text-transform: uppercase;
 }
 
@@ -130,17 +137,31 @@
   }
 }
 
+/* Main Feature (Glass Optimized) */
 .mainFeature {
   display: flex;
   flex-direction: column;
   gap: 2rem;
+  background: rgba(255, 255, 255, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 24px;
+  padding: 1.5rem;
+  backdrop-filter: blur(14px) saturate(150%);
+  -webkit-backdrop-filter: blur(14px) saturate(150%);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.03);
+}
+
+:global(.dark) .mainFeature {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.06);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
 }
 
 .featureImage {
   width: 100%;
   aspect-ratio: 16 / 9;
   background: var(--oil-accent);
-  border-radius: 4px;
+  border-radius: 12px;
   position: relative;
   overflow: hidden;
   background-image: linear-gradient(135deg, var(--oil-accent) 0%, var(--oil-accent-2) 100%);
@@ -162,6 +183,11 @@
   font-weight: 900;
   padding: 4px 10px;
   letter-spacing: 0.1em;
+  border-radius: 4px;
+}
+
+.featureContent {
+  padding: 1rem 0.5rem;
 }
 
 .featureContent h2 {
@@ -214,11 +240,22 @@
   border-bottom-color: var(--oil-accent);
 }
 
-/* Sidebar */
+/* Sidebar (Glass Optimized) */
 .sidebar {
   display: flex;
   flex-direction: column;
   gap: 2rem;
+  background: rgba(255, 255, 255, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 24px;
+  padding: 2rem;
+  backdrop-filter: blur(12px) saturate(140%);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+}
+
+:global(.dark) .sidebar {
+  background: rgba(255, 255, 255, 0.02);
+  border-color: rgba(255, 255, 255, 0.05);
 }
 
 .sidebarTitle {
@@ -248,7 +285,7 @@
   gap: 8px;
   padding-bottom: 24px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 :global(.dark) .stackItem {
@@ -284,13 +321,15 @@
   margin-top: 2rem;
   border-top: 2px solid var(--oil-ink);
   border-bottom: 2px solid var(--oil-ink);
-  padding: 1rem 0;
+  padding: 1.2rem 0;
   overflow: hidden;
-  background: transparent;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
 }
 
 :global(.dark) .tickerContainer {
   border-color: #ffffff;
+  background: rgba(255, 255, 255, 0.02);
 }
 
 .ticker {

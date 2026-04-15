@@ -72,51 +72,39 @@ export default function StyleFxLayer({ fxMode, perfMode }: StyleFxLayerProps) {
 
       {fxMode === 'cyber-hacker' && (
         <>
-          <span className={styles.hackerGrid} />
-          <span className={styles.hackerScanline} />
+          <span className={styles.hackerMist} />
+          <span className={styles.hackerStructLines} />
+          <span className={styles.hackerDust} />
+          <span className={styles.hackerPanelStart} />
           <span className={styles.vignetteOverlay} />
           <div className={styles.particleField}>
-            {!safe && Array.from({ length: 15 }).map((_, idx) => (
-              <span key={`digitalRainHacker-${idx}`} className={styles.hackerDigitalRain} style={particleStyle(idx, 15)} />
-            ))}
-            {Array.from({ length: safe ? 5 : 15 }).map((_, idx) => (
-              <span key={`hackerData-${idx}`} className={styles.hackerDataSpark} style={particleStyle(idx, safe ? 5 : 15)} />
-            ))}
+            {!safe && <span className={styles.hackerDataRipples} />}
           </div>
         </>
       )}
 
       {fxMode === 'cyber-corp' && (
         <>
-          <span className={styles.corpBgLayer} />
-          <span className={styles.corpGrid} />
-          <span className={styles.corpDataStream} />
-          <span className={styles.corpDataStream} style={{ left: '75%', animationDelay: '-4s' }} />
-          <span className={styles.corpPulse} />
-          <span className={styles.corpScanline} />
+          <span className={styles.corpMist} />
+          <span className={styles.corpGlassFlow} />
+          <span className={styles.corpMicroParticles} />
+          <span className={styles.corpPanelStart} />
+          <span className={styles.vignetteOverlay} />
           <div className={styles.particleField}>
-            {Array.from({ length: safe ? 8 : 20 }).map((_, idx) => (
-              <span key={`corpNode-${idx}`} className={styles.corpDataNode} style={particleStyle(idx, safe ? 8 : 20)} />
-            ))}
-            {!safe && Array.from({ length: 15 }).map((_, idx) => (
-              <span key={`corpLine-${idx}`} className={styles.corpNetworkLine} style={particleStyle(idx, 15)} />
-            ))}
+            {!safe && <span className={styles.corpDataRipples} />}
           </div>
         </>
       )}
 
       {fxMode === 'cyber-game' && (
         <>
-          <span className={styles.gameGrid} />
-          <span className={styles.gameGlitch} />
-          <span className={styles.gameVignette} />
+          <span className={styles.gameMist} />
+          <span className={styles.gameNetwork} />
+          <span className={styles.gameNodes} />
+          <span className={styles.gamePanelStart} />
+          <span className={styles.vignetteOverlay} />
           <div className={styles.particleField}>
-            {Array.from({ length: safe ? 6 : 15 }).map((_, idx) => (
-              <span key={`gameSpark-${idx}`} className={styles.gameSpark} style={particleStyle(idx, safe ? 6 : 15)} />
-            ))}
-            {!safe && Array.from({ length: 2 }).map((_, idx) => (
-              <span key={`gameSlash-${idx}`} className={styles.gameSlash} style={particleStyle(idx, 2)} />
-            ))}
+            {!safe && <span className={styles.gameMicroParticles} />}
           </div>
         </>
       )}

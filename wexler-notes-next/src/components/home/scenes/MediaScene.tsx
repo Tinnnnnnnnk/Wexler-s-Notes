@@ -1,7 +1,70 @@
 // src/components/home/scenes/MediaScene.tsx
+'use client'
+
+import React, { useRef, useState } from 'react'
 import styles from './MediaScene.module.css'
 
 const TICKER = ['JAVA ECOSYSTEM', 'SPRING BOOT', 'MYSQL ARCHITECTURE', 'DOCKER CONTAINERS', 'NGINX PROXY', 'VITEPRESS', 'GITHUB ACTIONS', 'OBSIDIAN WORKFLOW']
+
+function MagneticButton({ children, href, className }: { children: React.ReactNode, href: string, className: string }) {
+  const ref = useRef<HTMLAnchorElement>(null)
+  const [position, setPosition] = useState({ x: 0, y: 0 })
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (!ref.current) return
+    const { left, top, width, height } = ref.current.getBoundingClientRect()
+    const x = (e.clientX - left - width / 2) * 0.3 // pull strength
+    const y = (e.clientY - top - height / 2) * 0.3
+    setPosition({ x, y })
+  }
+
+  const handleMouseLeave = () => {
+    setPosition({ x: 0, y: 0 })
+  }
+
+  return (
+    <a
+      ref={ref}
+      href={href}
+      className={className}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      style={{ transform: `translate(${position.x}px, ${position.y}px)` }}
+    >
+      {children}
+    </a>
+  )
+}
+
+function ParallaxImage({ className }: { className: string }) {
+  const ref = useRef<HTMLDivElement>(null)
+  const [transform, setTransform] = useState('translate(0, 0) scale(1)')
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!ref.current) return
+    const { left, top, width, height } = ref.current.getBoundingClientRect()
+    const x = (e.clientX - left - width / 2) * -0.05
+    const y = (e.clientY - top - height / 2) * -0.05
+    setTransform(`translate(${x}px, ${y}px) scale(1.05)`)
+  }
+
+  const handleMouseLeave = () => {
+    setTransform('translate(0, 0) scale(1)')
+  }
+
+  return (
+    <div 
+      ref={ref}
+      className={className} 
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      style={{ overflow: 'hidden' }}
+    >
+      <div className={styles.imageOverlay} style={{ transform, transition: 'transform 0.2s ease-out' }} />
+      <span className={styles.featureBadge}>FEATURE STORY</span>
+    </div>
+  )
+}
 
 export default function MediaScene() {
   return (
@@ -15,8 +78,8 @@ export default function MediaScene() {
             <div className={styles.heroFooter}>
               <p className={styles.tagline}>全栈开发与运维知识库 · 以工程交付为中心的个人技术宇宙</p>
               <div className={styles.ctaGroup}>
-                <a href="/docs/面试笔记/MyWeb/构建过程end" className={styles.ctaPrimary}>阅读构建复盘</a>
-                <a href="/docs/Sky-Take-Out/00-后端开发知识大本营" className={styles.ctaSecondary}>进入后端主线</a>
+                <MagneticButton href="/docs/面试笔记/MyWeb/构建过程end" className={styles.ctaPrimary}>阅读构建复盘</MagneticButton>
+                <MagneticButton href="/docs/Sky-Take-Out/00-后端开发知识大本营" className={styles.ctaSecondary}>进入后端主线</MagneticButton>
               </div>
             </div>
           </div>
@@ -25,10 +88,7 @@ export default function MediaScene() {
         {/* Feature Story Section */}
         <div className={styles.contentGrid}>
           <article className={styles.mainFeature}>
-            <div className={styles.featureImage}>
-              <div className={styles.imageOverlay} />
-              <span className={styles.featureBadge}>FEATURE STORY</span>
-            </div>
+            <ParallaxImage className={styles.featureImage} />
             <div className={styles.featureContent}>
               <p className={styles.date}>APRIL 2026</p>
               <h2>从阿里云迁移腾讯云，<br />重构全自动部署链路</h2>

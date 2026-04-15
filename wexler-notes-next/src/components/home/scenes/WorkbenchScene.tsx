@@ -1,5 +1,46 @@
 // src/components/home/scenes/WorkbenchScene.tsx
+'use client'
+
+import React, { useRef } from 'react'
 import styles from './WorkbenchScene.module.css'
+
+interface MatrixCardProps {
+  href: string
+  title: string
+  code: string
+  desc: string
+}
+
+function GlowCard({ href, title, code, desc }: MatrixCardProps) {
+  const cardRef = useRef<HTMLAnchorElement>(null)
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (!cardRef.current) return
+    const rect = cardRef.current.getBoundingClientRect()
+    const x = e.clientX - rect.left
+    const y = e.clientY - rect.top
+    cardRef.current.style.setProperty('--mouse-x', `${x}px`)
+    cardRef.current.style.setProperty('--mouse-y', `${y}px`)
+  }
+
+  return (
+    <a 
+      ref={cardRef}
+      href={href} 
+      className={styles.matrixCard}
+      onMouseMove={handleMouseMove}
+    >
+      <div className={styles.matrixHeader}>
+        <h3>{title}</h3>
+        <span className={styles.matrixCode}>{code}</span>
+      </div>
+      <p>{desc}</p>
+      <div className={styles.matrixFooter}>
+        <span className={styles.matrixLink}>ACCESS MODULE</span>
+      </div>
+    </a>
+  )
+}
 
 export default function WorkbenchScene() {
   return (
@@ -72,16 +113,7 @@ export default function WorkbenchScene() {
               { href: '/docs/Sky-Take-Out/03-数据持久化与 MyBatis 指南', title: '数据层', code: 'DB-03', desc: 'MyBatis、SQL 设计与一致性实践。' },
               { href: '/docs/Sky-Take-Out/04-服务器运维与容器化部署手册', title: '部署运维', code: 'OPS-04', desc: '容器化、Nginx 与服务器迁移实操。' },
             ].map((item) => (
-              <a key={item.href} href={item.href} className={styles.matrixCard}>
-                <div className={styles.matrixHeader}>
-                  <h3>{item.title}</h3>
-                  <span className={styles.matrixCode}>{item.code}</span>
-                </div>
-                <p>{item.desc}</p>
-                <div className={styles.matrixFooter}>
-                  <span className={styles.matrixLink}>ACCESS MODULE</span>
-                </div>
-              </a>
+              <GlowCard key={item.href} {...item} />
             ))}
           </div>
         </main>

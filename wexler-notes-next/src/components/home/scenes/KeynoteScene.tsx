@@ -1,5 +1,69 @@
 // src/components/home/scenes/KeynoteScene.tsx
+'use client'
+
+import React, { useRef, useState } from 'react'
 import styles from './KeynoteScene.module.css'
+
+interface TiltCardProps {
+  href: string
+  cat: string
+  title: string
+  desc: string
+}
+
+function TiltCard({ href, cat, title, desc }: TiltCardProps) {
+  const cardRef = useRef<HTMLAnchorElement>(null)
+  const [style, setStyle] = useState<React.CSSProperties>({})
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (!cardRef.current) return
+    const rect = cardRef.current.getBoundingClientRect()
+    const x = e.clientX - rect.left
+    const y = e.clientY - rect.top
+    const centerX = rect.width / 2
+    const centerY = rect.height / 2
+    
+    const rotateX = ((y - centerY) / centerY) * -5 // Max 5 deg
+    const rotateY = ((x - centerX) / centerX) * 5
+    
+    setStyle({
+      transform: `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`,
+      transition: 'none',
+      zIndex: 10,
+    })
+  }
+
+  const handleMouseLeave = () => {
+    setStyle({
+      transform: `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`,
+      transition: 'transform 0.5s cubic-bezier(0.22, 1, 0.36, 1)',
+      zIndex: 1,
+    })
+  }
+
+  return (
+    <a 
+      ref={cardRef}
+      href={href} 
+      className={styles.card}
+      style={style}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+    >
+      <div className={styles.cardInfo}>
+        <p>{cat}</p>
+        <h3>{title}</h3>
+        <span>{desc}</span>
+      </div>
+      <div className={styles.cardArrow}>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+          <polyline points="7 7 17 7 17 17" />
+          <line x1="7" y1="17" x2="17" y2="7" />
+        </svg>
+      </div>
+    </a>
+  )
+}
 
 export default function KeynoteScene() {
   return (
@@ -73,19 +137,7 @@ export default function KeynoteScene() {
                 desc: '探索现代 Web 技术的边界与体验'
               },
             ].map((item) => (
-              <a key={item.href} href={item.href} className={styles.card}>
-                <div className={styles.cardInfo}>
-                  <p>{item.cat}</p>
-                  <h3>{item.title}</h3>
-                  <span>{item.desc}</span>
-                </div>
-                <div className={styles.cardArrow}>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="7 7 17 7 17 17" />
-                    <line x1="7" y1="17" x2="17" y2="7" />
-                  </svg>
-                </div>
-              </a>
+              <TiltCard key={item.href} {...item} />
             ))}
           </div>
         </div>

@@ -55,21 +55,17 @@ export default function StyleFxLayer({ fxMode, perfMode }: StyleFxLayerProps) {
 
       {fxMode === 'cyberpunk' && (
         <>
-          <span className={styles.cyberGrid} />
-          <span className={styles.scanline} />
-          <span className={`${styles.beam} ${styles.beamA}`} />
-          {!safe && <span className={`${styles.beam} ${styles.beamB}`} />}
-          {!safe && <span className={`${styles.beam} ${styles.beamC}`} />}
-          <span className={styles.sweep} />
-          <span className={styles.glitchOverlay} />
+          <span className={styles.cyberMist} />
+          <span className={styles.cyberGlassFlow} />
+          <span className={styles.cyberStructLines} />
+          <span className={styles.cyberNetwork} />
+          <span className={styles.cyberNodes} />
+          {!safe && <span className={styles.cyberRipple} />}
+          <span className={styles.cyberPanelStart} />
           <span className={styles.vignetteOverlay} />
           <div className={styles.particleField}>
-            {Array.from({ length: safe ? 5 : 25 }).map((_, idx) => (
-              <span key={`data-${idx}`} className={styles.dataSpark} style={particleStyle(idx, safe ? 5 : 25)} />
-            ))}
-            {!safe && Array.from({ length: 8 }).map((_, idx) => (
-              <span key={`digitalRain-${idx}`} className={styles.digitalRain} style={particleStyle(idx, 8)} />
-            ))}
+            {!safe && <span className={styles.cyberMicroParticles} />}
+            {!safe && <span className={styles.cyberDust} />}
           </div>
         </>
       )}

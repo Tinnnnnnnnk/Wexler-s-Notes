@@ -1500,3 +1500,10 @@
 .safe .mugenDust {
   display: none;
 }
+
+/* Performance optimization: safe mode thoroughly disables high-cost CSS filters and mix-blend-modes across all layers */
+.safe * {
+  backdrop-filter: none !important;
+  filter: none !important;
+  mix-blend-mode: normal !important;
+}

@@ -203,6 +203,8 @@ export default function BgmPlayer({ variant = 'floating' }: BgmPlayerProps) {
 
   useEffect(() => {
     const audio = audioRef.current
+    // Performance and bug fix: capture the audio element in the closure 
+    // to ensure it pauses correctly on unmount (React 19 clears refs earlier).
     return () => {
       if (!audio) return
       audio.pause()

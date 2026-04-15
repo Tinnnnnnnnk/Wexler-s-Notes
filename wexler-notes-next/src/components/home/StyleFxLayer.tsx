@@ -72,39 +72,40 @@ export default function StyleFxLayer({ fxMode, perfMode }: StyleFxLayerProps) {
 
       {fxMode === 'cyber-hacker' && (
         <>
-          <span className={styles.hackerMist} />
-          <span className={styles.hackerStructLines} />
-          <span className={styles.hackerDust} />
+          <span className={styles.hackerPhosphor} />
+          <span className={styles.hackerCRT} />
           <span className={styles.hackerPanelStart} />
           <span className={styles.vignetteOverlay} />
           <div className={styles.particleField}>
-            {!safe && <span className={styles.hackerDataRipples} />}
+            {!safe && Array.from({ length: 10 }).map((_, idx) => (
+              <span key={`hexBlock-${idx}`} className={styles.hackerHexBlock} style={particleStyle(idx, 10)} />
+            ))}
           </div>
         </>
       )}
 
       {fxMode === 'cyber-corp' && (
         <>
-          <span className={styles.corpMist} />
-          <span className={styles.corpGlassFlow} />
-          <span className={styles.corpMicroParticles} />
+          <span className={styles.corpQuantumGrid} />
           <span className={styles.corpPanelStart} />
           <span className={styles.vignetteOverlay} />
           <div className={styles.particleField}>
-            {!safe && <span className={styles.corpDataRipples} />}
+            {!safe && Array.from({ length: 5 }).map((_, idx) => (
+              <span key={`monolith-${idx}`} className={styles.corpMonolith} style={particleStyle(idx, 5)} />
+            ))}
           </div>
         </>
       )}
 
       {fxMode === 'cyber-game' && (
         <>
-          <span className={styles.gameMist} />
-          <span className={styles.gameNetwork} />
-          <span className={styles.gameNodes} />
+          <span className={styles.gameOpticFlare} />
           <span className={styles.gamePanelStart} />
           <span className={styles.vignetteOverlay} />
           <div className={styles.particleField}>
-            {!safe && <span className={styles.gameMicroParticles} />}
+            {!safe && Array.from({ length: 3 }).map((_, idx) => (
+              <span key={`reticle-${idx}`} className={styles.gameReticle} style={particleStyle(idx, 3)} />
+            ))}
           </div>
         </>
       )}

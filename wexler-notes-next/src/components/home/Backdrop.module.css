@@ -22,6 +22,8 @@
 
 .image,
 .video {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -37,12 +39,18 @@
   transform: scale(1.05);
   animation: homeFxDrift 18s ease-in-out infinite alternate;
   will-change: transform, opacity;
+  z-index: 1;
+}
+
+.imageHidden {
+  opacity: 0;
 }
 
 .video {
   transform: translateZ(0);
   backface-visibility: hidden;
   image-rendering: auto;
+  z-index: 2;
 }
 
 .videoPending {

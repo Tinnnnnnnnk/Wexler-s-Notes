@@ -12,6 +12,7 @@ const VIDEO_STYLES = new Set<FxMode>([
   'cyber-hacker',
   'cyber-corp',
   'cyber-game',
+  'future-tech',
   'rgb',
   'anime',
   'haru',
@@ -113,8 +114,12 @@ export default function Backdrop({ fxMode, perfMode, site = false }: BackdropPro
       aria-hidden="true"
       style={{ '--home-fx-image': `url("${imageSrc}")` } as React.CSSProperties}
     >
-      {shouldUseVideo ? (
+      {/* Always render image as placeholder, so when video is loading, it shows the poster instead of black screen */}
+      <div className={`${styles.image} ${shouldUseVideo && videoReady ? styles.imageHidden : ''}`} />
+      
+      {shouldUseVideo && (
         <video
+          key={videoSrc}
           className={`${styles.video} ${videoReady ? styles.videoReady : styles.videoPending}`}
           autoPlay
           muted
@@ -129,10 +134,10 @@ export default function Backdrop({ fxMode, perfMode, site = false }: BackdropPro
             setVideoFailed(true)
           }}
         />
-      ) : (
-        <div className={styles.image} />
       )}
+      
       {shouldShowAura && <div className={styles.aura} />}
     </div>
   )
 }
+

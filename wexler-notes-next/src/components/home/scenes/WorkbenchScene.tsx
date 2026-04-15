@@ -2,6 +2,7 @@
 'use client'
 
 import React, { useRef } from 'react'
+import Link from 'next/link'
 import styles from './WorkbenchScene.module.css'
 
 interface MatrixCardProps {
@@ -13,22 +14,31 @@ interface MatrixCardProps {
 
 function GlowCard({ href, title, code, desc }: MatrixCardProps) {
   const cardRef = useRef<HTMLAnchorElement>(null)
+  const rafRef = useRef<number>(0)
 
   const handleMouseMove = (e: React.MouseEvent<HTMLAnchorElement>) => {
     if (!cardRef.current) return
     const rect = cardRef.current.getBoundingClientRect()
     const x = e.clientX - rect.left
     const y = e.clientY - rect.top
-    cardRef.current.style.setProperty('--mouse-x', `${x}px`)
-    cardRef.current.style.setProperty('--mouse-y', `${y}px`)
+    
+    // Performance optimization: Avoid triggering React re-renders on mousemove
+    cancelAnimationFrame(rafRef.current)
+    rafRef.current = requestAnimationFrame(() => {
+      if (cardRef.current) {
+        cardRef.current.style.setProperty('--mouse-x', `${x}px`)
+        cardRef.current.style.setProperty('--mouse-y', `${y}px`)
+      }
+    })
   }
 
   return (
-    <a 
+    <Link 
       ref={cardRef}
       href={href} 
       className={styles.matrixCard}
       onMouseMove={handleMouseMove}
+      prefetch={true}
     >
       <div className={styles.matrixHeader}>
         <h3>{title}</h3>
@@ -38,7 +48,7 @@ function GlowCard({ href, title, code, desc }: MatrixCardProps) {
       <div className={styles.matrixFooter}>
         <span className={styles.matrixLink}>ACCESS MODULE</span>
       </div>
-    </a>
+    </Link>
   )
 }
 
@@ -60,10 +70,10 @@ export default function WorkbenchScene() {
               { href: '/docs/PromptLearning/day1', text: 'Prompt 主线', id: 'AI' },
               { href: '/docs/Info/Software', text: '站点主线', id: 'OS' },
             ].map((item) => (
-              <a key={item.href} href={item.href} className={styles.menuItem}>
+              <Link key={item.href} href={item.href} className={styles.menuItem} prefetch={true}>
                 <span className={styles.menuId}>{item.id}</span>
                 <span className={styles.menuText}>{item.text}</span>
-              </a>
+              </Link>
             ))}
           </nav>
           <div className={styles.sidebarFooter}>
@@ -79,14 +89,14 @@ export default function WorkbenchScene() {
               <p className={styles.subtitle}>Engineering Dashboard v3.0</p>
               <h1 className={styles.mainTitle}>把知识组织成<span className={styles.accent}>可执行系统</span></h1>
             </div>
-            <a href="/docs/面试笔记/MyWeb/构建过程end" className={styles.logBtn}>
+            <Link href="/docs/面试笔记/MyWeb/构建过程end" className={styles.logBtn} prefetch={true}>
               <span>查看改造日志</span>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
                 <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
                 <polyline points="15 3 21 3 21 9" />
                 <line x1="10" y1="14" x2="21" y2="3" />
               </svg>
-            </a>
+            </Link>
           </header>
 
           <div className={styles.kpiGrid}>

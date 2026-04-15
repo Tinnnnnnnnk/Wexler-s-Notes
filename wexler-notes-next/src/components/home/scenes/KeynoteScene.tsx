@@ -1,7 +1,8 @@
 // src/components/home/scenes/KeynoteScene.tsx
 'use client'
 
-import React, { useRef, useState } from 'react'
+import React, { useRef } from 'react'
+import Link from 'next/link'
 import styles from './KeynoteScene.module.css'
 
 interface TiltCardProps {
@@ -13,7 +14,7 @@ interface TiltCardProps {
 
 function TiltCard({ href, cat, title, desc }: TiltCardProps) {
   const cardRef = useRef<HTMLAnchorElement>(null)
-  const [style, setStyle] = useState<React.CSSProperties>({})
+  const rafRef = useRef<number>(0)
 
   const handleMouseMove = (e: React.MouseEvent<HTMLAnchorElement>) => {
     if (!cardRef.current) return
@@ -23,32 +24,37 @@ function TiltCard({ href, cat, title, desc }: TiltCardProps) {
     const centerX = rect.width / 2
     const centerY = rect.height / 2
     
+    // Performance optimization: Avoid triggering React re-renders on mousemove
     const rotateX = ((y - centerY) / centerY) * -5 // Max 5 deg
     const rotateY = ((x - centerX) / centerX) * 5
     
-    setStyle({
-      transform: `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`,
-      transition: 'none',
-      zIndex: 10,
+    cancelAnimationFrame(rafRef.current)
+    rafRef.current = requestAnimationFrame(() => {
+      if (cardRef.current) {
+        cardRef.current.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`
+        cardRef.current.style.transition = 'none'
+        cardRef.current.style.zIndex = '10'
+      }
     })
   }
 
   const handleMouseLeave = () => {
-    setStyle({
-      transform: `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`,
-      transition: 'transform 0.5s cubic-bezier(0.22, 1, 0.36, 1)',
-      zIndex: 1,
-    })
+    cancelAnimationFrame(rafRef.current)
+    if (cardRef.current) {
+      cardRef.current.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`
+      cardRef.current.style.transition = 'transform 0.5s cubic-bezier(0.22, 1, 0.36, 1)'
+      cardRef.current.style.zIndex = '1'
+    }
   }
 
   return (
-    <a 
+    <Link 
       ref={cardRef}
       href={href} 
       className={styles.card}
-      style={style}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
+      prefetch={true}
     >
       <div className={styles.cardInfo}>
         <p>{cat}</p>
@@ -61,7 +67,7 @@ function TiltCard({ href, cat, title, desc }: TiltCardProps) {
           <line x1="7" y1="17" x2="17" y2="7" />
         </svg>
       </div>
-    </a>
+    </Link>
   )
 }
 
@@ -86,13 +92,13 @@ export default function KeynoteScene() {
               这不是碎片的笔记，而是可持续增长的工程资产。
             </p>
             <div className={styles.actions}>
-              <a className={styles.btnSolid} href="/docs/Sky-Take-Out/00-后端开发知识大本营">
+              <Link className={styles.btnSolid} href="/docs/Sky-Take-Out/00-后端开发知识大本营" prefetch={true}>
                 <span>进入知识库</span>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <line x1="5" y1="12" x2="19" y2="12" />
                   <polyline points="12 5 19 12 12 19" />
                 </svg>
-              </a>
+              </Link>
               <a className={styles.btnGhost} href="https://github.com/Tinnnnnnnnk/Wexler-s-Notes">查看 GitHub</a>
             </div>
           </div>
@@ -152,7 +158,7 @@ export default function KeynoteScene() {
               { href: '/docs/面试笔记/MyWeb/构建过程end', text: '构建复盘' },
               { href: '/docs/Info/Software', text: '站点文档' },
             ].map((item) => (
-              <a key={item.href} href={item.href}>{item.text}</a>
+              <Link key={item.href} href={item.href} prefetch={true}>{item.text}</Link>
             ))}
           </div>
         </nav>
@@ -160,4 +166,5 @@ export default function KeynoteScene() {
     </section>
   )
 }
+
 

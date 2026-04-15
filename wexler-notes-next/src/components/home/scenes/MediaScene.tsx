@@ -1,55 +1,84 @@
 // src/components/home/scenes/MediaScene.tsx
 'use client'
 
-import React, { useRef, useState } from 'react'
+import React, { useRef } from 'react'
+import Link from 'next/link'
 import styles from './MediaScene.module.css'
 
 const TICKER = ['JAVA ECOSYSTEM', 'SPRING BOOT', 'MYSQL ARCHITECTURE', 'DOCKER CONTAINERS', 'NGINX PROXY', 'VITEPRESS', 'GITHUB ACTIONS', 'OBSIDIAN WORKFLOW']
 
 function MagneticButton({ children, href, className }: { children: React.ReactNode, href: string, className: string }) {
   const ref = useRef<HTMLAnchorElement>(null)
-  const [position, setPosition] = useState({ x: 0, y: 0 })
+  const rafRef = useRef<number>(0)
 
   const handleMouseMove = (e: React.MouseEvent<HTMLAnchorElement>) => {
     if (!ref.current) return
     const { left, top, width, height } = ref.current.getBoundingClientRect()
+    // Performance optimization: Avoid triggering React re-renders on mousemove
     const x = (e.clientX - left - width / 2) * 0.3 // pull strength
     const y = (e.clientY - top - height / 2) * 0.3
-    setPosition({ x, y })
+    
+    cancelAnimationFrame(rafRef.current)
+    rafRef.current = requestAnimationFrame(() => {
+      if (ref.current) {
+        ref.current.style.transform = `translate(${x}px, ${y}px)`
+      }
+    })
   }
 
   const handleMouseLeave = () => {
-    setPosition({ x: 0, y: 0 })
+    cancelAnimationFrame(rafRef.current)
+    if (ref.current) {
+      ref.current.style.transform = `translate(0px, 0px)`
+    }
   }
 
   return (
-    <a
+    <Link
       ref={ref}
       href={href}
       className={className}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      style={{ transform: `translate(${position.x}px, ${position.y}px)` }}
+      prefetch={true}
     >
       {children}
-    </a>
+    </Link>
   )
 }
 
 function ParallaxImage({ className }: { className: string }) {
   const ref = useRef<HTMLDivElement>(null)
-  const [transform, setTransform] = useState('translate(0, 0) scale(1)')
+  const rafRef = useRef<number>(0)
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!ref.current) return
     const { left, top, width, height } = ref.current.getBoundingClientRect()
+    // Performance optimization: Avoid triggering React re-renders on mousemove
     const x = (e.clientX - left - width / 2) * -0.05
     const y = (e.clientY - top - height / 2) * -0.05
-    setTransform(`translate(${x}px, ${y}px) scale(1.05)`)
+    
+    cancelAnimationFrame(rafRef.current)
+    rafRef.current = requestAnimationFrame(() => {
+      if (ref.current) {
+        const overlay = ref.current.querySelector(`.${styles.imageOverlay}`) as HTMLDivElement
+        if (overlay) {
+          overlay.style.transform = `translate(${x}px, ${y}px) scale(1.05)`
+          overlay.style.transition = 'none'
+        }
+      }
+    })
   }
 
   const handleMouseLeave = () => {
-    setTransform('translate(0, 0) scale(1)')
+    cancelAnimationFrame(rafRef.current)
+    if (ref.current) {
+      const overlay = ref.current.querySelector(`.${styles.imageOverlay}`) as HTMLDivElement
+      if (overlay) {
+        overlay.style.transform = `translate(0px, 0px) scale(1)`
+        overlay.style.transition = 'transform 0.2s ease-out'
+      }
+    }
   }
 
   return (
@@ -60,7 +89,7 @@ function ParallaxImage({ className }: { className: string }) {
       onMouseLeave={handleMouseLeave}
       style={{ overflow: 'hidden' }}
     >
-      <div className={styles.imageOverlay} style={{ transform, transition: 'transform 0.2s ease-out' }} />
+      <div className={styles.imageOverlay} style={{ transition: 'transform 0.2s ease-out' }} />
       <span className={styles.featureBadge}>FEATURE STORY</span>
     </div>
   )
@@ -93,13 +122,13 @@ export default function MediaScene() {
               <p className={styles.date}>APRIL 2026</p>
               <h2>从阿里云迁移腾讯云，<br />重构全自动部署链路</h2>
               <p>深度复盘站点从零到一的架构演进，涵盖云原生迁移、CDN 路径优化与 CI/CD 自动化流水线的完整实践过程。</p>
-              <a href="/docs/面试笔记/MyWeb/构建过程end" className={styles.readMore}>
+              <Link href="/docs/面试笔记/MyWeb/构建过程end" className={styles.readMore} prefetch={true}>
                 READ FULL STORY
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
                   <line x1="7" y1="17" x2="17" y2="7" />
                   <polyline points="7 7 17 7 17 17" />
                 </svg>
-              </a>
+              </Link>
             </div>
           </article>
 
@@ -111,10 +140,10 @@ export default function MediaScene() {
                 { href: '/docs/PromptLearning/day1', cat: 'Workflow', title: '基于结构化 Prompt 的 AI 协作流程' },
                 { href: '/docs/Resume/简历V3.0', cat: 'Portfolio', title: '个人项目资产与专业简历深度沉淀' },
               ].map((item) => (
-                <a key={item.href} href={item.href} className={styles.stackItem}>
+                <Link key={item.href} href={item.href} className={styles.stackItem} prefetch={true}>
                   <p>{item.cat}</p>
                   <h4>{item.title}</h4>
-                </a>
+                </Link>
               ))}
             </div>
           </aside>

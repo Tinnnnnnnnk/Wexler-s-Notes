@@ -569,11 +569,11 @@
 .cyberNetwork {
   inset: 0;
   background-image: 
-    linear-gradient(45deg, transparent 48%, rgba(0, 240, 255, 0.04) 50%, transparent 52%),
-    linear-gradient(-45deg, transparent 48%, rgba(255, 45, 120, 0.02) 50%, transparent 52%);
+    linear-gradient(45deg, transparent 48%, rgba(0, 240, 255, 0.25) 50%, transparent 52%),
+    linear-gradient(-45deg, transparent 48%, rgba(255, 45, 120, 0.2) 50%, transparent 52%);
   background-size: 120px 120px;
-  opacity: 0.6;
-  animation: cyberPulseNetwork 8s ease-in-out infinite alternate;
+  opacity: 0.8;
+  animation: cyberPulseNetwork 6s ease-in-out infinite alternate;
   pointer-events: none;
 }
 
@@ -581,20 +581,21 @@
 .cyberNodes {
   inset: 0;
   background-image: 
-    radial-gradient(1px 1px at 20% 30%, rgba(0, 240, 255, 0.8), transparent),
-    radial-gradient(1.5px 1.5px at 70% 60%, rgba(255, 45, 120, 0.6), transparent),
-    radial-gradient(2px 2px at 40% 80%, rgba(0, 240, 255, 0.4), transparent);
-  animation: cyberNodeBreathe 4s infinite alternate;
+    radial-gradient(1.5px 1.5px at 20% 30%, rgba(0, 240, 255, 0.9), transparent),
+    radial-gradient(2px 2px at 70% 60%, rgba(255, 45, 120, 0.8), transparent),
+    radial-gradient(2.5px 2.5px at 40% 80%, rgba(0, 240, 255, 0.7), transparent),
+    radial-gradient(1.5px 1.5px at 80% 20%, rgba(255, 45, 120, 0.9), transparent);
+  animation: cyberNodeBreathe 3s ease-in-out infinite alternate;
   pointer-events: none;
 }
 
 /* 3. 玻璃面板折射流光 (Glass Panel Refraction) */
 .cyberGlassFlow {
   inset: 0;
-  background: linear-gradient(105deg, transparent 20%, rgba(255, 255, 255, 0.02) 25%, transparent 30%);
+  background: linear-gradient(105deg, transparent 20%, rgba(0, 240, 255, 0.08) 25%, transparent 30%);
   background-size: 200% 200%;
-  animation: glassRefract 12s linear infinite;
-  mix-blend-mode: color-dodge;
+  animation: glassRefract 8s linear infinite;
+  mix-blend-mode: screen;
   pointer-events: none;
 }
 
@@ -602,8 +603,8 @@
 .cyberStructLines {
   inset: 0;
   background: 
-    linear-gradient(90deg, rgba(0, 240, 255, 0.1) 1px, transparent 1px) 10% 0 / 1px 15vh no-repeat,
-    linear-gradient(0deg, rgba(255, 45, 120, 0.08) 1px, transparent 1px) 0 80% / 15vw 1px no-repeat;
+    linear-gradient(90deg, rgba(0, 240, 255, 0.4) 1px, transparent 1px) 10% 0 / 1px 15vh no-repeat,
+    linear-gradient(0deg, rgba(255, 45, 120, 0.3) 1px, transparent 1px) 0 80% / 15vw 1px no-repeat;
   animation: structAssemble 6s cubic-bezier(0.1, 0.7, 0.1, 1) infinite alternate;
   pointer-events: none;
 }
@@ -611,51 +612,53 @@
 /* 5. 冷色雾化光层 (Cold Atomized Light Layers) */
 .cyberMist {
   inset: 0;
-  background: radial-gradient(circle at 50% 100%, rgba(0, 40, 60, 0.4) 0%, transparent 60%);
-  filter: blur(20px);
-  animation: mistDrift 20s ease-in-out infinite alternate;
+  background: radial-gradient(circle at 50% 100%, rgba(0, 120, 180, 0.3) 0%, transparent 60%);
+  filter: blur(30px);
+  animation: mistDrift 15s ease-in-out infinite alternate;
   pointer-events: none;
+  mix-blend-mode: screen;
 }
 
 /* 6. 微型轨道粒子 (Micro-Orbital Particles) */
 .cyberMicroParticles {
   inset: 0;
-  background-image: radial-gradient(1px 1px at center, rgba(0, 255, 200, 0.7), transparent);
+  background-image: radial-gradient(1.5px 1.5px at center, rgba(0, 255, 200, 0.9), transparent);
   background-size: 80px 80px;
   background-position: 0 0;
-  animation: microOrbit 30s linear infinite;
-  opacity: 0.3;
+  animation: microOrbit 20s linear infinite;
+  opacity: 0.6;
   pointer-events: none;
 }
 
 /* 7. 数据涟漪反馈 (Data Ripple Feedback) */
 .cyberRipple {
   border-radius: 50%;
-  border: 1px solid rgba(0, 240, 255, 0.1);
+  border: 1px solid rgba(0, 240, 255, 0.5);
   width: 30vw;
   height: 30vw;
   top: 35%;
   left: 65%;
   transform: translate(-50%, -50%) scale(0.8);
-  animation: dataRipple 8s cubic-bezier(0.1, 0.8, 0.3, 1) infinite;
+  animation: dataRipple 6s cubic-bezier(0.1, 0.8, 0.3, 1) infinite;
   pointer-events: none;
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.2) inset;
 }
 
 /* 8. 数字尘埃聚散 (Digital Dust Aggregation) */
 .cyberDust {
   inset: 0;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-  opacity: 0.015;
-  mix-blend-mode: overlay;
-  animation: dustShift 10s steps(10) infinite;
+  opacity: 0.05;
+  mix-blend-mode: color-dodge;
+  animation: dustShift 8s steps(10) infinite;
   pointer-events: none;
 }
 
 /* 9. 状态面板冷启动 (Status Panel Cold Start) */
 .cyberPanelStart {
   inset: 0;
-  box-shadow: inset 0 0 40px rgba(0, 20, 40, 0.8);
-  animation: panelStart 1s ease-out forwards;
+  box-shadow: inset 0 0 80px rgba(0, 240, 255, 0.15);
+  animation: panelStart 1.5s ease-out forwards;
   pointer-events: none;
 }
 
@@ -666,12 +669,12 @@
 }
 
 @keyframes cyberPulseNetwork {
-  0% { opacity: 0.3; background-size: 120px 120px; }
-  100% { opacity: 0.7; background-size: 125px 125px; }
+  0% { opacity: 0.4; background-size: 120px 120px; }
+  100% { opacity: 0.9; background-size: 125px 125px; }
 }
 @keyframes cyberNodeBreathe {
-  0% { opacity: 0.2; transform: scale(0.98); }
-  100% { opacity: 1; transform: scale(1.02); }
+  0% { opacity: 0.3; transform: scale(0.95); box-shadow: 0 0 5px rgba(0,240,255,0.5); }
+  100% { opacity: 1; transform: scale(1.05); box-shadow: 0 0 15px rgba(0,240,255,1); }
 }
 @keyframes glassRefract {
   0% { background-position: 200% 0; }
@@ -679,12 +682,13 @@
 }
 @keyframes structAssemble {
   0% { opacity: 0; background-size: 1px 0, 0 1px; }
-  50% { opacity: 1; background-size: 1px 15vh, 15vw 1px; }
+  20% { opacity: 0.8; background-size: 1px 15vh, 15vw 1px; }
+  80% { opacity: 0.8; background-size: 1px 15vh, 15vw 1px; transform: translate(10px, -10px); }
   100% { opacity: 0; background-size: 1px 15vh, 15vw 1px; transform: translate(10px, -10px); }
 }
 @keyframes mistDrift {
-  0% { transform: translateY(5%) scale(1); opacity: 0.5; }
-  100% { transform: translateY(-5%) scale(1.1); opacity: 0.8; }
+  0% { transform: translateY(5%) scale(1); opacity: 0.4; }
+  100% { transform: translateY(-5%) scale(1.2); opacity: 0.8; }
 }
 @keyframes microOrbit {
   0% { background-position: 0 0; }
@@ -692,16 +696,16 @@
 }
 @keyframes dataRipple {
   0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
-  50% { opacity: 0.2; }
-  100% { transform: translate(-50%, -50%) scale(1.5); opacity: 0; }
+  20% { opacity: 0.6; }
+  100% { transform: translate(-50%, -50%) scale(1.8); opacity: 0; }
 }
 @keyframes dustShift {
   0% { background-position: 0 0; }
   100% { background-position: 100px 100px; }
 }
 @keyframes panelStart {
-  0% { box-shadow: inset 0 0 100px rgba(0, 240, 255, 0.2); }
-  100% { box-shadow: inset 0 0 40px rgba(0, 20, 40, 0.8); }
+  0% { box-shadow: inset 0 0 150px rgba(0, 240, 255, 0.4); opacity: 1; }
+  100% { box-shadow: inset 0 0 80px rgba(0, 240, 255, 0.1); opacity: 0.8; }
 }
 
 .rgbBackground {

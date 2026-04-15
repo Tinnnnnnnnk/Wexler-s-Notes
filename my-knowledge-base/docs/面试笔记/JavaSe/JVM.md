@@ -169,3 +169,8 @@
 - 都会触发STW
 - 标记过程的停顿是保证对象的引用关系不被修改
 - 复制过程的停顿是防止对象在复制过程中被修改
+#### Minor GC、Major GC、Mixed GC 、Full GC 都是何意味
+- Minor GC 称为Young GC，发生在新生代的垃圾收集
+- Major GC 成为Old GC，发生在老年代的垃圾收集，是CMS特有的行为
+- Mixed GC 是G1垃圾收集器特有的GC，同时清理新生代和部分老年代
+- Full GC 涉及整个Java堆和方法区，在JVm压力很大的时候才发生

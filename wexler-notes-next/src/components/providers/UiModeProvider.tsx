@@ -117,10 +117,12 @@ export function UiModeProvider({ children }: { children: React.ReactNode }) {
     if (typeof document === 'undefined') return
 
     const isStyleLab = pathname === '/style-lab'
+    const isAbout = pathname === '/about'
+    const skipFx = isStyleLab || isAbout
 
     ;(Object.keys(FX_CLASSES) as FxMode[]).forEach((mode) => {
-      // Don't apply global mode classes on Style Lab page to keep it neutral
-      document.documentElement.classList.toggle(FX_CLASSES[mode], !isStyleLab && mode === fxMode)
+      // Don't apply global mode classes on specific pages to keep them neutral
+      document.documentElement.classList.toggle(FX_CLASSES[mode], !skipFx && mode === fxMode)
     })
 
     ;(Object.keys(LAYOUT_CLASSES) as LayoutMode[]).forEach((mode) => {

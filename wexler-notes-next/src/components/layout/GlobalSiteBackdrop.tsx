@@ -16,8 +16,8 @@ export default function GlobalSiteBackdrop() {
   // Skip rendering on home page as it has its own logic
   if (pathname === '/') return null
   
-  // Skip on Style Lab to keep the preview environment neutral
-  if (pathname === '/style-lab') return null
+  // Skip on Style Lab and About page to keep them neutral / independent
+  if (pathname === '/style-lab' || pathname === '/about') return null
 
   // Skip on About (Personal Space) to ensure it remains a pure, independent overlay
   if (pathname === '/about') return null

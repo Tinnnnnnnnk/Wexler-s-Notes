@@ -64,18 +64,6 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
             <span className={styles.styleLabText}>个人空间</span>
           </Link>
           <Link
-            href="/about"
-            className={`${styles.styleLabBtn} ${pathname === '/about' ? styles.styleLabActive : ''}`}
-            title="关于我"
-            aria-label="关于我"
-          >
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-              <circle cx="12" cy="7" r="4" />
-            </svg>
-            <span className={styles.styleLabText}>关于我</span>
-          </Link>
-          <Link
             href="/style-lab"
             className={`${styles.styleLabBtn} ${pathname === '/style-lab' ? styles.styleLabActive : ''}`}
             title="风格展厅"

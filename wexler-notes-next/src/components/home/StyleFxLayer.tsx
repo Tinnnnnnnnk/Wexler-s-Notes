@@ -103,13 +103,17 @@ export default function StyleFxLayer({ fxMode, perfMode }: StyleFxLayerProps) {
 
       {fxMode === 'cyber-game' && (
         <>
-          <span className={styles.gameOpticFlare} />
-          <span className={styles.gamePanelStart} />
-          <span className={styles.vignetteOverlay} />
+          <span className={styles.tacticalBg} />
+          <span className={styles.tacticalGrid} />
+          <span className={styles.vignetteOverlayLight} />
           <div className={styles.particleField}>
             {!safe && Array.from({ length: 3 }).map((_, idx) => (
-              <span key={`reticle-${idx}`} className={styles.gameReticle} style={particleStyle(idx, 3)} />
+              <span key={`lock-${idx}`} className={styles.tacticalLockBracket} style={particleStyle(idx, 3)} />
             ))}
+            {!safe && Array.from({ length: 4 }).map((_, idx) => (
+              <span key={`vector-${idx}`} className={styles.tacticalVectorLine} style={particleStyle(idx, 4)} />
+            ))}
+            {!safe && <span className={styles.tacticalThermalZone} />}
           </div>
         </>
       )}

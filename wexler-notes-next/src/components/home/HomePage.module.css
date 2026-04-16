@@ -152,25 +152,35 @@
 .frameCyberGame::before {
   inset: 14px;
   border-radius: 0;
-  border: 2px solid rgba(255, 0, 85, 0.5);
+  border: 1px solid rgba(255, 60, 20, 0.4);
+  border-top: 4px solid rgba(255, 60, 20, 0.8);
   box-shadow:
-    0 0 0 2px rgba(255, 0, 60, 0.2) inset,
-    0 0 50px rgba(255, 0, 85, 0.25);
-  clip-path: polygon(0 10px, 10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%);
+    0 0 0 1px rgba(0, 0, 0, 0.8) inset,
+    inset 0 20px 50px rgba(50, 10, 10, 0.9);
+  background: 
+    linear-gradient(180deg, rgba(20, 5, 5, 0.8) 0%, rgba(30, 10, 10, 0.9) 100%);
+  clip-path: polygon(0 20px, 20px 0, calc(100% - 20px) 0, 100% 20px, 100% calc(100% - 20px), calc(100% - 20px) 100%, 20px 100%, 0 calc(100% - 20px));
 }
 
 .frameCyberGame::after {
-  inset: 14px;
-  border-radius: 0;
-  background:
-    linear-gradient(45deg, rgba(255, 0, 85, 0.1), transparent 30%),
-    linear-gradient(225deg, rgba(255, 0, 60, 0.1), transparent 30%);
+  content: "TACTICAL // ALERT";
+  position: absolute;
+  top: 14px;
+  right: 40px;
+  font-family: 'Impact', sans-serif;
+  font-size: 14px;
+  color: rgba(255, 60, 20, 0.9);
+  letter-spacing: 0.15em;
+  background: rgba(20, 5, 5, 0.8);
+  padding: 4px 12px;
+  border: 1px solid rgba(255, 60, 20, 0.4);
+  border-top: none;
+  clip-path: polygon(0 0, 100% 0, calc(100% - 8px) 100%, 8px 100%);
 }
 
 .frameCyberGame :global(section) {
   width: min(1280px, 100%);
   margin: 0 auto;
-  transform: perspective(1000px) rotateX(1deg);
 }
 
 .frameFutureTech {

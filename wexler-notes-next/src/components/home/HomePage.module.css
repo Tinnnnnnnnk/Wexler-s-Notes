@@ -96,7 +96,7 @@
   box-shadow: -2px 0 10px rgba(0, 255, 65, 0.1);
   background: 
     linear-gradient(90deg, rgba(0, 255, 65, 0.02) 0%, transparent 10%),
-    linear-gradient(180deg, rgba(20, 30, 20, 0.6) 0%, rgba(10, 15, 10, 0.8) 100%);
+    linear-gradient(180deg, rgba(20, 30, 20, 0.2) 0%, rgba(10, 15, 10, 0.4) 100%);
 }
 
 .frameCyberHacker::after {
@@ -125,9 +125,9 @@
   border-top: 2px solid rgba(100, 200, 255, 0.3);
   border-bottom: 2px solid rgba(100, 200, 255, 0.3);
   background: 
-    linear-gradient(180deg, rgba(10, 20, 30, 0.8) 0%, rgba(15, 25, 35, 0.7) 100%);
+    linear-gradient(180deg, rgba(10, 20, 30, 0.3) 0%, rgba(15, 25, 35, 0.2) 100%);
   box-shadow: 
-    0 10px 30px rgba(5, 10, 15, 0.8),
+    0 10px 30px rgba(5, 10, 15, 0.5),
     inset 0 1px 0 rgba(200, 240, 255, 0.1);
 }
 
@@ -156,9 +156,9 @@
   border-top: 4px solid rgba(255, 60, 20, 0.8);
   box-shadow:
     0 0 0 1px rgba(0, 0, 0, 0.8) inset,
-    inset 0 20px 50px rgba(50, 10, 10, 0.9);
+    inset 0 20px 50px rgba(50, 10, 10, 0.6);
   background: 
-    linear-gradient(180deg, rgba(20, 5, 5, 0.8) 0%, rgba(30, 10, 10, 0.9) 100%);
+    linear-gradient(180deg, rgba(20, 5, 5, 0.3) 0%, rgba(30, 10, 10, 0.5) 100%);
   clip-path: polygon(0 20px, 20px 0, calc(100% - 20px) 0, 100% 20px, 100% calc(100% - 20px), calc(100% - 20px) 100%, 20px 100%, 0 calc(100% - 20px));
 }
 
@@ -171,7 +171,7 @@
   font-size: 14px;
   color: rgba(255, 60, 20, 0.9);
   letter-spacing: 0.15em;
-  background: rgba(20, 5, 5, 0.8);
+  background: rgba(20, 5, 5, 0.6);
   padding: 4px 12px;
   border: 1px solid rgba(255, 60, 20, 0.4);
   border-top: none;
@@ -194,7 +194,8 @@
 .frameCyberHacker .sceneMediaStack a,
 .frameCyberHacker .sceneAppleTriptych a,
 .frameCyberHacker .sceneAppleBand article {
-  background: rgba(5, 15, 10, 0.95);
+  background: rgba(5, 15, 10, 0.55);
+  backdrop-filter: blur(10px);
   border: 1px solid rgba(144, 238, 144, 0.2);
   border-left: 3px solid rgba(144, 238, 144, 0.4);
   box-shadow: none;
@@ -220,7 +221,7 @@
 .frameCyberCorp .sceneMediaStack a,
 .frameCyberCorp .sceneAppleTriptych a,
 .frameCyberCorp .sceneAppleBand article {
-  background: rgba(8, 16, 24, 0.85);
+  background: rgba(8, 16, 24, 0.45);
   border: 1px solid rgba(120, 180, 220, 0.15);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(12px);
@@ -245,7 +246,8 @@
 .frameCyberGame .sceneMediaStack a,
 .frameCyberGame .sceneAppleTriptych a,
 .frameCyberGame .sceneAppleBand article {
-  background: rgba(20, 5, 5, 0.95);
+  background: rgba(20, 5, 5, 0.55);
+  backdrop-filter: blur(8px);
   border: 1px solid rgba(255, 60, 20, 0.3);
   border-top: 2px solid rgba(255, 60, 20, 0.6);
   border-radius: 0;

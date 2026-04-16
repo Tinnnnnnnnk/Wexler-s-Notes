@@ -1205,20 +1205,18 @@ html.home-fx-performance-safe .doc-toc-panel {
    液态：背景视频尽量透出，面板更通透、模糊更轻
    ============================================= */
 
-html.home-glass-mode .rootLayout,
-html.home-liquid-mode .rootLayout {
-  background: transparent;
+/* Ensure the root layout and main containers are transparent for all video/enhanced modes 
+   so the global StyleFxLayer and Backdrop are actually visible. */
+html[class*="-mode"] .rootLayout {
+  background: transparent !important;
 }
 
-html.home-glass-mode .rootLayout::before,
-html.home-liquid-mode .rootLayout::before {
-  opacity: 0.06;
+html[class*="-mode"] .rootLayout::before {
+  opacity: 0.05 !important;
 }
 
-html.home-glass-mode .app-body,
-html.home-liquid-mode .app-body,
-html.home-glass-mode .app-main,
-html.home-liquid-mode .app-main {
+html[class*="-mode"] .app-body,
+html[class*="-mode"] .app-main {
   background: transparent !important;
 }
 

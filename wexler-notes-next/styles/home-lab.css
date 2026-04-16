@@ -1393,11 +1393,17 @@ html.home-liquid-mode .home-root::before {
 /* Cyberpunk Mode: Neon Glow */
 html.home-cyberpunk-mode .docArticle h1,
 html.home-cyberpunk-mode .docArticle h2,
-html.home-cyberpunk-mode .docArticle h3,
+html.home-cyberpunk-mode .docArticle h3 {
+  text-shadow: 0 0 16px rgba(255, 66, 149, 0.35);
+}
+
+/* Tactical Nexus Mode: War Console */
 html.home-cyber-game-mode .docArticle h1,
 html.home-cyber-game-mode .docArticle h2,
 html.home-cyber-game-mode .docArticle h3 {
-  text-shadow: 0 0 16px rgba(255, 66, 149, 0.35);
+  text-shadow: 0 0 10px rgba(255, 60, 20, 0.4);
+  color: #ffece8;
+  letter-spacing: 0.05em;
 }
 
 /* Hacker Terminal Mode: Phosphor Glow */

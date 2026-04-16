@@ -183,6 +183,86 @@
   margin: 0 auto;
 }
 
+/* --- Theme Specific Content Overrides --- */
+
+/* Hacker Terminal Overrides */
+.frameCyberHacker .sceneDashSide,
+.frameCyberHacker .sceneDashHero,
+.frameCyberHacker .sceneDashKpi article,
+.frameCyberHacker .sceneDashMatrix a,
+.frameCyberHacker .sceneMediaFeature,
+.frameCyberHacker .sceneMediaStack a,
+.frameCyberHacker .sceneAppleTriptych a,
+.frameCyberHacker .sceneAppleBand article {
+  background: rgba(5, 15, 10, 0.95);
+  border: 1px solid rgba(144, 238, 144, 0.2);
+  border-left: 3px solid rgba(144, 238, 144, 0.4);
+  box-shadow: none;
+  border-radius: 2px;
+  color: #a7f3d0;
+}
+.frameCyberHacker .sceneDashSide h2,
+.frameCyberHacker .sceneDashHero h1,
+.frameCyberHacker .sceneDashKpi strong,
+.frameCyberHacker .sceneMediaFeature h2,
+.frameCyberHacker .sceneAppleHero h1 {
+  color: #a7f3d0;
+  text-shadow: 0 0 8px rgba(144, 238, 144, 0.3);
+  font-family: monospace;
+}
+
+/* Corporate Tech Overrides */
+.frameCyberCorp .sceneDashSide,
+.frameCyberCorp .sceneDashHero,
+.frameCyberCorp .sceneDashKpi article,
+.frameCyberCorp .sceneDashMatrix a,
+.frameCyberCorp .sceneMediaFeature,
+.frameCyberCorp .sceneMediaStack a,
+.frameCyberCorp .sceneAppleTriptych a,
+.frameCyberCorp .sceneAppleBand article {
+  background: rgba(8, 16, 24, 0.85);
+  border: 1px solid rgba(120, 180, 220, 0.15);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(12px);
+  border-radius: 0;
+}
+.frameCyberCorp .sceneDashSide h2,
+.frameCyberCorp .sceneDashHero h1,
+.frameCyberCorp .sceneDashKpi strong,
+.frameCyberCorp .sceneMediaFeature h2,
+.frameCyberCorp .sceneAppleHero h1 {
+  color: #f0f9ff;
+  letter-spacing: 0.05em;
+  font-weight: 400;
+}
+
+/* Tactical Nexus Overrides */
+.frameCyberGame .sceneDashSide,
+.frameCyberGame .sceneDashHero,
+.frameCyberGame .sceneDashKpi article,
+.frameCyberGame .sceneDashMatrix a,
+.frameCyberGame .sceneMediaFeature,
+.frameCyberGame .sceneMediaStack a,
+.frameCyberGame .sceneAppleTriptych a,
+.frameCyberGame .sceneAppleBand article {
+  background: rgba(20, 5, 5, 0.95);
+  border: 1px solid rgba(255, 60, 20, 0.3);
+  border-top: 2px solid rgba(255, 60, 20, 0.6);
+  border-radius: 0;
+  box-shadow: inset 0 0 10px rgba(255, 0, 0, 0.1);
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%);
+}
+.frameCyberGame .sceneDashSide h2,
+.frameCyberGame .sceneDashHero h1,
+.frameCyberGame .sceneDashKpi strong,
+.frameCyberGame .sceneMediaFeature h2,
+.frameCyberGame .sceneAppleHero h1 {
+  color: #ffece8;
+  font-family: 'Impact', 'Arial Black', sans-serif;
+  letter-spacing: 0.05em;
+}
+
+
 .frameFutureTech {
   padding-top: 70px;
 }

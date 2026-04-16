@@ -1098,24 +1098,34 @@
 .corpStructuralLines {
   inset: 0;
   background:
-    linear-gradient(rgba(100, 150, 200, 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(100, 150, 200, 0.04) 1px, transparent 1px);
-  background-size: 20vw 20vh;
+    linear-gradient(rgba(120, 180, 240, 0.15) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(120, 180, 240, 0.15) 1px, transparent 1px);
+  background-size: 25vw 20vh;
   background-position: center;
-  opacity: 0.6;
+  opacity: 0.85;
   z-index: -1;
+  pointer-events: none;
+}
+
+.corpStructuralLines::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: 
+    linear-gradient(90deg, transparent 49.9%, rgba(150, 220, 255, 0.3) 49.9%, rgba(150, 220, 255, 0.3) 50.1%, transparent 50.1%);
   pointer-events: none;
 }
 
 .corpStructuralLines::after {
   content: "";
   position: absolute;
-  top: 20%;
-  bottom: 20%;
+  top: 10%;
+  bottom: 10%;
   left: 10vw;
   right: 10vw;
-  border-left: 1px solid rgba(120, 180, 220, 0.08);
-  border-right: 1px solid rgba(120, 180, 220, 0.08);
+  border-left: 2px solid rgba(150, 220, 255, 0.25);
+  border-right: 2px solid rgba(150, 220, 255, 0.25);
+  box-shadow: inset 20px 0 50px -20px rgba(100, 180, 240, 0.1), inset -20px 0 50px -20px rgba(100, 180, 240, 0.1);
 }
 
 .corpNode {
@@ -1124,8 +1134,8 @@
   background: rgba(200, 240, 255, 0.9);
   box-shadow: 0 0 12px 2px rgba(100, 180, 240, 0.6);
   border-radius: 50%;
-  left: calc(15vw + (70vw / max(1, var(--spread))) * var(--i));
-  top: calc(20vh + (60vh / max(1, var(--spread))) * (var(--i) % 3));
+  left: calc(15vw + (70vw / max(1, var(--spread))) * ((var(--i) * 3) % 4));
+  top: calc(15vh + (80vh / max(1, var(--spread))) * var(--i));
   opacity: 0.2;
   animation: nodeBreathe calc(6s + var(--i) * 1.5s) ease-in-out infinite alternate;
 }

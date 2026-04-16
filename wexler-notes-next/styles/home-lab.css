@@ -1394,13 +1394,27 @@ html.home-liquid-mode .home-root::before {
 html.home-cyberpunk-mode .docArticle h1,
 html.home-cyberpunk-mode .docArticle h2,
 html.home-cyberpunk-mode .docArticle h3,
-html.home-cyber-hacker-mode .docArticle h1,
-html.home-cyber-hacker-mode .docArticle h2,
-html.home-cyber-hacker-mode .docArticle h3,
 html.home-cyber-game-mode .docArticle h1,
 html.home-cyber-game-mode .docArticle h2,
 html.home-cyber-game-mode .docArticle h3 {
   text-shadow: 0 0 16px rgba(255, 66, 149, 0.35);
+}
+
+/* Hacker Terminal Mode: Phosphor Glow */
+html.home-cyber-hacker-mode .docArticle h1,
+html.home-cyber-hacker-mode .docArticle h2,
+html.home-cyber-hacker-mode .docArticle h3 {
+  text-shadow: 0 0 12px rgba(144, 238, 144, 0.25);
+  color: #a7f3d0;
+}
+
+/* Corp Mode: Clean Cold White/Blue */
+html.home-cyber-corp-mode .docArticle h1,
+html.home-cyber-corp-mode .docArticle h2,
+html.home-cyber-corp-mode .docArticle h3 {
+  text-shadow: 0 0 12px rgba(200, 240, 255, 0.4);
+  color: #f0f9ff;
+  letter-spacing: 0.03em;
 }
 
 /* RGB Mode: Cyan/Blue Glow */
@@ -1429,11 +1443,22 @@ html.home-aurora-mode .app-main {
 
 /* Mode-based Article Background Adjustments for readability */
 html.home-cyberpunk-mode .docArticle,
-html.home-cyber-hacker-mode .docArticle,
-html.home-cyber-corp-mode .docArticle,
 html.home-cyber-game-mode .docArticle {
   background: rgba(10, 15, 24, 0.65) !important;
   border-color: rgba(0, 240, 255, 0.25) !important;
+}
+
+html.home-cyber-hacker-mode .docArticle {
+  background: rgba(5, 10, 8, 0.85) !important;
+  border-color: rgba(144, 238, 144, 0.15) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5) !important;
+}
+
+html.home-cyber-corp-mode .docArticle {
+  background: rgba(8, 16, 24, 0.75) !important;
+  border-color: rgba(120, 180, 220, 0.2) !important;
+  backdrop-filter: blur(24px) saturate(120%);
+  border-radius: 4px !important;
 }
 
 html.home-rgb-mode .docArticle {

@@ -72,26 +72,30 @@ export default function StyleFxLayer({ fxMode, perfMode }: StyleFxLayerProps) {
 
       {fxMode === 'cyber-hacker' && (
         <>
-          <span className={styles.hackerPhosphor} />
-          <span className={styles.hackerCRT} />
-          <span className={styles.hackerPanelStart} />
-          <span className={styles.vignetteOverlay} />
+          <span className={styles.hackerPhosphorBg} />
+          <span className={styles.hackerScanline} />
+          <span className={styles.vignetteOverlayLight} />
           <div className={styles.particleField}>
-            {!safe && Array.from({ length: 10 }).map((_, idx) => (
-              <span key={`hexBlock-${idx}`} className={styles.hackerHexBlock} style={particleStyle(idx, 10)} />
+            {!safe && Array.from({ length: 6 }).map((_, idx) => (
+              <span key={`ghostChar-${idx}`} className={styles.hackerGhosting} style={particleStyle(idx, 6)} />
             ))}
+            {!safe && <span className={styles.hackerSyncBar} />}
+            {!safe && <span className={styles.hackerRefreshLine} />}
           </div>
         </>
       )}
 
       {fxMode === 'cyber-corp' && (
         <>
-          <span className={styles.corpQuantumGrid} />
-          <span className={styles.corpPanelStart} />
-          <span className={styles.vignetteOverlay} />
+          <span className={styles.corpAtrium} />
+          <span className={styles.corpStructuralLines} />
+          <span className={styles.vignetteOverlayLight} />
           <div className={styles.particleField}>
-            {!safe && Array.from({ length: 5 }).map((_, idx) => (
-              <span key={`monolith-${idx}`} className={styles.corpMonolith} style={particleStyle(idx, 5)} />
+            {!safe && Array.from({ length: 4 }).map((_, idx) => (
+              <span key={`corpNode-${idx}`} className={styles.corpNode} style={particleStyle(idx, 4)} />
+            ))}
+            {!safe && Array.from({ length: 3 }).map((_, idx) => (
+              <span key={`corpPulse-${idx}`} className={styles.corpPulsePath} style={particleStyle(idx, 3)} />
             ))}
           </div>
         </>

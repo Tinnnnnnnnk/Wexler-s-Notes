@@ -975,127 +975,191 @@
   display: none;
 }
 
-/* --- Hacker Terminal (CRT Matrix) --- */
-.hackerPhosphor,
-.hackerCRT,
-.hackerPanelStart,
-.hackerHexBlock {
+/* --- Hacker Terminal (Phosphor / Retro) --- */
+.hackerPhosphorBg,
+.hackerScanline,
+.hackerGhosting,
+.hackerSyncBar,
+.hackerRefreshLine {
   position: absolute;
 }
 
-.hackerPhosphor {
+.hackerPhosphorBg {
   inset: 0;
-  background: radial-gradient(circle at 50% 50%, rgba(0, 255, 65, 0.15) 0%, transparent 80%);
-  filter: blur(20px);
-  animation: phosphorFlicker 4s linear infinite alternate;
+  background: 
+    radial-gradient(ellipse at 50% 40%, rgba(20, 50, 30, 0.4) 0%, rgba(5, 15, 10, 0.9) 100%),
+    radial-gradient(circle at 10% 80%, rgba(40, 100, 60, 0.15) 0%, transparent 40%),
+    radial-gradient(circle at 80% 20%, rgba(20, 80, 40, 0.1) 0%, transparent 50%);
+  filter: blur(8px);
+  animation: phosphorDrift 15s ease-in-out infinite alternate;
   pointer-events: none;
+  z-index: -1;
+}
+
+@keyframes phosphorDrift {
+  0% { transform: scale(1) translate(0, 0); opacity: 0.8; }
+  100% { transform: scale(1.05) translate(2%, 1%); opacity: 1; }
+}
+
+.hackerScanline {
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0) 50%,
+    rgba(0, 0, 0, 0.1) 50%
+  );
+  background-size: 100% 4px;
+  pointer-events: none;
+  opacity: 0.6;
+  z-index: 10;
+  mix-blend-mode: multiply;
+}
+
+.hackerGhosting {
+  width: 120px;
+  height: 20px;
+  left: calc((100% / max(1, var(--spread))) * var(--i));
+  top: calc(15vh + var(--i) * 10vh);
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(144, 238, 144, 0.1) 0px,
+    rgba(144, 238, 144, 0.1) 8px,
+    transparent 8px,
+    transparent 12px
+  );
+  opacity: 0;
+  filter: blur(2px);
+  animation: ghostFlicker calc(8s + var(--i) * 2s) steps(1) infinite;
+  animation-delay: calc(var(--i) * 0.5s);
   mix-blend-mode: screen;
 }
 
-@keyframes phosphorFlicker {
-  0% { opacity: 0.8; transform: scale(1); }
-  100% { opacity: 1; transform: scale(1.05); }
+@keyframes ghostFlicker {
+  0%, 95% { opacity: 0; transform: translateX(0); }
+  96% { opacity: 0.4; transform: translateX(10px); }
+  98% { opacity: 0.2; transform: translateX(-5px); }
+  100% { opacity: 0; }
 }
 
-.hackerCRT {
-  inset: 0;
-  background: 
-    linear-gradient(rgba(0, 0, 0, 0.1) 50%, rgba(0, 0, 0, 0.4) 50%),
-    linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-  background-size: 100% 4px, 3px 100%;
+.hackerSyncBar {
+  left: 0;
+  right: 0;
+  height: 12vh;
+  top: 30%;
+  background: rgba(144, 238, 144, 0.02);
+  opacity: 0;
+  animation: syncDrift 12s linear infinite;
   pointer-events: none;
-  z-index: 10;
-  opacity: 0.8;
   mix-blend-mode: overlay;
 }
 
-.hackerHexBlock {
-  width: 40px;
-  height: 20px;
-  background: rgba(0, 255, 65, 0.6);
-  box-shadow: 0 0 15px rgba(0, 255, 65, 0.8);
-  left: calc((100% / max(1, var(--spread))) * var(--i));
-  top: -50px;
+@keyframes syncDrift {
+  0% { transform: translateY(-50vh); opacity: 0; }
+  10% { opacity: 1; }
+  40% { transform: translateY(100vh); opacity: 0; }
+  100% { transform: translateY(100vh); opacity: 0; }
+}
+
+.hackerRefreshLine {
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: rgba(144, 238, 144, 0.15);
+  box-shadow: 0 0 8px rgba(144, 238, 144, 0.4);
+  top: 0;
   opacity: 0;
-  animation: hexDrop calc(5s + var(--i) * 1s) steps(20) infinite;
-  animation-delay: calc(var(--i) * 0.3s);
-}
-
-@keyframes hexDrop {
-  0% { transform: translateY(0); opacity: 1; }
-  90% { opacity: 1; }
-  100% { transform: translateY(110vh); opacity: 0; }
-}
-
-.hackerPanelStart {
-  inset: 0;
-  box-shadow: inset 0 0 60px rgba(0, 255, 65, 0.3);
-  animation: panelStartHacker 1s ease-out forwards;
+  animation: crtRefresh 7s cubic-bezier(0.1, 0.8, 0.1, 1) infinite;
   pointer-events: none;
 }
 
-@keyframes panelStartHacker {
-  0% { box-shadow: inset 0 0 200px rgba(0, 255, 65, 0.6); opacity: 1; }
-  100% { box-shadow: inset 0 0 60px rgba(0, 255, 65, 0.15); opacity: 0.8; }
+@keyframes crtRefresh {
+  0% { transform: translateY(0); opacity: 0; }
+  5% { opacity: 1; }
+  25% { transform: translateY(100vh); opacity: 0; }
+  100% { transform: translateY(100vh); opacity: 0; }
 }
 
-/* --- Corporate Tech (Quantum Monolith) --- */
-.corpQuantumGrid,
-.corpPanelStart,
-.corpMonolith {
+/* --- Corporate Tech (Executive Space / Nexus) --- */
+.corpAtrium,
+.corpStructuralLines,
+.corpNode,
+.corpPulsePath {
   position: absolute;
 }
 
-.corpQuantumGrid {
-  inset: -50%;
-  background:
-    linear-gradient(rgba(8, 247, 254, 0.2) 2px, transparent 2px),
-    linear-gradient(90deg, rgba(8, 247, 254, 0.2) 2px, transparent 2px);
-  background-size: 120px 120px;
-  transform: perspective(1200px) rotateX(70deg) rotateZ(20deg) translateY(-100px);
-  transform-origin: center center;
-  animation: corpGridPulse 10s ease-in-out infinite alternate;
-  opacity: 0.8;
-  pointer-events: none;
-  mix-blend-mode: screen;
-}
-
-@keyframes corpGridPulse {
-  0% { transform: perspective(1200px) rotateX(70deg) rotateZ(20deg) translateY(-100px) scale(1); opacity: 0.4; }
-  100% { transform: perspective(1200px) rotateX(70deg) rotateZ(25deg) translateY(-120px) scale(1.1); opacity: 0.9; box-shadow: 0 0 50px rgba(8,247,254,0.3) inset; }
-}
-
-.corpMonolith {
-  width: calc(60px + var(--i) * 20px);
-  height: 150vh;
-  left: calc((100% / max(1, var(--spread))) * var(--i));
-  bottom: -20vh;
-  background: linear-gradient(to top, rgba(8, 247, 254, 0.05), rgba(8, 247, 254, 0.2) 80%, transparent);
-  box-shadow: 0 0 40px rgba(8, 247, 254, 0.2);
-  transform-origin: bottom center;
-  animation: monolithRise calc(15s + var(--i) * 3s) ease-in-out infinite alternate;
-  animation-delay: calc(var(--i) * -2s);
-  mix-blend-mode: screen;
-  pointer-events: none;
-}
-
-@keyframes monolithRise {
-  0% { transform: scaleY(0.2) translateY(20%); opacity: 0.2; }
-  100% { transform: scaleY(1.2) translateY(0); opacity: 0.8; }
-}
-
-.corpPanelStart {
+.corpAtrium {
   inset: 0;
-  box-shadow: inset 0 0 100px rgba(8, 247, 254, 0.2);
-  animation: panelStartCorp 1.5s ease-out forwards;
+  background: 
+    linear-gradient(180deg, rgba(8, 20, 30, 0.95) 0%, rgba(12, 28, 42, 0.85) 50%, rgba(8, 20, 30, 0.95) 100%),
+    radial-gradient(circle at 50% 100%, rgba(32, 80, 110, 0.25) 0%, transparent 60%);
+  z-index: -2;
+}
+
+.corpStructuralLines {
+  inset: 0;
+  background:
+    linear-gradient(rgba(100, 150, 200, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(100, 150, 200, 0.04) 1px, transparent 1px);
+  background-size: 20vw 20vh;
+  background-position: center;
+  opacity: 0.6;
+  z-index: -1;
   pointer-events: none;
 }
 
-@keyframes panelStartCorp {
-  0% { box-shadow: inset 0 0 250px rgba(8, 247, 254, 0.5); opacity: 1; }
-  100% { box-shadow: inset 0 0 100px rgba(8, 247, 254, 0.15); opacity: 0.8; }
+.corpStructuralLines::after {
+  content: "";
+  position: absolute;
+  top: 20%;
+  bottom: 20%;
+  left: 10vw;
+  right: 10vw;
+  border-left: 1px solid rgba(120, 180, 220, 0.08);
+  border-right: 1px solid rgba(120, 180, 220, 0.08);
 }
 
+.corpNode {
+  width: 6px;
+  height: 6px;
+  background: rgba(200, 240, 255, 0.9);
+  box-shadow: 0 0 12px 2px rgba(100, 180, 240, 0.6);
+  border-radius: 50%;
+  left: calc(15vw + (70vw / max(1, var(--spread))) * var(--i));
+  top: calc(20vh + (60vh / max(1, var(--spread))) * (var(--i) % 3));
+  opacity: 0.2;
+  animation: nodeBreathe calc(6s + var(--i) * 1.5s) ease-in-out infinite alternate;
+}
+
+@keyframes nodeBreathe {
+  0% { opacity: 0.1; transform: scale(0.8); }
+  100% { opacity: 0.6; transform: scale(1.2); box-shadow: 0 0 20px 4px rgba(100, 200, 255, 0.8); }
+}
+
+.corpPulsePath {
+  width: 2px;
+  height: 15vh;
+  background: linear-gradient(to bottom, transparent, rgba(120, 200, 255, 0.8), transparent);
+  left: calc(25vw + (50vw / max(1, var(--spread))) * var(--i));
+  top: -15vh;
+  opacity: 0;
+  animation: pathPulse calc(10s + var(--i) * 2s) cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  animation-delay: calc(var(--i) * 1.2s);
+}
+
+@keyframes pathPulse {
+  0% { transform: translateY(0); opacity: 0; }
+  10% { opacity: 1; }
+  50% { transform: translateY(115vh); opacity: 0; }
+  100% { transform: translateY(115vh); opacity: 0; }
+}
+
+.vignetteOverlayLight {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, transparent 60%, rgba(0, 0, 0, 0.3) 100%);
+  pointer-events: none;
+  z-index: 10;
+}
 /* --- Game Concept (Mecha Optics) --- */
 .gameOpticFlare,
 .gameReticle,

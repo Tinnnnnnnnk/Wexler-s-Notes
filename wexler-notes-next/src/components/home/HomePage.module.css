@@ -194,22 +194,29 @@
 .frameCyberHacker .sceneMediaStack a,
 .frameCyberHacker .sceneAppleTriptych a,
 .frameCyberHacker .sceneAppleBand article {
-  background: rgba(5, 15, 10, 0.55);
-  backdrop-filter: blur(10px);
+  background: rgba(5, 15, 10, 0.45);
+  backdrop-filter: blur(4px);
   border: 1px solid rgba(144, 238, 144, 0.2);
   border-left: 3px solid rgba(144, 238, 144, 0.4);
   box-shadow: none;
   border-radius: 2px;
-  color: #a7f3d0;
 }
-.frameCyberHacker .sceneDashSide h2,
-.frameCyberHacker .sceneDashHero h1,
-.frameCyberHacker .sceneDashKpi strong,
-.frameCyberHacker .sceneMediaFeature h2,
-.frameCyberHacker .sceneAppleHero h1 {
-  color: #a7f3d0;
-  text-shadow: 0 0 8px rgba(144, 238, 144, 0.3);
-  font-family: monospace;
+
+.frameCyberHacker :global(p),
+.frameCyberHacker :global(span),
+.frameCyberHacker :global(a),
+.frameCyberHacker :global(li),
+.frameCyberHacker :global(article) {
+  color: rgba(167, 243, 208, 0.8) !important;
+}
+
+.frameCyberHacker :global(h1),
+.frameCyberHacker :global(h2),
+.frameCyberHacker :global(h3),
+.frameCyberHacker :global(strong) {
+  color: #a7f3d0 !important;
+  text-shadow: 0 0 8px rgba(144, 238, 144, 0.3) !important;
+  font-family: monospace !important;
 }
 
 /* Corporate Tech Overrides */
@@ -224,17 +231,25 @@
   background: rgba(8, 16, 24, 0.45);
   border: 1px solid rgba(120, 180, 220, 0.15);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(8px);
   border-radius: 0;
 }
-.frameCyberCorp .sceneDashSide h2,
-.frameCyberCorp .sceneDashHero h1,
-.frameCyberCorp .sceneDashKpi strong,
-.frameCyberCorp .sceneMediaFeature h2,
-.frameCyberCorp .sceneAppleHero h1 {
-  color: #f0f9ff;
-  letter-spacing: 0.05em;
-  font-weight: 400;
+
+.frameCyberCorp :global(p),
+.frameCyberCorp :global(span),
+.frameCyberCorp :global(a),
+.frameCyberCorp :global(li),
+.frameCyberCorp :global(article) {
+  color: rgba(240, 249, 255, 0.7) !important;
+}
+
+.frameCyberCorp :global(h1),
+.frameCyberCorp :global(h2),
+.frameCyberCorp :global(h3),
+.frameCyberCorp :global(strong) {
+  color: #f0f9ff !important;
+  letter-spacing: 0.05em !important;
+  font-weight: 400 !important;
 }
 
 /* Tactical Nexus Overrides */
@@ -246,22 +261,30 @@
 .frameCyberGame .sceneMediaStack a,
 .frameCyberGame .sceneAppleTriptych a,
 .frameCyberGame .sceneAppleBand article {
-  background: rgba(20, 5, 5, 0.55);
-  backdrop-filter: blur(8px);
+  background: rgba(20, 5, 5, 0.45);
+  backdrop-filter: blur(4px);
   border: 1px solid rgba(255, 60, 20, 0.3);
   border-top: 2px solid rgba(255, 60, 20, 0.6);
   border-radius: 0;
   box-shadow: inset 0 0 10px rgba(255, 0, 0, 0.1);
   clip-path: polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%);
 }
-.frameCyberGame .sceneDashSide h2,
-.frameCyberGame .sceneDashHero h1,
-.frameCyberGame .sceneDashKpi strong,
-.frameCyberGame .sceneMediaFeature h2,
-.frameCyberGame .sceneAppleHero h1 {
-  color: #ffece8;
-  font-family: 'Impact', 'Arial Black', sans-serif;
-  letter-spacing: 0.05em;
+
+.frameCyberGame :global(p),
+.frameCyberGame :global(span),
+.frameCyberGame :global(a),
+.frameCyberGame :global(li),
+.frameCyberGame :global(article) {
+  color: rgba(255, 236, 232, 0.8) !important;
+}
+
+.frameCyberGame :global(h1),
+.frameCyberGame :global(h2),
+.frameCyberGame :global(h3),
+.frameCyberGame :global(strong) {
+  color: #ffece8 !important;
+  font-family: 'Impact', 'Arial Black', sans-serif !important;
+  letter-spacing: 0.05em !important;
 }
 
 

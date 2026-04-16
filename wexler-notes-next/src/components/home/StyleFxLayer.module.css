@@ -1006,13 +1006,12 @@
   background: linear-gradient(
     to bottom,
     rgba(255, 255, 255, 0) 50%,
-    rgba(0, 0, 0, 0.1) 50%
+    rgba(0, 0, 0, 0.25) 50%
   );
   background-size: 100% 4px;
   pointer-events: none;
-  opacity: 0.6;
+  opacity: 0.3;
   z-index: 10;
-  mix-blend-mode: multiply;
 }
 
 .hackerGhosting {
@@ -1182,9 +1181,9 @@
 .tacticalBg {
   inset: 0;
   background: 
-    linear-gradient(135deg, rgba(20, 5, 5, 0.95) 0%, rgba(30, 10, 10, 0.85) 50%, rgba(10, 5, 5, 0.95) 100%),
-    radial-gradient(circle at 10% 10%, rgba(255, 0, 50, 0.15) 0%, transparent 40%),
-    radial-gradient(circle at 90% 90%, rgba(200, 40, 20, 0.1) 0%, transparent 50%);
+    linear-gradient(135deg, rgba(30, 10, 10, 0.95) 0%, rgba(45, 15, 15, 0.85) 50%, rgba(20, 5, 5, 0.95) 100%),
+    radial-gradient(circle at 10% 10%, rgba(255, 0, 50, 0.25) 0%, transparent 40%),
+    radial-gradient(circle at 90% 90%, rgba(200, 40, 20, 0.15) 0%, transparent 50%);
   z-index: -2;
 }
 

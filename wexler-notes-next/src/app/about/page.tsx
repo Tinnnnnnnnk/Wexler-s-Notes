@@ -1,20 +1,25 @@
-// src/app/about/page.tsx
+﻿// src/app/about/page.tsx
 'use client'
 
 import React, { useMemo } from 'react'
 import Link from 'next/link'
 import styles from './page.module.css'
 
+function pseudoRandom(seed: number): number {
+  const x = Math.sin(seed * 12.9898 + 78.233) * 43758.5453
+  return x - Math.floor(x)
+}
+
 export default function AboutPage() {
-  // 生成随机的樱花花瓣动效参数
+  // 使用确定性伪随机，避免在渲染路径调用 Math.random()（React purity）
   const petals = useMemo(() => {
     return Array.from({ length: 18 }).map((_, i) => ({
       id: i,
-      left: `${Math.random() * 100}%`,
-      animationDuration: `${12 + Math.random() * 10}s`,
-      animationDelay: `-${Math.random() * 20}s`,
-      width: `${8 + Math.random() * 6}px`,
-      height: `${8 + Math.random() * 6}px`,
+      left: `${pseudoRandom(i * 7 + 1) * 100}%`,
+      animationDuration: `${12 + pseudoRandom(i * 7 + 2) * 10}s`,
+      animationDelay: `-${pseudoRandom(i * 7 + 3) * 20}s`,
+      width: `${8 + pseudoRandom(i * 7 + 4) * 6}px`,
+      height: `${8 + pseudoRandom(i * 7 + 5) * 6}px`,
     }))
   }, [])
 

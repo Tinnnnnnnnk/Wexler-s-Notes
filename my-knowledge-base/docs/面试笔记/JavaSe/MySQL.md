@@ -47,4 +47,4 @@
 - 使用 `limit`语句
 - `select * from table limit 2,8`
 -  `limit`有偏移量，下标从0开始，因此是2
-- 
+- 后面的8是行号，代表找8个

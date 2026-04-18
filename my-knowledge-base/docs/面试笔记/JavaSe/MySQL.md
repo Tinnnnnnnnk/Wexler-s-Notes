@@ -37,3 +37,6 @@
 - drop是物理删除，删除整个表，删了就没了
 - delete支持行级删除，可以带where条件，可以回滚
 - truncate是清空表中数据，会表里表结构
+#### union 与 union all
+- union 会自动去除合并后结果集中的重复行
+- union all不会去重

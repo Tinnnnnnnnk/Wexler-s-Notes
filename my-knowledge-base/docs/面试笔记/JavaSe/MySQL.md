@@ -43,4 +43,8 @@
 #### `count(1) 、count(*) 、count (列名)` 的区别
 - 如果表有索引，`count(*)`就直接用索引统计，而`count(1)`会被优化成`count(*)`
 - `count(列名)` 只统计列名不为null的行数
-
+#### MYSQL的第3-10条记录怎么查
+- 使用 `limit`语句
+- `select * from table limit 2,8`
+-  `limit`有偏移量，下标从0开始，因此是2
+- 

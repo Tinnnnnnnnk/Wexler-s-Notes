@@ -40,7 +40,6 @@
 #### union 与 union all
 - union 会自动去除合并后结果集中的重复行
 - union all不会去重
-#### count(1) 、count(\*) 、count (列名) 的区别
-- count(1) 
-- count(\*)
-- count(列名)
+#### `count(1) 、count(*) 、count (列名)` 的区别
+- 如果表有索引，`count(*)`就直接用索引统计，而`count(1)`会被优化成`count(*)`
+- `count(列名)` 只统计列名不为null的行数

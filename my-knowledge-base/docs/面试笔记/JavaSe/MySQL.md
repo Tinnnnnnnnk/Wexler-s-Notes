@@ -58,3 +58,10 @@
 - 第四步：优化器确定SQL语句的执行计划，包括使用哪些索引，决定表之间的连接顺序
 - 第五步：执行器调用API来进行数据读写
 - 第六步：存储引擎查询数据，将执行结构返回客户端
+
+#### MYSQL中的数据引擎
+- 常见的有 MyISAM、InnoDB、MEMORY
+#### 怎么切换MYSQL的数据引擎
+- 通过`alter table`语句来切换
+- `alter table table_name ENGINE = InnoDB`
+####

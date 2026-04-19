@@ -80,4 +80,7 @@
 - 如果误删了数据，可以使用binlog去回退状态
 - 如果要搭建主从复制，可以让从库定时读取主库的binlog
 ##### 为什么有了binlog还要 undolog redolog
-- binlogshu'yu
+- binlog属于 Server层，与存储引擎无关，无法之间操作物理数据页；而undo log 和redo log是InnoDB存储引擎实现ACID的关键
+- binlog会记录整个 SQL或 行变化
+- undo log 是为了撤销未提交的事务
+- redo log是恢复 已提交但未刷盘的数据

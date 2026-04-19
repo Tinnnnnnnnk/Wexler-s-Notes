@@ -75,3 +75,9 @@
 - binlog：主从复制和数据恢复
 - redo log：保证事务的持久性
 - undo log：事务回滚和MVCC
+##### binlog 是什么
+- binlog是一种二进制日志，会在磁盘上记录数据库的所有修改操作
+- 如果误删了数据，可以使用binlog去回退状态
+- 如果要搭建主从复制，可以让从库定时读取主库的binlog
+##### 为什么有了binlog还要 undolog redolog
+- binlogshu'yu

@@ -93,4 +93,8 @@
 - ![[Pasted image 20260419161217.png]]
 - HOW？
 	- 如果MYSQL在预写 redo log后，写入 binlog前崩溃，MYSQL重启后，InnoDB会回滚事务，因为redo log没有提交，并且binlog没有写入，所以 从库 中不会有该事务
-	- 如果MYSQL在写入binlog后，redo log提交前崩溃，那么MYSQL重启后InnoDB会ti'j
+	- 如果MYSQL在写入binlog后，redo log提交前崩溃，那么MYSQL重启后InnoDB会提交该事务，redo log是完整的 prerare状态，而且binlog写入了，所以 从库 也会同步该事务的数据
+#### redo log 的写入过程
+- InnoDB 先将 redo log 写入内存中的 redo log buffer，然后再以一定的频率刷入磁盘的 redo log File中
+- 当redo log buffer 的空间不足、事务提交、触发checkpoint时，会触发刷盘动作
+- 也就是先写入缓冲区，再以一定的速率写入磁盘中

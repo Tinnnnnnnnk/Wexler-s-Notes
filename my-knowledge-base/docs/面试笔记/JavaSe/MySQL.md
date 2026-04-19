@@ -111,3 +111,10 @@
 
 #### explain 的使用
 - explain是MYSQL 提供的 一个用于查看SQL执行计划的工具，可以用来分析查询语句的性能问题
+- 一般关注 explain 输出结果中的 type、key、rows 和 Extra
+- 根据上面的字段可以判断 SQL有没有走索引、是否全盘扫描、是否触发了filesort货临时表。一旦发现问题，比如type =ALL 或 Extra = Using filesort，我会考虑建索引、改写SQL来优化
+##### type的执行效率等级
+- 从高到低有 system、const、eq_ref、ref、range、index 和 ALL。
+- 一般达到 const、eq_ref、ref就表明查询使用了索引
+- 如果是范围查询，range也可以接受
+- ALL表示全表扫描，性能很差，一般不可接受

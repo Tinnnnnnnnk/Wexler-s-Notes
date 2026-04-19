@@ -118,3 +118,10 @@
 - 一般达到 const、eq_ref、ref就表明查询使用了索引
 - 如果是范围查询，range也可以接受
 - ALL表示全表扫描，性能很差，一般不可接受
+
+### 索引
+#### 索引为什么能提高查询效率
+- 索引类似于操作系统中的页表，是B+树结构，查询效率是O(log n )
+- 最常见的是通过 `create index` 建立索引
+- `create index idx_name on student(name)`
+- 

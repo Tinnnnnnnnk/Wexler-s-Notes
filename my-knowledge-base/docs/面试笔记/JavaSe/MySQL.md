@@ -101,4 +101,9 @@
 - redo log buffer 是顺序写，Mysql启动后会申请一块连续的内存空间作为 redo log buffer，分为若干个redo log block，redo log buffer采用顺序写入的方式，会往前面的redo log block写入，写满了才往后面去写
 
 #### 什么是慢 SQL
-- MYSQL 中有一个叫 `long_query_time`的参数，原则上执行时间超过这个参数的SQL就算慢SQL
+- MYSQL 中有一个叫 `long_query_time`的参数，原则上执行时间超过这个参数的SQL就算慢SQL，会被记录到慢查询日志中
+- 一般通过启用慢查询日志，去记录那些超过执行执行时间的SQL查询，当然也可以使用`show processlist`去查看当前正在执行的SQL语句，人工找出执行时间长的SQL
+- 慢查询日志可以通过编辑配置文件去修改即可
+#### 如何优化SQL
+- 本质就算 尽可能减少扫描，尽快返回结果
+##### 

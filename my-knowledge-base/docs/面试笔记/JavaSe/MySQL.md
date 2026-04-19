@@ -84,3 +84,5 @@
 - binlog会记录整个 SQL或 行变化
 - undo log 是为了撤销未提交的事务
 - redo log是恢复 已提交但未刷盘的数据
+##### binlog 和 redo log 有什么区别
+- binlog 记录的是逻辑日志

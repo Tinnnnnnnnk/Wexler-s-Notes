@@ -98,3 +98,4 @@
 - InnoDB 先将 redo log 写入内存中的 redo log buffer，然后再以一定的频率刷入磁盘的 redo log File中
 - 当redo log buffer 的空间不足、事务提交、触发checkpoint时，会触发刷盘动作
 - 也就是先写入缓冲区，再以一定的速率写入磁盘中
+- redo log buffer 是顺序写，Mysql启动后会申请一块连续的内存空间作为 redo log buffer，分为若干个redo log block，redo log buffer采用顺序写入的方式，会往前面的redo log block写入，写满了才往后面去写

@@ -64,4 +64,8 @@
 #### 怎么切换MYSQL的数据引擎
 - 通过`alter table`语句来切换
 - `alter table table_name ENGINE = InnoDB`
+#### 怎么选择存储引擎
+- 大多数情况下使用 InnoDB，可以提供事务、行级锁、外键等能力
+- MyISAM 适合读多写少的场景
+- MEMORY适合临时表、数据量小的场景
 ####

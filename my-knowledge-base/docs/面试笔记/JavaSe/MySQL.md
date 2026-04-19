@@ -68,4 +68,10 @@
 - 大多数情况下使用 InnoDB，可以提供事务、行级锁、外键等能力
 - MyISAM 适合读多写少的场景
 - MEMORY适合临时表、数据量小的场景
-####
+#### MYSQL的日志文件
+- 错误日志：问题诊断
+- 慢查询日志：SQL性能分析
+- general log：记录所有的SQL语句
+- binlog：主从复制和数据恢复
+- redo log：保证事务的持久性
+- undo log：事务回滚和MVCC

@@ -85,4 +85,12 @@
 - undo log 是为了撤销未提交的事务
 - redo log是恢复 已提交但未刷盘的数据
 ##### binlog 和 redo log 有什么区别
-- binlog 记录的是逻辑日志
+- binlog 记录的是逻辑日志 ，是追加写入的，一个文件写满了就会新建文件继续写入，不会覆盖历史日志
+- redo log 记录的是物理日志，是循环写入的，空间是固定的，写满后会覆盖就的日志
+- 为了保证两种日志的一致性，InnoDB采用了两阶段提交策略，redo log在事务执行过程中持续写入，并在事务提交前进入prepare状态；binlog 在事务提交的最后阶段写入，只会redo log会被标记成 commit状态
+#### 为什么要两阶段提交
+- 保证 redo log和binlog 的一致性
+- ![[Pasted image 20260419161217.png]]
+- HOW？
+	- 如果MYSQL在预写 redo log后，写入 binlog前崩溃，MYSQL重启后，InnoDB会回滚事务，因为redo log没有提交，并且binlog没有写入，所以 从库 中不会有该事务
+	- 如果MYSQL在写入binlog后，redo log提交前崩溃，那么MYSQL重启后InnoDB会ti'j

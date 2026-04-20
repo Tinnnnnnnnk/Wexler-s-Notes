@@ -124,4 +124,5 @@
 - 索引类似于操作系统中的页表，是B+树结构，查询效率是O(log n )
 - 最常见的是通过 `create index` 建立索引
 - `create index idx_name on student(name)`
+#### 索引的分类
 - 

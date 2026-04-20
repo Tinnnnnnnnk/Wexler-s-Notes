@@ -125,4 +125,4 @@
 - 最常见的是通过 `create index` 建立索引
 - `create index idx_name on student(name)`
 #### 索引的分类
-- 
+- 功能上分：主键索引、唯一索引、普通索引、quan'wen

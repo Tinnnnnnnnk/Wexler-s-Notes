@@ -12,3 +12,8 @@ id = null
 要写
 id is null
 ```
+### 计算长度
+ ```mysql
+ select tweet_id  from Tweets where char_length(content)>15
+ ```
+ 使用函数`char_length( )`即可，括号内的内容就是需要的字段
